@@ -7,7 +7,7 @@ public class Usuario {
     private String contrasena;
 
     protected Perfil[] perfiles;
-    protected Encuesta[] encuestas;
+    protected Encuesta[] encuestasCreadas;
 
     /** Constructora **/
     public Usuario(String nomUsuario, String contrasena) {
@@ -16,8 +16,8 @@ public class Usuario {
     }
 
     /** Metodos publicos**/
-    public class Usuario getUsuario() {
-        return this;
+    public String getNomUsuario() {
+        return nomUsuario;
     }
     public boolean comprobarContrasena(String contrasena) {
         return this.contrasena.equals(contrasena);
@@ -25,7 +25,7 @@ public class Usuario {
     public Perfil[] getPerfiles() {
         return perfiles;
     }
-    public Encuesta[] getEncuestas() {
-        return encuestas;
+    public Encuesta[] getEncuestasCreadas() {
+        return encuestasCreadas;
     }
 }
