@@ -6,11 +6,13 @@ public class RespuestaOpcionMultiple extends Respuesta {
 
     private int[] respuesta;
 
+    // respuesta.size() no puede superar numMaxOpc
+
     /** Constructora **/
 
-    public RespuestaOpcionMultiple(String nomUsuario, int idEncuesta, 
-                                    int idPregunta, int[] respuesta) {
-        super(nomUsuario, idEncuesta, idPregunta);
+    public RespuestaOpcionMultiple(Usuario usuario, Pregunta pregunta, 
+                                   int[] respuesta) {
+        super(usuario, pregunta);
         this.respuesta = respuesta;
     }
 

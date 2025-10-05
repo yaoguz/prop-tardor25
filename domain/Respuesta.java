@@ -18,4 +18,12 @@ public abstract class Respuesta {
     
     public abstract Object getRespuesta();
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public Pregunta getPregunta() {
+        return pregunta;
+    }
+
 }
