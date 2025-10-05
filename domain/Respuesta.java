@@ -4,16 +4,14 @@ public abstract class Respuesta {
 
     /** Atributos **/
 
-    protected String nomUsuario;
-    protected int idEncuesta;
-    protected int idPregunta;
+    protected Usuario usuario;
+    protected Pregunta pregunta;
 
     /** Constructora **/
 
-    public Respuesta(String nomUsuario, int idEncuesta, int idPregunta) {
-        this.nomUsuario = nomUsuario;
-        this.idEncuesta = idEncuesta;
-        this.idPregunta = idPregunta;
+    public Respuesta(Usuario usuario, Pregunta pregunta) {
+        this.usuario = usuario;
+        this.pregunta = pregunta;
     }
 
     /** Métodos públicos **/
