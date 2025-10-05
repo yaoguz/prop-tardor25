@@ -13,6 +13,14 @@ import data.CtrlAsignaturaFichero;
 import domain.Alumno;
 import domain.Asignatura;*/
 
+import java.util.Map;
+import java.util.HashMap;
+
+import domain.Encuesta;
+import domain.Pregunta;
+import domain.Usuario;
+import domain.Respuesta;
+
 /** Ejemplo de Controlador de Dominio. **/
 public class CtrlDominio {
 
@@ -22,6 +30,15 @@ public class CtrlDominio {
 	private Map<String, Asignatura> asignaturas;
 	private Map<String, Alumno> alumnos;
 	private String alumnoSeleccionado;*/
+	private CtrlEncuestaFichero controladorEncuestaFichero;
+	private CtrlUsuarioFichero controladorUsuarioFichero;
+	private CtrlPreguntaFichero controladorPreguntaFichero;
+	private CtrlRespuestaFichero controladorRespuetaFichero;
+
+	private Map<Integer, Encuesta> encuestas;
+	private Map<Integer, Usuario> usuarios;
+	private Map<Integer, Pregunta> preguntas;
+	private Map<Integer, Respuesta> respuestas;
 
 	/** Constructor y metodos de inicializacion **/
 
@@ -34,6 +51,15 @@ public class CtrlDominio {
 		asignaturas = new HashMap<String, Asignatura>();
 		alumnos = new HashMap<String, Alumno>();
 		alumnoSeleccionado = null;*/
+		controladorEncuestaFichero = CtrlEncuestaFichero.getInstance();
+		controladorPreguntaFichero = CtrlPreguntaFichero.getInstance();
+		controladorRespuetaFichero = CtrlRespuestaFichero.getInstance();
+		controladorUsuarioFichero = CtrlUsuarioFichero.getInstance();
+
+		encuestas = new HashMap<Integer,Encuesta> ();
+		usuarios = new HashMap<Integer, Usuario> ();
+		preguntas = new HashMap<Integer, Preguntas> ();
+		respuestas = new HashMap<Integer, Respuesta> ();
 	}
 
 	/**
@@ -41,6 +67,9 @@ public class CtrlDominio {
 	 * convención, únicamente se usan Strings para la comunicación entre las dos
 	 * capas.
 	 **/
+	public boolean crearUsuario(String nombreUsuario, string contrasena) {
+		
+	}
 
 	/*public ArrayList<String> cargarAsignaturas(String filename)
 			throws FileNotFoundException {
