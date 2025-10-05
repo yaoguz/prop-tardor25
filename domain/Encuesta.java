@@ -9,7 +9,6 @@ public class Encuesta {
     public Encuesta(int idEncuesta) {
         this.idEncuesta = idEncuesta;
     }
-    //test
 
     /** Metodos **/
     public int getidEncuesta() {
