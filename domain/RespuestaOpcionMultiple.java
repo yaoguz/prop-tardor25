@@ -14,12 +14,7 @@ public class RespuestaOpcionMultiple extends Respuesta {
         this.respuesta = respuesta;
     }
 
-    /** Métodos públicos **/
-
-
-
-
-    /** Métodos redefinidos **/
+    /** Métodos **/
     
     @Override
     public int[] getRespuesta() {
