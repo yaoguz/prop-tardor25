@@ -19,8 +19,8 @@ public class Usuario {
     public class Usuario getUsuario() {
         return this;
     }
-    public String getNomUsuario() {
-        return nomUsuario;
+    public boolean comprobarContrasena(String contrasena) {
+        return this.contrasena.equals(contrasena);
     }
     public Perfil[] getPerfiles() {
         return perfiles;
