@@ -11,7 +11,10 @@ public class Encuesta {
     }
     //test
 
-    /** Metodos publicos**/
+    /** Metodos **/
+    public int getidEncuesta() {
+        return idEncuesta;
+    }
     //consultarEstadisticas 
     //verRespuestas
 }
