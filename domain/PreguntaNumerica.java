@@ -17,6 +17,14 @@ public class PreguntaNumerica extends Pregunta {
 	}
 	
 	/** Métodos públicos **/
+	
+	@override public Int getRangoInf() {
+		return -1;
+	}
+	
+	@override public Int getRangoSup() {
+		return -1;
+	}
 
 	@override public String tipoPregunta() {
 		return "Numerica";

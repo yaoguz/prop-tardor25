@@ -43,6 +43,28 @@ public abstract class Pregunta {
 		this.respuestas.add(r);
 	}
 	
+	/** Getters de las subclases **/
+	
+	//opciones (de opcionMuliple y opcionUnica)
+	public ArrayList<String> getOpciones() {
+		return new ArrayList<String>();
+	}
+	
+	//numMaxOpc (de opcionMultiple)
+	public Int getNumMaxOpc() {
+		return -1;
+	}
+	
+	//rangoInf (de numerica)
+	public Int getRangoInf() {
+		return -1;
+	}
+	
+	//rangoSup (de numerica)
+	public Int getRangoSup() {
+		return -1;
+	}
+	
 	//Operación abstracta (cada subclase devuelve su tipo)
 	public abstract String tipoPregunta();
 }

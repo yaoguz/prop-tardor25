@@ -21,6 +21,10 @@ public class PreguntaOpcionUnica extends Pregunta {
 	public void addOpcion(String opcion){
 		this.opciones.add(opcion);
 	}
+	
+	@override public ArrayList<String> getOpciones() {
+		return opciones;
+	}
 
 	@override public String tipoPregunta() {
 		return "OpcionUnica";

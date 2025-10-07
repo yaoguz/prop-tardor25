@@ -22,6 +22,14 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	public void addOpcion(String opcion){
 		this.opciones.add(opcion);
 	}
+	
+	@override public ArrayList<String> getOpciones() {
+		return opciones;
+	}
+	
+	@override public Int getNumMaxOpc() {
+		return numMaxOpc;
+	}
 
 	@override public String tipoPregunta() {
 		return "OpcionMultiple";
