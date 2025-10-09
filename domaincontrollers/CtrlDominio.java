@@ -36,7 +36,7 @@ public class CtrlDominio {
 	private CtrlRespuestaFichero controladorRespuetaFichero;
 
 	private Map<Integer, Encuesta> encuestas;
-	private Map<Integer, Usuario> usuarios;
+	private Map<String, Usuario> usuarios;
 	private Map<Integer, Pregunta> preguntas;
 	private Map<Integer, Respuesta> respuestas;
 
@@ -67,8 +67,18 @@ public class CtrlDominio {
 	 * convención, únicamente se usan Strings para la comunicación entre las dos
 	 * capas.
 	 **/
-	public boolean crearUsuario(String nombreUsuario, string contrasena) {
-		
+
+	//cargar los datos
+	public ArrayList<String> cargarEncuesta(String filename) {
+		throws FileNotFoundException {
+			List<String> encuestaData = controladorEncuestaFichero.getAll(filename + ".txt");
+		}
+	}
+
+	public boolean crearUsuario(String nomUsuario, string contrasena) {
+		if (usuarios.containsKey(nomUsuario)) return false;
+		usuarios.put(nomUsuario, contrasena);
+		return true;
 	}
 
 	/*public ArrayList<String> cargarAsignaturas(String filename)
