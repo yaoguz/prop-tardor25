@@ -20,6 +20,7 @@ import domain.Encuesta;
 import domain.Pregunta;
 import domain.Usuario;
 import domain.Respuesta;
+import data.ConjuntoObjetos;
 
 /** Ejemplo de Controlador de Dominio. **/
 public class CtrlDominio {
@@ -35,11 +36,12 @@ public class CtrlDominio {
 	private CtrlPreguntaFichero controladorPreguntaFichero;
 	private CtrlRespuestaFichero controladorRespuetaFichero;
 
-	private Map<Integer, Encuesta> encuestas;
-	private Map<String, Usuario> usuarios;
-	private Map<Integer, Pregunta> preguntas;
-	private Map<Integer, Respuesta> respuestas;
+	private ConjuntoObjetos<Usuario> conjuntoUsuarios;
+	private ConjuntoObjetos<Encuesta> conjuntoEncuestas;
+	private ConjuntoObjetos<Pregunta> conjuntoPreguntas;
+	private ConjuntoObjetos<Respuesta> conjuntoRespuesta;
 
+	
 	/** Constructor y metodos de inicializacion **/
 
 	public CtrlDominio() {
@@ -68,18 +70,7 @@ public class CtrlDominio {
 	 * capas.
 	 **/
 
-	//cargar los datos
-	public ArrayList<String> cargarEncuesta(String filename) {
-		throws FileNotFoundException {
-			List<String> encuestaData = controladorEncuestaFichero.getAll(filename + ".txt");
-		}
-	}
-
-	public boolean crearUsuario(String nomUsuario, string contrasena) {
-		if (usuarios.containsKey(nomUsuario)) return false;
-		usuarios.put(nomUsuario, contrasena);
-		return true;
-	}
+	
 
 	/*public ArrayList<String> cargarAsignaturas(String filename)
 			throws FileNotFoundException {
