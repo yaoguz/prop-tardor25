@@ -6,14 +6,14 @@ public class RespuestaOpcionMultiple extends Respuesta {
 
     private int[] respuesta;
 
-    // respuesta.size() no puede superar numMaxOpc
-
     /** Constructora **/
 
     public RespuestaOpcionMultiple(Usuario usuario, Pregunta pregunta, 
                                    int[] respuesta) {
         super(usuario, pregunta);
         this.respuesta = respuesta;
+
+        // comprobar respuesta.size() no supera numMaxOpc
     }
 
     /** Métodos **/
