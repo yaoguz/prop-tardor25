@@ -6,10 +6,10 @@ public abstract class Pregunta {
 	
 	/** Atributos **/
 	
-	private Encuesta encuesta;
+	private Int idEncuesta;
 	private Int id;
 	private String enunciado;
-	private ArrayList<Respuesta> respuestas;
+	private ArrayList<Int> idRespuestas;
 
 
 	/** Constructora **/
@@ -25,6 +25,10 @@ public abstract class Pregunta {
 
 	public Encuesta getEncuesta() {
 		return this.encuesta;
+	}
+	
+	public Int getIdEncuesta() {
+		return encuesta.getId();
 	}
 	
 	public Int getId() {
