@@ -5,24 +5,28 @@ import java.util.ArrayList;
 public class Encuesta {
 
     /** Atributos **/
-    private Int idEncuesta;
+    private int idEncuesta;
     private String nombreEncuesta;
-    private ArrayList<Pregunta> preguntas;
+    private ArrayList<Pregunta> preguntas = new ArrayList<>();
     private Usuario creador;
 
     /** Constructora **/
-    public Encuesta(Int idEncuesta, String nombreEncuesta, Usuario creador) {
+    public Encuesta(int idEncuesta, String nombreEncuesta, Usuario creador) {
         this.idEncuesta = idEncuesta;
         this.nombreEncuesta = nombreEncuesta;
         this.creador = creador;
+        if (nombreEncuesta == null) {
+            throw new IllegalArgumentException("Nombre de encuesta vacio");
+        }
+        
     }
 
     /** Metodos **/
-    public Int getidEncuesta() {
+    public int getidEncuesta() {
         return idEncuesta;
     }
 
-    public Pregunta[] getPreguntas() {
+    public ArrayList<Pregunta> getPreguntas() {
         return preguntas;
     }
 
@@ -34,7 +38,14 @@ public class Encuesta {
         this.preguntas.add(pregunta);
     }
 
-    //ver respuestas ???
+    public ArrayList<ArrayList<Respuesta>> verRespuestas() {
+
+        ArrayList<ArrayList<Respuesta>> respuestas = new ArrayList<>(); 
+        for (Pregunta p : preguntas) {
+            respuestas.add(p.getRespuestas());
+        }
+        return respuestas;
+    }
     //ver estadisticas ????????
 
 }

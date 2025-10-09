@@ -1,4 +1,7 @@
 package domain;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Usuario {
 
@@ -6,8 +9,9 @@ public class Usuario {
     private String nomUsuario;
     private String contrasena;
 
-    protected Perfil[] perfiles;
-    protected Encuesta[] encuestasCreadas;
+    protected ArrayList<Perfil> perfiles;
+    protected ArrayList<Encuesta> encuestasCreadas;
+    protected ArrayList<Respuesta> respuestas;
 
     /** Constructora **/
     public Usuario(String nomUsuario, String contrasena) {
@@ -22,10 +26,32 @@ public class Usuario {
     public boolean comprobarContrasena(String contrasena) {
         return this.contrasena.equals(contrasena);
     }
-    public Perfil[] getPerfiles() {
+    public ArrayList<Perfil> getPerfiles() {
         return perfiles;
     }
-    public Encuesta[] getEncuestasCreadas() {
+    public ArrayList<Encuesta> getEncuestasCreadas() {
         return encuestasCreadas;
+    }
+    public ArrayList<Perfil> getRespuestas() {
+        return respuestas;
+    }
+    public Set<Encuesta> getEncuestasRespondidas() {
+        Set<Encuesta> aux = new HashSet<>();
+        for (int i = 0; i < respuestas.size(); ++i)
+        {
+            aux.add(respuesta.get(i).getEncuesta());
+        }
+        return aux;
+    }
+    public ArrayList<Respuesta> getRespuestasEncuesta(int idEncuesta)
+    {
+        ArrayList<Respuesta> aux;
+        for (int i = 0; i < respuestas.size(); ++i)
+        {
+            if (respuesta.get(i).getIdEncuesta() == idEncuesta) {
+                aux.add(respuesta.get(i));
+            }
+        }
+        return aux;
     }
 }
