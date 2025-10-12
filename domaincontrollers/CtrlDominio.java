@@ -35,17 +35,17 @@ public class CtrlDominio {
 	private Map<String, Asignatura> asignaturas;
 	private Map<String, Alumno> alumnos;
 	private String alumnoSeleccionado;*/
-	private CtrlEncuestaFichero controladorEncuestaFichero;
-	private CtrlUsuarioFichero controladorUsuarioFichero;
-	private CtrlPreguntaFichero controladorPreguntaFichero;
-	private CtrlRespuestaFichero controladorRespuetaFichero;
-
+	
 	private ConjuntoObjetos<Usuario> conjuntoUsuarios;
 	private ConjuntoObjetos<Encuesta> conjuntoEncuestas;
 	private ConjuntoObjetos<Pregunta> conjuntoPreguntas;
 	private ConjuntoObjetos<Respuesta> conjuntoRespuesta;
 
-	
+	private CtrlUsuarioFichero ctrlUsuario;
+	private CtrlEncuestaFichero ctrlEncuesta;
+	private CtrlPreguntaFichero ctrlPregunta;
+	private CtrlRespuestaFichero ctrlRespuesta;
+
 	/** Constructor y metodos de inicializacion **/
 
 	public CtrlDominio() {
@@ -57,10 +57,16 @@ public class CtrlDominio {
 		asignaturas = new HashMap<String, Asignatura>();
 		alumnos = new HashMap<String, Alumno>();
 		alumnoSeleccionado = null;*/
-		controladorEncuestaFichero = CtrlEncuestaFichero.getInstance();
-		controladorPreguntaFichero = CtrlPreguntaFichero.getInstance();
-		controladorRespuetaFichero = CtrlRespuestaFichero.getInstance();
-		controladorUsuarioFichero = CtrlUsuarioFichero.getInstance();
+
+		conjuntoUsuarios = new ConjuntoObjetos<>();
+		conjuntoEncuestas = new ConjuntoObjetos<>();
+		conjuntoPreguntas = new ConjuntoObjetos<>();
+		conjuntoRespuesta = new ConjuntoObjetos<>();
+
+		ctrlUsuario = CtrlUsuarioFichero.getInstance();
+		ctrlEncuesta = CtrlEncuestaFichero.getInstance();
+		ctrlPregunta = CtrlPreguntaFichero.getInstance();
+		ctrlRespuesta = CtrlRespuestaFichero.getInstance();
 
 		encuestas = new HashMap<Integer,Encuesta> ();
 		usuarios = new HashMap<Integer, Usuario> ();

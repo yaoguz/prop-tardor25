@@ -33,10 +33,10 @@ public class CtrlEncuestaFichero {
 
 	/** Constructora privada. **/
 	
-	/*private CtrlAsignaturaFichero() {
+	private CtrlEncuestaFichero() {
 	}
 
-	public List<String> getAll(String filename)
+	/*public List<String> getAll(String filename)
 			throws FileNotFoundException {
 		LinkedList<String> asignaturas = new LinkedList<String>();
 
