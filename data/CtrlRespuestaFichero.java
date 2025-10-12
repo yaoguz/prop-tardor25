@@ -10,7 +10,7 @@ import java.util.Scanner;
  * Implementación de la classe gestionadora de datos para la clase "Asignatura".
 En una implementaci�n completa tendr�a que haber tambi�n un "CtrlAlumnosFichero" que cargara/volcara los alumnos modificados en cada sesi�n.
  **/
-public class CtrlEncuesta {
+public class CtrlRespuestaFichero {
 
 	/**
 	 * Implementación del patrón de diseño "Singleton", con el objetivo de que
@@ -22,14 +22,14 @@ public class CtrlEncuesta {
 	 * CtrlAsignaturaFicher.getInstance();
 	 **/
 	
-	/*private static CtrlAsignaturaFichero singletonObject;
+	private static CtrlRespuestaFichero singletonObject;
 
-	public static CtrlAsignaturaFichero getInstance() {
+	public static CtrlRespuestaFichero getInstance() {
 		if (singletonObject == null)
-			singletonObject = new CtrlAsignaturaFichero() {
+			singletonObject = new CtrlRespuestaFichero() {
 			};
 		return singletonObject;
-	}*/
+	}
 
 	/** Constructora privada. **/
 	

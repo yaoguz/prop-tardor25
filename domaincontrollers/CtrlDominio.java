@@ -21,6 +21,10 @@ import domain.Pregunta;
 import domain.Usuario;
 import domain.Respuesta;
 import data.ConjuntoObjetos;
+import data.CtrlPreguntaFichero;
+import data.CtrlRespuestaFichero;
+import data.CtrlEncuestaFichero;
+import data.CtrlUsuarioFichero;
 
 /** Ejemplo de Controlador de Dominio. **/
 public class CtrlDominio {

@@ -6,11 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import domain.Encuesta;
+import domain.Pregunta;
+
 /**
  * Implementación de la classe gestionadora de datos para la clase "Pregunta".
 En una implementaci�n completa tendr�a que haber tambi�n un "CtrlAlumnosFichero" que cargara/volcara los alumnos modificados en cada sesi�n.
  **/
-public class CtrlPregunta {
+public class CtrlPreguntaFichero {
 
 	/**
 	 * Implementación del patrón de diseño "Singleton", con el objetivo de que
@@ -22,8 +25,35 @@ public class CtrlPregunta {
 	 * CtrlAsignaturaFicher.getInstance();
 	 **/
 
-	public Int crearPregunta(Encuesta e, String enunciado) {
-		Int id = conjuntoPreguntas.newId();
+	private static CtrlPreguntaFichero singletonObject;
+
+	public static CtrlPreguntaFichero getInstance() {
+		if (singletonObject == null)
+			singletonObject = new CtrlPreguntaFichero() {
+			};
+		return singletonObject;
+	}
+
+	/** Constructora privada. **/
+	
+	/*private CtrlAsignaturaFichero() {
+	}
+
+	public List<String> getAll(String filename)
+			throws FileNotFoundException {
+		LinkedList<String> asignaturas = new LinkedList<String>();
+
+		FileReader fr = new FileReader("../DATA/"+filename);
+		Scanner scan = new Scanner(fr);
+
+		while (scan.hasNextLine())
+			asignaturas.add(new String(scan.nextLine()));
+
+		return asignaturas;
+	}*/
+
+	public int crearPregunta(Encuesta e, String enunciado) {
+		int id = conjuntoPreguntas.newId();
 		Pregunta p = new Pregunta(e, id, enunciado);
 		conjuntoPregunta.add(id, p);
 		return id;

@@ -11,8 +11,9 @@ public class CtrlPresentacion {
 
 	/** Atributos **/
 
-	/*private CtrlDominio controladorDominio;
-	private VistaPrincipal vistaPrincipal;
+	private CtrlDominio controladorDominio;
+
+	/*private VistaPrincipal vistaPrincipal;
 	private VistaSecundaria vistaSecundaria;
 	private VistaLEEME vistaLEEME;*/
 

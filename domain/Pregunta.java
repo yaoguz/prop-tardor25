@@ -6,15 +6,15 @@ public abstract class Pregunta {
 	
 	/** Atributos **/
 	
-	private Int idEncuesta;
-	private Int id;
+	private int idEncuesta;
+	private int id;
 	private String enunciado;
-	private ArrayList<Int> idRespuestas;
+	private ArrayList<Integer> idRespuestas;
 
 
 	/** Constructora **/
 	
-	public Pregunta(Encuesta encuesta, Int id, String enunciado) {
+	public Pregunta(Encuesta encuesta, int id, String enunciado) {
 		this.encuesta = encuesta;
 		this.id = id;
 		this.enunciado = enunciado;
@@ -27,11 +27,11 @@ public abstract class Pregunta {
 		return this.encuesta;
 	}
 	
-	public Int getIdEncuesta() {
+	public int getIdEncuesta() {
 		return encuesta.getId();
 	}
 	
-	public Int getId() {
+	public int getId() {
 		return this.id;
 	}
 	
@@ -55,17 +55,17 @@ public abstract class Pregunta {
 	}
 	
 	//numMaxOpc (de opcionMultiple)
-	public Int getNumMaxOpc() {
+	public int getNumMaxOpc() {
 		return -1;
 	}
 	
 	//rangoInf (de numerica)
-	public Int getRangoInf() {
+	public int getRangoInf() {
 		return -1;
 	}
 	
 	//rangoSup (de numerica)
-	public Int getRangoSup() {
+	public int getRangoSup() {
 		return -1;
 	}
 	
