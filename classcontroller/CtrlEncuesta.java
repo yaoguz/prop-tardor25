@@ -50,4 +50,3 @@ public class CtrlEncuesta {
 		return asignaturas;
 	}*/
 }
->>>>>>> 5b9b7c8be6d8b925c348fe73ac750ce71ff56458:classcontroller/CtrlEncuesta.java
