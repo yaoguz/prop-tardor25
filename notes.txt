@@ -1,0 +1,62 @@
+index.txt
+membres.txt
+
+FONTS
+
+documentar amb javadoc!!!!!!! documentar classes, mètodes i atributs!!
+
+DOCS
+
+*Algorismes i est dades
+De cada estructura de dades:
+- estructura triada
+- justificar est dades
+- alterenatives considerades i pq les hem descartat
+- Complexitat
+
+*casos d'us
+descripcio i diagrama: coincidir
+
+*Diagrama classes
+format correcte UML
+incloure ctrl's: patró del·legació (ctrl domini a ctrl de classes) -> ctrlDomini sap qui ho fa, no com
+
+
+
+controladors: singleton!!
+
+***persistence controller (stub a la capa de persistencia): el ctrlDomini no es modificara, no sap on estan les dades, la capa de persistencia sí
+
+
+
+1r lliurament
+poder executar tots els casos d'us per consola (en terminal) amb drivers
+ex: bool isGameRunning: l'utilitzaran els drivers (un per cada ctrl) -> main -> executable
+menú del que es vol fer -> read amb scanner ("cin") -> switch
+
+Cada cas d'us: nomes mirar aquella funcionalitat independentment
+ex: importar enquesta: ja iniciat sessio, etc.
+
+
+tests: tants com necessitem per cobrir totes les funcionalitats
+- un per cada ctrl, un per cada classe, ....
+- tant casos + com casos -
+- tests unitaris: automatics, sempre mateix resultats (no com jocs de proves)
+
+
+EXE
+jocs de prova
+cada prova: descriure
+el profe ha de poder fer els mateixos jocs de prova
+
+
+
+
+gradle: no obligatori, pero molt recomanable, l'altra opcio es maeven.
+
+makefile!!! -> gradle ja ho cobreix (gradleTest...)
+
+OJO versions java i junit
+
+
+Setmana que ve: llegir document infoAdicional (k-means) i tenir en compte
