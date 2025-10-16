@@ -13,7 +13,7 @@ import domain.Pregunta;
  * Implementación de la classe gestionadora de datos para la clase "Pregunta".
 En una implementaci�n completa tendr�a que haber tambi�n un "CtrlAlumnosFichero" que cargara/volcara los alumnos modificados en cada sesi�n.
  **/
-public class CtrlPreguntaFichero {
+public class CtrlPregunta {
 
 	/**
 	 * Implementación del patrón de diseño "Singleton", con el objetivo de que
@@ -25,11 +25,11 @@ public class CtrlPreguntaFichero {
 	 * CtrlAsignaturaFicher.getInstance();
 	 **/
 
-	private static CtrlPreguntaFichero singletonObject;
+	private static CtrlPregunta singletonObject;
 
-	public static CtrlPreguntaFichero getInstance() {
+	public static CtrlPregunta getInstance() {
 		if (singletonObject == null)
-			singletonObject = new CtrlPreguntaFichero() {
+			singletonObject = new CtrlPregunta() {
 			};
 		return singletonObject;
 	}
