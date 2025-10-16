@@ -9,9 +9,9 @@ public class Usuario {
     private String nomUsuario;
     private String contrasena;
 
-    protected ArrayList<Perfil> perfiles;
-    protected ArrayList<Encuesta> encuestasCreadas;
-    protected ArrayList<Respuesta> respuestas;
+    protected ArrayList<Integer> idPerfiles;
+    protected ArrayList<Integer> idEncuestasCreadas;
+    protected ArrayList<Integer> idRespuestas;
 
     /** Constructora **/
     public Usuario(String nomUsuario, String contrasena) {
@@ -26,30 +26,30 @@ public class Usuario {
     public boolean comprobarContrasena(String contrasena) {
         return this.contrasena.equals(contrasena);
     }
-    public ArrayList<Perfil> getPerfiles() {
-        return perfiles;
+    public ArrayList<Integer> getPerfiles() {
+        return idPerfiles;
     }
-    public ArrayList<Encuesta> getEncuestasCreadas() {
-        return encuestasCreadas;
+    public ArrayList<Integer> getEncuestasCreadas() {
+        return idEncuestasCreadas;
     }
-    public ArrayList<Perfil> getRespuestas() {
-        return respuestas;
+    public ArrayList<Integer> getRespuestas() {
+        return idRespuestas;
     }
-    public Set<Encuesta> getEncuestasRespondidas() {
-        Set<Encuesta> aux = new HashSet<>();
-        for (int i = 0; i < respuestas.size(); ++i)
+    public Set<Integer> getEncuestasRespondidas() {
+        Set<Integer> aux = new HashSet<>();
+        for (int i = 0; i < idRespuestas.size(); ++i)
         {
-            aux.add(respuesta.get(i).getEncuesta());
+            aux.add(idRespuestas.get(i).getEncuesta());
         }
         return aux;
     }
-    public ArrayList<Respuesta> getRespuestasEncuesta(int idEncuesta)
+    public ArrayList<Integer> getRespuestasEncuesta(int idEncuesta)
     {
-        ArrayList<Respuesta> aux;
-        for (int i = 0; i < respuestas.size(); ++i)
+        ArrayList<Integer> aux = new ArrayList<>();
+        for (int i = 0; i < idRespuestas.size(); ++i)
         {
-            if (respuesta.get(i).getIdEncuesta() == idEncuesta) {
-                aux.add(respuesta.get(i));
+            if (idRespuestas.get(i).getIdEncuesta() == idEncuesta) {
+                aux.add(idRespuestas.get(i));
             }
         }
         return aux;

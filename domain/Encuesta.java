@@ -6,14 +6,14 @@ public class Encuesta {
 
     /** Atributos **/
     private int idEncuesta;
-    private String nombreEncuesta;
-    private ArrayList<Pregunta> preguntas = new ArrayList<>();
+    private String titulo;
+    private ArrayList<Integer> preguntas = new ArrayList<>();
     private Usuario creador;
 
     /** Constructora **/
-    public Encuesta(int idEncuesta, String nombreEncuesta, Usuario creador) {
+    public Encuesta(int idEncuesta, String titulo, Usuario creador) {
         this.idEncuesta = idEncuesta;
-        this.nombreEncuesta = nombreEncuesta;
+        this.nombreEncuesta = titulo;
         this.creador = creador;
         if (nombreEncuesta == null) {
             throw new IllegalArgumentException("Nombre de encuesta vacio");
@@ -26,7 +26,7 @@ public class Encuesta {
         return idEncuesta;
     }
 
-    public ArrayList<Pregunta> getPreguntas() {
+    public ArrayList<Integer> getIdPreguntas() {
         return preguntas;
     }
 
@@ -34,8 +34,8 @@ public class Encuesta {
         return creador;
     }
 
-    public void addPregunta(Pregunta pregunta) {
-        this.preguntas.add(pregunta);
+    public void addPregunta(Integer IdPregunta) {
+        this.preguntas.add(IdPregunta);
     }
 
     public ArrayList<ArrayList<Respuesta>> verRespuestas() {
@@ -46,6 +46,5 @@ public class Encuesta {
         }
         return respuestas;
     }
-    //ver estadisticas ????????
 
 }
