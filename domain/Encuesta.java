@@ -7,8 +7,8 @@ public class Encuesta {
     /** Atributos **/
     private int idEncuesta;
     private String titulo;
-    private ArrayList<Integer> preguntas = new ArrayList<>();
-    private Usuario creador;
+    private ArrayList<Integer> IdPreguntas = new ArrayList<>();
+    private String creador;
 
     /** Constructora **/
     public Encuesta(int idEncuesta, String titulo, Usuario creador) {
@@ -17,8 +17,7 @@ public class Encuesta {
         this.creador = creador;
         if (nombreEncuesta == null) {
             throw new IllegalArgumentException("Nombre de encuesta vacio");
-        }
-        
+        }    
     }
 
     /** Metodos **/
@@ -27,10 +26,10 @@ public class Encuesta {
     }
 
     public ArrayList<Integer> getIdPreguntas() {
-        return preguntas;
+        return IdPreguntas;
     }
 
-    public Usuario getCreador() {
+    public String getCreador() {
         return creador;
     }
 
