@@ -1,4 +1,4 @@
-package data;
+package classcontroller;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

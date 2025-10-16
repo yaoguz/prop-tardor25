@@ -1,4 +1,4 @@
-package domaincontrollers;
+package domaincontroller;
 
 /*import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -13,18 +13,13 @@ import data.CtrlAsignaturaFichero;
 import domain.Alumno;
 import domain.Asignatura;*/
 
-import java.util.Map;
-import java.util.HashMap;
+import classcontroller.CtrlEncuesta;
+import classcontroller.CtrlPregunta;
+import classcontroller.CtrlUsuario;
+import classcontroller.CtrlRespuesta;
 
-import domain.Encuesta;
-import domain.Pregunta;
-import domain.Usuario;
-import domain.Respuesta;
-import data.ConjuntoObjetos;
-import data.CtrlPreguntaFichero;
-import data.CtrlRespuestaFichero;
-import data.CtrlEncuestaFichero;
-import data.CtrlUsuarioFichero;
+import persistence.CtrlPersistence;
+
 
 /** Ejemplo de Controlador de Dominio. **/
 public class CtrlDominio {
@@ -35,16 +30,11 @@ public class CtrlDominio {
 	private Map<String, Asignatura> asignaturas;
 	private Map<String, Alumno> alumnos;
 	private String alumnoSeleccionado;*/
-	
-	private ConjuntoObjetos<Usuario> conjuntoUsuarios;
-	private ConjuntoObjetos<Encuesta> conjuntoEncuestas;
-	private ConjuntoObjetos<Pregunta> conjuntoPreguntas;
-	private ConjuntoObjetos<Respuesta> conjuntoRespuesta;
 
-	private CtrlUsuarioFichero ctrlUsuario;
-	private CtrlEncuestaFichero ctrlEncuesta;
-	private CtrlPreguntaFichero ctrlPregunta;
-	private CtrlRespuestaFichero ctrlRespuesta;
+	private CtrlUsuario ctrlUsuario;
+	private CtrlEncuesta ctrlEncuesta;
+	private CtrlPregunta ctrlPregunta;
+	private CtrlRespuesta ctrlRespuesta;
 
 	/** Constructor y metodos de inicializacion **/
 
@@ -58,20 +48,12 @@ public class CtrlDominio {
 		alumnos = new HashMap<String, Alumno>();
 		alumnoSeleccionado = null;*/
 
-		conjuntoUsuarios = new ConjuntoObjetos<>();
-		conjuntoEncuestas = new ConjuntoObjetos<>();
-		conjuntoPreguntas = new ConjuntoObjetos<>();
-		conjuntoRespuesta = new ConjuntoObjetos<>();
+		ctrlUsuario = CtrlUsuario.getInstance();
+		ctrlEncuesta = CtrlEncuesta.getInstance();
+		ctrlPregunta = CtrlPregunta.getInstance();
+		ctrlRespuesta = CtrlRespuesta.getInstance();
 
-		ctrlUsuario = CtrlUsuarioFichero.getInstance();
-		ctrlEncuesta = CtrlEncuestaFichero.getInstance();
-		ctrlPregunta = CtrlPreguntaFichero.getInstance();
-		ctrlRespuesta = CtrlRespuestaFichero.getInstance();
-
-		encuestas = new HashMap<Integer,Encuesta> ();
-		usuarios = new HashMap<Integer, Usuario> ();
-		preguntas = new HashMap<Integer, Preguntas> ();
-		respuestas = new HashMap<Integer, Respuesta> ();
+		CtrlPersistence = CtrlPersistence.getInstace();
 	}
 
 	/**
