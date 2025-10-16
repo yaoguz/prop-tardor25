@@ -61,7 +61,7 @@ public class CtrlDominio {
 	 * convención, únicamente se usan Strings para la comunicación entre las dos
 	 * capas.
 	 **/
-
+	
 	
 
 	/*public ArrayList<String> cargarAsignaturas(String filename)
