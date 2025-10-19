@@ -27,9 +27,16 @@ public class Usuario {
     public String getNomUsuario() {
         return nomUsuario;
     }
-    // public boolean comprobarContrasena(String contrasena) {
-    //     return this.contrasena.equals(contrasena);
-    // }
+
+    /**
+     * Se compreuba si la contrasena pasada por parametro es igual a la contrasena del Usuario.
+     * @param {String} contrasena - Contrasena a comprobar.
+     * @return {boolean} true si la contrasena es correcta, false en caso contrario.
+     */
+    public boolean comprobarContrasena(String contrasena) {
+        return this.contrasena.equals(contrasena);
+    }
+    
     // public ArrayList<Integer> getIdPerfiles() {
     //     return idPerfiles;
     // }
