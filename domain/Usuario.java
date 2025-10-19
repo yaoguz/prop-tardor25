@@ -1,7 +1,5 @@
 package domain;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Usuario {
 
@@ -29,47 +27,13 @@ public class Usuario {
     }
 
     /**
-     * Se compreuba si la contrasena pasada por parametro es igual a la contrasena del Usuario.
+     * Se comprueba si la contrasena pasada por parametro es igual a la contrasena del Usuario.
      * @param {String} contrasena - Contrasena a comprobar.
      * @return {boolean} true si la contrasena es correcta, false en caso contrario.
      */
     public boolean comprobarContrasena(String contrasena) {
         return this.contrasena.equals(contrasena);
     }
-    
-    // public ArrayList<Integer> getIdPerfiles() {
-    //     return idPerfiles;
-    // }
-    // public ArrayList<Integer> getIdEncuestasCreadas() {
-    //     return idEncuestasCreadas;
-    // }
-
-    /**
-     * Se obtiene un ArrayList con todas las idRespuestas respondidas por el Usuario.
-     * @return {ArrayList<Integer>} idRespuestas de las Respuestas respondidas por el Usuario.
-     */
-    public ArrayList<Integer> getIdRespuestas() {
-        return idRespuestas;
-    }
-    // public Set<Integer> getIdEncuestasRespondidas() {
-    //     Set<Integer> aux = new HashSet<>();
-    //     for (int i = 0; i < idRespuestas.size(); ++i)
-    //     {
-    //         aux.add(idRespuestas.get(i).getEncuesta());
-    //     }
-    //     return aux;
-    // }
-    // public ArrayList<Integer> getRespuestasEncuesta(int idEncuesta)
-    // {
-    //     ArrayList<Integer> aux = new ArrayList<>();
-    //     for (int i = 0; i < idRespuestas.size(); ++i)
-    //     {
-    //         if (idRespuestas.get(i).getIdEncuesta() == idEncuesta) {
-    //             aux.add(idRespuestas.get(i));
-    //         }
-    //     }
-    //     return aux;
-    // }
 
     /**
      * Se cambia la contrasena del usuario por el el newContrasena que se le pasa.
@@ -82,6 +46,15 @@ public class Usuario {
         }
         this.contrasena = newContrasena;
     }
+
+    /**
+     * Se obtiene un ArrayList con todas las idRespuestas respondidas por el Usuario.
+     * @return {ArrayList<Integer>} idRespuestas de las Respuestas respondidas por el Usuario.
+     */
+    public ArrayList<Integer> getIdRespuestas() {
+        return idRespuestas;
+    }
+
     /**
      * Se anade en idRespuestas una nueva respuesta del Usuario con idR
      * @param {int} idR - Id de la Respuesta respondida por el Usuario.
@@ -110,4 +83,31 @@ public class Usuario {
     public void eliminarEncuestaCreada(int idE) {
         this.idEncuestasCreadas.remove(idE);
     }
+
+    // public ArrayList<Integer> getIdPerfiles() {
+    //     return idPerfiles;
+    // }
+    // public ArrayList<Integer> getIdEncuestasCreadas() {
+    //     return idEncuestasCreadas;
+    // }
+
+    // public Set<Integer> getIdEncuestasRespondidas() {
+    //     Set<Integer> aux = new HashSet<>();
+    //     for (int i = 0; i < idRespuestas.size(); ++i)
+    //     {
+    //         aux.add(idRespuestas.get(i).getEncuesta());
+    //     }
+    //     return aux;
+    // }
+    // public ArrayList<Integer> getRespuestasEncuesta(int idEncuesta)
+    // {
+    //     ArrayList<Integer> aux = new ArrayList<>();
+    //     for (int i = 0; i < idRespuestas.size(); ++i)
+    //     {
+    //         if (idRespuestas.get(i).getIdEncuesta() == idEncuesta) {
+    //             aux.add(idRespuestas.get(i));
+    //         }
+    //     }
+    //     return aux;
+    // }
 }
