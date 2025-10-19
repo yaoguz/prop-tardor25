@@ -57,7 +57,7 @@ public class Usuario {
     //     return aux;
     // }
 
-    /**
+    /** 
      * @param {String} newContrasena - Nueva contrasena del Usuario.
      * @throws {IllegalArgumentException} Si la nueva contrasena es igual a la anterior.
      */
