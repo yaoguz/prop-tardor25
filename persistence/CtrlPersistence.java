@@ -71,18 +71,18 @@ public class CtrlPersistence {
     * Devuelve una lista de usuarios cuyos nombres coinciden con los especificados.
     *
     * <p>
-    * Para cada nombre en la lista {@code nameUsuarios}, el método busca en el
+    * Para cada nombre en la lista {@code nomUsuarios}, el método busca en el
     * mapa {@code usuarios} y añade al resultado los usuarios encontrados.
     *
-    * @param nameUsuarios lista con los nombres de los usuarios que se desean obtener
+    * @param nomUsuarios lista con los nombres de los usuarios que se desean obtener
     * @return una lista con los objetos {@link Usuario} cuyos nombres coinciden
     */
 
-    public ArrayList<Usuario> getUsuarios(ArrayList<String> nameUsuarios) {
+    public ArrayList<Usuario> getUsuarios(ArrayList<String> nomUsuarios) {
         ArrayList<Usuario> res = new ArrayList();
         
-        for (String name: nameUsuarios) {
-            Usuario u = usuarios.get(name);
+        for (String nom: nomUsuarios) {
+            Usuario u = usuarios.get(nom);
 
             res.add(u);
         }
@@ -159,17 +159,17 @@ public class CtrlPersistence {
     }
 
     /**
-    * Devuelve un usuario cuyo name coincide con el especificado.
+    * Devuelve un usuario cuyo nom coincide con el especificado.
     *
     * <p>
-    * Para el name de {@code userName}, el método busca en el
+    * Para el nom de {@code usernom}, el método busca en el
     * mapa {@code usuarios} y devuelve el usuario encontrado.
     *
-    * @param userName name del usuario que se desea obtener
-    * @return un objeto {@link Usuario} cuyo name coincide
+    * @param nomUsuario nom del usuario que se desea obtener
+    * @return un objeto {@link Usuario} cuyo nom coincide
     */
-    public Usuario getUsuario (String userName) {
-        Usuario u = usuarios.get(userName);
+    public Usuario getUsuario (String nomUsuario) {
+        Usuario u = usuarios.get(nomUsuario);
 
         return u;
     }
@@ -220,5 +220,44 @@ public class CtrlPersistence {
         Respuesta r = respuestas.get(idRespuesta);
 
         return r;
+    }
+
+    public void guardarUsuario(Usuario u) {
+        String nom = u.getNomUsuario();
+
+
+        if (usuarios.containsKey(nom)) {
+            throw new IllegalArgumentException("El usuario con nom: " + nom + " ya existe");
+        }
+
+        usuarios.put(nom, u);
+    }
+
+    public void guardarEncuesta(Encuesta e) {
+        Integer id = e.getidEncuesta();
+        
+        if(encuentas.containsKey(id)) {
+            throw new IllegalArgumentException("La encuesta con id: "+ id + " ya existe");
+        }
+
+        encuentas.put(id, e);
+    }
+
+    public void guardarPregunta(Pregunta p) {
+        Integer id = p.getId();
+
+        if (preguntas.containsKey(id)) {
+            throw new IllegalArgumentException("La pregunta con id: " + id + " ya existe");
+        }
+
+        preguntas.put(id, p);
+    }
+
+    public void guardarRepuesta(Respuesta r) {
+        Integer id = r.getId();
+
+        if (respuestas.containsKey(id)) {
+            throw new IllegalArgumentException("La respuesta con id: " + id " ya existe");
+        }
     }
 }
