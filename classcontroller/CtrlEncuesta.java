@@ -49,14 +49,21 @@ public class CtrlEncuesta {
 	 * @throws IllegalArgumentException si el titulo esta vacio
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
-		if (titulo == null) {
-            throw new IllegalArgumentException("Nombre de encuesta vacio");
-        } 
-		int idEncuesta = nextId;
-		nextId++;
-		Encuesta e = new Encuesta(idEncuesta, titulo, nomUsuario);
-		encuestas.put(idEncuesta,e);
-		return idEncuesta;
+		try {
+			
+			if (titulo == null) {
+				throw new IllegalArgumentException("Nombre de encuesta vacio");
+			} 
+			int idEncuesta = nextId;
+			nextId++;
+			Encuesta e = new Encuesta(idEncuesta, titulo, nomUsuario);
+			encuestas.put(idEncuesta,e);
+			return idEncuesta;
+
+		}
+		catch (IllegalArgumentException e) {
+			System.out.println("Error al crear encuesta: " + e.getMessage());
+		}
 	}
 
 	/**
@@ -66,11 +73,16 @@ public class CtrlEncuesta {
 	 * @throws IllegalArgumentException si no existe una instancia de encuesta con id idEncuesta
 	 */
 	public Encuesta getEncuesta(int idEncuesta) {
-		Encuesta e = encuestas.get(idEncuesta);
-		if (e == null) {
-			throw new IllegalArgumentException("No existe encuesta con id:" + idEncuesta);
+		try {
+			Encuesta e = encuestas.get(idEncuesta);
+			if (e == null) {
+				throw new IllegalArgumentException("No existe encuesta con id" + idEncuesta);
+			}
+			return e;
 		}
-		return e;
+		catch (IllegalArgumentException ex) {
+			System.out.println("Error al obtener encuesta: " + ex.getMessage());
+		}
 	}
 
 	/**

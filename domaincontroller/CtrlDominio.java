@@ -176,11 +176,17 @@ public class CtrlDominio {
 		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
 		
 		// El método del Usuario lanzará excepción si es la misma contraseña
-		u.setContrasena(newContrasena); // Puede lanzar: "La nueva contraseña es igual a la actual"
+		u.newContrasena(newContrasena); // Puede lanzar: "La nueva contraseña es igual a la actual"
 		
 		// Actualizar en persistencia
 		ctrlPersistence.actualizarUsuario(u);
 	}
+
+
+	// *******************************pnd cerrar sesion
+	//Usuario:cerrarSesion()
+
+	
 
 	// ==================== GESTIÓN DE RESPUESTAS ====================
 	
@@ -211,7 +217,7 @@ public class CtrlDominio {
 			idEncuestasSet.add(idEncuesta);
 		}
 		
-		return new ArrayList<>(idEncuestasSet);
+		return new ArrayList<>(idEncuestasSet); // convertir set en un arraylist
 	}
 	
 	/**
