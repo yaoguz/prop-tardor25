@@ -1,29 +1,20 @@
 
 package classcontroller;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import domain.Usuario;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Implementación de la classe gestionadora de datos para la clase "Asignatura".
-En una implementaci�n completa tendr�a que haber tambi�n un "CtrlAlumnosFichero" que cargara/volcara los alumnos modificados en cada sesi�n.
- **/
+
 public class CtrlUsuario {
-
-	/**
-	 * Implementación del patrón de diseño "Singleton", con el objetivo de que
-	 * haya una única instancia de esta clase en el sistema. En este caso, esta
-	 * propiedad es deseada ya que esta classe no tiene estado (astributos no
-	 * estáticos). Para lograrlo, declaramos la constructora como privada y
-	 * añadimos una operación estática que retorne siempre la misma instancia.
-	 * Para acceder a esta instancia lo haremos mediante la llamada
-	 * CtrlAsignaturaFicher.getInstance();
-	 **/
 	
 	private static CtrlUsuario singletonObject;
+	private Map<String, Usuario> usuarios;  
+    private Usuario usuarioActivo;
+
+	private CtrlUsuario() {
+        usuarios = new HashMap<>();
+    }
 
 	public static CtrlUsuario getInstance() {
 		if (singletonObject == null)
@@ -34,20 +25,54 @@ public class CtrlUsuario {
 
 	/** Constructora privada. **/
 	
-	/*private CtrlAsignaturaFichero() {
-	}
+	/**
+     * Crea un nuevo usuario.
+	 * @param {String} nomU - Nombre del nuevo usuario.
+	 * @param {String} contrasena - Contrasena del nuevo usuario.
+     * @return {Usuario} nuevo usuario creado
+     */
+    public Usuario crearUsuario(String nomU, String contrasena) {
+        if (usuarios.containsKey(nomU)) {
+            throw new IllegalStateException("Ya existe un usuario con el nombre " + nomU);
+        }
+        
+        Usuario u = new Usuario(nomU, contrasena);  
+        usuarios.put(nomU, u);
+        return u;
+    }
 
-	public List<String> getAll(String filename)
-			throws FileNotFoundException {
-		LinkedList<String> asignaturas = new LinkedList<String>();
+	/**
+     * Obtiene un Usuario con nombre nomUsuario.
+	 * @param {String} nomUsuario - Nombre del usuario a obtener.
+	 * @return {Usuario} usuario con nombre nomUsuario
+     */
+    public Usuario getUsuario(String nomUsuario) {
+        Usuario u = usuarios.get(nomUsuario);
+        if (u == null) {
+            throw new IllegalArgumentException("Usuario " + nomUsuario + " no existe");
+        }
+        return u;
+    }
 
-		FileReader fr = new FileReader("../DATA/"+filename);
-		Scanner scan = new Scanner(fr);
+	/**
+     * Usuario con nombre nomU inicia sesion con contrasena. Si no existe un usario 
+	 * con nomU o la contrasena es incorrecta, se lanza una exception.
+	 * @param {String} nomU - Nombre del usuario que inicia sesion.
+	 * @param {String} contrasena - Contrasena introducida por el usuario.
+     */
+    public void iniciarSesion(String nomU, String contrasena) {
+        Usuario u = getUsuario(nomU);
+        if (!u.comprobarContrasena(contrasena)) {
+            throw new IllegalStateException("Contraseña incorrecta");
+        }
+        usuarioActivo = u;
+    }
 
-		while (scan.hasNextLine())
-			asignaturas.add(new String(scan.nextLine()));
-
-		return asignaturas;
-	}*/
+	/**
+     * Cierra sesión el usuario activo.
+     */
+    public void cerrarSesion() {
+        usuarioActivo = null;
+    }
 }
 
