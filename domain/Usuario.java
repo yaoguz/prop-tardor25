@@ -42,7 +42,7 @@ public class Usuario {
      */
     public void newContrasena(String newContrasena) {
         if (this.contrasena.equals(newContrasena)) {
-            throw new IllegalArgumentException("Error: La contrasena nueva no puede ser la misma que la anterior.");
+            
         }
         this.contrasena = newContrasena;
     }
@@ -62,6 +62,7 @@ public class Usuario {
     public void guardarIdRespuesta(int idR) {
         this.idRespuestas.add(idR);
     }
+
     /**
      * Se elimina de idRespuestas la respuesta con idR.
      * @param {int} idR - Id de la Respuesta que se desea eliminar.
@@ -69,6 +70,15 @@ public class Usuario {
     public void eliminarIdRespuesta(int idR) {
         this.idRespuestas.remove(idR); 
     }
+
+    /**
+     * Se obtiene un ArrayList con todas las idEncuestas creadas por el Usuario.
+     * @return {ArrayList<Integer>} idEncuestas de las Encuestas creadas por el Usuario.
+     */
+    public ArrayList<Integer> getIdEncuestasCreadas() {
+        return idEncuestasCreadas;
+    }
+
     /**
      * Se anade en idEncuestasCreadas una nueva encuesta creada por el Usuario con idE.
      * @param {int} idE - Id de la Encuesta creada por el Usuario.
@@ -76,6 +86,7 @@ public class Usuario {
     public void guardarIdEncuesta(int idE) {
         this.idEncuestasCreadas.add(idE);
     }
+    
     /**
      * Se elimina de idEncuestasCreadas la encuesta con idE.
      * @param {int} idE - Id de la Encuesta que se desea eliminar.
@@ -84,12 +95,13 @@ public class Usuario {
         this.idEncuestasCreadas.remove(idE);
     }
 
-    // public ArrayList<Integer> getIdPerfiles() {
-    //     return idPerfiles;
-    // }
-    // public ArrayList<Integer> getIdEncuestasCreadas() {
-    //     return idEncuestasCreadas;
-    // }
+    /**
+     * Se obtiene un ArrayList con todas los idPerfiles del Usuario.
+     * @return {ArrayList<Integer>} idPerfiles de los Perfiles del Usuario.
+     */
+    public ArrayList<Integer> getIdPerfiles() {
+        return idPerfiles;
+    }
 
     // public Set<Integer> getIdEncuestasRespondidas() {
     //     Set<Integer> aux = new HashSet<>();
