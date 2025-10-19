@@ -8,6 +8,11 @@ import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
 
+/*
+PND:
+actualizarUsuario(Usuario u); // cuando se modifica la contrasena de un usuario u
+*/
+
 /**
  * Controlador de datos del sistema
  */
