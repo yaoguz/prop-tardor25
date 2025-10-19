@@ -1,11 +1,10 @@
 
 package classcontroller;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import domain.Encuesta;
+import domain.Usuario;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implementación de la classe gestionadora de datos para la clase "Asignatura".
@@ -24,6 +23,13 @@ public class CtrlRespuesta {
 	 **/
 	
 	private static CtrlRespuesta singletonObject;
+	private Map<Integer, Encuesta> encuestas;
+    private int nextId;
+    
+    private CtrlEncuesta() {
+        encuestas = new HashMap<>();
+        nextId = 1;
+    }
 
 	public static CtrlRespuesta getInstance() {
 		if (singletonObject == null)
@@ -32,22 +38,48 @@ public class CtrlRespuesta {
 		return singletonObject;
 	}
 
-	/** Constructora privada. **/
-	
-	/*private CtrlAsignaturaFichero() {
-	}
-
-	public List<String> getAll(String filename)
-			throws FileNotFoundException {
-		LinkedList<String> asignaturas = new LinkedList<String>();
-
-		FileReader fr = new FileReader("../DATA/"+filename);
-		Scanner scan = new Scanner(fr);
-
-		while (scan.hasNextLine())
-			asignaturas.add(new String(scan.nextLine()));
-
-		return asignaturas;
-	}*/
+	/**
+     * Crea una nueva encuesta.
+     * ⚠️ CAMBIO: String nomUsuario en lugar de int idUsuario
+     * @return ID de la encuesta creada
+     */
+    public int crearEncuesta(String nomUsuario, String titulo) {
+        int id = nextId++;
+        Encuesta e = new Encuesta(id, titulo, nomUsuario);
+        encuestas.put(id, e);
+        return id;
+    }
+    
+    /**
+     * Obtiene una encuesta por su ID.
+     */
+    public Encuesta getEncuesta(int idEncuesta) {
+        Encuesta e = encuestas.get(idEncuesta);
+        if (e == null) {
+            throw new IllegalArgumentException("Encuesta con ID " + idEncuesta + " no existe");
+        }
+        return e;
+    }
+    
+    /**
+     * Verifica si existe una encuesta.
+     */
+    public boolean existeEncuesta(int idEncuesta) {
+        return encuestas.containsKey(idEncuesta);
+    }
+    
+    /**
+     * Elimina una encuesta.
+     */
+    public void eliminar(Encuesta e) {
+        encuestas.remove(e.getIdEncuesta());
+    }
+    
+    /**
+     * Obtiene todas las encuestas.
+     */
+    public Map<Integer, Encuesta> getTodasEncuestas() {
+        return new HashMap<>(encuestas);
+    }
 }
 
