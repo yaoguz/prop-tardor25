@@ -2,6 +2,9 @@ package domain;
 
 import java.util.ArrayList;
 
+/**
+ * Implementacion de la clase Encuesta
+ */
 public class Encuesta {
 
     /** Atributos **/
@@ -16,16 +19,12 @@ public class Encuesta {
      * nombre del usuario creador de esta encuesta
      * @param idEncuesta id unico de cada encuesta disponible
      * @param titulo de la encuesta
-     * @param creador nombre del usuario creador de esta encuesta
-     * @throws IllegalArgumentException si el titulo esta vacio 
+     * @param creador nombre del usuario creador de esta encuesta 
      */
     public Encuesta(int idEncuesta, String titulo, String creador) {
         this.idEncuesta = idEncuesta;
         this.titulo = titulo;
-        this.creador = creador;
-        if (titulo == null) {
-            throw new IllegalArgumentException("Nombre de encuesta vacio");
-        }    
+        this.creador = creador;   
     }
 
     /** Metodos **/
@@ -33,7 +32,7 @@ public class Encuesta {
      * Devuelve el idEncuesta, unico para cada encuesta disponible
      * @return idEncuesta
     */
-    public int getidEncuesta() {
+    public int getIdEncuesta() {
         return idEncuesta;
     }
 
