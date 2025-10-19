@@ -63,7 +63,8 @@ public class CtrlUsuario {
     public void iniciarSesion(String nomU, String contrasena) {
         Usuario u = getUsuario(nomU);
         if (!u.comprobarContrasena(contrasena)) {
-            throw new IllegalStateException("Contraseña incorrecta");
+            System.out.println("Contrasena incorrecta para el usuario " + nomU);
+			// bucle a iniciar sesion
         }
         usuarioActivo = u;
     }
