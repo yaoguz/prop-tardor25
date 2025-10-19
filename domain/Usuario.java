@@ -20,9 +20,13 @@ public class Usuario {
     }
 
     /** Metodos publicos**/
-    // public String getNomUsuario() {
-    //     return nomUsuario;
-    // }
+    /**
+     * Se obtiene el nombre del Usuario.
+     * @return {String} nombre del Usuario.
+     */
+    public String getNomUsuario() {
+        return nomUsuario;
+    }
     // public boolean comprobarContrasena(String contrasena) {
     //     return this.contrasena.equals(contrasena);
     // }
@@ -34,7 +38,8 @@ public class Usuario {
     // }
 
     /**
-     * @returns {ArrayList<Integer>} idRespuestas de las Respuestas respondidas por el Usuario.
+     * Se obtiene un ArrayList con todas las idRespuestas respondidas por el Usuario.
+     * @return {ArrayList<Integer>} idRespuestas de las Respuestas respondidas por el Usuario.
      */
     public ArrayList<Integer> getIdRespuestas() {
         return idRespuestas;
@@ -60,6 +65,7 @@ public class Usuario {
     // }
 
     /**
+     * Se cambia la contrasena del usuario por el el newContrasena que se le pasa.
      * @param {String} newContrasena - Nueva contrasena del Usuario.
      * @throws {IllegalArgumentException} Si la nueva contrasena es igual a la anterior.
      */
@@ -70,24 +76,28 @@ public class Usuario {
         this.contrasena = newContrasena;
     }
     /**
+     * Se anade en idRespuestas una nueva respuesta del Usuario con idR
      * @param {int} idR - Id de la Respuesta respondida por el Usuario.
      */
     public void guardarIdRespuesta(int idR) {
         this.idRespuestas.add(idR);
     }
     /**
+     * Se elimina de idRespuestas la respuesta con idR.
      * @param {int} idR - Id de la Respuesta que se desea eliminar.
      */
     public void eliminarIdRespuesta(int idR) {
         this.idRespuestas.remove(idR); 
     }
     /**
+     * Se anade en idEncuestasCreadas una nueva encuesta creada por el Usuario con idE.
      * @param {int} idE - Id de la Encuesta creada por el Usuario.
      */
     public void guardarIdEncuesta(int idE) {
         this.idEncuestasCreadas.add(idE);
     }
     /**
+     * Se elimina de idEncuestasCreadas la encuesta con idE.
      * @param {int} idE - Id de la Encuesta que se desea eliminar.
      */
     public void eliminarEncuestaCreada(int idE) {
