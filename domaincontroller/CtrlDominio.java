@@ -95,7 +95,7 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si ya existe un usuario con el mismo nombre (desde CtrlPersistence)
 	 */
 	public String registrarUsuario(String nomU, String contrasena, String confirmCont) {
-		// Validación: campos vacíos
+		// comprobar campos vacíos
 		if (nomU == null || nomU.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre de usuario no puede estar vacío");
 		}
@@ -106,7 +106,7 @@ public class CtrlDominio {
 			throw new IllegalArgumentException("La confirmación de contraseña no puede estar vacía");
 		}
 		
-		// Validación: formato básico (ej: longitud mínima)
+		// comprobar formato
 		if (nomU.length() < 3) {
 			throw new IllegalArgumentException("El nombre de usuario debe tener al menos 3 caracteres");
 		}
@@ -114,17 +114,14 @@ public class CtrlDominio {
 			throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres");
 		}
 		
-		// Validación: contraseñas coinciden
+		// comprobar contraseña
 		if (!contrasena.equals(confirmCont)) {
 			throw new IllegalStateException("La contraseña y su confirmación no coinciden");
 		}
 		
-		// Crear usuario a través del controlador
+		// crear usuario
 		Usuario u = ctrlUsuario.crearUsuario(nomU, contrasena);
-		
-		// Persistir usuario (puede lanzar excepción si ya existe)
-		ctrlPersistence.guardarUsuario(u);
-		
+		ctrlPersistence.guardarUsuario(u); // (puede lanzar exc si ya existe)
 		return u.getNomUsuario();
 	}
 	
@@ -138,22 +135,19 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si la contraseña es incorrecta
 	 */
 	public boolean iniciarSesion(String nomU, String contrasena) {
-		// Validar que el usuario existe (puede lanzar excepción)
-		// Cargar desde persistencia si es necesario
+		// validar que el usuario existe (puede lanzar exc)
+		// cargar desde persistencia si es necesario
 		Usuario u = ctrlPersistence.cargarUsuario(nomU);
 		
 		if (u == null) {
 			throw new IllegalArgumentException("Usuario no existente");
 		}
-		
-		// Validar contraseña
 		if (!u.comprobarContrasena(contrasena)) {
 			throw new IllegalStateException("Contraseña incorrecta");
 		}
 		
-		// Marcar sesión activa en CtrlUsuario
+		// marcar sesion activa en CtrlUsuario
 		ctrlUsuario.iniciarSesion(nomU, contrasena);
-		
 		return true;
 	}
 	
@@ -175,18 +169,23 @@ public class CtrlDominio {
 		
 		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
 		
-		// El método del Usuario lanzará excepción si es la misma contraseña
-		u.newContrasena(newContrasena); // Puede lanzar: "La nueva contraseña es igual a la actual"
+		u.newContrasena(newContrasena); // puede lanzar exc: newContrasena es igual a la actual
 		
-		// Actualizar en persistencia
+		// actualizar en persistencia
 		ctrlPersistence.actualizarUsuario(u);
 	}
 
 
-	// *******************************pnd cerrar sesion
-	//Usuario:cerrarSesion()
-
-	
+	// pendiente: mirar excepcion de que no estaba iniciado sesión????***********************************
+	/**
+	 * Cierra la sesión del usuario nomUsuario
+	 * 
+	 * @param nomUsuario Nombre del usuario
+	 */
+	public void cerrarSesion(String nomUsuario) {
+		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
+		u.cerrarSesion();
+	}
 
 	// ==================== GESTIÓN DE RESPUESTAS ====================
 	
@@ -197,16 +196,13 @@ public class CtrlDominio {
 	 * @return Lista de IDs de encuestas respondidas
 	 */
 	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
-		// Obtener usuario
 		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		
-		// Obtener IDs de respuestas del usuario
 		List<Integer> idRespuestas = u.getIdRespuestas();
 		
-		// Set para evitar duplicados (un usuario puede responder múltiples preguntas de la misma encuesta)
+		// set para evitar duplicados (un usuario puede responder multiples preguntas de la misma encuesta)
 		Set<Integer> idEncuestasSet = new HashSet<>();
 		
-		// Por cada respuesta, obtener la pregunta y luego la encuesta
+		// por cada respuesta, obtener la pregunta y luego la encuesta
 		for (Integer idR : idRespuestas) {
 			Respuesta r = ctrlRespuesta.getRespuesta(idR);
 			int idPregunta = r.getIdPregunta();
@@ -216,8 +212,34 @@ public class CtrlDominio {
 			
 			idEncuestasSet.add(idEncuesta);
 		}
-		
 		return new ArrayList<>(idEncuestasSet); // convertir set en un arraylist
+	}
+
+	/**
+	 * Crea una nueva respuesta para una pregunta específica.
+	 * 
+	 * @param <T> Tipo de la respuesta
+	 * @param nomUsuario Nombre del usuario que responde
+	 * @param idPregunta ID de la pregunta
+	 * @param respuesta Contenido de la respuesta
+	 * @return ID de la respuesta creada
+	 */
+	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
+		// crear respuesta polimorfica segun el tipo de pregunta
+		int idR = ctrlRespuesta.crearRespuesta(nomUsuario, idPregunta, respuesta);
+		
+		// guardar en Usuario
+		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
+		u.guardarIdRespuesta(idR);
+		
+		// guardar en Pregunta
+		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
+		p.guardarIdRespuesta(idR);
+		
+		// actualizar en persistencia
+		ctrlPersistence.guardarRespuesta(ctrlRespuesta.getRespuesta(idR));
+
+		return idR;
 	}
 	
 	/**
@@ -231,38 +253,11 @@ public class CtrlDominio {
 	public <T> void modificarRespuesta(int idRespuesta, T newResp) {
 		Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
 		
-		// El método modificar() en Respuesta validará el tipo
-		r.modificar(newResp); // Puede lanzar: TipoIncorrectoException
+		// modificar() en Respuesta validara el tipo
+		r.modificar(newResp); // puede lanzar: TipoIncorrectoException
 		
-		// Actualizar en persistencia
+		// actualizar en persistencia
 		ctrlPersistence.actualizarRespuesta(r);
-	}
-	
-	/**
-	 * Crea una nueva respuesta para una pregunta específica.
-	 * 
-	 * @param <T> Tipo de la respuesta
-	 * @param nomUsuario Nombre del usuario que responde
-	 * @param idPregunta ID de la pregunta
-	 * @param respuesta Contenido de la respuesta
-	 * @return ID de la respuesta creada
-	 */
-	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
-		// Crear respuesta polimórfica según tipo de pregunta
-		int idR = ctrlRespuesta.crearRespuesta(nomUsuario, idPregunta, respuesta);
-		
-		// Guardar referencia en Usuario
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		u.guardarIdRespuesta(idR);
-		
-		// Guardar referencia en Pregunta
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-		p.guardarIdRespuesta(idR);
-		
-		// Persistir
-		ctrlPersistence.guardarRespuesta(ctrlRespuesta.getRespuesta(idR));
-		
-		return idR;
 	}
 	
 	/**
@@ -271,25 +266,22 @@ public class CtrlDominio {
 	 * @param idRespuesta ID de la respuesta a eliminar
 	 */
 	public void eliminarRespuesta(int idRespuesta) {
-		// Obtener respuesta
 		Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
-		
-		// Obtener IDs relacionados
 		int idPregunta = r.getIdPregunta();
 		String nomUsuario = r.getNomUsuario();
 		
-		// Eliminar de Usuario
+		// eliminar de Usuario
 		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
 		u.eliminarIdRespuesta(idRespuesta);
 		
-		// Eliminar de Pregunta
+		// eliminar de Pregunta
 		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
 		p.eliminarIdRespuesta(idRespuesta);
 		
-		// Eliminar de persistencia
+		// eliminar de persistencia
 		ctrlPersistence.eliminarRespuesta(idRespuesta);
 		
-		// Eliminar del controlador (ConjuntoRespuestas)
+		// eliminar del controlador (ConjuntoRespuestas)
 		ctrlRespuesta.eliminar(r);
 	}
 	
