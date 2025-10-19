@@ -1,5 +1,9 @@
 package domain;
 
+/**
+ * Clase PreguntaLibre
+ */
+
 public class PreguntaLibre extends Pregunta {
 	
 	/** Atributos **/
@@ -8,13 +12,21 @@ public class PreguntaLibre extends Pregunta {
 
 
 	/** Constructora **/
-	
-	public PreguntaLibre(Encuesta encuesta, Int id, String enunciado) {
-		super(encuesta, id, enunciado);
+	/**
+	 * Se crea una pregunta libre llamando a la superclase
+	 * @param idEncuesta el identificador único de la encuesta en la que se crea la pregunta.
+	 * @param idPregunta el identificador de la pregunta.
+	 * @param enunciado el enunciado de la pregunta.
+	 */
+	public PreguntaLibre(int idEncuesta, int idPregunta, String enunciado) {
+		super(idEncuesta, idPregunta, enunciado);
 	}
 	
 	/** Métodos públicos **/
-
+	/**
+	 * Devuelve el tipo de pregunta.
+	 * @return el string "Libre".
+	 */
 	@override public String tipoPregunta() {
 		return "Libre";
 	}

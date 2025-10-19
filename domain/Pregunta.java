@@ -17,7 +17,7 @@ public abstract class Pregunta {
 	/**
 	 * Entero que guarda el identificador de la pregunta.
 	 */
-	private int id;
+	private int idPregunta;
 
 	/**
 	 * String que guarda el enunciado de la pregunta.
@@ -34,14 +34,14 @@ public abstract class Pregunta {
 	/**
 	 * Se crea una pregunta con un nuevo id, un enunciado, el identificador de la encuesta a la que pertenece e inicializa la lista de identificadores de respuestas.
 	 * @param idEncuesta el identificador único de la encuesta en la que se crea la pregunta.
-	 * @param id el identificador de la respuesta.
+	 * @param idPregunta el identificador de la pregunta.
 	 * @param enunciado el enunciado de la pregunta.
 	 * @throws IllegalArgumentException si el enunciado no es válido.
 	 */
-	public Pregunta(int idEncuesta, int id, String enunciado) throws IllegalArgumentException {
+	public Pregunta(int idEncuesta, int idPregunta, String enunciado) throws IllegalArgumentException {
 		if (enunciado == null or enunciado == "") throw new IllegalArgumentException("Enunciado no válido")
 		this.idEncuesta = encuesta;
-		this.id = id;
+		this.idPregunta = idPregunta;
 		this.enunciado = enunciado;
 		this.idRespuestas = new ArrayList<Integer>();
 	}
@@ -59,8 +59,8 @@ public abstract class Pregunta {
 	 * Devuelve el identificador de la pregunta.
 	 * @return identificador de la pregunta.
 	 */
-	public int getId() {
-		return this.id;
+	public int getIdPregunta() {
+		return this.idPregunta;
 	}
 	
 	/**
@@ -72,44 +72,72 @@ public abstract class Pregunta {
 	}
 	
 	/**
-	 * Devuelve la lista de identificadores de las respuestas de las preguntas
-	 * @return lista con identificadores de respuesta.
+	 * Devuelve la lista de identificadores de las respuestas de las preguntas.
+	 * @return lista de los identificadores de las respuestas de la pregunta.
 	 */
 	public ArrayList<Integer> getIdRespuestas() {
 		return this.idRespuestas;
 	}
 
+	/**
+	 * Añade un identificador de respuesta a la lista de respuestas.
+	 * @param r el identificador de la respuesta a añadir.
+	 */
 	public void addRespuesta(Integer r) {
 		this.idRespuestas.add(r);
 	}
 
-	public void eliminarRespuesta(Integer r) {
+	/**
+	 * Elimina un identificador de respuesta de la lista de respuestas.
+	 * @param r el identificador de la respuesta a eliminar.
+	 */
+	public void eliminarRespuesta(Integer r) throws IllegalArgumentException {
 		boolean b = this.idRespuestas.remove(r);
-		//if(!b) throws
+		if(!b) throw new IllegalArgumentException("La pregunta no tiene la respuesta del parámetro");
 	}
 	
 	/** Getters de las subclases **/
 	
 	//opciones (de opcionMuliple y opcionUnica)
+	/**
+	 * Devuelve una lista de Strings vacía si no es del tipo de subclase correspondiente.
+	 * @return una lista de Strings vacía.
+	 */
 	public ArrayList<String> getOpciones() {
 		return new ArrayList<String>();
 	}
 	
 	//numMaxOpc (de opcionMultiple)
+	/**
+	 * Devuelve un -1 si no es del tipo de subclase correspondiente.
+	 * @return un -1.
+	 */
 	public int getNumMaxOpc() {
 		return -1;
 	}
 	
 	//rangoInf (de numerica)
+	/**
+	 * Devuelve un -1 si no es del tipo de subclase correspondiente.
+	 * @return un -1.
+	 */
 	public int getRangoInf() {
 		return -1;
 	}
 	
 	//rangoSup (de numerica)
+	/**
+	 * Devuelve un -1 si no es del tipo de subclase correspondiente.
+	 * @return un -1.
+	 */
 	public int getRangoSup() {
 		return -1;
 	}
 	
 	//Operación abstracta (cada subclase devuelve su tipo)
+	/**
+	 * Función abstracta para saber el tipo de la subclase.
+	 * @return un String con el tipo de Pregunta.
+	 */
 	public abstract String tipoPregunta();
 }
