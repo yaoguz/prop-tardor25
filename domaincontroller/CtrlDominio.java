@@ -340,7 +340,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	private List<RespuestaImportData> parsearFicheroRespuestas(File fichero) {
-		// TODO: Implementar según formato específico (CSV, JSON, XML, etc.)
+		// TO DO: Implementar según formato específico (CSV, JSON, XML, etc.) **********************
 		// Esta es una firma de método para mantener la arquitectura limpia
 		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
 	}
@@ -367,23 +367,18 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
-		// Validación
 		if (titulo == null || titulo.trim().isEmpty()) {
 			throw new IllegalArgumentException("El título de la encuesta no puede estar vacío");
 		}
-		
-		// Obtener usuario
+
 		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
 		
-		// Crear encuesta
+		// crear encuesta
 		int idE = ctrlEncuesta.crearEncuesta(nomUsuario, titulo);
 		
-		// Guardar referencia en usuario
+		// guardar en usuario y en persistencia
 		u.guardarIdEncuesta(idE);
-		
-		// Persistir
 		ctrlPersistence.guardarEncuesta(ctrlEncuesta.getEncuesta(idE));
-		
 		return idE;
 	}
 	
@@ -397,13 +392,13 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	public int importarEncuesta(File fichero) {
-		// Parser del fichero
+		// parser del fichero
 		EncuestaImportData datos = parsearFicheroEncuesta(fichero);
 		
-		// Crear encuesta
+		// crear encuesta
 		int idE = crearEncuesta(datos.nomAutor, datos.titulo);
 		
-		// Añadir preguntas
+		// anadir preguntas a la encuesta
 		for (PreguntaImportData infoP : datos.preguntas) {
 			anadirPregunta(idE, infoP);
 		}
@@ -437,7 +432,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	private EncuestaImportData parsearFicheroEncuesta(File fichero) {
-		// TODO: Implementar según formato específico
+		// TODO: Implementar según formato específico ************
 		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
 	}
 	
@@ -452,11 +447,8 @@ public class CtrlDominio {
 		if (titulo == null || titulo.trim().isEmpty()) {
 			throw new IllegalArgumentException("El título no puede estar vacío");
 		}
-		
 		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
 		e.cambiarTitulo(titulo);
-		
-		// Actualizar persistencia
 		ctrlPersistence.actualizarEncuesta(e);
 	}
 	
@@ -466,26 +458,21 @@ public class CtrlDominio {
 	 * @param idEncuesta ID de la encuesta a eliminar
 	 */
 	public void eliminarEncuesta(int idEncuesta) {
-		// Obtener encuesta
 		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		
-		// Obtener preguntas
 		List<Integer> idPreguntas = e.getIdPreguntas();
 		
-		// Eliminar cada pregunta (esto eliminará también sus respuestas)
+		// eliminar cada pregunta (esto eliminará tambien sus respuestas)
 		for (Integer idP : idPreguntas) {
 			eliminarPregunta(idP);
 		}
 		
-		// Eliminar de usuario creador
+		// eliminar de usuario creador
 		String nomCreador = e.getNomCreador();
 		Usuario u = ctrlUsuario.getUsuario(nomCreador);
 		u.eliminarIdEncuestaCreada(idEncuesta);
 		
-		// Eliminar de persistencia
+		// eliminar de persistencia y del controlador
 		ctrlPersistence.eliminarEncuesta(idEncuesta);
-		
-		// Eliminar del controlador
 		ctrlEncuesta.eliminar(e);
 	}
 	
@@ -498,16 +485,12 @@ public class CtrlDominio {
 	 * @return Mapa de Pregunta -> Set de Respuestas
 	 */
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
-		// Obtener encuesta
 		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		
-		// Obtener preguntas
 		List<Integer> idPreguntas = e.getIdPreguntas();
-		
-		// Mapa resultado
+
 		Map<Pregunta, Set<Respuesta>> resultado = new HashMap<>();
 		
-		// Por cada pregunta, obtener sus respuestas
+		// por cada pregunta, obtener sus respuestas
 		for (Integer idP : idPreguntas) {
 			Pregunta p = ctrlPregunta.getPregunta(idP);
 			List<Integer> idRespuestas = p.getIdRespuestas();
@@ -520,7 +503,6 @@ public class CtrlDominio {
 			
 			resultado.put(p, respuestas);
 		}
-		
 		return resultado;
 	}
 
@@ -534,23 +516,14 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPregunta(int idEncuesta, PreguntaImportData infoP) {
-		// Obtener encuesta
 		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
 		
 		// Crear pregunta polimórfica según tipo
-		int idP = ctrlPregunta.crearPregunta(
-			idEncuesta, 
-			infoP.enunciado, 
-			infoP.tipo, 
-			infoP.atributosEspecificos
-		);
-		
-		// Guardar en encuesta
+		int idP = ctrlPregunta.crearPregunta(idEncuesta, infoP.enunciado,
+                  infoP.tipo, infoP.atributosEspecificos);
+
 		e.guardarIdPregunta(idP);
-		
-		// Persistir
 		ctrlPersistence.guardarPregunta(ctrlPregunta.getPregunta(idP));
-		
 		return idP;
 	}
 	
@@ -626,21 +599,21 @@ public class CtrlDominio {
 	 * Modifica una pregunta existente (elimina la antigua y crea una nueva).
 	 * 
 	 * NOTA: Este enfoque mantiene la integridad referencial pero pierde el historial.
-	 * Alternativa: implementar modificación in-situ si se requiere mantener respuestas.
+	 * (Alternativa: implementar modificación in-situ si se requiere mantener respuestas.)
 	 * 
 	 * @param idPregunta ID de la pregunta a modificar
 	 * @param infoP Nueva información de la pregunta
 	 * @return ID de la nueva pregunta
 	 */
 	public int modificarPregunta(int idPregunta, PreguntaImportData infoP) {
-		// Obtener pregunta actual para saber su encuesta
+		// obtener pregunta actual para saber su encuesta
 		Pregunta pVieja = ctrlPregunta.getPregunta(idPregunta);
 		int idEncuesta = pVieja.getIdEncuesta();
 		
-		// Eliminar pregunta antigua (y sus respuestas)
+		// eliminar pregunta antigua (y sus respuestas)
 		eliminarPregunta(idPregunta);
 		
-		// Crear nueva pregunta
+		// crear nueva pregunta
 		return anadirPregunta(idEncuesta, infoP);
 	}
 	
@@ -650,26 +623,22 @@ public class CtrlDominio {
 	 * @param idPregunta ID de la pregunta a eliminar
 	 */
 	public void eliminarPregunta(int idPregunta) {
-		// Obtener pregunta
+		// obtener pregunta y sus respuestas
 		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-		
-		// Obtener respuestas
 		List<Integer> idRespuestas = p.getIdRespuestas();
 		
-		// Eliminar cada respuesta
+		// eliminar cada respuesta
 		for (Integer idR : idRespuestas) {
 			eliminarRespuesta(idR);
 		}
 		
-		// Obtener encuesta y eliminar referencia
+		// eliminar la pregunta de la encuesta
 		int idEncuesta = p.getIdEncuesta();
 		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
 		e.eliminarIdPregunta(idPregunta);
 		
-		// Eliminar de persistencia
+		// eliminar de persistencia y del controlador
 		ctrlPersistence.eliminarPregunta(idPregunta);
-		
-		// Eliminar del controlador
 		ctrlPregunta.eliminar(p);
 	}
 
