@@ -13,8 +13,8 @@ public class Usuario {
 
     /** Constructora **/
     public Usuario(String nomUsuario, String contrasena) {
-        this.nomUsuario = nomUsuario;
-        this.contrasena = contrasena;
+        this.nomUsuario = new String(nomUsuario);
+        this.contrasena = new String(contrasena);
     }
 
     /** Metodos publicos**/
@@ -91,7 +91,7 @@ public class Usuario {
      * Se elimina de idEncuestasCreadas la encuesta con idE.
      * @param {int} idE - Id de la Encuesta que se desea eliminar.
      */
-    public void eliminarEncuestaCreada(int idE) {
+    public void eliminarIdEncuestaCreada(int idE) {
         this.idEncuestasCreadas.remove(idE);
     }
 
