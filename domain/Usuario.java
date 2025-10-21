@@ -7,14 +7,14 @@ public class Usuario {
     private String nomUsuario;
     private String contrasena;
 
-    protected ArrayList<Integer> idPerfiles;
-    protected ArrayList<Integer> idEncuestasCreadas;
-    protected ArrayList<Integer> idRespuestas;
+    protected ArrayList<Integer> idPerfiles = new ArrayList<>();
+    protected ArrayList<Integer> idEncuestasCreadas = new ArrayList<>();
+    protected ArrayList<Integer> idRespuestas = new ArrayList<>();
 
     /** Constructora **/
     public Usuario(String nomUsuario, String contrasena) {
-        this.nomUsuario = new String(nomUsuario);
-        this.contrasena = new String(contrasena);
+        this.nomUsuario = nomUsuario;
+        this.contrasena = contrasena;
     }
 
     /** Metodos publicos**/
