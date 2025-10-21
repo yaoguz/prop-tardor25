@@ -7,14 +7,23 @@ public class Usuario {
     private String nomUsuario;
     private String contrasena;
 
-    protected ArrayList<Integer> idPerfiles = new ArrayList<>();
-    protected ArrayList<Integer> idEncuestasCreadas = new ArrayList<>();
-    protected ArrayList<Integer> idRespuestas = new ArrayList<>();
+    protected ArrayList<Integer> idPerfiles;
+    protected ArrayList<Integer> idEncuestasCreadas;
+    protected ArrayList<Integer> idRespuestas;
 
     /** Constructora **/
+    /**
+     * Se crea un nuevo Usuario con un nombre y una contrasena. Se inicializan las ArraysLists de idPerfiles,
+     * idEncuestasCreadas e idRespuestas con ArrayList vacios.
+     * @param nomUsuario nombre del Usuario
+     * @param contrasena contrasena del Usuario
+     */
     public Usuario(String nomUsuario, String contrasena) {
         this.nomUsuario = nomUsuario;
         this.contrasena = contrasena;
+        idPerfiles = new ArrayList<>();
+        idEncuestasCreadas = new ArrayList<>();
+        idRespuestas = new ArrayList<>();
     }
 
     /** Metodos publicos**/
