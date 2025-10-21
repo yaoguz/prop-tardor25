@@ -1,9 +1,6 @@
 package domaincontroller;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,8 +10,6 @@ import classcontroller.CtrlPregunta;
 import classcontroller.CtrlUsuario;
 import classcontroller.CtrlRespuesta;
 
-import domain.Usuario;
-import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
 
@@ -23,7 +18,24 @@ import persistence.CtrlPersistence;
 /**
  * Controlador de Dominio - Actúa como fachada (Facade Pattern) del sistema.
  * 
- * DECISIÓN DE DISEÑO: Mantener CtrlPregunta y CtrlRespuesta
+ * REFACTORIZACIÓN v2.0:
+ * 
+ * Este controlador ahora actúa como ORQUESTADOR PRINCIPAL que delega en
+ * controladores de dominio especializados:
+ * 
+ * - CtrlDominioUsuario: Gestión de usuarios (registro, login, sesión)
+ * - CtrlDominioEncuesta: Gestión de encuestas (CRUD, importar/exportar)
+ * - CtrlDominioPregunta: Gestión de preguntas (añadir, modificar, eliminar)
+ * - CtrlDominioRespuesta: Gestión de respuestas (crear, modificar, eliminar)
+ * - CtrlDominioPerfil: Gestión de perfiles (clustering, análisis)
+ * 
+ * VENTAJAS:
+ * 1. **Single Responsibility**: Cada controlador tiene una responsabilidad clara
+ * 2. **Mantenibilidad**: Cambios en una funcionalidad no afectan a otras
+ * 3. **Testabilidad**: Cada controlador se puede testear independientemente
+ * 4. **Escalabilidad**: Fácil añadir nuevas funcionalidades
+ * 
+ * DECISIÓN DE DISEÑO: Mantener CtrlPregunta y CtrlRespuesta (capa de datos)
  * 
  * RAZONES:
  * 1. **Single Responsibility Principle (SRP)**: Cada controlador de clase maneja 
@@ -48,18 +60,26 @@ import persistence.CtrlPersistence;
  * ALTERNATIVA RECHAZADA: Eliminar CtrlPregunta/CtrlRespuesta haría que CtrlDominio
  * se convierta en un "God Object" que viola SRP y dificulta el mantenimiento.
  * 
- * @author subgrup-prop11.5
- * @version 1.0
+ * @author Yaoyao Guo
+ * @version 2.0
  */
 public class CtrlDominio {
 
-	/** Atributos - Controladores de clase (Singleton) **/
+	/** Atributos - Controladores de clase (Singleton) - Capa de Datos **/
 	
 	private CtrlUsuario ctrlUsuario;
 	private CtrlEncuesta ctrlEncuesta;
 	private CtrlPregunta ctrlPregunta;
 	private CtrlRespuesta ctrlRespuesta;
 	private CtrlPersistence ctrlPersistence;
+
+	/** Atributos - Controladores de dominio especializados **/
+	
+	private CtrlDominioUsuario ctrlDominioUsuario;
+	private CtrlDominioEncuesta ctrlDominioEncuesta;
+	private CtrlDominioPregunta ctrlDominioPregunta;
+	private CtrlDominioRespuesta ctrlDominioRespuesta;
+	private CtrlDominioPerfil ctrlDominioPerfil;
 
 	/** Constructor y métodos de inicialización **/
 
@@ -74,14 +94,25 @@ public class CtrlDominio {
 	 * Inicializa todas las instancias singleton de los controladores.
 	 */
 	public void inicializarCtrlDominio() {
+		// Inicializar controladores de clase (capa de datos)
 		ctrlUsuario = CtrlUsuario.getInstance();
 		ctrlEncuesta = CtrlEncuesta.getInstance();
 		ctrlPregunta = CtrlPregunta.getInstance();
 		ctrlRespuesta = CtrlRespuesta.getInstance();
 		ctrlPersistence = CtrlPersistence.getInstace();
+		
+		// Inicializar controladores de dominio especializados
+		ctrlDominioUsuario = new CtrlDominioUsuario(ctrlUsuario, ctrlPersistence);
+		ctrlDominioEncuesta = new CtrlDominioEncuesta(ctrlUsuario, ctrlEncuesta, 
+		                                                ctrlPregunta, ctrlRespuesta, ctrlPersistence);
+		ctrlDominioPregunta = new CtrlDominioPregunta(ctrlEncuesta, ctrlPregunta, ctrlPersistence);
+		ctrlDominioRespuesta = new CtrlDominioRespuesta(ctrlUsuario, ctrlEncuesta, 
+		                                                 ctrlPregunta, ctrlRespuesta, ctrlPersistence);
+		ctrlDominioPerfil = new CtrlDominioPerfil(ctrlUsuario);
 	}
 
 	// ==================== GESTIÓN DE USUARIOS ====================
+	// Delega en CtrlDominioUsuario
 	
 	/**
 	 * Registra un nuevo usuario en el sistema.
@@ -95,34 +126,7 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si ya existe un usuario con el mismo nombre (desde CtrlPersistence)
 	 */
 	public String registrarUsuario(String nomU, String contrasena, String confirmCont) {
-		// comprobar campos vacíos
-		if (nomU == null || nomU.trim().isEmpty()) {
-			throw new IllegalArgumentException("El nombre de usuario no puede estar vacío");
-		}
-		if (contrasena == null || contrasena.isEmpty()) {
-			throw new IllegalArgumentException("La contraseña no puede estar vacía");
-		}
-		if (confirmCont == null || confirmCont.isEmpty()) {
-			throw new IllegalArgumentException("La confirmación de contraseña no puede estar vacía");
-		}
-		
-		// comprobar formato
-		if (nomU.length() < 3) {
-			throw new IllegalArgumentException("El nombre de usuario debe tener al menos 3 caracteres");
-		}
-		if (contrasena.length() < 6) {
-			throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres");
-		}
-		
-		// comprobar contraseña
-		if (!contrasena.equals(confirmCont)) {
-			throw new IllegalStateException("La contraseña y su confirmación no coinciden");
-		}
-		
-		// crear usuario
-		Usuario u = ctrlUsuario.crearUsuario(nomU, contrasena);
-		ctrlPersistence.guardarUsuario(u); // (puede lanzar exc si ya existe)
-		return u.getNomUsuario();
+		return ctrlDominioUsuario.registrarUsuario(nomU, contrasena, confirmCont);
 	}
 	
 	/**
@@ -135,20 +139,7 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si la contraseña es incorrecta
 	 */
 	public boolean iniciarSesion(String nomU, String contrasena) {
-		// validar que el usuario existe (puede lanzar exc)
-		// cargar desde persistencia si es necesario
-		Usuario u = ctrlPersistence.cargarUsuario(nomU);
-		
-		if (u == null) {
-			throw new IllegalArgumentException("Usuario no existente");
-		}
-		if (!u.comprobarContrasena(contrasena)) {
-			throw new IllegalStateException("Contraseña incorrecta");
-		}
-		
-		// marcar sesion activa en CtrlUsuario
-		ctrlUsuario.iniciarSesion(nomU, contrasena);
-		return true;
+		return ctrlDominioUsuario.iniciarSesion(nomU, contrasena);
 	}
 	
 	/**
@@ -160,34 +151,20 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si la nueva contraseña no cumple requisitos
 	 */
 	public void modificarContrasena(String nomUsuario, String newContrasena) {
-		if (newContrasena == null || newContrasena.isEmpty()) {
-			throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
-		}
-		if (newContrasena.length() < 6) {
-			throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres");
-		}
-		
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		
-		u.newContrasena(newContrasena); // puede lanzar exc: newContrasena es igual a la actual
-		
-		// actualizar en persistencia
-		ctrlPersistence.actualizarUsuario(u);
+		ctrlDominioUsuario.modificarContrasena(nomUsuario, newContrasena);
 	}
 
-
-	// pendiente: mirar excepcion de que no estaba iniciado sesión????***********************************
 	/**
 	 * Cierra la sesión del usuario nomUsuario
 	 * 
 	 * @param nomUsuario Nombre del usuario
 	 */
 	public void cerrarSesion(String nomUsuario) {
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		u.cerrarSesion();
+		ctrlDominioUsuario.cerrarSesion(nomUsuario);
 	}
 
 	// ==================== GESTIÓN DE RESPUESTAS ====================
+	// Delega en CtrlDominioRespuesta
 	
 	/**
 	 * Obtiene los IDs de las encuestas respondidas por un usuario.
@@ -196,23 +173,7 @@ public class CtrlDominio {
 	 * @return Lista de IDs de encuestas respondidas
 	 */
 	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		List<Integer> idRespuestas = u.getIdRespuestas();
-		
-		// set para evitar duplicados (un usuario puede responder multiples preguntas de la misma encuesta)
-		Set<Integer> idEncuestasSet = new HashSet<>();
-		
-		// por cada respuesta, obtener la pregunta y luego la encuesta
-		for (Integer idR : idRespuestas) {
-			Respuesta r = ctrlRespuesta.getRespuesta(idR);
-			int idPregunta = r.getIdPregunta();
-			
-			Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-			int idEncuesta = p.getIdEncuesta();
-			
-			idEncuestasSet.add(idEncuesta);
-		}
-		return new ArrayList<>(idEncuestasSet); // convertir set en un arraylist
+		return ctrlDominioRespuesta.getEncuestasRespondidas(nomUsuario);
 	}
 
 	/**
@@ -225,21 +186,7 @@ public class CtrlDominio {
 	 * @return ID de la respuesta creada
 	 */
 	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
-		// crear respuesta polimorfica segun el tipo de pregunta
-		int idR = ctrlRespuesta.crearRespuesta(nomUsuario, idPregunta, respuesta);
-		
-		// guardar en Usuario
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		u.guardarIdRespuesta(idR);
-		
-		// guardar en Pregunta
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-		p.guardarIdRespuesta(idR);
-		
-		// actualizar en persistencia
-		ctrlPersistence.guardarRespuesta(ctrlRespuesta.getRespuesta(idR));
-
-		return idR;
+		return ctrlDominioRespuesta.darRespuesta(nomUsuario, idPregunta, respuesta);
 	}
 	
 	/**
@@ -251,13 +198,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el tipo de respuesta no coincide con el tipo de pregunta
 	 */
 	public <T> void modificarRespuesta(int idRespuesta, T newResp) {
-		Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
-		
-		// modificar() en Respuesta validara el tipo
-		r.modificar(newResp); // puede lanzar: TipoIncorrectoException
-		
-		// actualizar en persistencia
-		ctrlPersistence.actualizarRespuesta(r);
+		ctrlDominioRespuesta.modificarRespuesta(idRespuesta, newResp);
 	}
 	
 	/**
@@ -266,23 +207,7 @@ public class CtrlDominio {
 	 * @param idRespuesta ID de la respuesta a eliminar
 	 */
 	public void eliminarRespuesta(int idRespuesta) {
-		Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
-		int idPregunta = r.getIdPregunta();
-		String nomUsuario = r.getNomUsuario();
-		
-		// eliminar de Usuario
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		u.eliminarIdRespuesta(idRespuesta);
-		
-		// eliminar de Pregunta
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-		p.eliminarIdRespuesta(idRespuesta);
-		
-		// eliminar de persistencia
-		ctrlPersistence.eliminarRespuesta(idRespuesta);
-		
-		// eliminar del controlador (ConjuntoRespuestas)
-		ctrlRespuesta.eliminar(r);
+		ctrlDominioRespuesta.eliminarRespuesta(idRespuesta);
 	}
 	
 	/**
@@ -295,57 +220,11 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si los IDs no existen en el sistema
 	 */
 	public void importarRespuestas(File fichero) {
-		// Parser del fichero (implementación específica según formato)
-		List<RespuestaImportData> datosImportados = parsearFicheroRespuestas(fichero);
-		
-		for (RespuestaImportData dato : datosImportados) {
-			// Validar que existen los IDs
-			if (!ctrlEncuesta.existeEncuesta(dato.idEncuesta)) {
-				throw new IllegalStateException("Encuesta con ID " + dato.idEncuesta + " no existe");
-			}
-			if (!ctrlPregunta.existePregunta(dato.idPregunta)) {
-				throw new IllegalStateException("Pregunta con ID " + dato.idPregunta + " no existe");
-			}
-			if (!ctrlUsuario.existeUsuario(dato.nomUsuario)) {
-				throw new IllegalStateException("Usuario " + dato.nomUsuario + " no existe");
-			}
-			
-			// Validar que la pregunta pertenece a la encuesta
-			Pregunta p = ctrlPregunta.getPregunta(dato.idPregunta);
-			if (p.getIdEncuesta() != dato.idEncuesta) {
-				throw new IllegalStateException("La pregunta " + dato.idPregunta + 
-					" no pertenece a la encuesta " + dato.idEncuesta);
-			}
-			
-			// Crear respuesta
-			darRespuesta(dato.nomUsuario, dato.idPregunta, dato.respuesta);
-		}
-	}
-	
-	/**
-	 * Clase auxiliar para datos importados de respuestas.
-	 */
-	private static class RespuestaImportData {
-		int idEncuesta;
-		int idPregunta;
-		String nomUsuario;
-		Object respuesta;
-	}
-	
-	/**
-	 * Parsea un fichero de respuestas. Implementación específica según formato.
-	 * 
-	 * @param fichero Archivo a parsear
-	 * @return Lista de datos de respuestas
-	 * @throws IllegalArgumentException si el formato es incorrecto
-	 */
-	private List<RespuestaImportData> parsearFicheroRespuestas(File fichero) {
-		// TO DO: Implementar según formato específico (CSV, JSON, XML, etc.) **********************
-		// Esta es una firma de método para mantener la arquitectura limpia
-		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
+		ctrlDominioRespuesta.importarRespuestas(fichero);
 	}
 
 	// ==================== GESTIÓN DE ENCUESTAS ====================
+	// Delega en CtrlDominioEncuesta
 	
 	/**
 	 * Obtiene los IDs de las preguntas de una encuesta.
@@ -354,8 +233,7 @@ public class CtrlDominio {
 	 * @return Lista de IDs de preguntas
 	 */
 	public List<Integer> getPreguntasEncuesta(int idEncuesta) {
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		return e.getIdPreguntas();
+		return ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
 	}
 	
 	/**
@@ -367,19 +245,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
-		if (titulo == null || titulo.trim().isEmpty()) {
-			throw new IllegalArgumentException("El título de la encuesta no puede estar vacío");
-		}
-
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		
-		// crear encuesta
-		int idE = ctrlEncuesta.crearEncuesta(nomUsuario, titulo);
-		
-		// guardar en usuario y en persistencia
-		u.guardarIdEncuesta(idE);
-		ctrlPersistence.guardarEncuesta(ctrlEncuesta.getEncuesta(idE));
-		return idE;
+		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
 	}
 	
 	/**
@@ -392,48 +258,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	public int importarEncuesta(File fichero) {
-		// parser del fichero
-		EncuestaImportData datos = parsearFicheroEncuesta(fichero);
-		
-		// crear encuesta
-		int idE = crearEncuesta(datos.nomAutor, datos.titulo);
-		
-		// anadir preguntas a la encuesta
-		for (PreguntaImportData infoP : datos.preguntas) {
-			anadirPregunta(idE, infoP);
-		}
-		
-		return idE;
-	}
-	
-	/**
-	 * Clase auxiliar para datos importados de encuesta.
-	 */
-	private static class EncuestaImportData {
-		String titulo;
-		String nomAutor;
-		List<PreguntaImportData> preguntas;
-	}
-	
-	/**
-	 * Clase auxiliar para datos importados de pregunta.
-	 */
-	private static class PreguntaImportData {
-		String enunciado;
-		String tipo; // "libre", "numerica", "opcion_unica", "opcion_multiple"
-		Map<String, Object> atributosEspecificos; // Opciones, rangos, etc.
-	}
-	
-	/**
-	 * Parsea un fichero de encuesta.
-	 * 
-	 * @param fichero Archivo a parsear
-	 * @return Datos de la encuesta
-	 * @throws IllegalArgumentException si el formato es incorrecto
-	 */
-	private EncuestaImportData parsearFicheroEncuesta(File fichero) {
-		// TODO: Implementar según formato específico ************
-		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
+		return ctrlDominioEncuesta.importarEncuesta(fichero);
 	}
 	
 	/**
@@ -444,12 +269,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
 	public void modificarTituloEncuesta(int idEncuesta, String titulo) {
-		if (titulo == null || titulo.trim().isEmpty()) {
-			throw new IllegalArgumentException("El título no puede estar vacío");
-		}
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		e.cambiarTitulo(titulo);
-		ctrlPersistence.actualizarEncuesta(e);
+		ctrlDominioEncuesta.modificarTituloEncuesta(idEncuesta, titulo);
 	}
 	
 	/**
@@ -458,22 +278,7 @@ public class CtrlDominio {
 	 * @param idEncuesta ID de la encuesta a eliminar
 	 */
 	public void eliminarEncuesta(int idEncuesta) {
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		List<Integer> idPreguntas = e.getIdPreguntas();
-		
-		// eliminar cada pregunta (esto eliminará tambien sus respuestas)
-		for (Integer idP : idPreguntas) {
-			eliminarPregunta(idP);
-		}
-		
-		// eliminar de usuario creador
-		String nomCreador = e.getNomCreador();
-		Usuario u = ctrlUsuario.getUsuario(nomCreador);
-		u.eliminarIdEncuestaCreada(idEncuesta);
-		
-		// eliminar de persistencia y del controlador
-		ctrlPersistence.eliminarEncuesta(idEncuesta);
-		ctrlEncuesta.eliminar(e);
+		ctrlDominioEncuesta.eliminarEncuesta(idEncuesta, ctrlDominioPregunta);
 	}
 	
 	/**
@@ -485,47 +290,11 @@ public class CtrlDominio {
 	 * @return Mapa de Pregunta -> Set de Respuestas
 	 */
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		List<Integer> idPreguntas = e.getIdPreguntas();
-
-		Map<Pregunta, Set<Respuesta>> resultado = new HashMap<>();
-		
-		// por cada pregunta, obtener sus respuestas
-		for (Integer idP : idPreguntas) {
-			Pregunta p = ctrlPregunta.getPregunta(idP);
-			List<Integer> idRespuestas = p.getIdRespuestas();
-			
-			Set<Respuesta> respuestas = new HashSet<>();
-			for (Integer idR : idRespuestas) {
-				Respuesta r = ctrlRespuesta.getRespuesta(idR);
-				respuestas.add(r);
-			}
-			
-			resultado.put(p, respuestas);
-		}
-		return resultado;
+		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
 	}
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================
-	
-	/**
-	 * Añade una pregunta a una encuesta (método polimórfico según tipo).
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @param infoP Información de la pregunta (enunciado, tipo, atributos específicos)
-	 * @return ID de la pregunta creada
-	 */
-	public int anadirPregunta(int idEncuesta, PreguntaImportData infoP) {
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		
-		// Crear pregunta polimórfica según tipo
-		int idP = ctrlPregunta.crearPregunta(idEncuesta, infoP.enunciado,
-                  infoP.tipo, infoP.atributosEspecificos);
-
-		e.guardarIdPregunta(idP);
-		ctrlPersistence.guardarPregunta(ctrlPregunta.getPregunta(idP));
-		return idP;
-	}
+	// Delega en CtrlDominioPregunta
 	
 	/**
 	 * Añade una pregunta libre a una encuesta.
@@ -535,11 +304,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaLibre(int idEncuesta, String enunciado) {
-		PreguntaImportData info = new PreguntaImportData();
-		info.enunciado = enunciado;
-		info.tipo = "libre";
-		info.atributosEspecificos = new HashMap<>();
-		return anadirPregunta(idEncuesta, info);
+		return ctrlDominioPregunta.anadirPreguntaLibre(idEncuesta, enunciado);
 	}
 	
 	/**
@@ -552,13 +317,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaNumerica(int idEncuesta, String enunciado, double min, double max) {
-		PreguntaImportData info = new PreguntaImportData();
-		info.enunciado = enunciado;
-		info.tipo = "numerica";
-		info.atributosEspecificos = new HashMap<>();
-		info.atributosEspecificos.put("min", min);
-		info.atributosEspecificos.put("max", max);
-		return anadirPregunta(idEncuesta, info);
+		return ctrlDominioPregunta.anadirPreguntaNumerica(idEncuesta, enunciado, min, max);
 	}
 	
 	/**
@@ -570,12 +329,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones) {
-		PreguntaImportData info = new PreguntaImportData();
-		info.enunciado = enunciado;
-		info.tipo = "opcion_unica";
-		info.atributosEspecificos = new HashMap<>();
-		info.atributosEspecificos.put("opciones", opciones);
-		return anadirPregunta(idEncuesta, info);
+		return ctrlDominioPregunta.anadirPreguntaOpcionUnica(idEncuesta, enunciado, opciones);
 	}
 	
 	/**
@@ -587,12 +341,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones) {
-		PreguntaImportData info = new PreguntaImportData();
-		info.enunciado = enunciado;
-		info.tipo = "opcion_multiple";
-		info.atributosEspecificos = new HashMap<>();
-		info.atributosEspecificos.put("opciones", opciones);
-		return anadirPregunta(idEncuesta, info);
+		return ctrlDominioPregunta.anadirPreguntaOpcionMultiple(idEncuesta, enunciado, opciones);
 	}
 	
 	/**
@@ -605,16 +354,8 @@ public class CtrlDominio {
 	 * @param infoP Nueva información de la pregunta
 	 * @return ID de la nueva pregunta
 	 */
-	public int modificarPregunta(int idPregunta, PreguntaImportData infoP) {
-		// obtener pregunta actual para saber su encuesta
-		Pregunta pVieja = ctrlPregunta.getPregunta(idPregunta);
-		int idEncuesta = pVieja.getIdEncuesta();
-		
-		// eliminar pregunta antigua (y sus respuestas)
-		eliminarPregunta(idPregunta);
-		
-		// crear nueva pregunta
-		return anadirPregunta(idEncuesta, infoP);
+	public int modificarPregunta(int idPregunta, CtrlDominioPregunta.PreguntaImportData infoP) {
+		return ctrlDominioPregunta.modificarPregunta(idPregunta, infoP, ctrlDominioRespuesta);
 	}
 	
 	/**
@@ -623,26 +364,11 @@ public class CtrlDominio {
 	 * @param idPregunta ID de la pregunta a eliminar
 	 */
 	public void eliminarPregunta(int idPregunta) {
-		// obtener pregunta y sus respuestas
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-		List<Integer> idRespuestas = p.getIdRespuestas();
-		
-		// eliminar cada respuesta
-		for (Integer idR : idRespuestas) {
-			eliminarRespuesta(idR);
-		}
-		
-		// eliminar la pregunta de la encuesta
-		int idEncuesta = p.getIdEncuesta();
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		e.eliminarIdPregunta(idPregunta);
-		
-		// eliminar de persistencia y del controlador
-		ctrlPersistence.eliminarPregunta(idPregunta);
-		ctrlPregunta.eliminar(p);
+		ctrlDominioPregunta.eliminarPregunta(idPregunta, ctrlDominioRespuesta);
 	}
 
 	// ==================== GESTIÓN DE PERFILES ====================
+	// Delega en CtrlDominioPerfil
 	
 	/**
 	 * Obtiene los perfiles de un usuario (funcionalidad de clustering/análisis).
@@ -651,7 +377,6 @@ public class CtrlDominio {
 	 * @return Lista de perfiles del usuario
 	 */
 	public List<Integer> getPerfilesUsuario(String nomUsuario) {
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		return u.getIdPerfiles();
+		return ctrlDominioPerfil.getPerfilesUsuario(nomUsuario);
 	}
 }

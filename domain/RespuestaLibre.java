@@ -10,7 +10,7 @@ package domain;
  * - "¿Qué te pareció el curso?" → "El curso fue muy interesante y útil..."
  * - "Comentarios adicionales:" → "Ninguno"
  * 
- * @author subgrup-prop11.5
+ * @author Yaoyao Guo
  * @version 2.0
  */
 public class RespuestaLibre extends Respuesta {

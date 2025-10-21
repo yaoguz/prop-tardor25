@@ -23,7 +23,7 @@ import java.util.Set;
  * 
  * INVARIANTE: No puede haber índices duplicados en el array.
  * 
- * @author subgrup-prop11.5
+ * @author Yaoyao Guo
  * @version 2.0
  */
 public class RespuestaOpcionMultiple extends Respuesta {

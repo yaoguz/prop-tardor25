@@ -13,7 +13,7 @@ package domain;
  * - Permitir modificación con validación de tipo
  * - Proporcionar acceso a usuario y pregunta asociados
  * 
- * @author subgrup-prop11.5
+ * @author Yaoyao Guo
  * @version 2.0
  */
 public abstract class Respuesta {
