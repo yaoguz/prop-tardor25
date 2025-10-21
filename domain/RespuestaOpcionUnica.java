@@ -16,7 +16,7 @@ package domain;
  * - Facilitar análisis estadístico
  * - Validación más eficiente
  * 
- * @author subgrup-prop11.5
+ * @author Yaoyao Guo
  * @version 2.0
  */
 public class RespuestaOpcionUnica extends Respuesta {

@@ -12,6 +12,7 @@ import domain.Respuesta;
 PND:
 actualizarUsuario(Usuario u); // cuando se modifica la contrasena de un usuario u
 actualizarRespuesta(Respuesta r); // cuando se modifica una respuesta
+actualizarEncuesta(Encuesta e); // cuando se modifica el titulo de una encuesta
 
 funciones de eliminar
 

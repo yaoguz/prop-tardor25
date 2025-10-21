@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import domain.Encuesta;
 
+// pnd: boolean existeEncuesta(String idE)
+
 /**
  * Implementación de la classe gestionadora de datos para la clase "Encuesta".
  **/

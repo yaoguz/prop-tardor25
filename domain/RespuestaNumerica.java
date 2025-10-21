@@ -15,7 +15,7 @@ package domain;
  * NOTA: La validación de rangos la realiza PreguntaNumerica. Esta clase
  * solo almacena y gestiona el valor numérico.
  * 
- * @author subgrup-prop11.5
+ * @author Yaoyao Guo
  * @version 2.0
  */
 public class RespuestaNumerica extends Respuesta {

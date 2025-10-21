@@ -1,19 +1,15 @@
 
 package classcontroller;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-
+import java.util.HashMap;
+import java.util.Map;
 import domain.Encuesta;
 import domain.Pregunta;
 
 /**
- * Implementación de la classe gestionadora de datos para la clase "Pregunta".
-En una implementaci�n completa tendr�a que haber tambi�n un "CtrlAlumnosFichero" que cargara/volcara los alumnos modificados en cada sesi�n.
- **/
+ * Controlador de Pregunta
+ */
+
 public class CtrlPregunta {
 
 	/**
@@ -26,8 +22,26 @@ public class CtrlPregunta {
 	 * CtrlAsignaturaFicher.getInstance();
 	 **/
 
+	
+	/**
+	 * Atributo que guarda la única instancia de la clase.
+	 */
 	private static CtrlPregunta singletonObject;
+	
+	/**
+	 * Mapa de preguntas, cuyas llaves son sus identificadores.
+	 */
+	private Map<Integer,Pregunta> preguntas;
+	
+	/**
+	 * Entero que guarda el identificador de la siguiente pregunta que se cree.
+	 */
+	private int nextId;
 
+	/**
+	 * Método que devuelve la instancia de CtrlPregunta. Si es la primera vez que se llama a la función en esta ejecución, se crea.
+	 * @return la instancia única de CtrlPregunta
+	 */
 	public static CtrlPregunta getInstance() {
 		if (singletonObject == null)
 			singletonObject = new CtrlPregunta() {
@@ -35,29 +49,51 @@ public class CtrlPregunta {
 		return singletonObject;
 	}
 
-	/** Constructora privada. **/
-	
-	/*private CtrlAsignaturaFichero() {
+	/**
+	 * Se crea un CtrlPregunta sin preguntas y con nextId a 0.
+	 */
+	private CtrlPregunta() {
+		preguntas = new HashMap<Integer, Pregunta>();
+		nextId = 0;
 	}
 
-	public List<String> getAll(String filename)
-			throws FileNotFoundException {
-		LinkedList<String> asignaturas = new LinkedList<String>();
+	/**
+	 * Se crea una nueva pregunta cone el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * @param nomUsuario nombre del usuario creador de la encuesta
+	 * @param titulo el titulo de la encuesta
+	 * @return idEncuesta de esta nueva encuesta creada
+	 * @throws IllegalArgumentException si el titulo esta vacio
+	 */
+	public int crearPregunta(int idEncuesta, String enunciado) {
+		int idPregunta = nextId;
+		nextId++;
+		//Se ha de crear el tipo correspondiente
+		//Pregunta p = new Pregunta(idEncuesta, titulo, nomUsuario); 
+		preguntas.put(idPregunta,p);
+		return idPregunta;
+	}
 
-		FileReader fr = new FileReader("../DATA/"+filename);
-		Scanner scan = new Scanner(fr);
+	/**
+	 * Se obtiene la instancia de Pregunta con el id pasasdo por parámetro.
+	 * @param idPregunta id de la Pregunta a obtener.
+	 * @return la Pregunta cuyo identificador se ha pasado por parámetro.
+	 * @throws IllegalArgumentException si no existe una instancia de Pregunta con identificador idPregunta.
+	 */
+	public Pregunta getPregunta(int idPregunta) {
+		Pregunta p = preguntas.get(idPregunta);
+		if (p == null) {
+			throw new IllegalArgumentException("No existe la pregunta");
+		}
+		return p;
+	}
 
-		while (scan.hasNextLine())
-			asignaturas.add(new String(scan.nextLine()));
-
-		return asignaturas;
-	}*/
-
-	public int crearPregunta(Encuesta e, String enunciado) {
-		int id = conjuntoPreguntas.newId();
-		Pregunta p = new Pregunta(e, id, enunciado);
-		conjuntoPregunta.add(id, p);
-		return id;
+	/**
+	 * Se elimina del mapa la pregunta pasada por parámetro.
+	 * @param p la Pregunta a eliminar
+	 */
+	public void eliminarPregunta(Pregunta p) throws IllegalArgumentException{
+		boolean b = preguntas.remove(p.getIdPregunta);
+		if(!b) throw new IllegalArgumentException("No existe la pregunta a eliminar");
 	}
 }
 
