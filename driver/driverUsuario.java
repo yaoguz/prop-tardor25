@@ -1,18 +1,24 @@
 package driver;
 
-
 import domain.Usuario;
-import java.util.ArrayList;
+import java.util.scanner;
 
 /**
  * Clase testeadora de Usuario
  */
 public class DriverUsuario {
 
+    public static void main(String[] args) {
+        DriverUsuario driver = new DriverUsuario();
+        
+    }
+
     public void testConstructor() {
         Usuario u = new Usuario("Alessandro", "123456");
         System.out.println("Constructor probado: " + u);
     }
+
+
 
     public void testNewContrasena() {
         Usuario u = new Usuario("Alessandro", "123456");
@@ -113,58 +119,5 @@ public class DriverUsuario {
         System.out.println("getIdEncuestasCreadas(): " + u.getIdEncuestasCreadas());
     }
 
-    public static void main(String[] args) {
-        DriverUsuario driver = new DriverUsuario();
-
-        // Test Constructor
-        System.out.println("===== Test Constructor =====");
-        driver.testConstructor();
-        System.out.println();
-
-        // Test getNomUsuario
-        System.out.println("===== Test getNomUsuario =====");
-        driver.testGetnomUsuario();
-        System.out.println();
-
-        // Test comprobarContrasena
-        System.out.println("===== Test comprobarContrasena =====");
-        driver.testComprobarContrasena();
-        System.out.println();
-
-        // Test newContrasena
-        System.out.println("===== Test newContrasena =====");
-        driver.testNewContrasena();
-        System.out.println();
-
-        // Test guardarIdRespuesta
-        System.out.println("===== Test guardarIdRespuesta =====");
-        driver.testGuardarIdRespuesta();
-        System.out.println();
-
-        // Test getIdRespuestas
-        System.out.println("===== Test getIdRespuestas =====");
-        driver.testGetIdRespuestas();
-        System.out.println();
-
-        // Test eliminarIdRespuesta
-        System.out.println("===== Test eliminarIdRespuesta =====");
-        driver.testEliminarIdRespuesta();
-        System.out.println();
-
-        // Test guardarIdEncuesta
-        System.out.println("===== Test guardarIdEncuesta =====");
-        driver.testGuardarIdEncuesta();
-        System.out.println();
-
-        // Test getIdEncuestasCreadas
-        System.out.println("===== Test getIdEncuestasCreadas =====");
-        driver.testGetIdEncuestasCreadas();
-        System.out.println();
-
-        // Test eliminarIdEncuesta
-        System.out.println("===== Test eliminarIdEncuesta =====");
-        driver.testEliminarIdEncuesta();
-        System.out.println();
-    }
 
 }
