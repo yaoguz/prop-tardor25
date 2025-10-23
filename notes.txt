@@ -60,3 +60,29 @@ OJO versions java i junit
 
 
 Setmana que ve: llegir document infoAdicional (k-means) i tenir en compte
+
+
+
+
+
+clustering:
+- per cada enquesta
+
+Triar la k:
+- aleatoria (entre uns valors possibles)
+- que la trii l'usuari (metode del colze?)
+- coeficient siluet (obligatori calcular-lo): diverses iteracions de clusters (mirar qualitat, si no es bona, tornar a fer el cluster)
+
+Centroides: pivots, necessitem 2: 2 usuaris aleatoris. 
+Despres de fer la 1a assignacio, els nous centroides seran la mitjana de cadascun dels 2 grups
+Si mateixa assignacio que l'anterior, STOP (s'ha de guardar l'assignacio anterior)
+
+k-means++
+el mateix, pero per millorar la segona assignacio, assegurar que hi hagi una distancia minima entre els 2 centroides 
+
+
+limitacio k-means: representant es el que esta més a prop del centroide
+
+k-meloids:
+la mateixa assignacio ini (random), pero en lloc d'agafar la mitjana, agafa 2 centroides (usuaris reals) amb dist minima entre els 2 
+
