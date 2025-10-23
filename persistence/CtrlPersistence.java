@@ -214,7 +214,82 @@ public class CtrlPersistence {
         Integer id = r.getId();
 
         if (respuestas.containsKey(id)) {
-            throw new IllegalArgumentException("La respuesta con id: " + id " ya existe");
+            throw new IllegalArgumentException("La respuesta con id: " + id + " ya existe");
+        }
+        respuestas.put(id, r);
+    }
+
+
+    /**
+    * Eliminar un usuario en el mapa {@code usuarios}.
+    *
+    * <p>
+    * Si no existe un usuario con el mismo name, se lanza una
+    * {@link IllegalArgumentException}.
+    *
+    * @param u el objeto {@link Usuario} que se desea borrar
+    * @throws IllegalArgumentException si no existe un usuario con el mismo name
+    */
+    public void eliminarUsuario(Usuario u) {
+        String name = u.getNomUsuario();
+
+        if(!usuarios.remove(name)) {
+            throw new IllegalArgumentException("El usuario con name: " + name + " no existe");
+        }
+    }
+
+    /**
+    * Eliminar una encuesta en el mapa {@code encuestas}.
+    *
+    * <p>
+    * Si no existe una encuesta con el mismo id, se lanza una
+    * {@link IllegalArgumentException}.
+    *
+    * @param e el objeto {@link Encuesta} que se desea borrar
+    * @throws IllegalArgumentException si no existe una encuesta con el mismo id
+    */
+    public void eliminarEncuesta(Encuesta e) {
+        Integer id = e.getIdEncuesta();
+
+        if(!encuestas.remove(id)) {
+            throw new IllegalArgumentException("La encuesta con id: " + id + " no existe");
+        }
+    }
+
+
+    /**
+    * Eliminar una pregunta en el mapa {@code preguntas}.
+    *
+    * <p>
+    * Si no existe una pregunta con el mismo id, se lanza una
+    * {@link IllegalArgumentException}.
+    *
+    * @param p el objeto {@link Pregunta} que se desea borrar
+    * @throws IllegalArgumentException si no existe una pregunta con el mismo id
+    */
+    public void eliminarPregunta(Pregunta p) {
+        Integer id = p.getIdPregunta();
+
+        if (!preguntas.remove(p)) {
+            throw new IllegalArgumentException("La pregunta con id: " + id + " no existe");
+        }
+    }
+
+    /**
+    * Eliminar una respuesta en el mapa {@code respuestas}.
+    *
+    * <p>
+    * Si no existe una respuesta con el mismo id, se lanza una
+    * {@link IllegalArgumentException}.
+    *
+    * @param r el objeto {@link Respuesta} que se desea borrar
+    * @throws IllegalArgumentException si no existe una encuesta con el mismo id
+    */
+    public void eliminarRespuesta(Respuesta r) {
+        Integer id = r.getId();
+
+        if (!respuestas.remove(r)) {
+            throw new IllegalArgumentException("La respuesta con id: " + id + " no existe");
         }
     }
 }
