@@ -96,6 +96,7 @@ public class CtrlEncuesta {
 	/**
 	 * Se comprueba si existe una instancia de encuesta con clave idE
 	 * @param idE id de la encuesta de la que se quiere combrar si existe
+	 * @return booleano indicando si existe en el array de encuestas, una encuesta con idEncuesta idE
 	 */
 	public boolean existeEncuesta(String idE) {
 		return encuestas.containsKey(idE);
