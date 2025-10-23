@@ -10,7 +10,7 @@ public class Encuesta {
     /** Atributos **/
     private int idEncuesta;
     private String titulo;
-    private ArrayList<Integer> IdPreguntas = new ArrayList<>();
+    private ArrayList<Integer> IdPreguntas;
     private String creador;
 
     /** Constructora **/
@@ -25,6 +25,7 @@ public class Encuesta {
         this.idEncuesta = idEncuesta;
         this.titulo = titulo;
         this.creador = creador;   
+        this.IdPreguntas = new ArrayList<>();
     }
 
     /** Metodos **/
