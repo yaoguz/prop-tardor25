@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import domain.Encuesta;
 
-// pnd: boolean existeEncuesta(String idE)
-
 /**
  * Implementación de la classe gestionadora de datos para la clase "Encuesta".
  **/
@@ -93,6 +91,14 @@ public class CtrlEncuesta {
 	 */
 	public void eliminarEncuesta(Encuesta e) {
 		encuestas.remove(e.getIdEncuesta);
+	}
+
+	/**
+	 * Se comprueba si existe una instancia de encuesta con clave idE
+	 * @param idE id de la encuesta de la que se quiere combrar si existe
+	 */
+	public boolean existeEncuesta(String idE) {
+		return encuestas.containsKey(idE);
 	}
 
 }
