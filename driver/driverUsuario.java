@@ -1,123 +1,184 @@
 package driver;
 
-import domain.Usuario;
-import java.util.scanner;
+import java.util.Scanner;
+import classcontroller.CtrlUsuario;
+import classcontroller.CtrlEncuesta;
+import classcontroller.CtrlPregunta;
+import classcontroller.CtrlRespuesta;
+import persistence.CtrlPersistence;
+import domaincontroller.CtrlDominioUsuario;
 
 /**
- * Clase testeadora de Usuario
+ * Driver interactivo para probar CtrlDominioUsuario.
+ * 
+ * Este es un programa MANUAL con menú para el 1er lliurament.
+ * El profesor lo ejecuta y prueba casos de uso por consola.
+ * 
+ * @author Equipo PROP
+ * @version 1.0
  */
 public class DriverUsuario {
-
-    public static void main(String[] args) {
-        DriverUsuario driver = new DriverUsuario();
-        
-    }
-
-    public void testConstructor() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        System.out.println("Constructor probado: " + u);
-    }
-
-
-
-    public void testNewContrasena() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        System.out.println("Contrasena original: 123456 ");
-        u.comprobarContrasena("123456");
-
-        u.newContrasena("654321");
-        
-        System.out.println("newContrasena(654321): ");
-        System.out.println("Contrasena cambiado a 654321 : " + u.comprobarContrasena("654321"));
-
-        u.newContrasena("654321");
-        System.out.println("Contrasena nueva igual a 654321 : ");
-    }
-
-    public void testComprobarContrasena() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        System.out.println("Contrasena original: 123456 ");
-
-        System.out.println("comprobarContrasena(123456): " + u.comprobarContrasena("123456"));
-
-    }
-
-    public void testGetnomUsuario() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        System.out.println("getNombre(): " + u.getNomUsuario()); 
-    }
-
-    public void testGetIdRespuestas() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        u.guardarIdRespuesta(1);
-        u.guardarIdRespuesta(2);
-        System.out.println("Guardamos 1, 2 como ids");
-        System.out.println("getIdRespuestas(): " + u.getIdRespuestas()); 
-    }
-
-    public void testGuardarIdRespuesta() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        
-
-        u.guardarIdRespuesta(1);
-        System.out.println("guardarIdRespuesta(1): " + u.getIdRespuestas());
-        
-        
-        u.guardarIdRespuesta(2);
-        System.out.println("guardarIdRespuesta(2): " + u.getIdRespuestas());
-       
-    }
-
-    public void testEliminarIdRespuesta() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        u.guardarIdRespuesta(1);
-        u.guardarIdRespuesta(2);
-        System.out.println("getIdRespuestas(): " + u.getIdRespuestas()); 
-
-        u.eliminarIdRespuesta(1);
-        System.out.println("eliminarIdRespuesta(1): ");
-        System.out.println("getIdRespuestas(): " + u.getIdRespuestas());
-
-        u.eliminarIdRespuesta(2);
-        System.out.println("eliminarIdRespuesta(2): ");
-        System.out.println("getIdRespuestas(): " + u.getIdRespuestas());
-    }
-
-    public void testGetIdEncuestasCreadas() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        u.guardarIdEncuesta(1);
-        u.guardarIdEncuesta(2);
-
-        System.out.println("Guardamos 1, 2 como ids");
-        System.out.println("getIdEncuestasCreadas(): " + u.getIdEncuestasCreadas());
-    }
-
-    public void testGuardarIdEncuesta() {
-        Usuario u = new Usuario("Alessandro", "123456");
     
-
-        u.guardarIdEncuesta(1);
-        System.out.println("guardarIdEncuesta(1): " + u.getIdEncuestasCreadas());
+    private static CtrlDominioUsuario ctrlDominioUsuario;
+    private static Scanner scanner;
+    private static String usuarioActual = null; // Usuario con sesión iniciada
+    
+    public static void main(String[] args) {
+        // Inicializar dependencias (capa real, no mocks)
+        CtrlUsuario ctrlUsuario = new CtrlUsuario();
+        CtrlPersistence ctrlPersistence = new CtrlPersistence();
         
+        ctrlDominioUsuario = new CtrlDominioUsuario(ctrlUsuario, ctrlPersistence);
+        scanner = new Scanner(System.in);
         
-        u.guardarIdEncuesta(2);
-        System.out.println("guardarIdEncuesta(2): " + u.getIdEncuestasCreadas());
+        boolean salir = false;
+        
+        System.out.println("DRIVER - CONTROLADOR DE DOMINIO DE USUARIO");
+        
+        while (!salir) {
+            mostrarMenu();
+            int opcion = leerEntero();
+            
+            switch (opcion) {
+                case 1:
+                    testRegistrarUsuario();
+                    break;
+                case 2:
+                    testIniciarSesion();
+                    break;
+                case 3:
+                    testModificarContrasena();
+                    break;
+                case 4:
+                    testCerrarSesion();
+                    break;
+                case 0:
+                    salir = true;
+                    System.out.println("\nSaliendo del driver...\n");
+                    break;
+                default:
+                    System.out.println("\nOpción no válida. Intenta de nuevo.\n");
+            }
+        }
+        
+        scanner.close();
     }
-
-    public void testEliminarIdEncuesta() {
-        Usuario u = new Usuario("Alessandro", "123456");
-        u.guardarIdEncuesta(1);
-        u.guardarIdEncuesta(2);
-        System.out.println("getIdEncuestasCreadas(): " + u.getIdEncuestasCreadas()); 
-
-        u.eliminarEncuestaCreada(1);
-        System.out.println("eliminarEncuestaCreada(1): ");
-        System.out.println("getIdEncuestasCreadas(): " + u.getIdEncuestasCreadas());
-
-        u.eliminarEncuestaCreada(2);
-        System.out.println("eliminarEncuestaCreada(2): ");
-        System.out.println("getIdEncuestasCreadas(): " + u.getIdEncuestasCreadas());
+    
+    private static void mostrarMenu() {
+        System.out.println("\nMENÚ PRINCIPAL");
+        System.out.println("1. Registrar usuario");
+        System.out.println("2. Iniciar sesión");
+        System.out.println("3. Modificar contraseña");
+        System.out.println("4. Cerrar sesión");
+        System.out.println("0. Salir");
+        
+        if (usuarioActual != null) {
+            System.out.println("Sesión activa: " + usuarioActual);
+        }
+        
+        System.out.print("\nSelecciona una opción: ");
     }
-
-
+    
+    private static void testRegistrarUsuario() {
+        System.out.println("\nTEST: REGISTRAR USUARIO");
+        
+        System.out.print("Nombre de usuario: ");
+        String nomUsuario = scanner.nextLine();
+        
+        System.out.print("Contraseña: ");
+        String contrasena = scanner.nextLine();
+        
+        System.out.print("Confirmar contraseña: ");
+        String confirmacion = scanner.nextLine();
+        
+        try {
+            String resultado = ctrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
+            System.out.println("\n✅ " + resultado);
+        } catch (IllegalArgumentException e) {
+            System.out.println("\n❌ Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("\n💥 Error inesperado: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static void testIniciarSesion() {
+        System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               TEST: INICIAR SESIÓN                        ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        
+        System.out.print("Nombre de usuario: ");
+        String nomUsuario = scanner.nextLine();
+        
+        System.out.print("Contraseña: ");
+        String contrasena = scanner.nextLine();
+        
+        try {
+            boolean exito = ctrlDominioUsuario.iniciarSesion(nomUsuario, contrasena);
+            
+            if (exito) {
+                usuarioActual = nomUsuario;
+                System.out.println("\n✅ Sesión iniciada correctamente. Bienvenido, " + nomUsuario + "!");
+            } else {
+                System.out.println("\n❌ Credenciales incorrectas. Inicio de sesión fallido.");
+            }
+        } catch (Exception e) {
+            System.out.println("\n💥 Error inesperado: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static void testModificarContrasena() {
+        System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║            TEST: MODIFICAR CONTRASEÑA                     ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        
+        if (usuarioActual == null) {
+            System.out.println("\n⚠️  Debes iniciar sesión primero.");
+            return;
+        }
+        
+        System.out.println("Usuario: " + usuarioActual);
+        System.out.print("Nueva contraseña: ");
+        String nuevaContrasena = scanner.nextLine();
+        
+        try {
+            ctrlDominioUsuario.modificarContrasena(usuarioActual, nuevaContrasena);
+            System.out.println("\n✅ Contraseña modificada correctamente.");
+        } catch (Exception e) {
+            System.out.println("\n💥 Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static void testCerrarSesion() {
+        System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║              TEST: CERRAR SESIÓN                          ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        
+        if (usuarioActual == null) {
+            System.out.println("\n⚠️  No hay ninguna sesión activa.");
+            return;
+        }
+        
+        try {
+            ctrlDominioUsuario.cerrarSesion(usuarioActual);
+            System.out.println("\n✅ Sesión cerrada correctamente. Hasta pronto, " + usuarioActual + "!");
+            usuarioActual = null;
+        } catch (Exception e) {
+            System.out.println("\n💥 Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static int leerEntero() {
+        while (true) {
+            try {
+                String input = scanner.nextLine();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.print("❌ Entrada inválida. Introduce un número: ");
+            }
+        }
+    }
 }
