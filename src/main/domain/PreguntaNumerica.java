@@ -41,14 +41,14 @@ public class PreguntaNumerica extends Pregunta {
 	 * Devuelve el valor mínimo que pueden tener las respuestas de la pregunta.
 	 */
 	@override public int getRangoInf() {
-		return -1;
+		return rangoInf;;
 	}
 
 	/**
 	 * Devuelve el valor máximo que pueden tener las respuestas de la pregunta.
 	 */
 	@override public int getRangoSup() {
-		return -1;
+		return rangoSup;;
 	}
 
 	/**

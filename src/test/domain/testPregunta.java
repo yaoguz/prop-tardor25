@@ -9,63 +9,108 @@ import domain.Pregunta;
  */
  
 public class TestPregunta {
+    
+    private Pregunta pregunta;
+    private final int idEncuesta = 3;
+	private final int idPregunta = 10;
+    private final String enunciado = "test";
+    
+    /**
+     * Configuración inicial antes de cada test.
+     */
+    @Before
+    public void setUp() {
+        pregunta = new Pregunta(idEncuesta, idPregunta, enunciado);
+    }
+
+
 	@Test
-	public void constructoraOk() {
-	  	Pregunta p = new Pregunta(5, 6, "test");
-	  	assertEquals(5, p.getIdEncuesta);
-	  	assertEquals(6, p.getIdPregunta);
-	  	assertEquals("test", p.getEnunciado);
+	public void testConstructoraOk() {
+	  	assertEquals(3, pregunta.getIdEncuesta());
+	  	assertEquals(10, pregunta.getIdPregunta());
+	  	assertEquals("test", pregunta.getEnunciado());
+		assertEquals(0, pregunta.getIdRespuestas().size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void constructoraExceptionNull() {
-		Pregunta p = new Pregunta(0, 0, null);
+	public void testConstructoraExceptionNull() {
+		Pregunta p = new Pregunta(idEncuesta, idPregunta, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void constructoraExceptionVacia() {
-		Pregunta p = new Pregunta(0, 0, "");
+	public void testConstructoraExceptionVacia() {
+		Pregunta p = new Pregunta(idEncuesta, idPregunta, "");
 	}
 
 	@Test
-	public void getterIdEncuesta() {
-		Pregunta p = new Pregunta(0, 1, "test");
-		assertEquals(0, p.getIdEncuesta());
+	public void testGetIdEncuesta() {
+		assertEquals(3, pregunta.getIdEncuesta());
 	}
 
 	@Test
-	public void getterIdPregunta() {
-		Pregunta p = new Pregunta(0, 1, "test");
-		assertEquals(1, p.getIdPregunta());
+	public void testGetIdPregunta() {
+		assertEquals(10, pregunta.getIdPregunta());
 	}
 
 	@Test
-	public void getterEnunciado() {
-		Pregunta p = new Pregunta(0, 1, "test");
-		assertEquals("test", p.getEnunciado());
+	public void testGetEnunciado() {
+		assertEquals("test", pregunta.getEnunciado());
 	}
 
 	@Test
-	public void agregarRespuesta() {
-		Pregunta p = new Pregunta(0, 1, "test");
-		p.addRespuesta(22);
-		ArrayList<Integer> l = p.getIdRespuestas
-		assertTrue(l.contains(22);
+	public void testGetIdRespuestas() {
+		assertEquals(0, pregunta.getIdRespuestas().size());
 	}
-  /*
-  @Test
-  public void divideGettingCorrectResult() {
-    Main divisionMachine = new Main();
 
-    float actualResult = divisionMachine.division(10,2);
-    assertEquals(5.0, actualResult, 0.0001);
-  }
+	@Test
+	public void testAgregarRespuesta() {
+		pregunta.addRespuesta(22);
+		pregunta.addRespuesta(23);
+		pregunta.addRespuesta(42);
+		pregunta.addRespuesta(99);
+		ArrayList<Integer> l = pregunta.getIdRespuestas();
+		assertTrue(l.contains(22));
+		assertTrue(l.contains(23));
+		assertTrue(l.contains(42));
+		assertTrue(l.contains(99));
+	}
 
-  @Test(expected = ArithmeticException.class)
-  public void divideByZeroThrowsException() {
-    Main divisionMachine = new Main();
+	@Test
+	public void testBorrarRespuesta() {
+		pregunta.addRespuesta(33);
+		pregunta.eliminarRespuesta(33);
+		assertEquals(0, pregunta.getIdRespuestas().size());
+	}
 
-    float actualResult = divisionMachine.division(10,0);
+	@Test(expected = IllegalArgumentException.class)
+	public void testBorrarRespuesetaNoExiste() {
+		pregunta.eliminarRespuesta(2);
+	}
 
-  }*/
+	//Tests de subclases (funciones genéricas)
+
+	@Test
+	public void testGetOpciones() {
+		assertEquals(0, pregunta.getOpciones().size());
+	}
+
+	@Test
+	public void testNumMax() {
+		assertEquals(-1, pregunta.getNumMaxOpc());
+	}
+
+	@Test
+	public void testRangoInf() {
+		assertEquals(-1, pregunta.getRangoInf());
+	}
+
+	@Test
+	public void testRangoSup() {
+		assertEquals(-1, pregunta.getRangoSup());
+	}
+
+	@Test
+	public void testOrdenada() {
+		assertNull(pregunta.esOrdenada());
+	}
 }

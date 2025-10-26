@@ -96,7 +96,7 @@ public abstract class Pregunta {
 		if(!b) throw new IllegalArgumentException("La pregunta no tiene la respuesta del parámetro");
 	}
 	
-	/** Getters de las subclases **/
+	/** Operaciones de las subclases **/
 	
 	//opciones (de opcionMuliple y opcionUnica)
 	/**
@@ -116,6 +116,11 @@ public abstract class Pregunta {
 		return -1;
 	}
 	
+	
+	/**
+	 * No hace nada si no es del tipo de subclase correspondiente.
+	 */
+	public void setNumMaxOpc(numMaxOpc) {}
 	//rangoInf (de numerica)
 	/**
 	 * Devuelve un -1 si no es del tipo de subclase correspondiente.
@@ -132,6 +137,14 @@ public abstract class Pregunta {
 	 */
 	public int getRangoSup() {
 		return -1;
+	}
+	
+	/**
+	 * Devuelve null si no es del tipo de subclase correspondiente.
+	 * @return null
+	 */
+	public boolean esOrdenada() {
+		return null;
 	}
 	
 	//Operación abstracta (cada subclase devuelve su tipo)

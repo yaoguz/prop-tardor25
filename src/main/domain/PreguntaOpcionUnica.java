@@ -52,6 +52,14 @@ public class PreguntaOpcionUnica extends Pregunta {
 	@override public ArrayList<String> getOpciones() {
 		return opciones;
 	}
+	
+	/**
+	 * Devuelve si las opciones siguen un orden.
+	 * @return booleano indicando si es ordenada o no
+	 */
+	@override public boolean esOrdenada() {
+		return ordenada;
+	}
 
 	/**
 	 * Devuelve el tipo de pregunta.

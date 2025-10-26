@@ -31,7 +31,8 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	 */
 	public PreguntaOpcionMultiple(int idEncuesta, int idPregunta, String enunciado) throws IllegalArgumentException {
 		super(idEncuesta, idPregunta, enunciado);
-		opciones = new ArrayList<String>()
+		opciones = new ArrayList<String>();
+		numMaxOpc = 2;
 	}
 	
 	/** Métodos públicos **/
@@ -58,6 +59,13 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	 */
 	@override public int getNumMaxOpc() {
 		return numMaxOpc;
+	}
+	
+	/**
+	 * Asigna el número máximo de opciones seleccionables para esta pregunta.
+	 */
+	@override public void setNumMaxOpc(numMaxOpc) {
+		this.numMaxOpc = numMaxOpc;
 	}
 
 	/**
