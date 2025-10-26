@@ -60,13 +60,18 @@ public class CtrlUsuario {
 	 * @param {String} nomU - Nombre del usuario que inicia sesion.
 	 * @param {String} contrasena - Contrasena introducida por el usuario.
      */
-    public void iniciarSesion(String nomU, String contrasena) {
+    public boolean iniciarSesion(String nomU, String contrasena) {
+        if (usuarioActivo != null) {
+            System.out.println("Ya hay un usuario activo: " + usuarioActivo);
+            return false;
+        }
         Usuario u = getUsuario(nomU);
         if (!u.comprobarContrasena(contrasena)) {
             System.out.println("Contrasena incorrecta para el usuario " + nomU);
-			// bucle a iniciar sesion
+			return false;
         }
         usuarioActivo = u.getNomUsuario();
+        return true;
     }
 
 	/**

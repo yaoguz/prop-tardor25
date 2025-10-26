@@ -31,6 +31,9 @@ public class TestCtrlUsuario {
         }
     }
 
+    /**
+     * Test: Comprueba que crearUsuario crea un usuario correctamente.
+     */
     @Test
     public void testCreaUsuario_CreaUsuarioCorrectamente() {
         String nombre = "testUser";
@@ -45,6 +48,10 @@ public class TestCtrlUsuario {
         assertSame(u, aux);
     }
 
+    /**
+     * Test: Comprueba que no se pueden crear dos usuarios con el mismo nombre,
+     * sino lanza una excepcion.
+     */
     @Test(expected = IllegalStateException.class)
     public void testCreaUsuario_UsuarioDuplicado_LanzaExcepcion() {
         String nombre = "testUser";
@@ -54,6 +61,10 @@ public class TestCtrlUsuario {
         ctrlUsuario.crearUsuario(nombre, contrasena);
     }
 
+    /**
+     * Test: Comprueba que getUsuario devuelve un usuario con el mismo nombre 
+     * que se le pasa por parámetro.
+     */
     @Test
     public void testGetUsuario_GatUsuarioCorrectamente() {
         String nombre = "testUser";
@@ -64,11 +75,18 @@ public class TestCtrlUsuario {
         assertEquals(nombre, u.getNomUsuario());
     }
 
+    /**
+     * Test: Comprueba que getUsuario no puede obtener un usuario si no existe,
+     * en este caso lanza una excepción.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testGetUsuario_UsuarioNoExistente_LanzaExcepcion() {
         ctrlUsuario.getUsuario("noExiste");
     }
 
+    /**
+     * Test: Comprueba que iniciarSesion pone en usuarioActivo al usuario que iniciaSesion.
+     */
     @Test
     public void testIniciarSesion_IniciaSesionCorrectamente() {
         String nombre = "testUser";
@@ -83,6 +101,10 @@ public class TestCtrlUsuario {
         assertEquals(nombre, activo);
     }
 
+    /**
+     * Test: Comprueba que no se puede iniciar sesion con una contrasena incorrecta,
+     * en este caso no se cambia el usuarioActivo.
+     */
     @Test
     public void testIniciarSesion_ContrasenaIncorrecta() throws Exception {
         String nombre = "testUser";
@@ -96,8 +118,32 @@ public class TestCtrlUsuario {
         assertNull(activo);
     }
 
+    /**
+     * Test: Comprueba que no se puede iniciar sesion si ya hay alguien logueado,
+     * en este caso no se cambia el usuarioActivo.
+     */
     @Test
-    public void testCerrarSesion_CierraSesionCorrectamente() throws Exception {
+    public void testIniciarSesion_IniciarSesionSinCerrarSesion(){
+        String nombre1 = "testUser";
+        String contrasena1 = "password123";
+        Usuario u = ctrlUsuario.crearUsuario(nombre1, contrasena1);
+        ctrlUsuario.iniciarSesion(nombre1, contrasena1);
+
+        String nombre2 = "testUser";
+        String contrasena2 = "password123";
+        Usuario u = ctrlUsuario.crearUsuario(nombre2, contrasena2);
+        ctrlUsuario.iniciarSesion(nombre2, contrasena2);
+
+        String activo = ctrlUsuario.getUsuarioActivo();
+        assertNull(activo);
+        assertEquals(nombre1, activo);
+    }
+
+    /**
+     * Test: Comprueba que cerrarSesion deja en null el usuarioActivo.
+     */
+    @Test
+    public void testCerrarSesion_CierraSesionCorrectamente(){
         String nombre = "testUser";
         String contrasena = "password123";
         ctrlUsuario.crearUsuario(nombre, contrasena);
@@ -106,25 +152,32 @@ public class TestCtrlUsuario {
         // Cerrar sesion
         ctrlUsuario.cerrarSesion();
 
-        String activo = CtrlUsuario.getUsuarioActivo();
+        String activo = ctrlUsuario.getUsuarioActivo();
         assertNull(activo);
     }
 
+    /**
+     * Test: Comprueba que getUsuarioActivo devuelve el nombre del usuario activo.
+     */
     @Test
-    public void testGetUsuarioActivo_HayUsuarioActivo() throws Exception {
+    public void testGetUsuarioActivo_HayUsuarioActivo(){
         String nombre = "testUser";
         String contrasena = "password123";
         ctrlUsuario.crearUsuario(nombre, contrasena);
         ctrlUsuario.iniciarSesion(nombre, contrasena);
 
-        String activo = CtrlUsuario.getUsuarioActivo();
+        String activo = ctrlUsuario.getUsuarioActivo();
         assertNotNull(activo);
         assertEquals(nombre, activo);
     }
 
+    /**
+     * Test: Comprueba que no getUsuarioActivo devuelve null si no hay ningun usuario que haya 
+     * iniciado sesion.
+     */
     @Test
-    public void testGetUsuarioActivo_NoHayUsuarioActivo() throws Exception {
-        String activo = CtrlUsuario.getUsuarioActivo();
+    public void testGetUsuarioActivo_NoHayUsuarioActivo(){
+        String activo = ctrlUsuario.getUsuarioActivo();
         assertNull(activo);
     }
 
