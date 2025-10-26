@@ -129,14 +129,4 @@ public class CtrlDominioUsuario {
 		// actualizar en persistencia
 		ctrlPersistence.actualizarUsuario(u);
 	}
-
-	/**
-	 * Cierra la sesión del usuario nomUsuario
-	 * 
-	 * @param nomUsuario Nombre del usuario
-	 */
-	public void cerrarSesion(String nomUsuario) {
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		u.cerrarSesion();
-	}
 }

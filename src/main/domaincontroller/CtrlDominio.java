@@ -155,12 +155,10 @@ public class CtrlDominio {
 	}
 
 	/**
-	 * Cierra la sesión del usuario nomUsuario
-	 * 
-	 * @param nomUsuario Nombre del usuario
+	 * Cierra la sesión del usuario actual
 	 */
-	public void cerrarSesion(String nomUsuario) {
-		ctrlDominioUsuario.cerrarSesion(nomUsuario);
+	public void cerrarSesion() {
+		ctrlUsuario.cerrarSesion();
 	}
 
 	// ==================== GESTIÓN DE RESPUESTAS ====================
