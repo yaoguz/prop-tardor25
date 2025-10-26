@@ -93,19 +93,17 @@ public class DriverUsuario {
         
         try {
             String resultado = ctrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
-            System.out.println("\n✅ " + resultado);
+            System.out.println("\n" + resultado);
         } catch (IllegalArgumentException e) {
-            System.out.println("\n❌ Error: " + e.getMessage());
+            System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("\n💥 Error inesperado: " + e.getMessage());
+            System.out.println("\nError inesperado: " + e.getMessage());
             e.printStackTrace();
         }
     }
     
     private static void testIniciarSesion() {
-        System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
-        System.out.println("║               TEST: INICIAR SESIÓN                        ║");
-        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println("TEST: INICIAR SESIÓN");
         
         System.out.print("Nombre de usuario: ");
         String nomUsuario = scanner.nextLine();
@@ -118,23 +116,21 @@ public class DriverUsuario {
             
             if (exito) {
                 usuarioActual = nomUsuario;
-                System.out.println("\n✅ Sesión iniciada correctamente. Bienvenido, " + nomUsuario + "!");
+                System.out.println("\nSesión iniciada correctamente. Bienvenido, " + nomUsuario + "!");
             } else {
-                System.out.println("\n❌ Credenciales incorrectas. Inicio de sesión fallido.");
+                System.out.println("\nCredenciales incorrectas. Inicio de sesión fallido.");
             }
         } catch (Exception e) {
-            System.out.println("\n💥 Error inesperado: " + e.getMessage());
+            System.out.println("\nError inesperado: " + e.getMessage());
             e.printStackTrace();
         }
     }
     
     private static void testModificarContrasena() {
-        System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
-        System.out.println("║            TEST: MODIFICAR CONTRASEÑA                     ║");
-        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println("TEST: MODIFICAR CONTRASEÑA");
         
         if (usuarioActual == null) {
-            System.out.println("\n⚠️  Debes iniciar sesión primero.");
+            System.out.println("\nDebes iniciar sesión primero.");
             return;
         }
         
@@ -144,29 +140,27 @@ public class DriverUsuario {
         
         try {
             ctrlDominioUsuario.modificarContrasena(usuarioActual, nuevaContrasena);
-            System.out.println("\n✅ Contraseña modificada correctamente.");
+            System.out.println("\nContraseña modificada correctamente.");
         } catch (Exception e) {
-            System.out.println("\n💥 Error: " + e.getMessage());
+            System.out.println("\nError: " + e.getMessage());
             e.printStackTrace();
         }
     }
     
     private static void testCerrarSesion() {
-        System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
-        System.out.println("║              TEST: CERRAR SESIÓN                          ║");
-        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println("TEST: CERRAR SESIÓN");
         
         if (usuarioActual == null) {
-            System.out.println("\n⚠️  No hay ninguna sesión activa.");
+            System.out.println("\nNo hay ninguna sesión activa.");
             return;
         }
         
         try {
             ctrlDominioUsuario.cerrarSesion(usuarioActual);
-            System.out.println("\n✅ Sesión cerrada correctamente. Hasta pronto, " + usuarioActual + "!");
+            System.out.println("\nSesión cerrada correctamente. Hasta pronto, " + usuarioActual + "!");
             usuarioActual = null;
         } catch (Exception e) {
-            System.out.println("\n💥 Error: " + e.getMessage());
+            System.out.println("\nError: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -177,7 +171,7 @@ public class DriverUsuario {
                 String input = scanner.nextLine();
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.print("❌ Entrada inválida. Introduce un número: ");
+                System.out.print("Entrada inválida. Introduce un número: ");
             }
         }
     }
