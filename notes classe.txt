@@ -86,3 +86,6 @@ limitacio k-means: representant es el que esta més a prop del centroide
 k-meloids:
 la mateixa assignacio ini (random), pero en lloc d'agafar la mitjana, agafa 2 centroides (usuaris reals) amb dist minima entre els 2 
 
+
+Driver: un per cada controlador
+test: un per cada funcionalitat (no funció!)
