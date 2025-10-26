@@ -1,9 +1,10 @@
 package domain;
 
-import src.domini.*;
+import main.domini.*;
+import java.util.*;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Tests unitarios para la clase Usuario (SIN MOCKS).
