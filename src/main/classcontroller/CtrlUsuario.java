@@ -10,7 +10,7 @@ public class CtrlUsuario {
 	
 	private static CtrlUsuario singletonObject;
 	private Map<String, Usuario> usuarios;  
-    private Usuario usuarioActivo;
+    private String usuarioActivo;
 
 	private CtrlUsuario() {
         usuarios = new HashMap<>();
@@ -66,7 +66,7 @@ public class CtrlUsuario {
             System.out.println("Contrasena incorrecta para el usuario " + nomU);
 			// bucle a iniciar sesion
         }
-        usuarioActivo = u;
+        usuarioActivo = u.getNomUsuario();
     }
 
 	/**
@@ -74,6 +74,14 @@ public class CtrlUsuario {
      */
     public void cerrarSesion() {
         usuarioActivo = null;
+    }
+
+    /**
+     * Obtiene el nombre del usuario activo.
+     * @return {String} nombre del usuario activo
+     */
+    public String getUsuarioActivo() {
+        return usuarioActivo;
     }
 }
 

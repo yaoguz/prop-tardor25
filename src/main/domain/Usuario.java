@@ -1,5 +1,6 @@
 package domain;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Usuario {
 
@@ -21,9 +22,9 @@ public class Usuario {
     public Usuario(String nomUsuario, String contrasena) {
         this.nomUsuario = nomUsuario;
         this.contrasena = contrasena;
-        idPerfiles = new ArrayList<>();
-        idEncuestasCreadas = new ArrayList<>();
-        idRespuestas = new ArrayList<>();
+        idPerfiles = new HashSet<>();
+        idEncuestasCreadas = new HashSet<>();
+        idRespuestas = new HashSet<>();
     }
 
     /** Metodos publicos**/
@@ -84,7 +85,7 @@ public class Usuario {
      * Se obtiene un ArrayList con todas las idEncuestas creadas por el Usuario.
      * @return {ArrayList<Integer>} idEncuestas de las Encuestas creadas por el Usuario.
      */
-    public ArrayList<Integer> getIdEncuestasCreadas() {
+    public Set<Integer> getIdEncuestasCreadas() {
         return idEncuestasCreadas;
     }
 
@@ -108,7 +109,7 @@ public class Usuario {
      * Se obtiene un ArrayList con todas los idPerfiles del Usuario.
      * @return {ArrayList<Integer>} idPerfiles de los Perfiles del Usuario.
      */
-    public ArrayList<Integer> getIdPerfiles() {
+    public Set<Integer> getIdPerfiles() {
         return idPerfiles;
     }
 

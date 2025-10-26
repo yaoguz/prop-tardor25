@@ -15,7 +15,7 @@ import domain.Usuario;
  * Las pruebas usan reflection para reiniciar el singleton entre tests y mantener
  * aislamiento.
  */
-public class TestUnitarioCtrlUsuario {
+public class TestCtrlUsuario {
 
     private CtrlUsuario ctrlUsuario;
 
@@ -89,6 +89,11 @@ public class TestUnitarioCtrlUsuario {
         assertNotNull(activoObj);
         assertEquals(nombre, activoObj.getNomUsuario());
         assertSame(u, activoObj);
+    }
+
+    @Test
+    public void test() throws Exception {
+        
     }
 
     @Test
