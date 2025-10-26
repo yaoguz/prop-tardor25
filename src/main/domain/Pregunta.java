@@ -36,7 +36,7 @@ public abstract class Pregunta {
 	 * @param idEncuesta el identificador único de la encuesta en la que se crea la pregunta.
 	 * @param idPregunta el identificador de la pregunta.
 	 * @param enunciado el enunciado de la pregunta.
-	 * @throws IllegalArgumentException si el enunciado no es válido.
+	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
 	 */
 	public Pregunta(int idEncuesta, int idPregunta, String enunciado) throws IllegalArgumentException {
 		if (enunciado == null or enunciado == "") throw new IllegalArgumentException("Enunciado no válido");

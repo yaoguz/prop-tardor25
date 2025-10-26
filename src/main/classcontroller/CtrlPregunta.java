@@ -58,17 +58,64 @@ public class CtrlPregunta {
 	}
 
 	/**
-	 * Se crea una nueva pregunta cone el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
-	 * @param nomUsuario nombre del usuario creador de la encuesta
-	 * @param titulo el titulo de la encuesta
-	 * @return idEncuesta de esta nueva encuesta creada
-	 * @throws IllegalArgumentException si el titulo esta vacio
+	 * Se crea una nueva pregunta de tipo libre con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta.
+	 * @param enunciado el enunciado de la pregunta.
+	 * @return idPregunta de la pregunta creada.
+	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
 	 */
-	public int crearPregunta(int idEncuesta, String enunciado) {
+	public int crearPreguntaLibre(int idEncuesta, String enunciado) throws IllegalArgumentException {
 		int idPregunta = nextId;
 		nextId++;
-		//Se ha de crear el tipo correspondiente
-		//Pregunta p = new Pregunta(idEncuesta, titulo, nomUsuario); 
+		Pregunta p = new PreguntaLibre(idEncuesta, idPregunta, enunciado);
+		preguntas.put(idPregunta,p);
+		return idPregunta;
+	}
+
+	/**
+	 * Se crea una nueva pregunta de tipo numérica con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta.
+	 * @param enunciado el enunciado de la pregunta.
+	 * @param min el valor numérico mínimo que pueden tener las respuestas de la pregunta.
+	 * @param max el valor numérico máximo que pueden tener las respuestas de la pregunta.
+	 * @return idPregunta de la pregunta creada.
+	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
+	 */
+	public int crearPreguntaNumerica(int idEncuesta, String enunciado, int min, int max) throws IllegalArgumentException {
+		int idPregunta = nextId;
+		nextId++;
+		Pregunta p = new PreguntaNumerica(idEncuesta, idPregunta, enunciado, min, max);
+		preguntas.put(idPregunta,p);
+		return idPregunta;
+	}
+
+	/**
+	 * Se crea una nueva pregunta de tipo opción múltiple con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta.
+	 * @param enunciado el enunciado de la pregunta.
+	 * @return idPregunta de la pregunta creada.
+	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
+	 */
+	public int crearPreguntaOpcionMultiple(int idEncuesta, String enunciado) throws IllegalArgumentException {
+		int idPregunta = nextId;
+		nextId++;
+		Pregunta p = new PreguntaOpcionMultiple(idEncuesta, idPregunta, enunciado);
+		preguntas.put(idPregunta,p);
+		return idPregunta;
+	}
+
+	/**
+	 * Se crea una nueva pregunta de tipo opción única con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta.
+	 * @param enunciado el enunciado de la pregunta.
+	 * @param ordenada indica si la pregunta es ordenada. 
+	 * @return idPregunta de la pregunta creada.
+	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
+	 */
+	public int crearPreguntaOpcionUnica(int idEncuesta, String enunciado, boolean ordenada) throws IllegalArgumentException {
+		int idPregunta = nextId;
+		nextId++;
+		Pregunta p = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, ordenada);
 		preguntas.put(idPregunta,p);
 		return idPregunta;
 	}

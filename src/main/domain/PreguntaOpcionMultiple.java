@@ -27,8 +27,9 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	 * @param idEncuesta el identificador único de la encuesta en la que se crea la pregunta.
 	 * @param idPregunta el identificador de la pregunta.
 	 * @param enunciado el enunciado de la pregunta.
+	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
 	 */
-	public PreguntaOpcionMultiple(int idEncuesta, int idPregunta, String enunciado) {
+	public PreguntaOpcionMultiple(int idEncuesta, int idPregunta, String enunciado) throws IllegalArgumentException {
 		super(idEncuesta, idPregunta, enunciado);
 		opciones = new ArrayList<String>()
 	}

@@ -15,6 +15,11 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 */
 	private ArrayList<String> opciones;
 
+	/**
+	 * Booleano para indicar si las opciones de la pregunta tienen un orden.
+	 */
+	private boolean ordenada;
+
 
 	/** Constructora **/
 	/**
@@ -22,10 +27,12 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 * @param idEncuesta el identificador único de la encuesta en la que se crea la pregunta.
 	 * @param idPregunta el identificador de la pregunta.
 	 * @param enunciado el enunciado de la pregunta.
+	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
 	 */
-	public PreguntaOpcionUnica(int idEncuesta, int idPregunta, String enunciado) {
+	public PreguntaOpcionUnica(int idEncuesta, int idPregunta, String enunciado, boolean ordenada) throws IllegalArgumentException {
 		super(idEncuesta, idPregunta, enunciado);
 		opciones = new ArrayList<String>()
+		this.ordenada = ordenada;
 	}
 	
 	/** Métodos públicos **/
@@ -51,6 +58,7 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 * @return el string "OpcionUnica".
 	 */
 	@override public String tipoPregunta() {
-		return "OpcionUnica";
+		if(ordenada) return "OpcionUnicaOrdenada";
+		else return "OpcionUnicaNoOrdenada";
 	}
 }
