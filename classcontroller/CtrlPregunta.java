@@ -19,7 +19,7 @@ public class CtrlPregunta {
 	 * estáticos). Para lograrlo, declaramos la constructora como privada y
 	 * añadimos una operación estática que retorne siempre la misma instancia.
 	 * Para acceder a esta instancia lo haremos mediante la llamada
-	 * CtrlAsignaturaFicher.getInstance();
+	 * CtrlPregunta.getInstance();
 	 **/
 
 	

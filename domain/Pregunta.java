@@ -39,8 +39,8 @@ public abstract class Pregunta {
 	 * @throws IllegalArgumentException si el enunciado no es válido.
 	 */
 	public Pregunta(int idEncuesta, int idPregunta, String enunciado) throws IllegalArgumentException {
-		if (enunciado == null or enunciado == "") throw new IllegalArgumentException("Enunciado no válido")
-		this.idEncuesta = encuesta;
+		if (enunciado == null or enunciado == "") throw new IllegalArgumentException("Enunciado no válido");
+		this.idEncuesta = idEncuesta;
 		this.idPregunta = idPregunta;
 		this.enunciado = enunciado;
 		this.idRespuestas = new ArrayList<Integer>();
