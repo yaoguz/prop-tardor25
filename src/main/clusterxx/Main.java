@@ -1,4 +1,4 @@
-package edu.upc.prop.clusterxx;
+package clusterxx;
 
 import com.google.gson.Gson;
 
