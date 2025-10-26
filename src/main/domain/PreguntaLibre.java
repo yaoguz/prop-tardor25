@@ -17,8 +17,9 @@ public class PreguntaLibre extends Pregunta {
 	 * @param idEncuesta el identificador único de la encuesta en la que se crea la pregunta.
 	 * @param idPregunta el identificador de la pregunta.
 	 * @param enunciado el enunciado de la pregunta.
+	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
 	 */
-	public PreguntaLibre(int idEncuesta, int idPregunta, String enunciado) {
+	public PreguntaLibre(int idEncuesta, int idPregunta, String enunciado) throws IllegalArgumentException {
 		super(idEncuesta, idPregunta, enunciado);
 	}
 	
