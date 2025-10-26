@@ -1,53 +1,38 @@
 package classcontroller;
 
+import main.domini.*;
+import java.util.*;
 import static org.junit.Assert.*;
-
-import java.lang.reflect.Field;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
+import java.util.Map;
+
 
 import domain.Usuario;
 
 /**
  * Tests unitarios para la clase CtrlUsuario (implementación singleton).
- * Las pruebas usan reflection para reiniciar el singleton entre tests y mantener
- * aislamiento.
  */
 public class TestCtrlUsuario {
 
     private CtrlUsuario ctrlUsuario;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
-        // Forzar que el singleton se reinicie entre tests para evitar estado compartido
-        Field singletonField = CtrlUsuario.class.getDeclaredField("singletonObject");
-        singletonField.setAccessible(true);
-        // Set the static field to null
-        singletonField.set(null, null);
-
         // Obtener nueva instancia limpia
         ctrlUsuario = CtrlUsuario.getInstance();
 
         // Asegurar que el mapa interno 'usuarios' esté vacío
-        Field usuariosField = CtrlUsuario.class.getDeclaredField("usuarios");
-        usuariosField.setAccessible(true);
-        Map<String, Usuario> usuarios = (Map<String, Usuario>) usuariosField.get(ctrlUsuario);
-        usuarios.clear();
+        assert ctrlUsuario.mapaUsuariosVacio();
         // También limpiar usuarioActivo si existe
-        try {
-            Field activo = CtrlUsuario.class.getDeclaredField("usuarioActivo");
-            activo.setAccessible(true);
-            activo.set(ctrlUsuario, null);
-        } catch (NoSuchFieldException e) {
-            // no pasa nada si no existe
+        String activo = ctrlUsuario.getUsuarioActivo();
+        if (activo != null) {
+            ctrlUsuario.cerrarSesion();
         }
     }
 
     @Test
-    public void testCrearUsuario_Success() {
+    public void testCreaUsuario_CreaUsuarioCorrectamente() {
         String nombre = "testUser";
         String contrasena = "password123";
 
@@ -56,12 +41,12 @@ public class TestCtrlUsuario {
         assertNotNull(u);
         assertEquals(nombre, u.getNomUsuario());
         // getUsuario debe devolver el mismo objeto
-        Usuario fromGet = ctrlUsuario.getUsuario(nombre);
-        assertSame(u, fromGet);
+        Usuario aux = ctrlUsuario.getUsuario(nombre);
+        assertSame(u, aux);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testCrearUsuario_Duplicate_Throws() {
+    public void testCreaUsuario_UsuarioDuplicado_LanzaExcepcion() {
         String nombre = "testUser";
         String contrasena = "password123";
         ctrlUsuario.crearUsuario(nombre, contrasena);
@@ -69,35 +54,50 @@ public class TestCtrlUsuario {
         ctrlUsuario.crearUsuario(nombre, contrasena);
     }
 
+    @Test
+    public void testGetUsuario_GatUsuarioCorrectamente() {
+        String nombre = "testUser";
+        String contrasena = "password123";
+        ctrlUsuario.crearUsuario(nombre, contrasena);
+        Usuario u = ctrlUsuario.getUsuario(nombre);
+        assertNotNull(u);
+        assertEquals(nombre, u.getNomUsuario());
+    }
+
     @Test(expected = IllegalArgumentException.class)
-    public void testGetUsuario_NotFound_Throws() {
+    public void testGetUsuario_UsuarioNoExistente_LanzaExcepcion() {
         ctrlUsuario.getUsuario("noExiste");
     }
 
     @Test
-    public void testIniciarSesion_CorrectPassword_SetsUsuarioActivo() throws Exception {
+    public void testIniciarSesion_IniciaSesionCorrectamente() {
         String nombre = "testUser";
         String contrasena = "password123";
         Usuario u = ctrlUsuario.crearUsuario(nombre, contrasena);
 
         ctrlUsuario.iniciarSesion(nombre, contrasena);
 
-        // Comprobar usuarioActivo mediante reflection
-        Field activo = CtrlUsuario.class.getDeclaredField("usuarioActivo");
-        activo.setAccessible(true);
-        Usuario activoObj = (Usuario) activo.get(ctrlUsuario);
-        assertNotNull(activoObj);
-        assertEquals(nombre, activoObj.getNomUsuario());
-        assertSame(u, activoObj);
+        // Comprobar usuarioActivo 
+        String activo = ctrlUsuario.getUsuarioActivo();
+        assertNotNull(activo);
+        assertEquals(nombre, activo);
     }
 
     @Test
-    public void test() throws Exception {
-        
+    public void testIniciarSesion_ContrasenaIncorrecta() throws Exception {
+        String nombre = "testUser";
+        String contrasena = "password123";
+        Usuario u = ctrlUsuario.crearUsuario(nombre, contrasena);
+
+        ctrlUsuario.iniciarSesion(nombre, "passwordIncorrecta");
+
+        // Comprobar usuarioActivo 
+        String activo = ctrlUsuario.getUsuarioActivo();
+        assertNull(activo);
     }
 
     @Test
-    public void testCerrarSesion_ClearsUsuarioActivo() throws Exception {
+    public void testCerrarSesion_CierraSesionCorrectamente() throws Exception {
         String nombre = "testUser";
         String contrasena = "password123";
         ctrlUsuario.crearUsuario(nombre, contrasena);
@@ -106,9 +106,26 @@ public class TestCtrlUsuario {
         // Cerrar sesion
         ctrlUsuario.cerrarSesion();
 
-        Field activo = CtrlUsuario.class.getDeclaredField("usuarioActivo");
-        activo.setAccessible(true);
-        assertNull(activo.get(ctrlUsuario));
+        String activo = CtrlUsuario.getUsuarioActivo();
+        assertNull(activo);
+    }
+
+    @Test
+    public void testGetUsuarioActivo_HayUsuarioActivo() throws Exception {
+        String nombre = "testUser";
+        String contrasena = "password123";
+        ctrlUsuario.crearUsuario(nombre, contrasena);
+        ctrlUsuario.iniciarSesion(nombre, contrasena);
+
+        String activo = CtrlUsuario.getUsuarioActivo();
+        assertNotNull(activo);
+        assertEquals(nombre, activo);
+    }
+
+    @Test
+    public void testGetUsuarioActivo_NoHayUsuarioActivo() throws Exception {
+        String activo = CtrlUsuario.getUsuarioActivo();
+        assertNull(activo);
     }
 
 }

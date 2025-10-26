@@ -83,5 +83,13 @@ public class CtrlUsuario {
     public String getUsuarioActivo() {
         return usuarioActivo;
     }
+
+    /**
+     * Comprueba si el mapa de usuarios está vacío.
+     * @return {boolean} true si el mapa de usuarios está vacío, false en caso contrario.
+     */
+    public boolean mapaUsuariosVacio() {
+        return usuarios.isEmpty();
+    }
 }
 
