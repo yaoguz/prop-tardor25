@@ -1,25 +1,30 @@
 package domaincontroller;
 
+import main.domini.*;
+import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import classcontroller.CtrlUsuario;
 import persistence.ICtrlPersistence;
 import domain.Usuario;
 
 /**
- * Tests unitarios para CtrlDominioUsuario usando MOCKS.
+ * Tests unitarios para CtrlDominioUsuario usando MOCKS con JUnit 4.
  * 
  * Demuestra cómo usar Mockito para simular dependencias y verificar interacciones.
  * 
  * @author Equipo PROP
- * @version 1.0
+ * @version 2.0 - JUnit 4
  */
+@RunWith(MockitoJUnitRunner.class)
 public class TestCtrlDominioUsuario {
     
     @Mock
@@ -36,8 +41,8 @@ public class TestCtrlDominioUsuario {
      */
     @Before
     public void setUp() {
-        // Inicializar mocks de Mockito
-        MockitoAnnotations.openMocks(this);
+        // Inicializar mocks de Mockito (opcional con @RunWith(MockitoJUnitRunner.class))
+        MockitoAnnotations.initMocks(this);
         
         // Crear el controlador bajo prueba con dependencias mockeadas
         ctrlDominioUsuario = new CtrlDominioUsuario(mockCtrlUsuario, mockPersistence);
