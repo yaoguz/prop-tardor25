@@ -23,7 +23,7 @@ public class TestCtrlUsuario {
         ctrlUsuario = CtrlUsuario.getInstance();
 
         // Asegurar que el mapa interno 'usuarios' esté vacío
-        assert ctrlUsuario.mapaUsuariosVacio();
+        assertTrue("Mapa de usuarios no esta vacia", ctrlUsuario.mapaUsuariosVacio());
         // También limpiar usuarioActivo si existe
         String activo = ctrlUsuario.getUsuarioActivo();
         if (activo != null) {
@@ -41,11 +41,11 @@ public class TestCtrlUsuario {
 
         Usuario u = ctrlUsuario.crearUsuario(nombre, contrasena);
 
-        assertNotNull(u);
-        assertEquals(nombre, u.getNomUsuario());
+        assertNotNull("usuario null", u);
+        assertEquals("nombre usuario diferentes", nombre, u.getNomUsuario());
         // getUsuario debe devolver el mismo objeto
         Usuario aux = ctrlUsuario.getUsuario(nombre);
-        assertSame(u, aux);
+        assertSame("los dos objetos de usuario no son los mismos", u, aux);
     }
 
     /**
@@ -71,8 +71,8 @@ public class TestCtrlUsuario {
         String contrasena = "password123";
         ctrlUsuario.crearUsuario(nombre, contrasena);
         Usuario u = ctrlUsuario.getUsuario(nombre);
-        assertNotNull(u);
-        assertEquals(nombre, u.getNomUsuario());
+        assertNotNull("usuario null", u);
+        assertEquals("nombre de usuario diferentes", nombre, u.getNomUsuario());
     }
 
     /**
@@ -97,8 +97,8 @@ public class TestCtrlUsuario {
 
         // Comprobar usuarioActivo 
         String activo = ctrlUsuario.getUsuarioActivo();
-        assertNotNull(activo);
-        assertEquals(nombre, activo);
+        assertNotNull("usuarioActivo null", activo);
+        assertEquals("nombre de usuario diferentes", nombre, activo);
     }
 
     /**
@@ -115,7 +115,7 @@ public class TestCtrlUsuario {
 
         // Comprobar usuarioActivo 
         String activo = ctrlUsuario.getUsuarioActivo();
-        assertNull(activo);
+        assertNull("usuarioActivo no null", activo);
     }
 
     /**
@@ -135,8 +135,8 @@ public class TestCtrlUsuario {
         ctrlUsuario.iniciarSesion(nombre2, contrasena2);
 
         String activo = ctrlUsuario.getUsuarioActivo();
-        assertNull(activo);
-        assertEquals(nombre1, activo);
+        assertNull("usuarioActivo no null", activo);
+        assertEquals("nombre de usuario diferentes", nombre1, activo);
     }
 
     /**
@@ -153,7 +153,7 @@ public class TestCtrlUsuario {
         ctrlUsuario.cerrarSesion();
 
         String activo = ctrlUsuario.getUsuarioActivo();
-        assertNull(activo);
+        assertNull("usuarioActivo no null", activo);
     }
 
     /**
@@ -167,8 +167,8 @@ public class TestCtrlUsuario {
         ctrlUsuario.iniciarSesion(nombre, contrasena);
 
         String activo = ctrlUsuario.getUsuarioActivo();
-        assertNotNull(activo);
-        assertEquals(nombre, activo);
+        assertNotNull("usuarioActivo null", activo);
+        assertEquals("nombre de usuario diferentes", nombre, activo);
     }
 
     /**
@@ -178,7 +178,7 @@ public class TestCtrlUsuario {
     @Test
     public void testGetUsuarioActivo_NoHayUsuarioActivo(){
         String activo = ctrlUsuario.getUsuarioActivo();
-        assertNull(activo);
+        assertNull("usuarioActivo no null", activo);
     }
 
 }

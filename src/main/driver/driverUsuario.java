@@ -1,5 +1,17 @@
 package driver;
 
+import main.domini.*;
+import java.util.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import java.util.Scanner;
 import classcontroller.CtrlUsuario;
 import classcontroller.CtrlEncuesta;
@@ -17,18 +29,22 @@ import domaincontroller.CtrlDominioUsuario;
  * @author Equipo PROP
  * @version 1.0
  */
+@RunWith(MockitoJUnitRunner.class)
 public class DriverUsuario {
-    
-    private static CtrlDominioUsuario ctrlDominioUsuario;
+    @Mock
+    private CtrlUsuario mockCtrlUsuario;
+    @Mock
+    private static CtrlDominioUsuario mockCtrlDominioUsuario;
+
     private static Scanner scanner;
     private static String usuarioActual = null; // Usuario con sesión iniciada
     
     public static void main(String[] args) {
         // Inicializar dependencias (capa real, no mocks)
-        CtrlUsuario ctrlUsuario = new CtrlUsuario();
+        CtrlUsuario mockCtrlUsuario = new CtrlUsuario();
         CtrlPersistence ctrlPersistence = new CtrlPersistence();
-        
-        ctrlDominioUsuario = new CtrlDominioUsuario(ctrlUsuario, ctrlPersistence);
+
+        mockCtrlDominioUsuario = new CtrlDominioUsuario(mockCtrlUsuario, ctrlPersistence);
         scanner = new Scanner(System.in);
         
         boolean salir = false;
@@ -92,7 +108,7 @@ public class DriverUsuario {
         String confirmacion = scanner.nextLine();
         
         try {
-            String resultado = ctrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
+            String resultado = mockCtrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
             System.out.println("\n" + resultado);
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
@@ -112,8 +128,7 @@ public class DriverUsuario {
         String contrasena = scanner.nextLine();
         
         try {
-            boolean exito = ctrlDominioUsuario.iniciarSesion(nomUsuario, contrasena);
-            
+            boolean exito = mockCtrlDominioUsuario.iniciarSesion(nomUsuario, contrasena);
             if (exito) {
                 usuarioActual = nomUsuario;
                 System.out.println("\nSesión iniciada correctamente. Bienvenido, " + nomUsuario + "!");
@@ -139,7 +154,7 @@ public class DriverUsuario {
         String nuevaContrasena = scanner.nextLine();
         
         try {
-            ctrlDominioUsuario.modificarContrasena(usuarioActual, nuevaContrasena);
+            mockCtrlDominioUsuario.modificarContrasena(usuarioActual, nuevaContrasena);
             System.out.println("\nContraseña modificada correctamente.");
         } catch (Exception e) {
             System.out.println("\nError: " + e.getMessage());
@@ -156,7 +171,7 @@ public class DriverUsuario {
         }
         
         try {
-            ctrlDominioUsuario.cerrarSesion(usuarioActual);
+            mockCtrlDominioUsuario.cerrarSesion(usuarioActual);
             System.out.println("\nSesión cerrada correctamente. Hasta pronto, " + usuarioActual + "!");
             usuarioActual = null;
         } catch (Exception e) {
