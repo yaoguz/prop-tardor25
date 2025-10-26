@@ -39,10 +39,26 @@ public class DriverEncuesta {
 
         boolean salir = false;
 
-        System.out.println("    DRIVER - CONTROLADOR DE ENCUESTA          ");
-        System.out.println("----------------------------------------------");
+        System.out.println("DRIVER - CONTROLADOR DE ENCUESTA");
 
         while (!salir) {
-            inicio();
+            mostrarMenu();
+
+        }
+    }
+
+    private static void mostrarMenu() {
+        System.out.println("\nMENÚ PRINCIPAL");
+        System.out.println("1. Registrar usuario");
+        System.out.println("2. Iniciar sesión");
+        System.out.println("3. Modificar contraseña");
+        System.out.println("4. Cerrar sesión");
+        System.out.println("0. Salir");
+        
+        if (usuarioActual != null) {
+            System.out.println("Sesión activa: " + usuarioActual);
+        }
+        
+        System.out.print("\nSelecciona una opción: ");
     }
 }
