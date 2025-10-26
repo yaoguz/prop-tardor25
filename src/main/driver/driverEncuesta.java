@@ -8,6 +8,8 @@ import classcontroller.CtrlPregunta;
 import classcontroller.CtrlRespuesta;
 import persistence.CtrlPersistence;
 import domaincontroller.CtrlDominioUsuario;
+import domain.Encuesta;
+import domain.Usuario;
 
 /**
  * Driver interactivo para probar CtrlDominioEncuesta.
@@ -23,6 +25,7 @@ import domaincontroller.CtrlDominioUsuario;
 public class DriverEncuesta {
     private static CtrlDominioEncuesta ctrlDominioEncuesta;
     private static Scanner scanner;
+
     /*
     Al principio tendrá una encuesta por defecto para que pueda interactuar con ella
     sin tener que darle siempre a la opcion de crear encuesta
