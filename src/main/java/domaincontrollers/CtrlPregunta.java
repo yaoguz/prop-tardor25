@@ -1,5 +1,5 @@
 
-package classcontroller;
+package domaincontrollers;
 
 import java.util.HashMap;
 import java.util.Map;

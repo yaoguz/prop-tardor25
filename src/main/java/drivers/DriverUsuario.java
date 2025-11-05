@@ -1,12 +1,13 @@
-package driver;
+package drivers;
 
 import java.util.Scanner;
-import classcontroller.CtrlUsuario;
-import classcontroller.CtrlEncuesta;
-import classcontroller.CtrlPregunta;
-import classcontroller.CtrlRespuesta;
-import persistence.CtrlPersistence;
-import domaincontroller.CtrlDominioUsuario;
+
+import domaincontrollers.CtrlDominioUsuario;
+import domaincontrollers.CtrlEncuesta;
+import domaincontrollers.CtrlPregunta;
+import domaincontrollers.CtrlRespuesta;
+import domaincontrollers.CtrlUsuario;
+import persistence.GestorPersistencia;
 
 /**
  * Driver interactivo para probar CtrlDominioUsuario.
@@ -28,7 +29,7 @@ public class DriverUsuario {
     public static void main(String[] args) {
         // Inicializar dependencias (capa real, no mocks)
         CtrlUsuario ctrlUsuario = new CtrlUsuario();
-        CtrlPersistence ctrlPersistence = new CtrlPersistence();
+        GestorPersistencia ctrlPersistence = new GestorPersistencia();
 
         ctrlDominioUsuario = new CtrlDominioUsuario(ctrlUsuario, ctrlPersistence);
         scanner = new Scanner(System.in);

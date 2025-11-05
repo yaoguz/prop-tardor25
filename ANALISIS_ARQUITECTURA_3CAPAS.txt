@@ -1,0 +1,470 @@
+================================================================================
+                  ANALISIS DE ARQUITECTURA - 3 CAPAS PROP
+================================================================================
+
+SITUACION ACTUAL vs ARQUITECTURA CORRECTA
+================================================================================
+
+PROBLEMA PRINCIPAL: Confusion de nomenclaturas y capas
+
+VUESTRA ESTRUCTURA:                    ARQUITECTURA CORRECTA (PDF):
+----------------------                 -----------------------------
+domain/                                [Clases del modelo]
+  - Usuario, Encuesta, etc.              - Jugador (equivale a Usuario)
+
+classcontroller/                       [NO EXISTE EN EL EJEMPLO]
+  - CtrlUsuario                          
+  - CtrlEncuesta                       
+  - CtrlPregunta                       
+  - CtrlRespuesta                      
+
+domaincontroller/                      [Controladores del dominio]
+  - CtrlDominio (facade)                 - CtrlDominio
+  - CtrlDominioUsuario                   - CtrlDominioMantJugador
+  - CtrlDominioEncuesta                
+  - CtrlDominioPregunta                
+  - CtrlDominioRespuesta               
+  - CtrlDominioPerfil                  
+
+persistence/                           [Gestor de datos]
+  - CtrlPersistence (STUB)               - GestorJugador (en el PDF: "no incluida")
+
+presentation/                          [Presentacion]
+  - CtrlPresentacion                     - CtrlPresentacion
+
+
+================================================================================
+DIAGNOSTICO: QUE ESTA MAL Y QUE ESTA BIEN
+================================================================================
+
+BIEN:
+-----
+✓ Separacion en 3 capas (domain, presentation, persistence)
+✓ Patron Singleton en controladores
+✓ CtrlPersistence es un STUB (simula disco con HashMap)
+✓ CtrlDominio como facade que orquesta
+✓ Clases de dominio (Usuario, Encuesta) bien definidas
+
+MAL / CONFUSO:
+--------------
+✗ NOMBRE INCORRECTO: "classcontroller" -> deberia ser parte de DOMINIO
+✗ LOGICA INCORRECTA: CtrlUsuario, CtrlEncuesta NO son "controladores de clase"
+✗ COMPARACION CON PDF:
+    - CtrlUsuario = CtrlDominioMantJugador (logica + datos)
+    - CtrlDominioUsuario = logica adicional de validacion/negocio
+    
+✗ SOBREGRANULARIDAD: Teneis 2 niveles de controladores cuando solo hace falta 1
+✗ CtrlDominio (facade) + CtrlDominioXXX + CtrlXXX -> demasiadas capas
+
+
+================================================================================
+ESTRUCTURA CORRECTA SEGUN PDF (3 CAPAS PROP)
+================================================================================
+
+CAPA 1: PRESENTACION
+---------------------
+presentation/
+  - CtrlPresentacion.java
+      * Interaccion con usuario
+      * NO imprime nada de logica, solo UI
+      * Solo llama a CtrlDominio
+
+CAPA 2: DOMINIO (logica + datos en memoria)
+--------------------------------------------
+domaincontroller/
+  - CtrlDominio.java              [Facade - punto de entrada]
+  
+  - CtrlDominioUsuario.java       [= CtrlDominioMantJugador del PDF]
+      * Logica de negocio de usuarios
+      * Gestiona TreeMap<String, Usuario>
+      * Metodos: altaUsuario(), bajaUsuario(), consultaUsuarios()
+      * Validaciones de negocio
+      
+  - CtrlDominioEncuesta.java      [Similar a MantJugador]
+      * Logica de negocio de encuestas
+      * Gestiona TreeMap<Integer, Encuesta>
+      * CRUD completo de encuestas
+      
+  - CtrlDominioPregunta.java
+  - CtrlDominioRespuesta.java
+  - CtrlDominioPerfil.java
+
+domain/
+  - Usuario.java                  [= Jugador.java del PDF]
+  - Encuesta.java
+  - Pregunta.java, Respuesta.java, etc.
+
+CAPA 3: PERSISTENCIA (simulada con STUB)
+-----------------------------------------
+persistence/
+  - GestorPersistencia.java       [= GestorJugador del PDF]
+      * Simula lectura/escritura a disco
+      * Metodos: cargar(), guardar()
+      * HashMap que simula ficheros
+
+
+================================================================================
+QUE HACER: CAMBIOS NECESARIOS
+================================================================================
+
+OPCION 1: SIMPLIFICAR (Recomendado - mas cercano al PDF)
+---------------------------------------------------------
+
+1. ELIMINAR carpeta "classcontroller/"
+   - Mover logica a CtrlDominioXXX correspondiente
+
+2. REFACTORIZAR CtrlDominioUsuario:
+   - Anadir atributo: private TreeMap<String, Usuario> usuarios;
+   - Mover metodos de CtrlUsuario aqui (crearUsuario, getUsuario, etc.)
+   - Este controlador gestiona TODO de usuarios (logica + datos)
+
+3. IGUAL para CtrlDominioEncuesta, CtrlDominioPregunta, etc.
+
+4. RENOMBRAR CtrlPersistence -> GestorPersistencia
+   - Es mas claro que es un "Gestor" (simula disco)
+   - Solo se llama al inicio (cargar) y al final (guardar)
+
+5. CtrlDominio queda como FACADE:
+   - Delega en CtrlDominioXXX
+   - NO gestiona colecciones directamente
+
+
+OPCION 2: MANTENER ESTRUCTURA ACTUAL (mas trabajo)
+---------------------------------------------------
+
+SI quereis mantener "classcontroller/":
+
+1. RENOMBRAR "classcontroller/" -> "datacontroller/" o "repository/"
+   - Nombre mas claro de su funcion
+
+2. JUSTIFICAR en documentacion:
+   - "Separamos logica (CtrlDominioXXX) de gestion de datos (CtrlXXX)"
+   - "Patron Repository para abstraer persistencia"
+
+3. ACLARAR responsabilidades:
+   - CtrlUsuario: SOLO CRUD basico (get, put, remove del Map)
+   - CtrlDominioUsuario: validaciones, reglas de negocio
+
+4. PROBLEMA: El PDF NO tiene esta separacion -> justificar bien
+
+
+================================================================================
+ORGANIZACION DE FICHEROS CON GRADLE
+================================================================================
+
+ESTRUCTURA ACTUAL (parece correcta):
+------------------------------------
+src/
+  main/
+    domain/                  -> Clases del modelo
+    domaincontroller/        -> Logica de negocio
+    classcontroller/         -> [ELIMINAR o RENOMBRAR]
+    persistence/             -> Stub de persistencia
+    presentation/            -> UI
+    driver/                  -> Drivers para 1er lliurament
+  test/
+    domain/                  -> Tests de clases modelo
+    domaincontroller/        -> Tests de controladores
+
+driver/                      -> [DUPLICADO? eliminar si esta en src/main/driver]
+
+
+ORGANIZACION CORRECTA:
+----------------------
+src/
+  main/
+    java/
+      domain/                      -> Usuario.java, Encuesta.java, etc.
+      domaincontroller/            -> CtrlDominio.java, CtrlDominioUsuario.java
+      persistence/                 -> GestorPersistencia.java (STUB)
+      presentation/                -> CtrlPresentacion.java, vistas
+      driver/                      -> DriverUsuario.java, DriverEncuesta.java
+      
+  test/
+    java/
+      domain/                      -> TestUsuario.java
+      domaincontroller/            -> TestCtrlDominioUsuario.java
+
+
+NOTA GRADLE:
+- Si usais "src/main/domain/" (sin "java/") Gradle lo detecta igual
+- Pero lo ESTANDAR es "src/main/java/domain/"
+
+
+================================================================================
+COMPARACION DIRECTA: VUESTRO CODIGO vs PDF
+================================================================================
+
+PDF: CtrlDominioMantJugador
+----------------------------
+private TreeMap<Integer, Jugador> Jugadores;
+
+public int altaJugador(int idj, Vector<String> datos) {
+    if (existeJugador(idj)) return 1;
+    Jugador newj = new Jugador();
+    newj.setId(idj);
+    newj.setNombre(datos.get(0));
+    Jugadores.put(Integer.valueOf(idj), newj);
+    return 0;
+}
+
+public Vector<String> consultaJugadores() {
+    // devuelve todos los jugadores
+}
+
+
+VUESTRO CODIGO ACTUAL (INCORRECTO):
+------------------------------------
+CtrlUsuario (en classcontroller/):
+    private Map<String, Usuario> usuarios;
+    public Usuario crearUsuario(String nomU, String contrasena) { ... }
+
+CtrlDominioUsuario (en domaincontroller/):
+    private CtrlUsuario ctrlUsuario;
+    public String registrarUsuario(...) {
+        // validaciones
+        ctrlUsuario.crearUsuario(...);
+    }
+
+--> PROBLEMA: Doble capa innecesaria
+
+
+SOLUCION (como el PDF):
+-----------------------
+CtrlDominioUsuario:
+    private TreeMap<String, Usuario> usuarios;
+    
+    public String altaUsuario(String nomU, String contrasena) {
+        // validaciones de negocio
+        if (usuarios.containsKey(nomU)) throw UsuarioYaExisteException;
+        Usuario u = new Usuario(nomU, contrasena);
+        usuarios.put(nomU, u);
+        return nomU;
+    }
+    
+    public boolean iniciarSesion(String nomU, String contrasena) {
+        Usuario u = usuarios.get(nomU);
+        if (u == null) throw UsuarioNoExisteException;
+        return u.checkContrasena(contrasena);
+    }
+
+
+================================================================================
+PERSISTENCIA: COMO DEBE FUNCIONAR (segun notas de clase)
+================================================================================
+
+VUESTRA IMPLEMENTACION ACTUAL:
+-------------------------------
+CtrlPersistence es un STUB con HashMaps -> CORRECTO para 1er lliurament
+
+persistence.CtrlPersistence:
+    private Map<String, Usuario> usuarios;
+    private Map<Integer, Encuesta> encuestas;
+    // Simula disco en memoria
+
+CtrlDominio llama a ctrlPersistence.guardarUsuario(), etc.
+
+
+ARQUITECTURA CORRECTA (segun PDF + notas):
+-------------------------------------------
+1. STUB para el 1er lliurament (ya lo teneis)
+2. En el futuro: GestorPersistencia lee/escribe ficheros JSON/XML
+
+GestorPersistencia:
+    public void cargar() {
+        // Lee ficheros del disco
+        // Llena las estructuras en CtrlDominioXXX
+    }
+    
+    public void guardar() {
+        // Escribe ficheros al disco
+    }
+
+CtrlDominio:
+    public void inicializar() {
+        gestorPersistencia.cargar();  // Al inicio
+    }
+    
+    public void cerrar() {
+        gestorPersistencia.guardar();  // Al salir
+    }
+
+
+================================================================================
+RESUMEN EJECUTIVO: QUE MODIFICAR
+================================================================================
+
+CRITICO (para que cuadre con el PDF):
+--------------------------------------
+1. DECISION: Eliminar "classcontroller/" y fusionar con "domaincontroller/"
+   - Mueve la logica de CtrlUsuario a CtrlDominioUsuario
+   - Mueve la logica de CtrlEncuesta a CtrlDominioEncuesta
+   - etc.
+
+2. RENOMBRAR: CtrlPersistence -> GestorPersistencia
+   - Mas claro que es un "Gestor" de datos
+
+3. SIMPLIFICAR jerarquia:
+   Presentacion -> CtrlDominio -> CtrlDominioXXX -> GestorPersistencia
+
+
+IMPORTANTE (para documentacion):
+---------------------------------
+4. JAVADOC: Documentar claramente responsabilidades de cada capa
+5. DIAGRAMA DE CLASES: Mostrar las 3 capas claramente
+6. README: Explicar estructura elegida y por que
+
+
+OPCIONAL (mejoras):
+-------------------
+7. Mover "src/main/domain/" -> "src/main/java/domain/" (estandar Gradle)
+8. Eliminar carpeta "driver/" en raiz (duplicada)
+9. Singleton de GestorPersistencia (como en CtrlUsuario)
+
+
+================================================================================
+EJEMPLO CONCRETO: REFACTORIZACION DE USUARIO
+================================================================================
+
+ANTES (estructura actual - 2 capas):
+-------------------------------------
+// classcontroller/CtrlUsuario.java
+public class CtrlUsuario {
+    private Map<String, Usuario> usuarios;
+    public Usuario crearUsuario(String nomU, String contrasena) { ... }
+    public Usuario getUsuario(String nomUsuario) { ... }
+}
+
+// domaincontroller/CtrlDominioUsuario.java
+public class CtrlDominioUsuario {
+    private CtrlUsuario ctrlUsuario;
+    public String registrarUsuario(String nomU, String pass, String confirmPass) {
+        // validaciones
+        ctrlUsuario.crearUsuario(nomU, pass);
+    }
+}
+
+
+DESPUES (estructura correcta - 1 capa):
+----------------------------------------
+// domaincontroller/CtrlDominioUsuario.java
+public class CtrlDominioUsuario {
+    private TreeMap<String, Usuario> usuarios;
+    private GestorPersistencia gestorPersistencia;
+    
+    public CtrlDominioUsuario(GestorPersistencia gestor) {
+        this.gestorPersistencia = gestor;
+        this.usuarios = new TreeMap<>();
+    }
+    
+    public String altaUsuario(String nomU, String contrasena, String confirmPass) {
+        // Validaciones de negocio
+        if (nomU == null || nomU.isEmpty()) 
+            throw new IllegalArgumentException("Nombre vacio");
+        if (!contrasena.equals(confirmPass))
+            throw new IllegalArgumentException("Contrasenas no coinciden");
+        if (usuarios.containsKey(nomU))
+            throw new UsuarioYaExisteException("Usuario ya existe");
+        
+        // Crear usuario
+        Usuario u = new Usuario(nomU, contrasena);
+        usuarios.put(nomU, u);
+        
+        // Persistir (opcional, o al final del programa)
+        gestorPersistencia.guardarUsuario(u);
+        
+        return nomU;
+    }
+    
+    public boolean iniciarSesion(String nomU, String contrasena) {
+        Usuario u = usuarios.get(nomU);
+        if (u == null) throw new UsuarioNoExisteException();
+        return u.checkContrasena(contrasena);
+    }
+    
+    public Vector<String> consultaUsuarios() {
+        Vector<String> resultado = new Vector<>();
+        for (Usuario u : usuarios.values()) {
+            resultado.add(u.getNombre());
+        }
+        return resultado;
+    }
+}
+
+
+================================================================================
+DRIVERS Y TESTS: COMO ORGANIZARLOS
+================================================================================
+
+ESTRUCTURA ACTUAL vs CORRECTA:
+-------------------------------
+
+driver/                          -> [Drivers para testing manual]
+  - DriverUsuario.java               ✓ Correcto
+  - DriverEncuesta.java              ✓ Correcto
+  - DriverRespuesta.java             ✓ Correcto
+
+src/test/
+  domain/                        -> [Tests unitarios automaticos]
+    - TestUsuario.java               ✓ Correcto
+  domaincontroller/
+    - TestCtrlDominioUsuario.java    ✓ Correcto
+
+
+DIFERENCIA (segun notas de clase):
+-----------------------------------
+DRIVER:
+  - Testing MANUAL con menu interactivo
+  - Un driver por cada controlador de dominio
+  - Para el 1er lliurament
+  - Usa mocks para aislar funcionalidad
+
+TEST:
+  - Testing AUTOMATICO con JUnit
+  - Casos positivos y negativos
+  - Siempre mismo resultado
+  - Cobertura de todas las funcionalidades
+
+
+IMPORTANTE:
+-----------
+- Los drivers usan MOCKS (Mockito) para aislar
+- Los tests unitarios tambien usan mocks para controladores
+- Tests de dominio (Usuario.java) NO usan mocks (logica pura)
+
+
+================================================================================
+CONCLUSION: PASOS A SEGUIR
+================================================================================
+
+1. DECIDIR:
+   a) Simplificar (eliminar classcontroller) - RECOMENDADO
+   b) Mantener estructura actual pero justificar bien
+
+2. SI OPCION A (simplificar):
+   - Mover codigo de CtrlUsuario a CtrlDominioUsuario
+   - Eliminar carpeta classcontroller/
+   - Actualizar imports en todo el proyecto
+   - Renombrar CtrlPersistence -> GestorPersistencia
+
+3. DOCUMENTAR:
+   - Actualizar diagramas de clases UML
+   - JavaDoc completo
+   - README con explicacion de arquitectura
+
+4. GRADLE:
+   - Opcional: mover a src/main/java/ (estandar)
+   - Funciona igual sin el cambio
+
+5. TESTS:
+   - Actualizar tests para nueva estructura
+   - Verificar que compila todo
+
+
+TIEMPO ESTIMADO: 2-3 horas de refactorizacion
+BENEFICIO: Arquitectura clara y alineada con lo que pide el profesor
+
+
+================================================================================
+FIN DEL ANALISIS
+================================================================================

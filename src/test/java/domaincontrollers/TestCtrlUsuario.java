@@ -1,4 +1,4 @@
-package classcontroller;
+package domaincontrollers;
 
 import main.domini.*;
 import java.util.*;
@@ -9,6 +9,7 @@ import java.util.Map;
 
 
 import domain.Usuario;
+import domaincontrollers.CtrlUsuario;
 
 /**
  * Tests unitarios para la clase CtrlUsuario (implementación singleton).

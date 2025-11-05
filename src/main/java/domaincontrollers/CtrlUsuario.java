@@ -1,5 +1,5 @@
 
-package classcontroller;
+package domaincontrollers;
 
 import domain.Usuario;
 import java.util.HashMap;

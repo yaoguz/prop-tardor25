@@ -12,12 +12,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import classcontroller.CtrlUsuario;
-import classcontroller.CtrlEncuesta;
-import classcontroller.CtrlPregunta;
-import classcontroller.CtrlRespuesta;
-import persistence.ICtrlPersistence;
+import persistence.IGestorPersistencia;
 import domain.Usuario;
+import domaincontrollers.CtrlDominioEncuesta;
+import domaincontrollers.CtrlDominioPregunta;
+import domaincontrollers.CtrlEncuesta;
+import domaincontrollers.CtrlPregunta;
+import domaincontrollers.CtrlRespuesta;
+import domaincontrollers.CtrlUsuario;
 import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
@@ -46,7 +48,7 @@ public class TestCtrlDominioEncuesta {
     private CtrlRespuesta mockCtrlRespuesta;
     
     @Mock
-    private ICtrlPersistence mockPersistence;
+    private IGestorPersistencia mockPersistence;
     
     private CtrlDominioEncuesta ctrlDominioEncuesta;
     

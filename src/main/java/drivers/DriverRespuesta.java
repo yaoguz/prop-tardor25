@@ -1,11 +1,15 @@
-package driver;
+package drivers;
 
 import java.util.Scanner;
 import java.util.Set;
 import java.util.HashSet;
 import domain.*;
+import domaincontrollers.CtrlDominioRespuesta;
+import domaincontrollers.CtrlPregunta;
+import domaincontrollers.CtrlRespuesta;
+import domaincontrollers.CtrlUsuario;
 import classcontroller.*;
-import domaincontroller.CtrlDominioRespuesta;
+
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 

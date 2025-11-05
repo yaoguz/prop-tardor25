@@ -1,16 +1,13 @@
-package domaincontroller;
+package domaincontrollers;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import classcontroller.CtrlEncuesta;
-import classcontroller.CtrlPregunta;
-
 import domain.Encuesta;
 import domain.Pregunta;
 
-import persistence.CtrlPersistence;
+import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de preguntas.
@@ -29,7 +26,7 @@ public class CtrlDominioPregunta {
 	
 	private CtrlEncuesta ctrlEncuesta;
 	private CtrlPregunta ctrlPregunta;
-	private CtrlPersistence ctrlPersistence;
+	private GestorPersistencia gestorPersistencia;
 
 	/** Constructor **/
 
@@ -38,13 +35,13 @@ public class CtrlDominioPregunta {
 	 * 
 	 * @param ctrlEncuesta Controlador de encuestas
 	 * @param ctrlPregunta Controlador de preguntas
-	 * @param ctrlPersistence Controlador de persistencia
+	 * @param gestorPersistencia Controlador de persistencia
 	 */
 	public CtrlDominioPregunta(CtrlEncuesta ctrlEncuesta, CtrlPregunta ctrlPregunta,
-	                            CtrlPersistence ctrlPersistence) {
+	                            GestorPersistencia gestorPersistencia) {
 		this.ctrlEncuesta = ctrlEncuesta;
 		this.ctrlPregunta = ctrlPregunta;
-		this.ctrlPersistence = ctrlPersistence;
+		this.gestorPersistencia = gestorPersistencia;
 	}
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================
@@ -73,7 +70,7 @@ public class CtrlDominioPregunta {
                   infoP.tipo, infoP.atributosEspecificos);
 
 		e.guardarIdPregunta(idP);
-		ctrlPersistence.guardarPregunta(ctrlPregunta.getPregunta(idP));
+		gestorPersistencia.guardarPregunta(ctrlPregunta.getPregunta(idP));
 		return idP;
 	}
 	
@@ -191,7 +188,7 @@ public class CtrlDominioPregunta {
 		e.eliminarIdPregunta(idPregunta);
 		
 		// eliminar de persistencia y del controlador
-		ctrlPersistence.eliminarPregunta(idPregunta);
+		gestorPersistencia.eliminarPregunta(idPregunta);
 		ctrlPregunta.eliminar(p);
 	}
 
@@ -210,7 +207,7 @@ public class CtrlDominioPregunta {
 		// NOTA: Esta es una solución temporal. Idealmente debería inyectarse CtrlDominioRespuesta
 		// Por ahora, solo eliminamos las referencias
 		for (Integer idR : idRespuestas) {
-			ctrlPersistence.eliminarRespuesta(idR);
+			gestorPersistencia.eliminarRespuesta(idR);
 		}
 		
 		// eliminar la pregunta de la encuesta
@@ -219,7 +216,7 @@ public class CtrlDominioPregunta {
 		e.eliminarIdPregunta(idPregunta);
 		
 		// eliminar de persistencia y del controlador
-		ctrlPersistence.eliminarPregunta(idPregunta);
+		gestorPersistencia.eliminarPregunta(idPregunta);
 		ctrlPregunta.eliminar(p);
 	}
 }

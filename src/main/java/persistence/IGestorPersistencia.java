@@ -12,7 +12,7 @@ import domain.Respuesta;
  * @author Equipo PROP
  * @version 1.0
  */
-public interface ICtrlPersistence {
+public interface IGestorPersistencia {
     
     // ==================== GESTIÓN DE USUARIOS ====================
     

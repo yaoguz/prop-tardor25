@@ -12,9 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import classcontroller.CtrlUsuario;
-import persistence.ICtrlPersistence;
+import persistence.IGestorPersistencia;
 import domain.Usuario;
+import domaincontrollers.CtrlDominioUsuario;
+import domaincontrollers.CtrlUsuario;
 
 /**
  * Tests unitarios para CtrlDominioUsuario usando MOCKS con JUnit 4.
@@ -31,7 +32,7 @@ public class TestCtrlDominioUsuario {
     private CtrlUsuario mockCtrlUsuario;
     
     @Mock
-    private ICtrlPersistence mockPersistence;
+    private IGestorPersistencia mockPersistence;
     
     private CtrlDominioUsuario ctrlDominioUsuario;
     

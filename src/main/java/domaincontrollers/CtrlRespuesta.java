@@ -1,5 +1,5 @@
 
-package classcontroller;
+package domaincontrollers;
 
 import domain.Encuesta;
 import domain.Usuario;

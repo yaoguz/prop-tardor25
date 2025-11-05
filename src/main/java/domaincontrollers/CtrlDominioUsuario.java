@@ -1,8 +1,7 @@
-package domaincontroller;
+package domaincontrollers;
 
-import classcontroller.CtrlUsuario;
 import domain.Usuario;
-import persistence.CtrlPersistence;
+import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de usuarios.
@@ -21,7 +20,7 @@ public class CtrlDominioUsuario {
 	/** Atributos - Controladores de clase **/
 	
 	private CtrlUsuario ctrlUsuario;
-	private CtrlPersistence ctrlPersistence;
+	private GestorPersistencia gestorPersistencia;
 
 	/** Constructor **/
 
@@ -29,11 +28,11 @@ public class CtrlDominioUsuario {
 	 * Constructora. Inicializa los controladores necesarios.
 	 * 
 	 * @param ctrlUsuario Controlador de usuarios
-	 * @param ctrlPersistence Controlador de persistencia
+	 * @param gestorPersistencia Controlador de persistencia
 	 */
-	public CtrlDominioUsuario(CtrlUsuario ctrlUsuario, CtrlPersistence ctrlPersistence) {
+	public CtrlDominioUsuario(CtrlUsuario ctrlUsuario, GestorPersistencia gestorPersistencia) {
 		this.ctrlUsuario = ctrlUsuario;
-		this.ctrlPersistence = ctrlPersistence;
+		this.gestorPersistencia = gestorPersistencia;
 	}
 
 	// ==================== GESTIÓN DE USUARIOS ====================
@@ -47,7 +46,7 @@ public class CtrlDominioUsuario {
 	 * @return Nombre de usuario creado
 	 * @throws IllegalArgumentException si algún campo está vacío o tiene formato incorrecto
 	 * @throws IllegalStateException si las contraseñas no coinciden
-	 * @throws IllegalStateException si ya existe un usuario con el mismo nombre (desde CtrlPersistence)
+	 * @throws IllegalStateException si ya existe un usuario con el mismo nombre (desde gestorPersistencia)
 	 */
 	public String registrarUsuario(String nomU, String contrasena, String confirmCont) {
 		// comprobar campos vacíos
@@ -76,7 +75,7 @@ public class CtrlDominioUsuario {
 		
 		// crear usuario
 		Usuario u = ctrlUsuario.crearUsuario(nomU, contrasena);
-		ctrlPersistence.guardarUsuario(u); // (puede lanzar exc si ya existe)
+		gestorPersistencia.guardarUsuario(u); // (puede lanzar exc si ya existe)
 		return u.getNomUsuario();
 	}
 	
@@ -92,7 +91,7 @@ public class CtrlDominioUsuario {
 	public boolean iniciarSesion(String nomU, String contrasena) {
 		// validar que el usuario existe (puede lanzar exc)
 		// cargar desde persistencia si es necesario
-		Usuario u = ctrlPersistence.cargarUsuario(nomU);
+		Usuario u = gestorPersistencia.cargarUsuario(nomU);
 		
 		if (u == null) {
 			throw new IllegalArgumentException("Usuario no existente");
@@ -127,6 +126,6 @@ public class CtrlDominioUsuario {
 		u.newContrasena(newContrasena); // puede lanzar exc: newContrasena es igual a la actual
 		
 		// actualizar en persistencia
-		ctrlPersistence.actualizarUsuario(u);
+		gestorPersistencia.actualizarUsuario(u);
 	}
 }

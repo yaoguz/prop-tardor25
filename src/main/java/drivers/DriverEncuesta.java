@@ -1,13 +1,14 @@
-package driver;
+package drivers;
 
 import java.util.Scanner;
 import java.util.ArrayList;
-import classcontroller.CtrlUsuario;
-import classcontroller.CtrlEncuesta;
-import classcontroller.CtrlPregunta;
-import classcontroller.CtrlRespuesta;
+
 import persistence.CtrlPersistence;
 import domaincontroller.CtrlDominioUsuario;
+import domaincontrollers.CtrlEncuesta;
+import domaincontrollers.CtrlPregunta;
+import domaincontrollers.CtrlRespuesta;
+import domaincontrollers.CtrlUsuario;
 import domain.Encuesta;
 import domain.Usuario;
 

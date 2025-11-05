@@ -1,4 +1,4 @@
-package domaincontroller;
+package domaincontrollers;
 
 import java.io.File;
 import java.util.HashMap;
@@ -7,17 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import classcontroller.CtrlUsuario;
-import classcontroller.CtrlEncuesta;
-import classcontroller.CtrlPregunta;
-import classcontroller.CtrlRespuesta;
-
 import domain.Usuario;
 import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
 
-import persistence.CtrlPersistence;
+import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de encuestas.
@@ -40,7 +35,7 @@ public class CtrlDominioEncuesta {
 	private CtrlEncuesta ctrlEncuesta;
 	private CtrlPregunta ctrlPregunta;
 	private CtrlRespuesta ctrlRespuesta;
-	private CtrlPersistence ctrlPersistence;
+	private GestorPersistencia gestorPersistencia;
 
 	/** Constructor **/
 
@@ -51,16 +46,16 @@ public class CtrlDominioEncuesta {
 	 * @param ctrlEncuesta Controlador de encuestas
 	 * @param ctrlPregunta Controlador de preguntas
 	 * @param ctrlRespuesta Controlador de respuestas
-	 * @param ctrlPersistence Controlador de persistencia
+	 * @param gestorPersistencia Controlador de persistencia
 	 */
 	public CtrlDominioEncuesta(CtrlUsuario ctrlUsuario, CtrlEncuesta ctrlEncuesta,
 	                            CtrlPregunta ctrlPregunta, CtrlRespuesta ctrlRespuesta,
-	                            CtrlPersistence ctrlPersistence) {
+	                            GestorPersistencia gestorPersistencia) {
 		this.ctrlUsuario = ctrlUsuario;
 		this.ctrlEncuesta = ctrlEncuesta;
 		this.ctrlPregunta = ctrlPregunta;
 		this.ctrlRespuesta = ctrlRespuesta;
-		this.ctrlPersistence = ctrlPersistence;
+		this.gestorPersistencia = gestorPersistencia;
 	}
 
 	// ==================== GESTIÓN DE ENCUESTAS ====================
@@ -96,7 +91,7 @@ public class CtrlDominioEncuesta {
 		
 		// guardar en usuario y en persistencia
 		u.guardarIdEncuesta(idE);
-		ctrlPersistence.guardarEncuesta(ctrlEncuesta.getEncuesta(idE));
+		gestorPersistencia.guardarEncuesta(ctrlEncuesta.getEncuesta(idE));
 		return idE;
 	}
 	
@@ -167,7 +162,7 @@ public class CtrlDominioEncuesta {
 		}
 		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
 		e.cambiarTitulo(titulo);
-		ctrlPersistence.actualizarEncuesta(e);
+		gestorPersistencia.actualizarEncuesta(e);
 	}
 	
 	/**
@@ -192,7 +187,7 @@ public class CtrlDominioEncuesta {
 		u.eliminarIdEncuestaCreada(idEncuesta);
 		
 		// eliminar de persistencia y del controlador
-		ctrlPersistence.eliminarEncuesta(idEncuesta);
+		gestorPersistencia.eliminarEncuesta(idEncuesta);
 		ctrlEncuesta.eliminar(e);
 	}
 	
@@ -241,7 +236,7 @@ public class CtrlDominioEncuesta {
                   infoP.tipo, infoP.atributosEspecificos);
 
 		e.guardarIdPregunta(idP);
-		ctrlPersistence.guardarPregunta(ctrlPregunta.getPregunta(idP));
+		gestorPersistencia.guardarPregunta(ctrlPregunta.getPregunta(idP));
 		return idP;
 	}
 }

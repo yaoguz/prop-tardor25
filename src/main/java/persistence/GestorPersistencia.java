@@ -22,7 +22,7 @@ funciones de eliminar
  * Controlador de datos del sistema
  */
 
-public class CtrlPersistence {
+public class GestorPersistencia {
     /** Atributos **/
     /**
      * Mapa que almacena los usuarios existentes del sistema.
@@ -55,7 +55,7 @@ public class CtrlPersistence {
 
     /** Constructor y metodos de inicializacion **/
 
-	public CtrlPersistence() {
+	public GestorPersistencia() {
 		inicializarCtrlPersistence();
 	}
 

@@ -1,8 +1,6 @@
-package domaincontroller;
+package domaincontrollers;
 
 import java.util.List;
-
-import classcontroller.CtrlUsuario;
 
 import domain.Usuario;
 

@@ -1,4 +1,4 @@
-package domaincontroller;
+package domaincontrollers;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,16 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import classcontroller.CtrlUsuario;
-import classcontroller.CtrlRespuesta;
-import classcontroller.CtrlPregunta;
-import classcontroller.CtrlEncuesta;
-
 import domain.Usuario;
 import domain.Respuesta;
 import domain.Pregunta;
 
-import persistence.CtrlPersistence;
+import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de respuestas.
@@ -38,7 +33,7 @@ public class CtrlDominioRespuesta {
 	private CtrlEncuesta ctrlEncuesta;
 	private CtrlPregunta ctrlPregunta;
 	private CtrlRespuesta ctrlRespuesta;
-	private CtrlPersistence ctrlPersistence;
+	private GestorPersistencia gestorPersistencia;
 
 	/** Constructor **/
 
@@ -49,16 +44,16 @@ public class CtrlDominioRespuesta {
 	 * @param ctrlEncuesta Controlador de encuestas
 	 * @param ctrlPregunta Controlador de preguntas
 	 * @param ctrlRespuesta Controlador de respuestas
-	 * @param ctrlPersistence Controlador de persistencia
+	 * @param gestorPersistencia Controlador de persistencia
 	 */
 	public CtrlDominioRespuesta(CtrlUsuario ctrlUsuario, CtrlEncuesta ctrlEncuesta,
 	                             CtrlPregunta ctrlPregunta, CtrlRespuesta ctrlRespuesta,
-	                             CtrlPersistence ctrlPersistence) {
+	                             GestorPersistencia gestorPersistencia) {
 		this.ctrlUsuario = ctrlUsuario;
 		this.ctrlEncuesta = ctrlEncuesta;
 		this.ctrlPregunta = ctrlPregunta;
 		this.ctrlRespuesta = ctrlRespuesta;
-		this.ctrlPersistence = ctrlPersistence;
+		this.gestorPersistencia = gestorPersistencia;
 	}
 
 	// ==================== GESTIÓN DE RESPUESTAS ====================
@@ -111,7 +106,7 @@ public class CtrlDominioRespuesta {
 		p.guardarIdRespuesta(idR);
 		
 		// actualizar en persistencia
-		ctrlPersistence.guardarRespuesta(ctrlRespuesta.getRespuesta(idR));
+		gestorPersistencia.guardarRespuesta(ctrlRespuesta.getRespuesta(idR));
 
 		return idR;
 	}
@@ -131,7 +126,7 @@ public class CtrlDominioRespuesta {
 		r.modificar(newResp); // puede lanzar: TipoIncorrectoException
 		
 		// actualizar en persistencia
-		ctrlPersistence.actualizarRespuesta(r);
+		gestorPersistencia.actualizarRespuesta(r);
 	}
 	
 	/**
@@ -153,7 +148,7 @@ public class CtrlDominioRespuesta {
 		p.eliminarIdRespuesta(idRespuesta);
 		
 		// eliminar de persistencia
-		ctrlPersistence.eliminarRespuesta(idRespuesta);
+		gestorPersistencia.eliminarRespuesta(idRespuesta);
 		
 		// eliminar del controlador (ConjuntoRespuestas)
 		ctrlRespuesta.eliminar(r);

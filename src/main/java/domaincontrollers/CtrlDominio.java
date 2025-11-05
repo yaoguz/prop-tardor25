@@ -1,19 +1,14 @@
-package domaincontroller;
+package domaincontrollers;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import classcontroller.CtrlEncuesta;
-import classcontroller.CtrlPregunta;
-import classcontroller.CtrlUsuario;
-import classcontroller.CtrlRespuesta;
-
 import domain.Pregunta;
 import domain.Respuesta;
 
-import persistence.CtrlPersistence;
+import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio - Actúa como fachada (Facade Pattern) del sistema.
@@ -71,7 +66,7 @@ public class CtrlDominio {
 	private CtrlEncuesta ctrlEncuesta;
 	private CtrlPregunta ctrlPregunta;
 	private CtrlRespuesta ctrlRespuesta;
-	private CtrlPersistence ctrlPersistence;
+	private GestorPersistencia gestorPersistencia;
 
 	/** Atributos - Controladores de dominio especializados **/
 	
@@ -99,15 +94,15 @@ public class CtrlDominio {
 		ctrlEncuesta = CtrlEncuesta.getInstance();
 		ctrlPregunta = CtrlPregunta.getInstance();
 		ctrlRespuesta = CtrlRespuesta.getInstance();
-		ctrlPersistence = CtrlPersistence.getInstace();
+		gestorPersistencia = GestorPersistencia.getInstace();
 		
 		// Inicializar controladores de dominio especializados
-		ctrlDominioUsuario = new CtrlDominioUsuario(ctrlUsuario, ctrlPersistence);
+		ctrlDominioUsuario = new CtrlDominioUsuario(ctrlUsuario, gestorPersistencia);
 		ctrlDominioEncuesta = new CtrlDominioEncuesta(ctrlUsuario, ctrlEncuesta, 
-		                                                ctrlPregunta, ctrlRespuesta, ctrlPersistence);
-		ctrlDominioPregunta = new CtrlDominioPregunta(ctrlEncuesta, ctrlPregunta, ctrlPersistence);
+		                                                ctrlPregunta, ctrlRespuesta, gestorPersistencia);
+		ctrlDominioPregunta = new CtrlDominioPregunta(ctrlEncuesta, ctrlPregunta, gestorPersistencia);
 		ctrlDominioRespuesta = new CtrlDominioRespuesta(ctrlUsuario, ctrlEncuesta, 
-		                                                 ctrlPregunta, ctrlRespuesta, ctrlPersistence);
+		                                                 ctrlPregunta, ctrlRespuesta, gestorPersistencia);
 		ctrlDominioPerfil = new CtrlDominioPerfil(ctrlUsuario);
 	}
 
@@ -123,7 +118,7 @@ public class CtrlDominio {
 	 * @return Nombre de usuario creado
 	 * @throws IllegalArgumentException si algún campo está vacío o tiene formato incorrecto
 	 * @throws IllegalStateException si las contraseñas no coinciden
-	 * @throws IllegalStateException si ya existe un usuario con el mismo nombre (desde CtrlPersistence)
+	 * @throws IllegalStateException si ya existe un usuario con el mismo nombre (desde gestorPersistencia)
 	 */
 	public String registrarUsuario(String nomU, String contrasena, String confirmCont) {
 		return ctrlDominioUsuario.registrarUsuario(nomU, contrasena, confirmCont);
