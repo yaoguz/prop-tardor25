@@ -142,5 +142,33 @@ public class CtrlPregunta {
 		boolean b = preguntas.remove(p.getIdPregunta);
 		if(!b) throw new IllegalArgumentException("No existe la pregunta a eliminar");
 	}
+
+	/**
+	 * Se añade un identificador de respuesta a la lista de respuestas de la pregunta.
+	 * @param idPregunta identificador de la pregunta a la que se quiere añadir la respuesta.
+	 * @param idRespuesta identificador de la respuesta a añadir.
+	 * @throws IllegalArgumentException si no existe la pregunta.
+	 */
+	public void anadirRespuesta(int idPregunta, int idRespuesta) throws IllegalArgumentException {
+		Pregunta p = preguntas.get(idPregunta);
+		if (p == null) {
+			throw new IllegalArgumentException("No existe la pregunta");
+		}
+		p.addRespuesta(idRespuesta);
+	}
+
+	/**
+	 * Se quita un identificador de respuesta de la lista de respuestas de la pregunta.
+	 * @param idPregunta identificador de la pregunta a la cual se le quiere quitar la respuesta.
+	 * @param idRespuesta identificador de la respuesta a eliminar.
+	 * @throws IllegalArgumentException si no existe la pregunta o la pregunta no tiene esa respuesta.
+	 */
+	public void eliminarRespuesta(int idPregunta, int idRespuesta) throws IllegalArgumentException {
+		Pregunta p = preguntas.get(idPregunta);
+		if (p == null) {
+			throw new IllegalArgumentException("No existe la pregunta");
+		}
+		p.eliminarRespuesta(idRespuesta);
+	}
 }
 
