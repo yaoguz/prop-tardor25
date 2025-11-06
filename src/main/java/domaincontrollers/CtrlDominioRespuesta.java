@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 import domain.Pregunta;
 import domain.Respuesta;
+import domain.RespuestaLibre;
+import domain.RespuestaNumerica;
+import domain.RespuestaOpcionUnica;
+import domain.RespuestaOpcionMultiple;
 import domain.Usuario;
-import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de respuestas.
@@ -20,70 +24,78 @@ import persistence.GestorPersistencia;
  * - Eliminación de respuestas
  * - Importación de respuestas desde ficheros
  * - Consulta de encuestas respondidas por usuario
+ * - Gestión del conjunto de respuestas en memoria (TreeMap)
  * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioRespuesta {
 
-	/** Atributos - Controladores de clase **/
+	/** Atributos **/
 	
-	private CtrlUsuario ctrlUsuario;
-	private CtrlEncuesta ctrlEncuesta;
-	private CtrlPregunta ctrlPregunta;
-	private CtrlRespuesta ctrlRespuesta;
-	private GestorPersistencia gestorPersistencia;
+	// Los datos se guardan en un TreeMap con clave - idRespuesta (int)
+	private TreeMap<Integer, Respuesta> respuestas;
+	private int nextId;
+	
+	// Referencias a otros controladores de dominio
+	private CtrlDominioUsuario ctrlDominioUsuario;
+	private CtrlDominioEncuesta ctrlDominioEncuesta;
+	private CtrlDominioPregunta ctrlDominioPregunta;
 
 	/** Constructor **/
 
 	/**
-	 * Constructora. Inicializa los controladores necesarios.
+	 * Constructora. Inicializa el TreeMap de respuestas y las referencias a otros controladores.
 	 * 
-	 * @param ctrlUsuario Controlador de usuarios
-	 * @param ctrlEncuesta Controlador de encuestas
-	 * @param ctrlPregunta Controlador de preguntas
-	 * @param ctrlRespuesta Controlador de respuestas
-	 * @param gestorPersistencia Controlador de persistencia
+	 * @param ctrlDominioUsuario Controlador de dominio de usuarios
+	 * @param ctrlDominioEncuesta Controlador de dominio de encuestas
+	 * @param ctrlDominioPregunta Controlador de dominio de preguntas
 	 */
-	public CtrlDominioRespuesta(CtrlUsuario ctrlUsuario, CtrlEncuesta ctrlEncuesta,
-	                             CtrlPregunta ctrlPregunta, CtrlRespuesta ctrlRespuesta,
-	                             GestorPersistencia gestorPersistencia) {
-		this.ctrlUsuario = ctrlUsuario;
-		this.ctrlEncuesta = ctrlEncuesta;
-		this.ctrlPregunta = ctrlPregunta;
-		this.ctrlRespuesta = ctrlRespuesta;
-		this.gestorPersistencia = gestorPersistencia;
+	public CtrlDominioRespuesta(CtrlDominioUsuario ctrlDominioUsuario, 
+	                             CtrlDominioEncuesta ctrlDominioEncuesta,
+	                             CtrlDominioPregunta ctrlDominioPregunta) {
+		this.respuestas = new TreeMap<Integer, Respuesta>();
+		this.nextId = 1;
+		this.ctrlDominioUsuario = ctrlDominioUsuario;
+		this.ctrlDominioEncuesta = ctrlDominioEncuesta;
+		this.ctrlDominioPregunta = ctrlDominioPregunta;
 	}
-
-	// ==================== GESTIÓN DE RESPUESTAS ====================
+	
+	// ==================== METODOS AUXILIARES PRIVADOS ====================
 	
 	/**
-	 * Obtiene los IDs de las encuestas respondidas por un usuario.
+	 * Verifica si existe una respuesta con el ID dado.
 	 * 
-	 * @param nomUsuario Nombre del usuario
-	 * @return Lista de IDs de encuestas respondidas
+	 * @param idRespuesta ID de la respuesta
+	 * @return true si existe, false en caso contrario
 	 */
-	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		List<Integer> idRespuestas = u.getIdRespuestas();
-		
-		// set para evitar duplicados (un usuario puede responder multiples preguntas de la misma encuesta)
-		Set<Integer> idEncuestasSet = new HashSet<>();
-		
-		// por cada respuesta, obtener la pregunta y luego la encuesta
-		for (Integer idR : idRespuestas) {
-			Respuesta r = ctrlRespuesta.getRespuesta(idR);
-			int idPregunta = r.getIdPregunta();
-			
-			Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-			int idEncuesta = p.getIdEncuesta();
-			
-			idEncuestasSet.add(idEncuesta);
-		}
-		return new ArrayList<>(idEncuestasSet); // convertir set en un arraylist
+	private boolean existeRespuesta(int idRespuesta) {
+		return respuestas.containsKey(Integer.valueOf(idRespuesta));
 	}
+	
+	/**
+	 * Obtiene una respuesta por su ID.
+	 * 
+	 * @param idRespuesta ID de la respuesta
+	 * @return Respuesta correspondiente
+	 * @throws IllegalArgumentException si la respuesta no existe
+	 */
+	private Respuesta getRespuesta(int idRespuesta) {
+		Respuesta r = respuestas.get(Integer.valueOf(idRespuesta));
+		if (r == null) {
+			throw new IllegalArgumentException("Respuesta con ID " + idRespuesta + " no existe");
+		}
+		return r;
+	}
+
+	
+	// ==================== GESTIÓN DE RESPUESTAS ====================
 
 	/**
 	 * Crea una nueva respuesta para una pregunta específica.
+	 * 
+	 * SOLUCIÓN POLIMÓRFICA: Delega la creación a la pregunta (Factory Pattern).
+	 * Esto respeta el principio Abierto/Cerrado: si se añade un nuevo tipo de pregunta,
+	 * solo hay que implementar crearRespuesta() en la nueva subclase de Pregunta.
 	 * 
 	 * @param <T> Tipo de la respuesta
 	 * @param nomUsuario Nombre del usuario que responde
@@ -92,22 +104,28 @@ public class CtrlDominioRespuesta {
 	 * @return ID de la respuesta creada
 	 */
 	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
-		// crear respuesta polimorfica segun el tipo de pregunta
-		int idR = ctrlRespuesta.crearRespuesta(nomUsuario, idPregunta, respuesta);
+		// Obtener la pregunta
+		Pregunta p = ctrlDominioPregunta.getPregunta(idPregunta);
 		
-		// guardar en Usuario
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
+		// FACTORY PATTERN: La pregunta sabe crear su respuesta
+		// Esto es polimórfico y respeta abierto/cerrado
+		int idR = nextId++;
+		Respuesta nuevaRespuesta = p.crearRespuesta(idR, nomUsuario, respuesta);
+		
+		// Guardar en el TreeMap
+		respuestas.put(Integer.valueOf(idR), nuevaRespuesta);
+		
+		// Actualizar referencias en Usuario
+		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
 		u.guardarIdRespuesta(idR);
 		
-		// guardar en Pregunta
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
+		// Actualizar referencias en Pregunta
 		p.guardarIdRespuesta(idR);
 		
-		// actualizar en persistencia
-		gestorPersistencia.guardarRespuesta(ctrlRespuesta.getRespuesta(idR));
-
+		// NO se guarda en persistencia aquí (solo al cerrar sesión en CtrlDominio.cerrarSesion())
+		
 		return idR;
-	}
+	}	
 	
 	/**
 	 * Modifica una respuesta existente.
@@ -118,13 +136,16 @@ public class CtrlDominioRespuesta {
 	 * @throws IllegalArgumentException si el tipo de respuesta no coincide con el tipo de pregunta
 	 */
 	public <T> void modificarRespuesta(int idRespuesta, T newResp) {
-		Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
+		if (!existeRespuesta(idRespuesta)) {
+			throw new IllegalArgumentException("Respuesta con ID " + idRespuesta + " no existe");
+		}
+		
+		Respuesta r = getRespuesta(idRespuesta);
 		
 		// modificar() en Respuesta validara el tipo
 		r.modificar(newResp); // puede lanzar: TipoIncorrectoException
 		
-		// actualizar en persistencia
-		gestorPersistencia.actualizarRespuesta(r);
+		// NO se actualiza en persistencia aquí (solo al cerrar sesión)
 	}
 	
 	/**
@@ -133,23 +154,26 @@ public class CtrlDominioRespuesta {
 	 * @param idRespuesta ID de la respuesta a eliminar
 	 */
 	public void eliminarRespuesta(int idRespuesta) {
-		Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
+		if (!existeRespuesta(idRespuesta)) {
+			throw new IllegalArgumentException("Respuesta con ID " + idRespuesta + " no existe");
+		}
+		
+		Respuesta r = getRespuesta(idRespuesta);
 		int idPregunta = r.getIdPregunta();
 		String nomUsuario = r.getNomUsuario();
 		
-		// eliminar de Usuario
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
+		// Eliminar de Usuario
+		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
 		u.eliminarIdRespuesta(idRespuesta);
 		
-		// eliminar de Pregunta
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
+		// Eliminar de Pregunta
+		Pregunta p = ctrlDominioPregunta.getPregunta(idPregunta);
 		p.eliminarIdRespuesta(idRespuesta);
 		
-		// eliminar de persistencia
-		gestorPersistencia.eliminarRespuesta(idRespuesta);
+		// Eliminar del TreeMap
+		respuestas.remove(Integer.valueOf(idRespuesta));
 		
-		// eliminar del controlador (ConjuntoRespuestas)
-		ctrlRespuesta.eliminar(r);
+		// NO se elimina en persistencia aquí (solo al cerrar sesión)
 	}
 	
 	/**
@@ -166,19 +190,19 @@ public class CtrlDominioRespuesta {
 		List<RespuestaImportData> datosImportados = parsearFicheroRespuestas(fichero);
 		
 		for (RespuestaImportData dato : datosImportados) {
-			// Validar que existen los IDs
-			if (!ctrlEncuesta.existeEncuesta(dato.idEncuesta)) {
+			// Validar que existen los IDs usando los otros controladores de dominio
+			if (!ctrlDominioEncuesta.existeEncuesta(dato.idEncuesta)) {
 				throw new IllegalStateException("Encuesta con ID " + dato.idEncuesta + " no existe");
 			}
-			if (!ctrlPregunta.existePregunta(dato.idPregunta)) {
+			if (!ctrlDominioPregunta.existePregunta(dato.idPregunta)) {
 				throw new IllegalStateException("Pregunta con ID " + dato.idPregunta + " no existe");
 			}
-			if (!ctrlUsuario.existeUsuario(dato.nomUsuario)) {
+			if (!ctrlDominioUsuario.existeUsuario(dato.nomUsuario)) {
 				throw new IllegalStateException("Usuario " + dato.nomUsuario + " no existe");
 			}
 			
 			// Validar que la pregunta pertenece a la encuesta
-			Pregunta p = ctrlPregunta.getPregunta(dato.idPregunta);
+			Pregunta p = ctrlDominioPregunta.getPregunta(dato.idPregunta);
 			if (p.getIdEncuesta() != dato.idEncuesta) {
 				throw new IllegalStateException("La pregunta " + dato.idPregunta + 
 					" no pertenece a la encuesta " + dato.idEncuesta);
@@ -210,5 +234,35 @@ public class CtrlDominioRespuesta {
 		// TO DO: Implementar según formato específico (CSV, JSON, XML, etc.) **********************
 		// Esta es una firma de método para mantener la arquitectura limpia
 		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
+	}
+	
+	// ==================== MÉTODOS PARA PERSISTENCIA ====================
+	
+	/**
+	 * Obtiene todas las respuestas almacenadas en memoria.
+	 * 
+	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
+	 * para exportar todos los datos a persistencia al final de la sesión.
+	 * 
+	 * @return TreeMap con todas las respuestas (clave: idRespuesta)
+	 */
+	public TreeMap<Integer, Respuesta> getAllRespuestas() {
+		return new TreeMap<>(respuestas); // devolver copia para evitar modificaciones externas
+	}
+	
+	/**
+	 * Importa respuestas desde persistencia al iniciar sesión.
+	 * 
+	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio al iniciar
+	 * para cargar los datos guardados de la sesión anterior.
+	 * 
+	 * @param respuestasImportadas TreeMap con las respuestas a cargar
+	 */
+	public void cargarRespuestas(TreeMap<Integer, Respuesta> respuestasImportadas) {
+		this.respuestas = respuestasImportadas;
+		// Actualizar nextId para que sea mayor que el ID más alto
+		if (!respuestas.isEmpty()) {
+			this.nextId = respuestas.lastKey() + 1;
+		}
 	}
 }

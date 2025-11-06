@@ -55,7 +55,22 @@ public class PreguntaNumerica extends Pregunta {
 	 * Devuelve el tipo de pregunta.
 	 * @return el string "Numerica".
 	 */
-	@override public String tipoPregunta() {
+	@Override 
+	public String tipoPregunta() {
 		return "Numerica";
+	}
+	
+	/**
+	 * Factory method: Crea una RespuestaNumerica.
+	 * 
+	 * @param <T> Tipo de la respuesta (debe ser Double)
+	 * @param idRespuesta ID único de la respuesta
+	 * @param nomUsuario Nombre del usuario que responde
+	 * @param respuesta Contenido de la respuesta (Double)
+	 * @return RespuestaNumerica creada
+	 */
+	@Override
+	public <T> Respuesta crearRespuesta(int idRespuesta, String nomUsuario, T respuesta) {
+		return new RespuestaNumerica(idRespuesta, nomUsuario, getIdPregunta(), (Double) respuesta);
 	}
 }

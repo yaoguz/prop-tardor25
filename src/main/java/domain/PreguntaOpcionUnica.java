@@ -65,8 +65,23 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 * Devuelve el tipo de pregunta.
 	 * @return el string "OpcionUnica".
 	 */
-	@override public String tipoPregunta() {
+	@Override 
+	public String tipoPregunta() {
 		if(ordenada) return "OpcionUnicaOrdenada";
 		else return "OpcionUnicaNoOrdenada";
+	}
+	
+	/**
+	 * Factory method: Crea una RespuestaOpcionUnica.
+	 * 
+	 * @param <T> Tipo de la respuesta (debe ser Integer)
+	 * @param idRespuesta ID único de la respuesta
+	 * @param nomUsuario Nombre del usuario que responde
+	 * @param respuesta Contenido de la respuesta (índice de la opción seleccionada)
+	 * @return RespuestaOpcionUnica creada
+	 */
+	@Override
+	public <T> Respuesta crearRespuesta(int idRespuesta, String nomUsuario, T respuesta) {
+		return new RespuestaOpcionUnica(idRespuesta, nomUsuario, getIdPregunta(), (Integer) respuesta);
 	}
 }

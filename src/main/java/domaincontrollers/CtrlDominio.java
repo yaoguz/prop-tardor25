@@ -1,13 +1,17 @@
 package domaincontrollers;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
-
+import domain.Usuario;
 import persistence.GestorPersistencia;
 
 /**
@@ -55,17 +59,12 @@ import persistence.GestorPersistencia;
  * ALTERNATIVA RECHAZADA: Eliminar CtrlPregunta/CtrlRespuesta haría que CtrlDominio
  * se convierta en un "God Object" que viola SRP y dificulta el mantenimiento.
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominio {
 
-	/** Atributos - Controladores de clase (Singleton) - Capa de Datos **/
-	
-	private CtrlUsuario ctrlUsuario;
-	private CtrlEncuesta ctrlEncuesta;
-	private CtrlPregunta ctrlPregunta;
-	private CtrlRespuesta ctrlRespuesta;
+	/** Atributos - Capa de Datos **/
+
 	private GestorPersistencia gestorPersistencia;
 
 	/** Atributos - Controladores de dominio especializados **/
@@ -89,11 +88,7 @@ public class CtrlDominio {
 	 * Inicializa todas las instancias singleton de los controladores.
 	 */
 	public void inicializarCtrlDominio() {
-		// Inicializar controladores de clase (capa de datos)
-		ctrlUsuario = CtrlUsuario.getInstance();
-		ctrlEncuesta = CtrlEncuesta.getInstance();
-		ctrlPregunta = CtrlPregunta.getInstance();
-		ctrlRespuesta = CtrlRespuesta.getInstance();
+		// Inicializar gestor de persistencia
 		gestorPersistencia = GestorPersistencia.getInstace();
 		
 		// Inicializar controladores de dominio especializados
@@ -102,7 +97,7 @@ public class CtrlDominio {
 		                                                ctrlPregunta, ctrlRespuesta, gestorPersistencia);
 		ctrlDominioPregunta = new CtrlDominioPregunta(ctrlEncuesta, ctrlPregunta, gestorPersistencia);
 		ctrlDominioRespuesta = new CtrlDominioRespuesta(ctrlUsuario, ctrlEncuesta, 
-		                                                 ctrlPregunta, ctrlRespuesta, gestorPersistencia);
+		                                                 ctrlPregunta, ctrlRespuesta);
 		ctrlDominioPerfil = new CtrlDominioPerfil(ctrlUsuario);
 	}
 
@@ -150,9 +145,31 @@ public class CtrlDominio {
 	}
 
 	/**
-	 * Cierra la sesión del usuario actual
+	 * Cierra la sesión del usuario actual y guarda todos los datos en persistencia.
+	 * 
+	 * ARQUITECTURA: Este es el ÚNICO momento en que se llama a persistencia para guardar.
+	 * Durante toda la sesión, los datos viven en memoria (TreeMaps en cada CtrlDominioXXX).
+	 * 
+	 * Pasos:
+	 * 1. Exportar todos los datos a persistencia (GestorPersistencia)
+	 * 2. Cerrar sesión del usuario actual
+	 * 
+	 * @throws IllegalStateException si hay errores al guardar en persistencia
 	 */
 	public void cerrarSesion() {
+		// 1. GUARDAR TODO EN PERSISTENCIA (solo aquí, no durante operaciones CRUD)
+		try {
+			// Cada CtrlDominioXXX debe implementar un método getAllXXX() que devuelva su TreeMap
+			gestorPersistencia.guardarTodosUsuarios(ctrlDominioUsuario.getAllUsuarios());
+			gestorPersistencia.guardarTodasEncuestas(ctrlDominioEncuesta.getAllEncuestas());
+			gestorPersistencia.guardarTodasPreguntas(ctrlDominioPregunta.getAllPreguntas());
+			gestorPersistencia.guardarTodasRespuestas(ctrlDominioRespuesta.getAllRespuestas());
+			// ctrlDominioPerfil no tiene datos propios, solo calcula sobre usuarios
+		} catch (Exception e) {
+			throw new IllegalStateException("Error al guardar datos en persistencia: " + e.getMessage());
+		}
+		
+		// 2. Cerrar sesión del usuario
 		ctrlUsuario.cerrarSesion();
 	}
 
@@ -166,7 +183,23 @@ public class CtrlDominio {
 	 * @return Lista de IDs de encuestas respondidas
 	 */
 	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
-		return ctrlDominioRespuesta.getEncuestasRespondidas(nomUsuario);
+		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
+		List<Integer> idRespuestas = u.getIdRespuestas();
+		
+		// set para evitar duplicados (un usuario puede responder multiples preguntas de la misma encuesta)
+		Set<Integer> idEncuestasSet = new HashSet<>();
+		
+		// por cada respuesta, obtener la pregunta y luego la encuesta
+		for (Integer idR : idRespuestas) {
+			Respuesta r = ctrlRespuesta.getRespuesta(idR);
+			int idPregunta = r.getIdPregunta();
+			
+			Pregunta p = ctrlPregunta.getPregunta(idPregunta);
+			int idEncuesta = p.getIdEncuesta();
+			
+			idEncuestasSet.add(idEncuesta);
+		}
+		return new ArrayList<>(idEncuestasSet); // convertir set en un arraylist
 	}
 
 	/**
@@ -238,7 +271,19 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
-		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
+		if (titulo == null || titulo.trim().isEmpty()) {
+			throw new IllegalArgumentException("El título de la encuesta no puede estar vacío");
+		}
+
+		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
+		
+		// crear encuesta
+		int idE = ctrlEncuesta.crearEncuesta(nomUsuario, titulo);
+		
+		// guardar en usuario y en persistencia
+		u.guardarIdEncuesta(idE);
+		gestorPersistencia.guardarEncuesta(ctrlEncuesta.getEncuesta(idE));
+		return idE;
 	}
 	
 	/**
@@ -283,7 +328,44 @@ public class CtrlDominio {
 	 * @return Mapa de Pregunta -> Set de Respuestas
 	 */
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
-		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
+		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
+		List<Integer> idPreguntas = e.getIdPreguntas();
+
+		Map<Pregunta, Set<Respuesta>> resultado = new HashMap<>();
+		
+		// por cada pregunta, obtener sus respuestas
+		for (Integer idP : idPreguntas) {
+			Pregunta p = ctrlPregunta.getPregunta(idP);
+			List<Integer> idRespuestas = p.getIdRespuestas();
+			
+			Set<Respuesta> respuestas = new HashSet<>();
+			for (Integer idR : idRespuestas) {
+				Respuesta r = ctrlRespuesta.getRespuesta(idR);
+				respuestas.add(r);
+			}
+			
+			resultado.put(p, respuestas);
+		}
+		return resultado;
+	}
+
+	/**
+	 * Añade una pregunta a una encuesta (método polimórfico según tipo).
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @param infoP Información de la pregunta (enunciado, tipo, atributos específicos)
+	 * @return ID de la pregunta creada
+	 */
+	private int anadirPregunta(int idEncuesta, PreguntaImportData infoP) {
+		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
+		
+		// Crear pregunta polimórfica según tipo
+		int idP = ctrlPregunta.crearPregunta(idEncuesta, infoP.enunciado,
+                  infoP.tipo, infoP.atributosEspecificos);
+
+		e.guardarIdPregunta(idP);
+		gestorPersistencia.guardarPregunta(ctrlPregunta.getPregunta(idP));
+		return idP;
 	}
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================

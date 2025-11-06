@@ -28,7 +28,22 @@ public class PreguntaLibre extends Pregunta {
 	 * Devuelve el tipo de pregunta.
 	 * @return el string "Libre".
 	 */
-	@override public String tipoPregunta() {
+	@Override 
+	public String tipoPregunta() {
 		return "Libre";
+	}
+	
+	/**
+	 * Factory method: Crea una RespuestaLibre.
+	 * 
+	 * @param <T> Tipo de la respuesta (debe ser String)
+	 * @param idRespuesta ID único de la respuesta
+	 * @param nomUsuario Nombre del usuario que responde
+	 * @param respuesta Contenido de la respuesta (String)
+	 * @return RespuestaLibre creada
+	 */
+	@Override
+	public <T> Respuesta crearRespuesta(int idRespuesta, String nomUsuario, T respuesta) {
+		return new RespuestaLibre(idRespuesta, nomUsuario, getIdPregunta(), (String) respuesta);
 	}
 }

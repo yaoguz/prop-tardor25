@@ -72,7 +72,22 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	 * Devuelve el tipo de pregunta.
 	 * @return el string "OpcionMultiple".
 	 */
-	@override public String tipoPregunta() {
+	@Override 
+	public String tipoPregunta() {
 		return "OpcionMultiple";
+	}
+	
+	/**
+	 * Factory method: Crea una RespuestaOpcionMultiple.
+	 * 
+	 * @param <T> Tipo de la respuesta (debe ser int[])
+	 * @param idRespuesta ID único de la respuesta
+	 * @param nomUsuario Nombre del usuario que responde
+	 * @param respuesta Contenido de la respuesta (array de índices seleccionados)
+	 * @return RespuestaOpcionMultiple creada
+	 */
+	@Override
+	public <T> Respuesta crearRespuesta(int idRespuesta, String nomUsuario, T respuesta) {
+		return new RespuestaOpcionMultiple(idRespuesta, nomUsuario, getIdPregunta(), (int[]) respuesta);
 	}
 }

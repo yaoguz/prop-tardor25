@@ -83,18 +83,47 @@ public abstract class Pregunta {
 	 * Añade un identificador de respuesta a la lista de respuestas.
 	 * @param r el identificador de la respuesta a añadir.
 	 */
-	public void addRespuesta(Integer r) {
+	public void guardarIdRespuesta(int r) {
 		this.idRespuestas.add(r);
+	}
+	
+	/**
+	 * @deprecated Use guardarIdRespuesta instead
+	 */
+	public void addRespuesta(Integer r) {
+		guardarIdRespuesta(r);
 	}
 
 	/**
 	 * Elimina un identificador de respuesta de la lista de respuestas.
 	 * @param r el identificador de la respuesta a eliminar.
 	 */
-	public void eliminarRespuesta(Integer r) throws IllegalArgumentException {
-		boolean b = this.idRespuestas.remove(r);
+	public void eliminarIdRespuesta(int r) throws IllegalArgumentException {
+		boolean b = this.idRespuestas.remove(Integer.valueOf(r));
 		if(!b) throw new IllegalArgumentException("La pregunta no tiene la respuesta del parámetro");
 	}
+	
+	/**
+	 * @deprecated Use eliminarIdRespuesta instead
+	 */
+	public void eliminarRespuesta(Integer r) throws IllegalArgumentException {
+		eliminarIdRespuesta(r);
+	}
+	
+	/**
+	 * FACTORY METHOD (polimórfico): Crea una respuesta del tipo correspondiente.
+	 * 
+	 * Cada subclase implementa este método para crear su tipo de respuesta.
+	 * Esto respeta el principio Abierto/Cerrado: si se añade un nuevo tipo de pregunta,
+	 * solo hay que implementar crearRespuesta() en la nueva subclase.
+	 * 
+	 * @param <T> Tipo de la respuesta
+	 * @param idRespuesta ID único de la respuesta
+	 * @param nomUsuario Nombre del usuario que responde
+	 * @param respuesta Contenido de la respuesta
+	 * @return Respuesta del tipo correspondiente
+	 */
+	public abstract <T> Respuesta crearRespuesta(int idRespuesta, String nomUsuario, T respuesta);
 	
 	/** Operaciones de las subclases **/
 	
