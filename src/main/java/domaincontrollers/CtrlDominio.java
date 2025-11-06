@@ -84,12 +84,11 @@ public class CtrlDominio {
 		// inicializar gestor de persistencia
 		gestorPersistencia = GestorPersistencia.getInstance();
 		
-		// inicializar controladores de dominio especializados
+		// inicializar controladores de dominio especializados (sin dependencias)
 		ctrlDominioUsuario = new CtrlDominioUsuario();
 		ctrlDominioEncuesta = new CtrlDominioEncuesta();
 		ctrlDominioPregunta = new CtrlDominioPregunta();
-		ctrlDominioRespuesta = new CtrlDominioRespuesta(ctrlDominioUsuario, 
-							   ctrlDominioEncuesta, ctrlDominioPregunta);
+		ctrlDominioRespuesta = new CtrlDominioRespuesta();
 		ctrlDominioPerfil = new CtrlDominioPerfil(ctrlDominioUsuario);
 		
 		// cargar datos desde persistencia
@@ -154,7 +153,9 @@ public class CtrlDominio {
 	 * @return Lista de IDs de encuestas respondidas
 	 */
 	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
-		return ctrlDominioUsuario.getEncuestasRespondidas(nomUsuario);
+		return ctrlDominioUsuario.getEncuestasRespondidas(nomUsuario, 
+		                                                   ctrlDominioRespuesta, 
+		                                                   ctrlDominioPregunta);
 	}
 
 	/**
@@ -183,7 +184,7 @@ public class CtrlDominio {
 		}
 		
 		// 2. Cerrar sesión del usuario
-		ctrlDominioUsuario.cerrarSesion();
+		ctrlDominioUsuario.cerrarSesionActual();
 	}
 
 	// ==================== GESTIÓN DE RESPUESTAS ====================
@@ -199,7 +200,8 @@ public class CtrlDominio {
 	 * @return ID de la respuesta creada
 	 */
 	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
-		return ctrlDominioRespuesta.darRespuesta(nomUsuario, idPregunta, respuesta);
+		return ctrlDominioRespuesta.darRespuesta(nomUsuario, idPregunta, respuesta,
+		                                          ctrlDominioUsuario, ctrlDominioPregunta);
 	}
 	
 	/**
@@ -220,7 +222,7 @@ public class CtrlDominio {
 	 * @param idRespuesta ID de la respuesta a eliminar
 	 */
 	public void eliminarRespuesta(int idRespuesta) {
-		ctrlDominioRespuesta.eliminarRespuesta(idRespuesta);
+		ctrlDominioRespuesta.eliminarRespuesta(idRespuesta, ctrlDominioUsuario, ctrlDominioPregunta);
 	}
 	
 	/**
@@ -233,7 +235,8 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si los IDs no existen en el sistema
 	 */
 	public void importarRespuestas(File fichero) {
-		ctrlDominioRespuesta.importarRespuestas(fichero);
+		ctrlDominioRespuesta.importarRespuestas(fichero, ctrlDominioUsuario, 
+		                                         ctrlDominioEncuesta, ctrlDominioPregunta);
 	}
 
 	// ==================== GESTIÓN DE ENCUESTAS ====================
@@ -258,7 +261,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
-		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
+		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo, ctrlDominioUsuario);
 	}
 	
 	/**
@@ -271,7 +274,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	public int importarEncuesta(File fichero) {
-		return ctrlDominioEncuesta.importarEncuesta(fichero);
+		return ctrlDominioEncuesta.importarEncuesta(fichero, ctrlDominioUsuario, ctrlDominioPregunta);
 	}
 	
 	/**
@@ -291,7 +294,7 @@ public class CtrlDominio {
 	 * @param idEncuesta ID de la encuesta a eliminar
 	 */
 	public void eliminarEncuesta(int idEncuesta) {
-		ctrlDominioEncuesta.eliminarEncuesta(idEncuesta, ctrlDominioPregunta);
+		ctrlDominioEncuesta.eliminarEncuesta(idEncuesta, ctrlDominioPregunta, ctrlDominioUsuario);
 	}
 	
 	/**
@@ -303,7 +306,8 @@ public class CtrlDominio {
 	 * @return Mapa de Pregunta -> Set de Respuestas
 	 */
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
-		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta, ctrlDominioRespuesta);
+		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta, ctrlDominioRespuesta, 
+		                                                   ctrlDominioPregunta);
 	}
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================

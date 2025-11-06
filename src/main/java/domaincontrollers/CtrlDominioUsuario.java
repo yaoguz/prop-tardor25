@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 import domain.Pregunta;
 import domain.Respuesta;
 import domain.Usuario;
-import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de usuarios.
@@ -18,27 +18,51 @@ import persistence.GestorPersistencia;
  * - Inicio/cierre de sesión
  * - Modificación de contraseña
  * - Validaciones de usuario
+ * - Gestión del conjunto de usuarios en memoria (TreeMap)
  * 
- * @author Yaoyao Guo
+ * ARQUITECTURA: Gestiona datos directamente (TreeMap), no delega a otro controlador.
+ * 
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioUsuario {
 
-	/** Atributos - Controladores de clase **/
+	/** Atributos **/
 	
-	private CtrlUsuario ctrlUsuario;
-	private GestorPersistencia gestorPersistencia;
-
-	/** Constructor **/
+	// Los datos se guardan en un TreeMap con clave - nomUsuario (String)
+	private TreeMap<String, Usuario> usuarios;
+	private String usuarioActivo;  // Usuario con sesión activa
 
 	/**
-	 * Constructora. Inicializa los controladores necesarios.
-	 * 
-	 * @param ctrlUsuario Controlador de usuarios
-	 * @param gestorPersistencia Controlador de persistencia
+	 * Constructora. Inicializa el TreeMap de usuarios.
 	 */
-	public CtrlDominioUsuario(CtrlUsuario ctrlUsuario, GestorPersistencia gestorPersistencia) {
-		this.ctrlUsuario = ctrlUsuario;
-		this.gestorPersistencia = gestorPersistencia;
+	public CtrlDominioUsuario() {
+		this.usuarios = new TreeMap<String, Usuario>();
+		this.usuarioActivo = null;
+	}
+	
+	/**
+	 * Verifica si existe un usuario con el nombre dado.
+	 * 
+	 * @param nomU Nombre del usuario
+	 * @return true si existe, false en caso contrario
+	 */
+	public boolean existeUsuario(String nomU) {
+		return usuarios.containsKey(nomU);
+	}
+	
+	/**
+	 * Obtiene un usuario por su nombre.
+	 * 
+	 * @param nomUsuario Nombre del usuario
+	 * @return Usuario correspondiente
+	 * @throws IllegalArgumentException si el usuario no existe
+	 */
+	public Usuario getUsuario(String nomUsuario) {
+		Usuario u = usuarios.get(nomUsuario);
+		if (u == null) {
+			throw new IllegalArgumentException("Usuario " + nomUsuario + " no existe");
+		}
+		return u;
 	}
 	
 	/**
@@ -50,7 +74,7 @@ public class CtrlDominioUsuario {
 	 * @return Nombre de usuario creado
 	 * @throws IllegalArgumentException si algún campo está vacío o tiene formato incorrecto
 	 * @throws IllegalStateException si las contraseñas no coinciden
-	 * @throws IllegalStateException si ya existe un usuario con el mismo nombre (desde gestorPersistencia)
+	 * @throws IllegalStateException si ya existe un usuario con el mismo nombre
 	 */
 	public String registrarUsuario(String nomU, String contrasena, String confirmCont) {
 		// comprobar campos vacíos
@@ -77,9 +101,15 @@ public class CtrlDominioUsuario {
 			throw new IllegalStateException("La contraseña y su confirmación no coinciden");
 		}
 		
-		// crear usuario
-		Usuario u = ctrlUsuario.crearUsuario(nomU, contrasena);
-		gestorPersistencia.guardarUsuario(u); // (puede lanzar exc si ya existe)
+		// comprobar que no existe
+		if (existeUsuario(nomU)) {
+			throw new IllegalStateException("Ya existe un usuario con el nombre " + nomU);
+		}
+		
+		// crear y guardar EN MEMORIA
+		Usuario u = new Usuario(nomU, contrasena);
+		usuarios.put(nomU, u);
+		
 		return u.getNomUsuario();
 	}
 	
@@ -91,22 +121,41 @@ public class CtrlDominioUsuario {
 	 * @return true si el inicio de sesión es exitoso
 	 * @throws IllegalArgumentException si el usuario no existe
 	 * @throws IllegalStateException si la contraseña es incorrecta
+	 * @throws IllegalStateException si ya hay un usuario activo
 	 */
 	public boolean iniciarSesion(String nomU, String contrasena) {
-		// validar que el usuario existe (puede lanzar exc)
-		// cargar desde persistencia si es necesario
-		Usuario u = gestorPersistencia.cargarUsuario(nomU);
-		
-		if (u == null) {
-			throw new IllegalArgumentException("Usuario no existente");
+		// validar que no hay usuario activo
+		if (usuarioActivo != null) {
+			throw new IllegalStateException("Ya hay un usuario activo: " + usuarioActivo);
 		}
+		
+		// validar que el usuario existe
+		Usuario u = getUsuario(nomU);  // lanza exc si no existe
+		
+		// validar contraseña
 		if (!u.comprobarContrasena(contrasena)) {
 			throw new IllegalStateException("Contraseña incorrecta");
 		}
 		
-		// marcar sesion activa en CtrlUsuario
-		ctrlUsuario.iniciarSesion(nomU, contrasena);
+		// marcar sesión activa
+		usuarioActivo = u.getNomUsuario();
 		return true;
+	}
+	
+	/**
+	 * Cierra la sesión del usuario activo.
+	 */
+	public void cerrarSesionActual() {
+		usuarioActivo = null;
+	}
+	
+	/**
+	 * Obtiene el nombre del usuario activo.
+	 * 
+	 * @return Nombre del usuario activo, o null si no hay sesión activa
+	 */
+	public String getUsuarioActivo() {
+		return usuarioActivo;
 	}
 	
 	/**
@@ -125,21 +174,24 @@ public class CtrlDominioUsuario {
 			throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres");
 		}
 		
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		
+		Usuario u = getUsuario(nomUsuario);
 		u.newContrasena(newContrasena); // puede lanzar exc: newContrasena es igual a la actual
-		
-		// actualizar en persistencia
-		gestorPersistencia.actualizarUsuario(u);
 	}
 
 	/**
 	 * Obtiene los IDs de las encuestas respondidas por un usuario.
 	 * 
+	 * Esta operación pertenece a CtrlDominioUsuario porque el aggregate root es Usuario.
+	 * Representa: "Qué encuestas respondió ESTE usuario".
+	 * 
 	 * @param nomUsuario Nombre del usuario
+	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
+	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
 	 * @return Lista de IDs de encuestas respondidas
 	 */
-	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
+	public List<Integer> getEncuestasRespondidas(String nomUsuario,
+	                                               CtrlDominioRespuesta ctrlDominioRespuesta,
+	                                               CtrlDominioPregunta ctrlDominioPregunta) {
 		Usuario u = getUsuario(nomUsuario);
 		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
 		
@@ -157,5 +209,29 @@ public class CtrlDominioUsuario {
 			idEncuestas.add(idEncuesta);
 		}
 		return new ArrayList<>(idEncuestas); // convertir set en un arraylist
+	}
+
+	/**
+	 * Obtiene todos los usuarios almacenados en memoria.
+	 * 
+	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
+	 * para exportar todos los datos a persistencia al cerrar la aplicación.
+	 * 
+	 * @return TreeMap con todos los usuarios (clave: nomUsuario)
+	 */
+	public TreeMap<String, Usuario> getAllUsuarios() {
+		return new TreeMap<>(usuarios); // devolver copia para evitar modificaciones externas
+	}
+	
+	/**
+	 * Importa usuarios desde persistencia al iniciar aplicación.
+	 * 
+	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
+	 * para cargar los datos guardados de la sesión anterior.
+	 * 
+	 * @param usuariosImportados TreeMap con los usuarios a cargar
+	 */
+	public void cargarUsuarios(TreeMap<String, Usuario> usuariosImportados) {
+		this.usuarios = usuariosImportados;
 	}
 }

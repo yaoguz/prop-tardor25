@@ -1,4 +1,4 @@
-# 🔄 RESUMEN DE CAMBIOS EN LA ARQUITECTURA - ACTUALIZADO
+# 🔄 RESUMEN DE CAMBIOS EN LA ARQUITECTURA - ACTUALIZADO (v3.0)
 
 ## 📋 ¿Qué hemos cambiado y por qué?
 
@@ -17,6 +17,7 @@ CtrlDominioRespuesta → CtrlRespuesta (Singleton con HashMap)
 - ❌ CtrlDominioRespuesta solo delegaba a CtrlRespuesta (capa innecesaria)
 - ❌ Llamadas a persistencia después de cada operación (ineficiente)
 - ❌ Violaba principio de responsabilidad única
+- ❌ Dependencias almacenadas (alto acoplamiento)
 
 ### 2. **Solución: Fusionar capas + Patrón Correcto**
 
@@ -134,7 +135,153 @@ public void cerrarSesion() {
 
 ---
 
-### ✅ Cambio 3: CtrlDominio como Facade pura (solo delegación)
+### ✅ Cambio 3: **INYECCIÓN DE DEPENDENCIAS POR PARÁMETROS** (Nueva arquitectura mejorada)
+
+**EVOLUCIÓN ARQUITECTÓNICA:**
+
+**Versión 1 (inicial):**
+```java
+// Dependencias en constructor - almacenadas
+public class CtrlDominioRespuesta {
+    private CtrlDominioUsuario ctrlDominioUsuario;  // ❌ Almacenada
+    
+    public CtrlDominioRespuesta(CtrlDominioUsuario u, ...) {
+        this.ctrlDominioUsuario = u;  // Se guarda
+    }
+    
+    public int darRespuesta(...) {
+        Usuario u = ctrlDominioUsuario.getUsuario(nomU);  // Usa referencia almacenada
+    }
+}
+```
+**Problemas:**
+- Alto acoplamiento (referencias almacenadas)
+- Difícil de testear (mock complicado)
+- Violación de Dependency Inversion Principle
+
+**Versión 2 (ACTUAL - MEJORADA):**
+```java
+// Inyección por parámetros - NO almacenadas
+public class CtrlDominioRespuesta {
+    // NO hay referencias almacenadas ✅
+    
+    public CtrlDominioRespuesta() {  // Constructor sin dependencias
+        this.respuestas = new TreeMap<>();
+        this.nextId = 1;
+    }
+    
+    public int darRespuesta(..., 
+                             CtrlDominioUsuario ctrlDominioUsuario,  // Inyectado como parámetro
+                             CtrlDominioPregunta ctrlDominioPregunta) {
+        Usuario u = ctrlDominioUsuario.getUsuario(nomU);  // Usa parámetro
+    }
+}
+```
+**Ventajas:**
+- ✅ Bajo acoplamiento (solo cuando se necesita)
+- ✅ Más fácil de testear (inyectar mocks por parámetro)
+- ✅ Sigue DIP (Dependency Inversion Principle)
+- ✅ Más flexible y mantenible
+
+**Aplicación en CtrlDominio (Facade):**
+```java
+public class CtrlDominio {
+    // CtrlDominio coordina e inyecta dependencias cuando es necesario
+    
+    public int darRespuesta(String nomU, int idP, T resp) {
+        return ctrlDominioRespuesta.darRespuesta(nomU, idP, resp,
+                                                   ctrlDominioUsuario,  // Inyecta
+                                                   ctrlDominioPregunta); // Inyecta
+    }
+    
+    public void eliminarEncuesta(int idE) {
+        return ctrlDominioEncuesta.eliminarEncuesta(idE,
+                                                     ctrlDominioPregunta,  // Inyecta
+                                                     ctrlDominioUsuario);  // Inyecta
+    }
+}
+```
+
+---
+
+### ✅ Cambio 4: Fusión completa de CtrlDominioXXX con Singleton CtrlXXX
+
+**Antes (doble capa innecesaria):**
+```
+CtrlDominioUsuario
+    ↓ delega todo
+CtrlUsuario (Singleton)
+    ↓ gestiona HashMap<String, Usuario>
+```
+
+**Ahora (capa única optimizada):**
+```
+CtrlDominioUsuario
+    ↓ gestiona directamente TreeMap<String, Usuario>
+```
+
+**Cambios específicos:**
+
+**CtrlDominioUsuario:**
+```java
+// ANTES:
+public class CtrlDominioUsuario {
+    private CtrlUsuario ctrlUsuario;  // Delegación
+    private GestorPersistencia gestorPersistencia;
+    
+    public String registrarUsuario(...) {
+        String nom = ctrlUsuario.crearUsuario(...);  // Delega
+        gestorPersistencia.guardarUsuario(...);  // Persistencia inmediata ❌
+        return nom;
+    }
+}
+
+// AHORA:
+public class CtrlDominioUsuario {
+    private TreeMap<String, Usuario> usuarios;  // Gestión directa
+    private String usuarioActivo;  // Gestión de sesión
+    
+    public String registrarUsuario(...) {
+        Usuario u = new Usuario(nomU, contrasena);  // Crea directamente
+        usuarios.put(nomU, u);  // TreeMap management
+        // NO persistencia! ✅
+        return u.getNomUsuario();
+    }
+}
+```
+
+**CtrlDominioEncuesta:**
+```java
+// ANTES:
+public class CtrlDominioEncuesta {
+    private CtrlEncuesta ctrlEncuesta;  // Delegación
+    private GestorPersistencia gestorPersistencia;
+    
+    public int crearEncuesta(...) {
+        int id = ctrlEncuesta.crearEncuesta(...);  // Delega
+        gestorPersistencia.guardarEncuesta(...);  // Persistencia inmediata ❌
+        return id;
+    }
+}
+
+// AHORA:
+public class CtrlDominioEncuesta {
+    private TreeMap<Integer, Encuesta> encuestas;  // Gestión directa
+    private int nextId;
+    
+    public int crearEncuesta(..., CtrlDominioUsuario ctrlDominioUsuario) {
+        int idE = nextId++;
+        Encuesta e = new Encuesta(idE, titulo, nomUsuario);  // Crea directamente
+        encuestas.put(idE, e);  // TreeMap management
+        // NO persistencia! ✅
+        return idE;
+    }
+}
+```
+
+---
+
+### ✅ Cambio 5: CtrlDominio como Facade pura (solo delegación)
 
 **Estructura de CtrlDominio:**
 ```java
@@ -240,19 +387,57 @@ getEncuestasRespondidas(String nomUsuario) {
 - [x] Refactorizados todos los métodos CRUD para gestionar TreeMap directamente
 - [x] **Eliminadas todas las llamadas a persistencia** de los métodos CRUD
 - [x] Añadidos `getAllRespuestas()` y `cargarRespuestas()` para persistencia
-- [x] Actualizado constructor para recibir referencias a CtrlDominioXXX
+- [x] **MIGRADO A INYECCIÓN POR PARÁMETROS** (constructor sin dependencias)
 - [x] Implementado Factory Pattern (delegación a `Pregunta.crearRespuesta()`)
+
+### **✅ COMPLETADO: CtrlDominioUsuario** ⭐ NUEVO
+- [x] Añadido `TreeMap<String, Usuario> usuarios`
+- [x] Añadido `String usuarioActivo` para gestión de sesión
+- [x] **FUSIONADO con CtrlUsuario (eliminada capa intermedia)**
+- [x] Eliminadas todas las referencias a CtrlUsuario (Singleton viejo)
+- [x] Eliminadas todas las referencias a GestorPersistencia (excepto persistencia inicio/cierre)
+- [x] Añadidos métodos helper: `existeUsuario()`, `getUsuario()`
+- [x] Refactorizados todos los métodos CRUD para gestionar TreeMap directamente:
+  - `registrarUsuario()` - crea Usuario directamente
+  - `iniciarSesion()` - gestiona usuarioActivo directamente
+  - `modificarContrasena()` - actualiza en memoria
+  - `getEncuestasRespondidas()` - con **inyección por parámetros**
+- [x] **Eliminadas todas las llamadas a persistencia** de los métodos CRUD
+- [x] Añadidos `getAllUsuarios()` y `cargarUsuarios()` para persistencia
+
+### **✅ COMPLETADO: CtrlDominioEncuesta** ⭐ NUEVO
+- [x] Añadido `TreeMap<Integer, Encuesta> encuestas`
+- [x] Añadido `int nextId` para IDs autoincrementales
+- [x] **FUSIONADO con CtrlEncuesta (eliminada capa intermedia)**
+- [x] Eliminadas todas las referencias a CtrlEncuesta (Singleton viejo)
+- [x] Eliminadas todas las referencias a GestorPersistencia (excepto persistencia inicio/cierre)
+- [x] Eliminadas referencias innecesarias a CtrlUsuario, CtrlPregunta, CtrlRespuesta
+- [x] Añadidos métodos helper: `existeEncuesta()`, `getEncuesta()`
+- [x] Refactorizados todos los métodos CRUD para gestionar TreeMap directamente:
+  - `crearEncuesta()` - con **inyección por parámetros** (CtrlDominioUsuario)
+  - `getPreguntasEncuesta()` - sin dependencias externas
+  - `modificarTituloEncuesta()` - actualiza en memoria
+  - `eliminarEncuesta()` - con **inyección por parámetros** (CtrlDominioPregunta, CtrlDominioUsuario)
+  - `getRespuestasEncuesta()` - con **inyección por parámetros** (CtrlDominioRespuesta, CtrlDominioPregunta)
+  - `importarEncuesta()` - con **inyección por parámetros** (CtrlDominioUsuario, CtrlDominioPregunta)
+- [x] **Eliminadas todas las llamadas a persistencia** de los métodos CRUD
+- [x] Añadidos `getAllEncuestas()` y `cargarEncuestas()` para persistencia
 
 ### **✅ COMPLETADO: CtrlDominio**
 - [x] Implementado `inicializarCtrlDominio()` que carga datos al inicio
 - [x] Implementado `cerrarSesion()` que guarda datos al cierre
 - [x] Actualizado para delegar a CtrlDominioXXX (sin referencias a Singleton viejos)
 - [x] Eliminada toda lógica de negocio (solo delegación pura)
-- [x] Inyección correcta de dependencias entre controladores
-
-### **✅ COMPLETADO: CtrlDominioEncuesta**
-- [x] Método `getRespuestasEncuesta()` actualizado para recibir `CtrlDominioRespuesta`
-- [x] Lógica de negocio de encuestas implementada
+- [x] **ACTUALIZADO para inyección correcta de dependencias por parámetros:**
+  - `darRespuesta()` - pasa ctrlDominioUsuario + ctrlDominioPregunta
+  - `eliminarRespuesta()` - pasa ctrlDominioUsuario + ctrlDominioPregunta
+  - `importarRespuestas()` - pasa ctrlDominioUsuario + ctrlDominioEncuesta + ctrlDominioPregunta
+  - `crearEncuesta()` - pasa ctrlDominioUsuario
+  - `importarEncuesta()` - pasa ctrlDominioUsuario + ctrlDominioPregunta
+  - `eliminarEncuesta()` - pasa ctrlDominioPregunta + ctrlDominioUsuario
+  - `getRespuestasEncuesta()` - pasa ctrlDominioRespuesta + ctrlDominioPregunta
+  - `getEncuestasRespondidas()` - pasa ctrlDominioRespuesta + ctrlDominioPregunta
+- [x] **Constructores actualizados** (sin parámetros para controladores fusionados)
 
 ### **✅ COMPLETADO: CtrlDominioPregunta**
 - [x] Método `getRespuestasPregunta()` implementado
@@ -270,29 +455,16 @@ getEncuestasRespondidas(String nomUsuario) {
 
 ## ⚠️ LO QUE FALTA POR HACER (PENDIENTE)
 
-### **Tarea 1: Fusionar CtrlDominioUsuario**
-- [ ] Añadir `TreeMap<String, Usuario> usuarios`
-- [ ] Eliminar referencias a CtrlUsuario (Singleton viejo)
-- [ ] Implementar CRUD gestionando TreeMap directamente
-- [ ] **NO llamar a persistencia en CRUD**
-- [ ] Añadir `getAllUsuarios()` y `cargarUsuarios()`
-- [ ] Implementar `getEncuestasRespondidas(String nomU)`
-
-### **Tarea 2: Fusionar CtrlDominioEncuesta**
-- [ ] Añadir `TreeMap<Integer, Encuesta> encuestas`
-- [ ] Eliminar referencias a CtrlEncuesta (Singleton viejo)
-- [ ] Implementar CRUD gestionando TreeMap directamente
-- [ ] **NO llamar a persistencia en CRUD**
-- [ ] Añadir `getAllEncuestas()` y `cargarEncuestas()`
-
-### **Tarea 3: Fusionar CtrlDominioPregunta**
+### **Tarea 1: Fusionar CtrlDominioPregunta** (Según criterio del usuario)
 - [ ] Añadir `TreeMap<Integer, Pregunta> preguntas`
 - [ ] Eliminar referencias a CtrlPregunta (Singleton viejo)
 - [ ] Implementar CRUD gestionando TreeMap directamente
 - [ ] **NO llamar a persistencia en CRUD**
 - [ ] Añadir `getAllPreguntas()` y `cargarPreguntas()`
+- [ ] Añadir `existePregunta()` y `getPregunta()`
+- [ ] Actualizar para inyección por parámetros (sin dependencias almacenadas)
 
-### **Tarea 4: Actualizar GestorPersistencia**
+### **Tarea 2: Actualizar GestorPersistencia**
 - [ ] Implementar `getInstance()` (corregir typo `getInstace()`)
 - [ ] Implementar `cargarTodosUsuarios()` → `TreeMap<String, Usuario>`
 - [ ] Implementar `cargarTodasEncuestas()` → `TreeMap<Integer, Encuesta>`
@@ -303,15 +475,17 @@ getEncuestasRespondidas(String nomUsuario) {
 - [ ] Implementar `guardarTodasPreguntas(TreeMap<Integer, Pregunta>)`
 - [ ] Implementar `guardarTodasRespuestas(TreeMap<Integer, Respuesta>)`
 
-### **Tarea 5: Actualizar clases de dominio**
-- [ ] `Usuario`: Implementar métodos faltantes (si hay)
-- [ ] `Encuesta`: Implementar `getNomCreador()`, `guardarIdPregunta()`, `eliminarIdPregunta()`
+### **Tarea 3: Actualizar clases de dominio**
+- [ ] `Encuesta`: Verificar que `getIdCreador()` y `guardarPregunta()` funcionan correctamente
+- [ ] `Usuario`: Verificar que `getIdRespuestas()` devuelve `ArrayList` correctamente
 - [ ] Verificar que todas las clases tienen getters/setters necesarios
 
-### **Tarea 6: Limpieza final**
-- [ ] Eliminar carpeta `classcontroller/` (CtrlUsuario, CtrlEncuesta, CtrlPregunta, CtrlRespuesta)
+### **Tarea 4: Limpieza final**
+- [ ] Eliminar CtrlUsuario.java (Singleton viejo ya fusionado)
+- [ ] Eliminar CtrlEncuesta.java (Singleton viejo ya fusionado)
+- [ ] Eliminar CtrlRespuesta.java (si existe - Singleton viejo ya fusionado)
 - [ ] Actualizar todos los imports que referencien clases eliminadas
-- [ ] Verificar que no hay errores de compilación
+- [ ] Verificar que no hay errores de compilación (excepto los esperados de CtrlDominioPregunta)
 - [ ] Ejecutar tests
 
 ---
@@ -320,18 +494,29 @@ getEncuestasRespondidas(String nomUsuario) {
 
 ### Para cada CtrlDominioXXX:
 - [x] **CtrlDominioRespuesta**: Añadir `TreeMap<Key, Object> datos` como atributo ✅
-- [ ] **CtrlDominioUsuario**: Añadir `TreeMap<String, Usuario> usuarios` ⚠️
-- [ ] **CtrlDominioEncuesta**: Añadir `TreeMap<Integer, Encuesta> encuestas` ⚠️
+- [x] **CtrlDominioUsuario**: Añadir `TreeMap<String, Usuario> usuarios` ✅
+- [x] **CtrlDominioEncuesta**: Añadir `TreeMap<Integer, Encuesta> encuestas` ✅
 - [ ] **CtrlDominioPregunta**: Añadir `TreeMap<Integer, Pregunta> preguntas` ⚠️
 
 - [x] **CtrlDominioRespuesta**: Eliminar referencias a Singleton viejo ✅
-- [ ] **CtrlDominioUsuario**: Eliminar referencias a CtrlUsuario ⚠️
-- [ ] **CtrlDominioEncuesta**: Eliminar referencias a CtrlEncuesta ⚠️
+- [x] **CtrlDominioUsuario**: Eliminar referencias a CtrlUsuario ✅
+- [x] **CtrlDominioEncuesta**: Eliminar referencias a CtrlEncuesta ✅
 - [ ] **CtrlDominioPregunta**: Eliminar referencias a CtrlPregunta ⚠️
 
 - [x] **CtrlDominioRespuesta**: Métodos CRUD gestionan TreeMap directamente ✅
 - [x] **CtrlDominioRespuesta**: NO llamar a persistencia en CRUD ✅
 - [x] **CtrlDominioRespuesta**: Añadir `getAllRespuestas()` y `cargarRespuestas()` ✅
+- [x] **CtrlDominioRespuesta**: MIGRADO A INYECCIÓN POR PARÁMETROS ✅
+
+- [x] **CtrlDominioUsuario**: Métodos CRUD gestionan TreeMap directamente ✅
+- [x] **CtrlDominioUsuario**: NO llamar a persistencia en CRUD ✅
+- [x] **CtrlDominioUsuario**: Añadir `getAllUsuarios()` y `cargarUsuarios()` ✅
+- [x] **CtrlDominioUsuario**: Inyección por parámetros en métodos que cruzan controladores ✅
+
+- [x] **CtrlDominioEncuesta**: Métodos CRUD gestionan TreeMap directamente ✅
+- [x] **CtrlDominioEncuesta**: NO llamar a persistencia en CRUD ✅
+- [x] **CtrlDominioEncuesta**: Añadir `getAllEncuestas()` y `cargarEncuestas()` ✅
+- [x] **CtrlDominioEncuesta**: Inyección por parámetros en métodos que cruzan controladores ✅
 
 ### Para GestorPersistencia:
 - [ ] Implementar `getInstance()` (corregir typo) ⚠️
@@ -342,6 +527,13 @@ getEncuestasRespondidas(String nomUsuario) {
 - [x] Implementar `inicializarCtrlDominio()` que carga todo ✅
 - [x] Implementar `cerrarSesion()` que guarda todo ✅
 - [x] Solo delegación pura (sin lógica de negocio) ✅
+- [x] Inyección por parámetros en todos los métodos que cruzan controladores ✅
+
+### Patrón de Inyección por Parámetros:
+- [x] **CtrlDominioRespuesta**: Constructor sin dependencias ✅
+- [x] **CtrlDominioUsuario**: Constructor sin dependencias ✅
+- [x] **CtrlDominioEncuesta**: Constructor sin dependencias ✅
+- [x] **CtrlDominio**: Pasa dependencias como parámetros en métodos cross-controller ✅
 
 ---
 
@@ -370,13 +562,121 @@ cerrarSesion()
 
 ---
 
+## � PATRÓN: INYECCIÓN POR PARÁMETROS vs CONSTRUCTOR
+
+### ¿Por qué cambiamos de constructor a parámetros?
+
+**EVOLUCIÓN:**
+
+**❌ Versión Inicial (Constructor Injection - Stored References):**
+```java
+public class CtrlDominioRespuesta {
+    private CtrlDominioUsuario ctrlDominioUsuario;  // Almacenado
+    private CtrlDominioPregunta ctrlDominioPregunta;  // Almacenado
+    
+    public CtrlDominioRespuesta(CtrlDominioUsuario u, CtrlDominioPregunta p) {
+        this.ctrlDominioUsuario = u;
+        this.ctrlDominioPregunta = p;
+    }
+    
+    public int darRespuesta(...) {
+        Usuario u = ctrlDominioUsuario.getUsuario(nomU);  // Usa almacenado
+        Pregunta p = ctrlDominioPregunta.getPregunta(idP);  // Usa almacenado
+    }
+}
+```
+**Problemas:**
+- Alto acoplamiento (dependencias permanentes)
+- Difícil de testear (mocks complicados)
+- Viola DIP (Dependency Inversion Principle)
+- Dificulta reutilización
+
+**✅ Versión Actual (Parameter Injection - No Stored References):**
+```java
+public class CtrlDominioRespuesta {
+    // NO dependencias almacenadas ✅
+    
+    public CtrlDominioRespuesta() {  // Constructor limpio
+        this.respuestas = new TreeMap<>();
+        this.nextId = 1;
+    }
+    
+    public int darRespuesta(...,
+                             CtrlDominioUsuario ctrlDominioUsuario,  // Inyectado
+                             CtrlDominioPregunta ctrlDominioPregunta) {  // Inyectado
+        Usuario u = ctrlDominioUsuario.getUsuario(nomU);  // Usa parámetro
+        Pregunta p = ctrlDominioPregunta.getPregunta(idP);  // Usa parámetro
+    }
+}
+```
+**Ventajas:**
+- ✅ Bajo acoplamiento (solo cuando se necesita)
+- ✅ Fácil de testear (mocks por parámetro)
+- ✅ Respeta DIP
+- ✅ Más flexible y reutilizable
+
+### Aplicación consistente en toda la arquitectura
+
+**En CtrlDominioUsuario:**
+```java
+// Antes: dependencias almacenadas
+private CtrlDominioRespuesta ctrlDominioRespuesta;
+private CtrlDominioPregunta ctrlDominioPregunta;
+
+// Ahora: inyección por parámetros
+public List<Integer> getEncuestasRespondidas(String nomU,
+                                               CtrlDominioRespuesta ctrlDominioRespuesta,
+                                               CtrlDominioPregunta ctrlDominioPregunta) {
+    // Usa parámetros, no campos almacenados
+}
+```
+
+**En CtrlDominioEncuesta:**
+```java
+// Constructor sin dependencias
+public CtrlDominioEncuesta() {
+    this.encuestas = new TreeMap<>();
+    this.nextId = 1;
+}
+
+// Métodos reciben dependencias
+public int crearEncuesta(..., CtrlDominioUsuario ctrlDominioUsuario) { ... }
+public void eliminarEncuesta(int idE, 
+                              CtrlDominioPregunta ctrlDominioPregunta,
+                              CtrlDominioUsuario ctrlDominioUsuario) { ... }
+public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idE,
+                              CtrlDominioRespuesta ctrlDominioRespuesta,
+                              CtrlDominioPregunta ctrlDominioPregunta) { ... }
+```
+
+**En CtrlDominio (Facade - Coordinador):**
+```java
+// CtrlDominio mantiene referencias (es el único que debe hacerlo)
+private CtrlDominioUsuario ctrlDominioUsuario;
+private CtrlDominioEncuesta ctrlDominioEncuesta;
+private CtrlDominioPregunta ctrlDominioPregunta;
+private CtrlDominioRespuesta ctrlDominioRespuesta;
+
+// Y las inyecta como parámetros cuando es necesario
+public int darRespuesta(String nomU, int idP, T resp) {
+    return ctrlDominioRespuesta.darRespuesta(nomU, idP, resp,
+                                               ctrlDominioUsuario,  // Inyecta
+                                               ctrlDominioPregunta); // Inyecta
+}
+```
+
+---
+
 ## 🤔 PREGUNTAS FRECUENTES
 
 **P: ¿Los CtrlDominioXXX deberían ser Singleton?**
-R: NO. Usan inyección de dependencias (reciben otros controladores en constructor). Singleton dificultaría testing y viola DIP.
+R: NO. Antes usaban constructor injection (dependencias almacenadas), ahora usan parameter injection. Singleton dificultaría testing y viola DIP.
 
-**P: ¿Qué pasa con CtrlRespuesta (el Singleton viejo)?**
-R: Se eliminará. Su funcionalidad se fusionó en CtrlDominioRespuesta.
+**P: ¿Por qué inyección por parámetros en vez de constructor?**
+R: Porque reduce acoplamiento. Las dependencias solo se necesitan en métodos específicos que cruzan controladores, no en todo momento. Es más testeable y flexible.
+
+**P: ¿Qué pasa con CtrlRespuesta, CtrlUsuario, CtrlEncuesta (Singletons viejos)?**
+R: Se eliminaron. Su funcionalidad se fusionó en CtrlDominioXXX correspondientes. Ya no hay doble capa.
 
 **P: ¿Cuándo se guarda en persistencia?**
 R: Solo al cerrar la aplicación, en `CtrlDominio.cerrarSesion()`.
@@ -393,19 +693,25 @@ R: Respeta el principio Abierto/Cerrado. Si añades un nuevo tipo de pregunta, s
 **P: ¿Dónde va el método getXXXDeY(idY)?**
 R: En CtrlDominioY (el aggregate root). Ejemplo: `getRespuestasEncuesta(idE)` → `CtrlDominioEncuesta`.
 
+**P: ¿Cómo sé si una dependencia debe ser parámetro o campo?**
+R: Regla simple:
+- **Campo almacenado**: Solo datos propios (TreeMap de tu entidad)
+- **Parámetro**: Cualquier otro CtrlDominioXXX que necesites consultar
+
 ---
 
 ## 📚 REFERENCIAS
 
-- `DISTRIBUCION_METODOS_CORRECTA.md` - Guía de dónde va cada método
 - `ANALISIS_ARQUITECTURA_3CAPAS.txt` - Análisis completo de la arquitectura
+- `DISTRIBUCION_METODOS_CORRECTA.md` - Guía de dónde poner cada método
 - `info_3capas.txt` - PDF con arquitectura PROP de 3 capas
 - `notes classe.txt` - Notas de clase sobre persistencia
 
 ---
 
-**Última actualización:** 6 de noviembre de 2025  
-**Estado:** Refactorización parcialmente completada (CtrlDominioRespuesta ✅, resto pendiente ⚠️)  
+**Última actualización:** [Fecha actualizada]  
+**Estado:** CtrlDominioRespuesta ✅ | CtrlDominioUsuario ✅ | CtrlDominioEncuesta ✅ | CtrlDominioPregunta ⚠️  
+**Patrón actual:** Inyección por parámetros (parameter injection) sin dependencias almacenadas  
 **Responsable:** Refactorización coordinada con GitHub Copilot
 
 ## 📝 ***************** TAREAS PENDIENTES DE HACER *****************

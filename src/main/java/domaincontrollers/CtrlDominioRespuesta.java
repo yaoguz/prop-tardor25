@@ -26,6 +26,8 @@ import domain.Usuario;
  * - Consulta de encuestas respondidas por usuario
  * - Gestión del conjunto de respuestas en memoria (TreeMap)
  * 
+ * ARQUITECTURA: Usa inyección de dependencias por parámetro (no almacena referencias).
+ * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioRespuesta {
@@ -35,32 +37,16 @@ public class CtrlDominioRespuesta {
 	// Los datos se guardan en un TreeMap con clave - idRespuesta (int)
 	private TreeMap<Integer, Respuesta> respuestas;
 	private int nextId;
-	
-	// Referencias a otros controladores de dominio
-	private CtrlDominioUsuario ctrlDominioUsuario;
-	private CtrlDominioEncuesta ctrlDominioEncuesta;
-	private CtrlDominioPregunta ctrlDominioPregunta;
 
 	/** Constructor **/
 
 	/**
-	 * Constructora. Inicializa el TreeMap de respuestas y las referencias a otros controladores.
-	 * 
-	 * @param ctrlDominioUsuario Controlador de dominio de usuarios
-	 * @param ctrlDominioEncuesta Controlador de dominio de encuestas
-	 * @param ctrlDominioPregunta Controlador de dominio de preguntas
+	 * Constructora. Inicializa el TreeMap de respuestas.
 	 */
-	public CtrlDominioRespuesta(CtrlDominioUsuario ctrlDominioUsuario, 
-	                             CtrlDominioEncuesta ctrlDominioEncuesta,
-	                             CtrlDominioPregunta ctrlDominioPregunta) {
+	public CtrlDominioRespuesta() {
 		this.respuestas = new TreeMap<Integer, Respuesta>();
 		this.nextId = 1;
-		this.ctrlDominioUsuario = ctrlDominioUsuario;
-		this.ctrlDominioEncuesta = ctrlDominioEncuesta;
-		this.ctrlDominioPregunta = ctrlDominioPregunta;
 	}
-	
-	// ==================== METODOS AUXILIARES PRIVADOS ====================
 	
 	/**
 	 * Verifica si existe una respuesta con el ID dado.
@@ -87,9 +73,6 @@ public class CtrlDominioRespuesta {
 		return r;
 	}
 
-	
-	// ==================== GESTIÓN DE RESPUESTAS ====================
-
 	/**
 	 * Crea una nueva respuesta para una pregunta específica.
 	 * 
@@ -101,29 +84,24 @@ public class CtrlDominioRespuesta {
 	 * @param nomUsuario Nombre del usuario que responde
 	 * @param idPregunta ID de la pregunta
 	 * @param respuesta Contenido de la respuesta
+	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
+	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
 	 * @return ID de la respuesta creada
 	 */
-	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
-		// Obtener la pregunta
+	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta,
+	                             CtrlDominioUsuario ctrlDominioUsuario,
+	                             CtrlDominioPregunta ctrlDominioPregunta) {
 		Pregunta p = ctrlDominioPregunta.getPregunta(idPregunta);
 		
-		// FACTORY PATTERN: La pregunta sabe crear su respuesta
-		// Esto es polimórfico y respeta abierto/cerrado
+		// FACTORY PATTERN: La pregunta sabe crear su respuesta (polimórfico)
 		int idR = nextId++;
 		Respuesta nuevaRespuesta = p.crearRespuesta(idR, nomUsuario, respuesta);
 		
-		// Guardar en el TreeMap
+		// guardar en el treemap, en Usuario y en Pregunta
 		respuestas.put(Integer.valueOf(idR), nuevaRespuesta);
-		
-		// Actualizar referencias en Usuario
 		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
 		u.guardarIdRespuesta(idR);
-		
-		// Actualizar referencias en Pregunta
 		p.guardarIdRespuesta(idR);
-		
-		// NO se guarda en persistencia aquí (solo al cerrar sesión en CtrlDominio.cerrarSesion())
-		
 		return idR;
 	}	
 	
@@ -142,18 +120,20 @@ public class CtrlDominioRespuesta {
 		
 		Respuesta r = getRespuesta(idRespuesta);
 		
-		// modificar() en Respuesta validara el tipo
+		// polimorfico
 		r.modificar(newResp); // puede lanzar: TipoIncorrectoException
-		
-		// NO se actualiza en persistencia aquí (solo al cerrar sesión)
 	}
 	
 	/**
 	 * Elimina una respuesta del sistema y actualiza todas las referencias.
 	 * 
 	 * @param idRespuesta ID de la respuesta a eliminar
+	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
+	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
 	 */
-	public void eliminarRespuesta(int idRespuesta) {
+	public void eliminarRespuesta(int idRespuesta,
+	                               CtrlDominioUsuario ctrlDominioUsuario,
+	                               CtrlDominioPregunta ctrlDominioPregunta) {
 		if (!existeRespuesta(idRespuesta)) {
 			throw new IllegalArgumentException("Respuesta con ID " + idRespuesta + " no existe");
 		}
@@ -172,8 +152,6 @@ public class CtrlDominioRespuesta {
 		
 		// Eliminar del TreeMap
 		respuestas.remove(Integer.valueOf(idRespuesta));
-		
-		// NO se elimina en persistencia aquí (solo al cerrar sesión)
 	}
 	
 	/**
@@ -182,10 +160,16 @@ public class CtrlDominioRespuesta {
 	 * DECISIÓN: Cada fichero contiene el idEncuesta para validación.
 	 * 
 	 * @param fichero Archivo con formato: idEncuesta, idPregunta, nomUsuario, respuesta
+	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
+	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencia)
+	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 * @throws IllegalStateException si los IDs no existen en el sistema
 	 */
-	public void importarRespuestas(File fichero) {
+	public void importarRespuestas(File fichero,
+	                                CtrlDominioUsuario ctrlDominioUsuario,
+	                                CtrlDominioEncuesta ctrlDominioEncuesta,
+	                                CtrlDominioPregunta ctrlDominioPregunta) {
 		// Parser del fichero (implementación específica según formato)
 		List<RespuestaImportData> datosImportados = parsearFicheroRespuestas(fichero);
 		
@@ -209,7 +193,8 @@ public class CtrlDominioRespuesta {
 			}
 			
 			// Crear respuesta
-			darRespuesta(dato.nomUsuario, dato.idPregunta, dato.respuesta);
+			darRespuesta(dato.nomUsuario, dato.idPregunta, dato.respuesta,
+			             ctrlDominioUsuario, ctrlDominioPregunta);
 		}
 	}
 	
@@ -235,8 +220,6 @@ public class CtrlDominioRespuesta {
 		// Esta es una firma de método para mantener la arquitectura limpia
 		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
 	}
-	
-	// ==================== MÉTODOS PARA PERSISTENCIA ====================
 	
 	/**
 	 * Obtiene todas las respuestas almacenadas en memoria.
