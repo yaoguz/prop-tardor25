@@ -293,6 +293,14 @@ public class CtrlPersistence {
         }
     }
 
-    
+    public void actualizarUsuario(Usuario u) {
+        String userName = u.getNomUsuario();
+
+        if (!usuarios.remove(u)) {
+            throw new IllegalArgumentException("El usuario con nombre: " + userName + " no existe");
+        }
+
+        
+    }
 }
 
