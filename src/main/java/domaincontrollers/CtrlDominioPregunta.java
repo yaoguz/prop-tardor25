@@ -6,6 +6,7 @@ import java.util.Map;
 
 import domain.Encuesta;
 import domain.Pregunta;
+import domain.Respuesta;
 
 import persistence.GestorPersistencia;
 
@@ -43,8 +44,6 @@ public class CtrlDominioPregunta {
 		this.ctrlPregunta = ctrlPregunta;
 		this.gestorPersistencia = gestorPersistencia;
 	}
-
-	// ==================== GESTIÓN DE PREGUNTAS ====================
 	
 	/**
 	 * Clase auxiliar para datos importados de pregunta (debe ser compartida).
@@ -218,5 +217,29 @@ public class CtrlDominioPregunta {
 		// eliminar de persistencia y del controlador
 		gestorPersistencia.eliminarPregunta(idPregunta);
 		ctrlPregunta.eliminar(p);
+	}
+	
+	/**
+	 * Obtiene todas las respuestas de una pregunta específica.
+	 * 
+	 * Esta operación pertenece a CtrlDominioPregunta porque el aggregate root es Pregunta.
+	 * Representa: "Todas las respuestas DE esta pregunta".
+	 * 
+	 * @param idPregunta ID de la pregunta
+	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
+	 * @return Lista de respuestas de la pregunta
+	 * @throws IllegalArgumentException si la pregunta no existe
+	 */
+	public List<Respuesta> getRespuestasPregunta(int idPregunta, 
+	                                                     CtrlDominioRespuesta ctrlDominioRespuesta) {
+		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
+		List<Integer> idRespuestas = p.getIdRespuestas();
+		
+		List<Respuesta> respuestas = new java.util.ArrayList<>();
+		for (Integer idR : idRespuestas) {
+			respuestas.add(ctrlDominioRespuesta.getRespuesta(idR));
+		}
+		
+		return respuestas;
 	}
 }

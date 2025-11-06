@@ -72,6 +72,30 @@ public class CtrlDominioEncuesta {
 	}
 	
 	/**
+	 * Crea una nueva encuesta.
+	 * 
+	 * @param nomUsuario Nombre del usuario creador
+	 * @param titulo Título de la encuesta
+	 * @return ID de la encuesta creada
+	 * @throws IllegalArgumentException si el título está vacío
+	 */
+	public int crearEncuesta(String nomUsuario, String titulo) {
+		if (titulo == null || titulo.trim().isEmpty()) {
+			throw new IllegalArgumentException("El título de la encuesta no puede estar vacío");
+		}
+
+		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
+		
+		// crear encuesta
+		int idE = ctrlEncuesta.crearEncuesta(nomUsuario, titulo);
+		
+		// guardar en usuario y en persistencia
+		u.guardarIdEncuesta(idE);
+		gestorPersistencia.guardarEncuesta(ctrlEncuesta.getEncuesta(idE));
+		return idE;
+	}
+	
+	/**
 	 * Importa una encuesta desde un fichero externo.
 	 * 
 	 * Formato esperado: {titulo, [{enunciado, [info según tipo]}], idAutor}
@@ -165,5 +189,59 @@ public class CtrlDominioEncuesta {
 		// eliminar de persistencia y del controlador
 		gestorPersistencia.eliminarEncuesta(idEncuesta);
 		ctrlEncuesta.eliminar(e);
+	}
+	
+	/**
+	 * Obtiene todas las respuestas de una encuesta organizadas por pregunta.
+	 * 
+	 * Esta operación pertenece a CtrlDominioEncuesta porque el aggregate root es Encuesta.
+	 * Representa: "Todas las respuestas DE esta encuesta".
+	 * 
+	 * NOTA: Solo el autor de la encuesta debería tener acceso (validación en capa de presentación).
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
+	 * @return Mapa de Pregunta -> Set de Respuestas
+	 */
+	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta,
+	                                                             CtrlDominioRespuesta ctrlDominioRespuesta) {
+		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
+		List<Integer> idPreguntas = e.getIdPreguntas();
+
+		Map<Pregunta, Set<Respuesta>> resultado = new HashMap<>();
+		
+		// por cada pregunta, obtener sus respuestas
+		for (Integer idP : idPreguntas) {
+			Pregunta p = ctrlPregunta.getPregunta(idP);
+			List<Integer> idRespuestas = p.getIdRespuestas();
+			
+			Set<Respuesta> respuestas = new HashSet<>();
+			for (Integer idR : idRespuestas) {
+				Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
+				respuestas.add(r);
+			}
+			
+			resultado.put(p, respuestas);
+		}
+		return resultado;
+	}
+
+	/**
+	 * Añade una pregunta a una encuesta (método polimórfico según tipo).
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @param infoP Información de la pregunta (enunciado, tipo, atributos específicos)
+	 * @return ID de la pregunta creada
+	 */
+	private int anadirPregunta(int idEncuesta, PreguntaImportData infoP) {
+		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
+		
+		// Crear pregunta polimórfica según tipo
+		int idP = ctrlPregunta.crearPregunta(idEncuesta, infoP.enunciado,
+                  infoP.tipo, infoP.atributosEspecificos);
+
+		e.guardarIdPregunta(idP);
+		gestorPersistencia.guardarPregunta(ctrlPregunta.getPregunta(idP));
+		return idP;
 	}
 }

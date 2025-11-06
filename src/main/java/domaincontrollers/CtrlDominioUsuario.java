@@ -1,5 +1,12 @@
 package domaincontrollers;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import domain.Pregunta;
+import domain.Respuesta;
 import domain.Usuario;
 import persistence.GestorPersistencia;
 
@@ -13,7 +20,6 @@ import persistence.GestorPersistencia;
  * - Validaciones de usuario
  * 
  * @author Yaoyao Guo
- * @version 2.0
  */
 public class CtrlDominioUsuario {
 
@@ -34,8 +40,6 @@ public class CtrlDominioUsuario {
 		this.ctrlUsuario = ctrlUsuario;
 		this.gestorPersistencia = gestorPersistencia;
 	}
-
-	// ==================== GESTIÓN DE USUARIOS ====================
 	
 	/**
 	 * Registra un nuevo usuario en el sistema.
@@ -127,5 +131,31 @@ public class CtrlDominioUsuario {
 		
 		// actualizar en persistencia
 		gestorPersistencia.actualizarUsuario(u);
+	}
+
+	/**
+	 * Obtiene los IDs de las encuestas respondidas por un usuario.
+	 * 
+	 * @param nomUsuario Nombre del usuario
+	 * @return Lista de IDs de encuestas respondidas
+	 */
+	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
+		Usuario u = getUsuario(nomUsuario);
+		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
+		
+		// set para evitar duplicados (un usuario puede responder multiples preguntas de la misma encuesta)
+		Set<Integer> idEncuestas = new HashSet<>();
+		
+		// por cada respuesta, obtener la pregunta y luego la encuesta
+		for (Integer idR : idRespuestas) {
+			Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
+			int idPregunta = r.getIdPregunta();
+			
+			Pregunta p = ctrlDominioPregunta.getPregunta(idPregunta);
+			int idEncuesta = p.getIdEncuesta();
+			
+			idEncuestas.add(idEncuesta);
+		}
+		return new ArrayList<>(idEncuestas); // convertir set en un arraylist
 	}
 }

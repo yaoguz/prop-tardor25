@@ -79,7 +79,7 @@ public class CtrlDominioRespuesta {
 	 * @return Respuesta correspondiente
 	 * @throws IllegalArgumentException si la respuesta no existe
 	 */
-	private Respuesta getRespuesta(int idRespuesta) {
+	public Respuesta getRespuesta(int idRespuesta) {
 		Respuesta r = respuestas.get(Integer.valueOf(idRespuesta));
 		if (r == null) {
 			throw new IllegalArgumentException("Respuesta con ID " + idRespuesta + " no existe");

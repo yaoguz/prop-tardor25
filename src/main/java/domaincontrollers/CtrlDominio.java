@@ -17,47 +17,37 @@ import persistence.GestorPersistencia;
 /**
  * Controlador de Dominio - Actúa como fachada (Facade Pattern) del sistema.
  * 
- * REFACTORIZACIÓN v2.0:
+ * ARQUITECTURA 3 CAPAS (según PDF info_3capas.txt):
  * 
- * Este controlador ahora actúa como ORQUESTADOR PRINCIPAL que delega en
- * controladores de dominio especializados:
+ * CAPA DE PRESENTACIÓN
+ *     ↓
+ * CAPA DE DOMINIO:
+ *   - CtrlDominio (Facade MINIMALISTA - punto de entrada, solo delega)
+ *   - CtrlDominioUsuario (gestiona TreeMap<String, Usuario> + lógica de usuarios)
+ *   - CtrlDominioEncuesta (gestiona TreeMap<Integer, Encuesta> + lógica de encuestas)
+ *   - CtrlDominioPregunta (gestiona TreeMap<Integer, Pregunta> + lógica de preguntas)
+ *   - CtrlDominioRespuesta (gestiona TreeMap<Integer, Respuesta> + lógica de respuestas)
+ *   - CtrlDominioPerfil (lógica de clustering, no gestiona datos propios)
+ *     ↓
+ * CAPA DE PERSISTENCIA:
+ *   - GestorPersistencia (STUB - import/export en apertura/cierre de sesión)
  * 
- * - CtrlDominioUsuario: Gestión de usuarios (registro, login, sesión)
- * - CtrlDominioEncuesta: Gestión de encuestas (CRUD, importar/exportar)
- * - CtrlDominioPregunta: Gestión de preguntas (añadir, modificar, eliminar)
- * - CtrlDominioRespuesta: Gestión de respuestas (crear, modificar, eliminar)
- * - CtrlDominioPerfil: Gestión de perfiles (clustering, análisis)
+ * RESPONSABILIDAD DE CtrlDominio (Facade):
+ * - Punto de entrada único para la capa de presentación
+ * - Delegación pura a controladores especializados
+ * - Coordinación de operaciones que cruzan múltiples controladores
+ * - NO contiene lógica de negocio compleja
+ * - NO gestiona datos (TreeMaps están en CtrlDominioXXX)
  * 
  * VENTAJAS:
- * 1. **Single Responsibility**: Cada controlador tiene una responsabilidad clara
- * 2. **Mantenibilidad**: Cambios en una funcionalidad no afectan a otras
- * 3. **Testabilidad**: Cada controlador se puede testear independientemente
- * 4. **Escalabilidad**: Fácil añadir nuevas funcionalidades
+ * 1. **Facade Pattern**: Interfaz simplificada para presentación
+ * 2. **Single Responsibility**: Cada CtrlDominioXXX gestiona una entidad
+ * 3. **Low Coupling**: Presentación solo conoce CtrlDominio
+ * 4. **High Cohesion**: Lógica de negocio encapsulada en controladores especializados
  * 
- * DECISIÓN DE DISEÑO: Mantener CtrlPregunta y CtrlRespuesta (capa de datos)
- * 
- * RAZONES:
- * 1. **Single Responsibility Principle (SRP)**: Cada controlador de clase maneja 
- *    exclusivamente la colección de sus objetos (CRUD + gestión de IDs).
- * 
- * 2. **Separation of Concerns**: 
- *    - CtrlPregunta: Gestiona ConjuntoPreguntas, crea preguntas polimórficas 
- *      (Libre, Numérica, OpciónÚnica, OpciónMúltiple)
- *    - CtrlRespuesta: Gestiona ConjuntoRespuestas, crea respuestas polimórficas 
- *      correspondientes
- * 
- * 3. **Facade Pattern**: CtrlDominio orquesta las operaciones complejas entre 
- *    múltiples controladores, pero NO debe asumir la responsabilidad de gestionar 
- *    colecciones de objetos.
- * 
- * 4. **Cohesión y Acoplamiento**: Mantener controladores específicos reduce el 
- *    acoplamiento y mejora la cohesión del sistema.
- * 
- * 5. **Polimorfismo**: Los controladores de clase son el lugar natural para 
- *    implementar factory methods que crean el tipo correcto de Pregunta/Respuesta.
- * 
- * ALTERNATIVA RECHAZADA: Eliminar CtrlPregunta/CtrlRespuesta haría que CtrlDominio
- * se convierta en un "God Object" que viola SRP y dificulta el mantenimiento.
+ * PATRÓN DE DISEÑO APLICADO:
+ * - Facade Pattern: CtrlDominio oculta la complejidad de los controladores internos
+ * - Dependency Injection: CtrlDominio inyecta dependencias entre controladores
  * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
@@ -85,20 +75,33 @@ public class CtrlDominio {
 	}
 
 	/**
-	 * Inicializa todas las instancias singleton de los controladores.
+	 * Inicializa y carga todos los datos del sistema.
+	 * 
+	 * IMPORTANTE: Este método se llama al iniciar la aplicación.
+	 * Carga todos los datos desde persistencia a memoria.
 	 */
 	public void inicializarCtrlDominio() {
-		// Inicializar gestor de persistencia
-		gestorPersistencia = GestorPersistencia.getInstace();
+		// inicializar gestor de persistencia
+		gestorPersistencia = GestorPersistencia.getInstance();
 		
-		// Inicializar controladores de dominio especializados
-		ctrlDominioUsuario = new CtrlDominioUsuario(ctrlUsuario, gestorPersistencia);
-		ctrlDominioEncuesta = new CtrlDominioEncuesta(ctrlUsuario, ctrlEncuesta, 
-		                                                ctrlPregunta, ctrlRespuesta, gestorPersistencia);
-		ctrlDominioPregunta = new CtrlDominioPregunta(ctrlEncuesta, ctrlPregunta, gestorPersistencia);
-		ctrlDominioRespuesta = new CtrlDominioRespuesta(ctrlUsuario, ctrlEncuesta, 
-		                                                 ctrlPregunta, ctrlRespuesta);
-		ctrlDominioPerfil = new CtrlDominioPerfil(ctrlUsuario);
+		// inicializar controladores de dominio especializados
+		ctrlDominioUsuario = new CtrlDominioUsuario();
+		ctrlDominioEncuesta = new CtrlDominioEncuesta();
+		ctrlDominioPregunta = new CtrlDominioPregunta();
+		ctrlDominioRespuesta = new CtrlDominioRespuesta(ctrlDominioUsuario, 
+							   ctrlDominioEncuesta, ctrlDominioPregunta);
+		ctrlDominioPerfil = new CtrlDominioPerfil(ctrlDominioUsuario);
+		
+		// cargar datos desde persistencia
+		try {
+			ctrlDominioUsuario.cargarUsuarios(gestorPersistencia.cargarTodosUsuarios());
+			ctrlDominioEncuesta.cargarEncuestas(gestorPersistencia.cargarTodasEncuestas());
+			ctrlDominioPregunta.cargarPreguntas(gestorPersistencia.cargarTodasPreguntas());
+			ctrlDominioRespuesta.cargarRespuestas(gestorPersistencia.cargarTodasRespuestas());
+		} catch (Exception e) {
+			// Si es la primera vez que se ejecuta la app, no hay datos que cargar
+			System.out.println("Iniciando aplicación sin datos previos (primera ejecución)");
+		}
 	}
 
 	// ==================== GESTIÓN DE USUARIOS ====================
@@ -145,6 +148,16 @@ public class CtrlDominio {
 	}
 
 	/**
+	 * Obtiene los IDs de las encuestas respondidas por un usuario.
+	 * 
+	 * @param nomUsuario Nombre del usuario
+	 * @return Lista de IDs de encuestas respondidas
+	 */
+	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
+		return ctrlDominioUsuario.getEncuestasRespondidas(nomUsuario);
+	}
+
+	/**
 	 * Cierra la sesión del usuario actual y guarda todos los datos en persistencia.
 	 * 
 	 * ARQUITECTURA: Este es el ÚNICO momento en que se llama a persistencia para guardar.
@@ -170,38 +183,12 @@ public class CtrlDominio {
 		}
 		
 		// 2. Cerrar sesión del usuario
-		ctrlUsuario.cerrarSesion();
+		ctrlDominioUsuario.cerrarSesion();
 	}
 
 	// ==================== GESTIÓN DE RESPUESTAS ====================
 	// Delega en CtrlDominioRespuesta
 	
-	/**
-	 * Obtiene los IDs de las encuestas respondidas por un usuario.
-	 * 
-	 * @param nomUsuario Nombre del usuario
-	 * @return Lista de IDs de encuestas respondidas
-	 */
-	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		List<Integer> idRespuestas = u.getIdRespuestas();
-		
-		// set para evitar duplicados (un usuario puede responder multiples preguntas de la misma encuesta)
-		Set<Integer> idEncuestasSet = new HashSet<>();
-		
-		// por cada respuesta, obtener la pregunta y luego la encuesta
-		for (Integer idR : idRespuestas) {
-			Respuesta r = ctrlRespuesta.getRespuesta(idR);
-			int idPregunta = r.getIdPregunta();
-			
-			Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-			int idEncuesta = p.getIdEncuesta();
-			
-			idEncuestasSet.add(idEncuesta);
-		}
-		return new ArrayList<>(idEncuestasSet); // convertir set en un arraylist
-	}
-
 	/**
 	 * Crea una nueva respuesta para una pregunta específica.
 	 * 
@@ -271,19 +258,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
-		if (titulo == null || titulo.trim().isEmpty()) {
-			throw new IllegalArgumentException("El título de la encuesta no puede estar vacío");
-		}
-
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		
-		// crear encuesta
-		int idE = ctrlEncuesta.crearEncuesta(nomUsuario, titulo);
-		
-		// guardar en usuario y en persistencia
-		u.guardarIdEncuesta(idE);
-		gestorPersistencia.guardarEncuesta(ctrlEncuesta.getEncuesta(idE));
-		return idE;
+		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
 	}
 	
 	/**
@@ -328,44 +303,7 @@ public class CtrlDominio {
 	 * @return Mapa de Pregunta -> Set de Respuestas
 	 */
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		List<Integer> idPreguntas = e.getIdPreguntas();
-
-		Map<Pregunta, Set<Respuesta>> resultado = new HashMap<>();
-		
-		// por cada pregunta, obtener sus respuestas
-		for (Integer idP : idPreguntas) {
-			Pregunta p = ctrlPregunta.getPregunta(idP);
-			List<Integer> idRespuestas = p.getIdRespuestas();
-			
-			Set<Respuesta> respuestas = new HashSet<>();
-			for (Integer idR : idRespuestas) {
-				Respuesta r = ctrlRespuesta.getRespuesta(idR);
-				respuestas.add(r);
-			}
-			
-			resultado.put(p, respuestas);
-		}
-		return resultado;
-	}
-
-	/**
-	 * Añade una pregunta a una encuesta (método polimórfico según tipo).
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @param infoP Información de la pregunta (enunciado, tipo, atributos específicos)
-	 * @return ID de la pregunta creada
-	 */
-	private int anadirPregunta(int idEncuesta, PreguntaImportData infoP) {
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		
-		// Crear pregunta polimórfica según tipo
-		int idP = ctrlPregunta.crearPregunta(idEncuesta, infoP.enunciado,
-                  infoP.tipo, infoP.atributosEspecificos);
-
-		e.guardarIdPregunta(idP);
-		gestorPersistencia.guardarPregunta(ctrlPregunta.getPregunta(idP));
-		return idP;
+		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta, ctrlDominioRespuesta);
 	}
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================
