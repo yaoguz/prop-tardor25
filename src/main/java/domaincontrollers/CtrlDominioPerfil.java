@@ -16,7 +16,7 @@ import domain.Usuario;
  * 
  * NOTA: La funcionalidad completa de perfiles está pendiente de implementación.
  * 
- * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
+ * @author Alessandro Jin
  */
 public class CtrlDominioPerfil {
 

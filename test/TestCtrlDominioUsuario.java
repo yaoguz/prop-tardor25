@@ -17,7 +17,7 @@ import persistence.CtrlPersistence;
 import domain.Usuario;
 
 @RunWith(MockitoJUnitRunner.class)
-public class testCtrlDominioUsuario {
+public class TestCtrlDominioUsuario {
     @Mock
     private CtrlUsuario mockCtrlUsuario;
     

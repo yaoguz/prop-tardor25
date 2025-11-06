@@ -11,6 +11,8 @@ import java.util.Map;
 import domain.Usuario;
 import domaincontrollers.CtrlUsuario;
 
+////////////// al final no usamos CtrlUsuario !!!
+
 /**
  * Tests unitarios para la clase CtrlUsuario (implementación singleton).
  */
