@@ -1,4 +1,4 @@
-package driver;
+package drivers;
 
 import java.util.Scanner;
 import java.util.ArrayList;

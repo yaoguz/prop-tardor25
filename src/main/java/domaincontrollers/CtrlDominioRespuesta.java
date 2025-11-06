@@ -6,10 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import domain.Usuario;
-import domain.Respuesta;
 import domain.Pregunta;
-
+import domain.Respuesta;
+import domain.Usuario;
 import persistence.GestorPersistencia;
 
 /**
@@ -22,8 +21,7 @@ import persistence.GestorPersistencia;
  * - Importación de respuestas desde ficheros
  * - Consulta de encuestas respondidas por usuario
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioRespuesta {
 

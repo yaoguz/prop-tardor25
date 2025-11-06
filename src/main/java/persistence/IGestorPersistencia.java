@@ -7,7 +7,7 @@ import domain.Respuesta;
 
 /**
  * Interfaz del Controlador de Persistencia.
- * Permite crear implementaciones reales (CtrlPersistence) o mocks para testing.
+ * Permite crear implementaciones reales (GestorPersistencia) o mocks para testing.
  * 
  * @author Equipo PROP
  * @version 1.0

@@ -56,14 +56,14 @@ public class GestorPersistencia {
     /** Constructor y metodos de inicializacion **/
 
 	public GestorPersistencia() {
-		inicializarCtrlPersistence();
+		inicializarGestorPersistencia();
 	}
 
 
     /**
      * Inicialización de los atributos de la clase
      */
-	public void inicializarCtrlPersistence() {
+	public void inicializarGestorPersistencia() {
         usuarios = new HashMap();
         encuestas = new HashMap();
         preguntas = new HashMap();
@@ -171,13 +171,13 @@ public class GestorPersistencia {
     * @throws IllegalArgumentException si ya existe una encuesta con el mismo id
     */
     public void guardarEncuesta(Encuesta e) {
-        Integer id = e.getidEncuesta();
+        Integer id = e.getIdEncuesta();
         
-        if(encuentas.containsKey(id)) {
+        if(encuestas.containsKey(id)) {
             throw new IllegalArgumentException("La encuesta con id: "+ id + " ya existe");
         }
 
-        encuentas.put(id, e);
+        encuestas.put(id, e);
     }
 
     /**
@@ -191,7 +191,7 @@ public class GestorPersistencia {
     * @throws IllegalArgumentException si ya existe una Pregunta con el mismo id
     */
     public void guardarPregunta(Pregunta p) {
-        Integer id = p.getId();
+        Integer id = p.getIdPregunta();
 
         if (preguntas.containsKey(id)) {
             throw new IllegalArgumentException("La pregunta con id: " + id + " ya existe");

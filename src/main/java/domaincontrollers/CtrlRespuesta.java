@@ -40,7 +40,6 @@ public class CtrlRespuesta {
 
 	/**
      * Crea una nueva encuesta.
-     * ⚠️ CAMBIO: String nomUsuario en lugar de int idUsuario
      * @return ID de la encuesta creada
      */
     public int crearEncuesta(String nomUsuario, String titulo) {
