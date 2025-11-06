@@ -2,26 +2,20 @@ package persistence;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.ArrayList;
 import domain.Usuario;
 import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
 
-/*
-PND:
-actualizarUsuario(Usuario u); // cuando se modifica la contrasena de un usuario u
-actualizarRespuesta(Respuesta r); // cuando se modifica una respuesta
-actualizarEncuesta(Encuesta e); // cuando se modifica el titulo de una encuesta
-
-funciones de eliminar
-
-*/
+// *** pnd de revisar a partir de la linea 289
 
 /**
  * Controlador de datos del sistema
+ * 
+ * @author Alessandro Jin
  */
-
 public class GestorPersistencia {
     /** Atributos **/
     /**
@@ -288,9 +282,139 @@ public class GestorPersistencia {
     public void eliminarRespuesta(Respuesta r) {
         Integer id = r.getId();
 
-        if (!respuestas.remove(r)) {
+        if (!respuestas.containsKey(id)) {
             throw new IllegalArgumentException("La respuesta con id: " + id + " no existe");
         }
+        respuestas.remove(id);
+    }
+
+    // ==================== MÉTODOS PARA NUEVA ARQUITECTURA (Singleton + TreeMap bulk operations) ====================
+    
+    /**
+     * Instancia única de GestorPersistencia (Singleton).
+     * Implementado por el copilot, pendiente de revisar.
+     */
+    private static GestorPersistencia singletonInstance;
+    
+    /**
+     * Obtiene la instancia única de GestorPersistencia (patrón Singleton).
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @return Instancia única de GestorPersistencia
+     */
+    public static GestorPersistencia getInstance() {
+        if (singletonInstance == null) {
+            singletonInstance = new GestorPersistencia();
+        }
+        return singletonInstance;
+    }
+    
+    /**
+     * Carga todos los usuarios desde persistencia al iniciar la aplicación.
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @return TreeMap con todos los usuarios (clave: nomUsuario)
+     */
+    public TreeMap<String, Usuario> cargarTodosUsuarios() {
+        // Implementado por el copilot, pendiente de revisar
+        TreeMap<String, Usuario> resultado = new TreeMap<>();
+        for (Map.Entry<String, Usuario> entry : usuarios.entrySet()) {
+            resultado.put(entry.getKey(), entry.getValue());
+        }
+        return resultado;
+    }
+    
+    /**
+     * Guarda todos los usuarios en persistencia al cerrar la aplicación.
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @param todosUsuarios TreeMap con todos los usuarios a guardar
+     */
+    public void guardarTodosUsuarios(TreeMap<String, Usuario> todosUsuarios) {
+        // Implementado por el copilot, pendiente de revisar
+        this.usuarios.clear();
+        this.usuarios.putAll(todosUsuarios);
+    }
+    
+    /**
+     * Carga todas las encuestas desde persistencia al iniciar la aplicación.
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @return TreeMap con todas las encuestas (clave: idEncuesta)
+     */
+    public TreeMap<Integer, Encuesta> cargarTodasEncuestas() {
+        // Implementado por el copilot, pendiente de revisar
+        TreeMap<Integer, Encuesta> resultado = new TreeMap<>();
+        for (Map.Entry<Integer, Encuesta> entry : encuestas.entrySet()) {
+            resultado.put(entry.getKey(), entry.getValue());
+        }
+        return resultado;
+    }
+    
+    /**
+     * Guarda todas las encuestas en persistencia al cerrar la aplicación.
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @param todasEncuestas TreeMap con todas las encuestas a guardar
+     */
+    public void guardarTodasEncuestas(TreeMap<Integer, Encuesta> todasEncuestas) {
+        // Implementado por el copilot, pendiente de revisar
+        this.encuestas.clear();
+        this.encuestas.putAll(todasEncuestas);
+    }
+    
+    /**
+     * Carga todas las preguntas desde persistencia al iniciar la aplicación.
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @return TreeMap con todas las preguntas (clave: idPregunta)
+     */
+    public TreeMap<Integer, Pregunta> cargarTodasPreguntas() {
+        // Implementado por el copilot, pendiente de revisar
+        TreeMap<Integer, Pregunta> resultado = new TreeMap<>();
+        for (Map.Entry<Integer, Pregunta> entry : preguntas.entrySet()) {
+            resultado.put(entry.getKey(), entry.getValue());
+        }
+        return resultado;
+    }
+    
+    /**
+     * Guarda todas las preguntas en persistencia al cerrar la aplicación.
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @param todasPreguntas TreeMap con todas las preguntas a guardar
+     */
+    public void guardarTodasPreguntas(TreeMap<Integer, Pregunta> todasPreguntas) {
+        // Implementado por el copilot, pendiente de revisar
+        this.preguntas.clear();
+        this.preguntas.putAll(todasPreguntas);
+    }
+    
+    /**
+     * Carga todas las respuestas desde persistencia al iniciar la aplicación.
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @return TreeMap con todas las respuestas (clave: idRespuesta)
+     */
+    public TreeMap<Integer, Respuesta> cargarTodasRespuestas() {
+        // Implementado por el copilot, pendiente de revisar
+        TreeMap<Integer, Respuesta> resultado = new TreeMap<>();
+        for (Map.Entry<Integer, Respuesta> entry : respuestas.entrySet()) {
+            resultado.put(entry.getKey(), entry.getValue());
+        }
+        return resultado;
+    }
+    
+    /**
+     * Guarda todas las respuestas en persistencia al cerrar la aplicación.
+     * Implementado por el copilot, pendiente de revisar.
+     * 
+     * @param todasRespuestas TreeMap con todas las respuestas a guardar
+     */
+    public void guardarTodasRespuestas(TreeMap<Integer, Respuesta> todasRespuestas) {
+        // Implementado por el copilot, pendiente de revisar
+        this.respuestas.clear();
+        this.respuestas.putAll(todasRespuestas);
     }
 
     

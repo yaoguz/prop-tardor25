@@ -1,5 +1,6 @@
 package domaincontrollers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import domain.Usuario;
@@ -15,36 +16,25 @@ import domain.Usuario;
  * 
  * NOTA: La funcionalidad completa de perfiles está pendiente de implementación.
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioPerfil {
 
-	/** Atributos - Controladores de clase **/
-	
-	private CtrlUsuario ctrlUsuario;
-
-	/** Constructor **/
-
 	/**
-	 * Constructora. Inicializa los controladores necesarios.
-	 * 
-	 * @param ctrlUsuario Controlador de usuarios
+	 * Constructora vacía (sin dependencias almacenadas).
+	 * CtrlDominioPerfil no gestiona datos propios, solo hace análisis.
 	 */
-	public CtrlDominioPerfil(CtrlUsuario ctrlUsuario) {
-		this.ctrlUsuario = ctrlUsuario;
-	}
-
-	// ==================== GESTIÓN DE PERFILES ====================
+	public CtrlDominioPerfil() {}
 	
 	/**
 	 * Obtiene los perfiles de un usuario (funcionalidad de clustering/análisis).
 	 * 
 	 * @param nomUsuario Nombre del usuario
+	 * @param ctrlDominioUsuario Controlador de usuarios (inyección por parámetros)
 	 * @return Lista de perfiles del usuario
 	 */
-	public List<Integer> getPerfilesUsuario(String nomUsuario) {
-		Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-		return u.getIdPerfiles();
+	public List<Integer> getPerfilesUsuario(String nomUsuario, CtrlDominioUsuario ctrlDominioUsuario) {
+		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
+		return new ArrayList<>(u.getIdPerfiles());
 	}
 }

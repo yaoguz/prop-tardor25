@@ -1,14 +1,17 @@
 package domaincontrollers;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.ArrayList;
 
 import domain.Encuesta;
 import domain.Pregunta;
+import domain.PreguntaLibre;
+import domain.PreguntaNumerica;
+import domain.PreguntaOpcionMultiple;
+import domain.PreguntaOpcionUnica;
 import domain.Respuesta;
-
-import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de preguntas.
@@ -18,35 +21,179 @@ import persistence.GestorPersistencia;
  * - Modificar preguntas existentes
  * - Eliminar preguntas
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Denis Roca
  */
 public class CtrlDominioPregunta {
-
-	/** Atributos - Controladores de clase **/
 	
-	private CtrlEncuesta ctrlEncuesta;
-	private CtrlPregunta ctrlPregunta;
-	private GestorPersistencia gestorPersistencia;
-
-	/** Constructor **/
+	/** Mapa de preguntas (clave: idPregunta, valor: Pregunta) */
+	private TreeMap<Integer, Pregunta> preguntas;
+	
+	/** ID para la próxima pregunta a crear */
+	private int nextId;
 
 	/**
-	 * Constructora. Inicializa los controladores necesarios.
-	 * 
-	 * @param ctrlEncuesta Controlador de encuestas
-	 * @param ctrlPregunta Controlador de preguntas
-	 * @param gestorPersistencia Controlador de persistencia
+	 * Constructora. Inicializa las estructuras de datos.
 	 */
-	public CtrlDominioPregunta(CtrlEncuesta ctrlEncuesta, CtrlPregunta ctrlPregunta,
-	                            GestorPersistencia gestorPersistencia) {
-		this.ctrlEncuesta = ctrlEncuesta;
-		this.ctrlPregunta = ctrlPregunta;
-		this.gestorPersistencia = gestorPersistencia;
+	public CtrlDominioPregunta() {
+		this.preguntas = new TreeMap<>();
+		this.nextId = 1;
 	}
 	
 	/**
-	 * Clase auxiliar para datos importados de pregunta (debe ser compartida).
+	 * Se verifica si existe una pregunta con el ID especificado.
+	 * 
+	 * @param idP ID de la pregunta
+	 * @return true si existe, false en caso contrario
+	 */
+	public boolean existePregunta(int idP) {
+		return preguntas.containsKey(idP);
+	}
+	
+	/**
+	 * Se obtiene la instancia de Pregunta con el id pasasdo por parámetro.
+	 * 
+	 * @param idPregunta ID de la pregunta a obtener.
+	 * @return la Pregunta cuyo identificador se ha pasado por parámetro.
+	 * @throws IllegalArgumentException si no existe una instancia de Pregunta con identificador idPregunta.
+	 */
+	public Pregunta getPregunta(int idPregunta) {
+		Pregunta p = preguntas.get(idPregunta);
+		if (p == null) {
+			throw new IllegalArgumentException("No existe la pregunta");
+		}
+		return p;
+	}
+
+	/**
+	 * Crea una nueva pregunta de tipo libre con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * 
+	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
+	 * @param enunciado el enunciado de la pregunta
+	 * @param ctrlDominioEncuesta controlador de encuestas (inyección por parámetros)
+	 * @return idPregunta de la pregunta creada
+	 * @throws IllegalArgumentException si el enunciado está vacío o es null
+	 */
+	public int crearPreguntaLibre(int idEncuesta, String enunciado, 
+	                               CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
+		int idPregunta = nextId;
+		nextId++;
+		Pregunta p = new PreguntaLibre(idEncuesta, idPregunta, enunciado);
+		preguntas.put(idPregunta, p);
+		
+		// Actualizar encuesta
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+		e.guardarPregunta(idPregunta);
+		
+		return idPregunta;
+	}
+
+	/**
+	 * Se crea una nueva pregunta de tipo numérica con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 *
+	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
+	 * @param enunciado el enunciado de la pregunta
+	 * @param min el valor numérico mínimo que pueden tener las respuestas de la pregunta
+	 * @param max el valor numérico máximo que pueden tener las respuestas de la pregunta
+	 * @param ctrlDominioEncuesta controlador de encuestas (inyección por parámetros)
+	 * @return idPregunta de la pregunta creada
+	 * @throws IllegalArgumentException si el enunciado está vacío o es null
+	 */
+	public int crearPreguntaNumerica(int idEncuesta, String enunciado, int min, int max,
+	                                  CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
+		int idPregunta = nextId;
+		nextId++;
+		Pregunta p = new PreguntaNumerica(idEncuesta, idPregunta, enunciado, min, max);
+		preguntas.put(idPregunta, p);
+		
+		// Actualizar encuesta
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+		e.guardarPregunta(idPregunta);
+		
+		return idPregunta;
+	}
+
+	/**
+	 * Se crea una nueva pregunta de tipo opción múltiple con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * 
+	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
+	 * @param enunciado el enunciado de la pregunta
+	 * @param ctrlDominioEncuesta controlador de encuestas (inyección por parámetros)
+	 * @return idPregunta de la pregunta creada
+	 * @throws IllegalArgumentException si el enunciado está vacío o es null
+	 */
+	public int crearPreguntaOpcionMultiple(int idEncuesta, String enunciado,
+	                                        CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
+		int idPregunta = nextId;
+		nextId++;
+		Pregunta p = new PreguntaOpcionMultiple(idEncuesta, idPregunta, enunciado);
+		preguntas.put(idPregunta, p);
+		
+		// Actualizar encuesta (NO persistencia - solo memoria)
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+		e.guardarPregunta(idPregunta);
+		
+		return idPregunta;
+	}
+
+	/**
+	 * Se crea una nueva pregunta de tipo opción única con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * 
+	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
+	 * @param enunciado el enunciado de la pregunta
+	 * @param ordenada indica si la pregunta es ordenada
+	 * @param ctrlDominioEncuesta controlador de encuestas (inyección por parámetros)
+	 * @return idPregunta de la pregunta creada
+	 * @throws IllegalArgumentException si el enunciado está vacío o es null
+	 */
+	public int crearPreguntaOpcionUnica(int idEncuesta, String enunciado, boolean ordenada,
+	                                     CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
+		int idPregunta = nextId;
+		nextId++;
+		Pregunta p = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, ordenada);
+		preguntas.put(idPregunta, p);
+		
+		// Actualizar encuesta (NO persistencia - solo memoria)
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+		e.guardarPregunta(idPregunta);
+		
+		return idPregunta;
+	}
+
+	/**
+	 * Se añade un identificador de respuesta a la lista de respuestas de la pregunta.
+	 * 
+	 * @param idPregunta identificador de la pregunta a la que se quiere añadir la respuesta
+	 * @param idRespuesta identificador de la respuesta a añadir
+	 * @throws IllegalArgumentException si no existe la pregunta
+	 */
+	public void anadirRespuesta(int idPregunta, int idRespuesta) throws IllegalArgumentException {
+		Pregunta p = preguntas.get(idPregunta);
+		if (p == null) {
+			throw new IllegalArgumentException("No existe la pregunta");
+		}
+		p.guardarIdRespuesta(idRespuesta);
+	}
+
+	/**
+	 * Se quita un identificador de respuesta de la lista de respuestas de la pregunta.
+	 * 
+	 * IMPORTANTE: Este método solo elimina la referencia en Pregunta, NO elimina la respuesta.
+	 * Usado por CtrlDominioRespuesta.eliminarRespuesta() para actualizar referencias.
+	 * 
+	 * @param idPregunta identificador de la pregunta a la cual se le quiere quitar la respuesta
+	 * @param idRespuesta identificador de la respuesta a eliminar
+	 * @throws IllegalArgumentException si no existe la pregunta o la pregunta no tiene esa respuesta
+	 */
+	public void eliminarRespuestaReferencia(int idPregunta, int idRespuesta) throws IllegalArgumentException {
+		Pregunta p = preguntas.get(idPregunta);
+		if (p == null) {
+			throw new IllegalArgumentException("No existe la pregunta");
+		}
+		p.eliminarIdRespuesta(idRespuesta);
+	}
+	
+	/**
+	 * Clase auxiliar para datos importados de pregunta (compatible con CtrlDominioEncuesta).
 	 */
 	public static class PreguntaImportData {
 		public String enunciado;
@@ -55,168 +202,154 @@ public class CtrlDominioPregunta {
 	}
 	
 	/**
-	 * Añade una pregunta a una encuesta (método polimórfico según tipo).
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @param infoP Información de la pregunta (enunciado, tipo, atributos específicos)
-	 * @return ID de la pregunta creada
-	 */
-	public int anadirPregunta(int idEncuesta, PreguntaImportData infoP) {
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		
-		// Crear pregunta polimórfica según tipo
-		int idP = ctrlPregunta.crearPregunta(idEncuesta, infoP.enunciado,
-                  infoP.tipo, infoP.atributosEspecificos);
-
-		e.guardarIdPregunta(idP);
-		gestorPersistencia.guardarPregunta(ctrlPregunta.getPregunta(idP));
-		return idP;
-	}
-	
-	/**
-	 * Añade una pregunta libre a una encuesta.
+	 * Añade una pregunta libre a una encuesta (método simplificado para CtrlDominio).
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
+	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
 	 * @return ID de la pregunta creada
 	 */
-	public int anadirPreguntaLibre(int idEncuesta, String enunciado) {
-		PreguntaImportData info = new PreguntaImportData();
-		info.enunciado = enunciado;
-		info.tipo = "libre";
-		info.atributosEspecificos = new HashMap<>();
-		return anadirPregunta(idEncuesta, info);
+	public int anadirPreguntaLibre(int idEncuesta, String enunciado,
+	                                CtrlDominioEncuesta ctrlDominioEncuesta) {
+		return crearPreguntaLibre(idEncuesta, enunciado, ctrlDominioEncuesta);
 	}
 	
 	/**
-	 * Añade una pregunta numérica a una encuesta.
+	 * Añade una pregunta numérica a una encuesta (método simplificado para CtrlDominio).
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
 	 * @param min Valor mínimo permitido
 	 * @param max Valor máximo permitido
+	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
 	 * @return ID de la pregunta creada
 	 */
-	public int anadirPreguntaNumerica(int idEncuesta, String enunciado, double min, double max) {
-		PreguntaImportData info = new PreguntaImportData();
-		info.enunciado = enunciado;
-		info.tipo = "numerica";
-		info.atributosEspecificos = new HashMap<>();
-		info.atributosEspecificos.put("min", min);
-		info.atributosEspecificos.put("max", max);
-		return anadirPregunta(idEncuesta, info);
+	public int anadirPreguntaNumerica(int idEncuesta, String enunciado, double min, double max,
+	                                   CtrlDominioEncuesta ctrlDominioEncuesta) {
+		return crearPreguntaNumerica(idEncuesta, enunciado, (int)min, (int)max, ctrlDominioEncuesta);
 	}
 	
 	/**
-	 * Añade una pregunta de opción única a una encuesta.
+	 * Añade una pregunta de opción única a una encuesta (método simplificado para CtrlDominio).
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
 	 * @param opciones Lista de opciones disponibles
+	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
 	 * @return ID de la pregunta creada
 	 */
-	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones) {
-		PreguntaImportData info = new PreguntaImportData();
-		info.enunciado = enunciado;
-		info.tipo = "opcion_unica";
-		info.atributosEspecificos = new HashMap<>();
-		info.atributosEspecificos.put("opciones", opciones);
-		return anadirPregunta(idEncuesta, info);
+	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones,
+	                                      CtrlDominioEncuesta ctrlDominioEncuesta) {
+		// Por ahora, asumimos que no es ordenada (se puede añadir parámetro si es necesario)
+		return crearPreguntaOpcionUnica(idEncuesta, enunciado, false, ctrlDominioEncuesta);
 	}
 	
 	/**
-	 * Añade una pregunta de opción múltiple a una encuesta.
+	 * Añade una pregunta de opción múltiple a una encuesta (método simplificado para CtrlDominio).
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
 	 * @param opciones Lista de opciones disponibles
+	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
 	 * @return ID de la pregunta creada
 	 */
-	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones) {
-		PreguntaImportData info = new PreguntaImportData();
-		info.enunciado = enunciado;
-		info.tipo = "opcion_multiple";
-		info.atributosEspecificos = new HashMap<>();
-		info.atributosEspecificos.put("opciones", opciones);
-		return anadirPregunta(idEncuesta, info);
+	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones,
+	                                         CtrlDominioEncuesta ctrlDominioEncuesta) {
+		return crearPreguntaOpcionMultiple(idEncuesta, enunciado, ctrlDominioEncuesta);
 	}
 	
 	/**
-	 * Modifica una pregunta existente (elimina la antigua y crea una nueva).
+	 * Crea una pregunta genérica a partir de PreguntaImportData (para importación).
+	 * Usado por CtrlDominioEncuesta.importarEncuesta().
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @param enunciado Enunciado de la pregunta
+	 * @param tipo Tipo de pregunta
+	 * @param atributosEspecificos Atributos específicos según tipo
+	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
+	 * @return ID de la pregunta creada
+	 */
+	public int crearPregunta(int idEncuesta, String enunciado, String tipo, 
+	                          Map<String, Object> atributosEspecificos,
+	                          CtrlDominioEncuesta ctrlDominioEncuesta) {
+		switch (tipo) {
+			case "libre":
+				return crearPreguntaLibre(idEncuesta, enunciado, ctrlDominioEncuesta);
+			case "numerica":
+				int min = (int) atributosEspecificos.get("min");
+				int max = (int) atributosEspecificos.get("max");
+				return crearPreguntaNumerica(idEncuesta, enunciado, min, max, ctrlDominioEncuesta);
+			case "opcion_unica":
+				boolean ordenada = atributosEspecificos.containsKey("ordenada") 
+				                   ? (boolean) atributosEspecificos.get("ordenada") 
+				                   : false;
+				return crearPreguntaOpcionUnica(idEncuesta, enunciado, ordenada, ctrlDominioEncuesta);
+			case "opcion_multiple":
+				return crearPreguntaOpcionMultiple(idEncuesta, enunciado, ctrlDominioEncuesta);
+			default:
+				throw new IllegalArgumentException("Tipo de pregunta desconocido: " + tipo);
+		}
+	}
+	
+	/**
+	 * Se modifica una pregunta existente (elimina la antigua y crea una nueva).
 	 * 
 	 * NOTA: Este enfoque mantiene la integridad referencial pero pierde el historial.
-	 * (Alternativa: implementar modificación in-situ si se requiere mantener respuestas.)
 	 * 
 	 * @param idPregunta ID de la pregunta a modificar
 	 * @param infoP Nueva información de la pregunta
 	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
+	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencia)
+	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
 	 * @return ID de la nueva pregunta
 	 */
 	public int modificarPregunta(int idPregunta, PreguntaImportData infoP,
-	                              CtrlDominioRespuesta ctrlDominioRespuesta) {
+	                              CtrlDominioRespuesta ctrlDominioRespuesta,
+	                              CtrlDominioEncuesta ctrlDominioEncuesta,
+	                              CtrlDominioUsuario ctrlDominioUsuario) {
 		// obtener pregunta actual para saber su encuesta
-		Pregunta pVieja = ctrlPregunta.getPregunta(idPregunta);
+		Pregunta pVieja = getPregunta(idPregunta);
 		int idEncuesta = pVieja.getIdEncuesta();
 		
 		// eliminar pregunta antigua (y sus respuestas)
-		eliminarPregunta(idPregunta, ctrlDominioRespuesta);
+		eliminarPregunta(idPregunta, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
 		
 		// crear nueva pregunta
-		return anadirPregunta(idEncuesta, infoP);
+		return crearPregunta(idEncuesta, infoP.enunciado, infoP.tipo, 
+		                      infoP.atributosEspecificos, ctrlDominioEncuesta);
 	}
 	
 	/**
-	 * Elimina una pregunta y todas sus respuestas asociadas.
+	 * Se elimina una pregunta y todas sus respuestas asociadas.
+	 * 
+	 * IMPORTANTE: Al eliminar la pregunta, también elimina todas sus respuestas
+	 * actualizando las referencias en Usuario
 	 * 
 	 * @param idPregunta ID de la pregunta a eliminar
 	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
+	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencia)
+	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
 	 */
-	public void eliminarPregunta(int idPregunta, CtrlDominioRespuesta ctrlDominioRespuesta) {
+	public void eliminarPregunta(int idPregunta, 
+	                              CtrlDominioRespuesta ctrlDominioRespuesta,
+	                              CtrlDominioEncuesta ctrlDominioEncuesta,
+	                              CtrlDominioUsuario ctrlDominioUsuario) {
 		// obtener pregunta y sus respuestas
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-		List<Integer> idRespuestas = p.getIdRespuestas();
+		Pregunta p = getPregunta(idPregunta);
+		List<Integer> idRespuestas = new ArrayList<>(p.getIdRespuestas()); // copia para evitar ConcurrentModificationException
 		
-		// eliminar cada respuesta
+		// eliminar cada respuesta (las respuestas se encargarán de actualizar Usuario y Pregunta)
 		for (Integer idR : idRespuestas) {
-			ctrlDominioRespuesta.eliminarRespuesta(idR);
+			ctrlDominioRespuesta.eliminarRespuesta(idR, ctrlDominioUsuario, this);
 		}
 		
 		// eliminar la pregunta de la encuesta
 		int idEncuesta = p.getIdEncuesta();
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		e.eliminarIdPregunta(idPregunta);
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+		e.eliminarPregunta(idPregunta);
 		
-		// eliminar de persistencia y del controlador
-		gestorPersistencia.eliminarPregunta(idPregunta);
-		ctrlPregunta.eliminar(p);
-	}
-
-	/**
-	 * Sobrecarga de eliminarPregunta sin necesidad de CtrlDominioRespuesta.
-	 * Usado cuando se llama desde CtrlDominioEncuesta.
-	 * 
-	 * @param idPregunta ID de la pregunta a eliminar
-	 */
-	public void eliminarPregunta(int idPregunta) {
-		// obtener pregunta y sus respuestas
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-		List<Integer> idRespuestas = p.getIdRespuestas();
-		
-		// eliminar cada respuesta (necesitamos CtrlRespuesta directamente)
-		// NOTA: Esta es una solución temporal. Idealmente debería inyectarse CtrlDominioRespuesta
-		// Por ahora, solo eliminamos las referencias
-		for (Integer idR : idRespuestas) {
-			gestorPersistencia.eliminarRespuesta(idR);
-		}
-		
-		// eliminar la pregunta de la encuesta
-		int idEncuesta = p.getIdEncuesta();
-		Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-		e.eliminarIdPregunta(idPregunta);
-		
-		// eliminar de persistencia y del controlador
-		gestorPersistencia.eliminarPregunta(idPregunta);
-		ctrlPregunta.eliminar(p);
+		// eliminar del TreeMap (NO persistencia - solo memoria)
+		preguntas.remove(idPregunta);
 	}
 	
 	/**
@@ -231,8 +364,8 @@ public class CtrlDominioPregunta {
 	 * @throws IllegalArgumentException si la pregunta no existe
 	 */
 	public List<Respuesta> getRespuestasPregunta(int idPregunta, 
-	                                                     CtrlDominioRespuesta ctrlDominioRespuesta) {
-		Pregunta p = ctrlPregunta.getPregunta(idPregunta);
+	                                              CtrlDominioRespuesta ctrlDominioRespuesta) {
+		Pregunta p = getPregunta(idPregunta);
 		List<Integer> idRespuestas = p.getIdRespuestas();
 		
 		List<Respuesta> respuestas = new java.util.ArrayList<>();
@@ -241,5 +374,34 @@ public class CtrlDominioPregunta {
 		}
 		
 		return respuestas;
+	}
+	
+	/**
+	 * Obtiene todas las preguntas almacenadas en memoria.
+	 * 
+	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
+	 * para exportar todos los datos a persistencia al cerrar la aplicación.
+	 * 
+	 * @return TreeMap con todas las preguntas (clave: idPregunta)
+	 */
+	public TreeMap<Integer, Pregunta> getAllPreguntas() {
+		return new TreeMap<>(preguntas); // devolver copia para evitar modificaciones externas
+	}
+	
+	/**
+	 * Importa preguntas desde persistencia al iniciar aplicación.
+	 * 
+	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
+	 * para cargar los datos guardados de la sesión anterior.
+	 * 
+	 * @param preguntasImportadas TreeMap con las preguntas a cargar
+	 */
+	public void cargarPreguntas(TreeMap<Integer, Pregunta> preguntasImportadas) {
+		this.preguntas = preguntasImportadas;
+		
+		// Actualizar nextId para que sea mayor que el ID más alto
+		if (!preguntas.isEmpty()) {
+			this.nextId = preguntas.lastKey() + 1;
+		}
 	}
 }

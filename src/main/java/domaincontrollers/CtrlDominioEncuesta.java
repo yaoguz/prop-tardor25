@@ -26,16 +26,12 @@ import domain.Respuesta;
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioEncuesta {
-
-	// ==================== ATRIBUTOS ====================
 	
 	/** Mapa de encuestas (clave: idEncuesta, valor: Encuesta) */
 	private TreeMap<Integer, Encuesta> encuestas;
 	
 	/** ID para la próxima encuesta a crear */
 	private int nextId;
-
-	// ==================== CONSTRUCTOR ====================
 
 	/**
 	 * Constructora. Inicializa las estructuras de datos.
@@ -44,8 +40,6 @@ public class CtrlDominioEncuesta {
 		this.encuestas = new TreeMap<>();
 		this.nextId = 1;
 	}
-	
-	// ==================== MÉTODOS AUXILIARES ====================
 	
 	/**
 	 * Verifica si existe una encuesta con el ID especificado.
@@ -71,8 +65,6 @@ public class CtrlDominioEncuesta {
 		}
 		return e;
 	}
-
-	// ==================== GESTIÓN DE ENCUESTAS ====================
 	
 	/**
 	 * Obtiene los IDs de las preguntas de una encuesta.
@@ -265,14 +257,12 @@ public class CtrlDominioEncuesta {
 		
 		// Crear pregunta polimórfica según tipo
 		int idP = ctrlDominioPregunta.crearPregunta(idEncuesta, infoP.enunciado,
-                  infoP.tipo, infoP.atributosEspecificos);
+                  infoP.tipo, infoP.atributosEspecificos, this);
 
 		e.guardarPregunta(idP);
 		// NO persistencia - solo en memoria
 		return idP;
 	}
-	
-	// ==================== MÉTODOS PARA PERSISTENCIA ====================
 	
 	/**
 	 * Obtiene todas las encuestas almacenadas en memoria.

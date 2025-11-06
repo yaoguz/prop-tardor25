@@ -89,7 +89,7 @@ public class CtrlDominio {
 		ctrlDominioEncuesta = new CtrlDominioEncuesta();
 		ctrlDominioPregunta = new CtrlDominioPregunta();
 		ctrlDominioRespuesta = new CtrlDominioRespuesta();
-		ctrlDominioPerfil = new CtrlDominioPerfil(ctrlDominioUsuario);
+		ctrlDominioPerfil = new CtrlDominioPerfil();
 		
 		// cargar datos desde persistencia
 		try {
@@ -321,7 +321,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaLibre(int idEncuesta, String enunciado) {
-		return ctrlDominioPregunta.anadirPreguntaLibre(idEncuesta, enunciado);
+		return ctrlDominioPregunta.anadirPreguntaLibre(idEncuesta, enunciado, ctrlDominioEncuesta);
 	}
 	
 	/**
@@ -334,7 +334,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaNumerica(int idEncuesta, String enunciado, double min, double max) {
-		return ctrlDominioPregunta.anadirPreguntaNumerica(idEncuesta, enunciado, min, max);
+		return ctrlDominioPregunta.anadirPreguntaNumerica(idEncuesta, enunciado, min, max, ctrlDominioEncuesta);
 	}
 	
 	/**
@@ -346,7 +346,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones) {
-		return ctrlDominioPregunta.anadirPreguntaOpcionUnica(idEncuesta, enunciado, opciones);
+		return ctrlDominioPregunta.anadirPreguntaOpcionUnica(idEncuesta, enunciado, opciones, ctrlDominioEncuesta);
 	}
 	
 	/**
@@ -358,7 +358,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones) {
-		return ctrlDominioPregunta.anadirPreguntaOpcionMultiple(idEncuesta, enunciado, opciones);
+		return ctrlDominioPregunta.anadirPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, ctrlDominioEncuesta);
 	}
 	
 	/**
@@ -372,7 +372,7 @@ public class CtrlDominio {
 	 * @return ID de la nueva pregunta
 	 */
 	public int modificarPregunta(int idPregunta, CtrlDominioPregunta.PreguntaImportData infoP) {
-		return ctrlDominioPregunta.modificarPregunta(idPregunta, infoP, ctrlDominioRespuesta);
+		return ctrlDominioPregunta.modificarPregunta(idPregunta, infoP, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
 	}
 	
 	/**
@@ -381,7 +381,7 @@ public class CtrlDominio {
 	 * @param idPregunta ID de la pregunta a eliminar
 	 */
 	public void eliminarPregunta(int idPregunta) {
-		ctrlDominioPregunta.eliminarPregunta(idPregunta, ctrlDominioRespuesta);
+		ctrlDominioPregunta.eliminarPregunta(idPregunta, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
 	}
 
 	// ==================== GESTIÓN DE PERFILES ====================
@@ -394,6 +394,6 @@ public class CtrlDominio {
 	 * @return Lista de perfiles del usuario
 	 */
 	public List<Integer> getPerfilesUsuario(String nomUsuario) {
-		return ctrlDominioPerfil.getPerfilesUsuario(nomUsuario);
+		return ctrlDominioPerfil.getPerfilesUsuario(nomUsuario, ctrlDominioUsuario);
 	}
 }
