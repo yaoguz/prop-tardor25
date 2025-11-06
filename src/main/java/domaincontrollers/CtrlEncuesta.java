@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import domain.Encuesta;
 
+// pendiente de borrar
+
 /**
  * Implementación de la classe gestionadora de datos para la clase "Encuesta".
  **/

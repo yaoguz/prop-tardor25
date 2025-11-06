@@ -1,6 +1,7 @@
 package domain;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.ArrayList;
 
 public class Usuario {
 

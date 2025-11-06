@@ -1,18 +1,11 @@
 package domaincontrollers;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
 
 import domain.Pregunta;
 import domain.Respuesta;
-import domain.RespuestaLibre;
-import domain.RespuestaNumerica;
-import domain.RespuestaOpcionUnica;
-import domain.RespuestaOpcionMultiple;
 import domain.Usuario;
 
 /**

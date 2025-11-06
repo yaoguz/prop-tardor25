@@ -29,8 +29,8 @@ public class PreguntaNumerica extends Pregunta {
 	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
 	 */
 	public PreguntaNumerica(int idEncuesta, int idPregunta, String enunciado, int rangoInf, int rangoSup) throws IllegalArgumentException {
-		if(rangoInf >= rangoSup) throw new IllegalArgumentException("La pregunta tiene una o menos posibles respuestas diferentes");
 		super(idEncuesta, idPregunta, enunciado);
+		if(rangoInf >= rangoSup) throw new IllegalArgumentException("La pregunta tiene una o menos posibles respuestas diferentes");
 		this.rangoInf = rangoInf;
 		this.rangoSup = rangoSup;
 	}
@@ -40,15 +40,15 @@ public class PreguntaNumerica extends Pregunta {
 	/**
 	 * Devuelve el valor mínimo que pueden tener las respuestas de la pregunta.
 	 */
-	@override public int getRangoInf() {
-		return rangoInf;;
+	@Override public int getRangoInf() {
+		return rangoInf;
 	}
 
 	/**
 	 * Devuelve el valor máximo que pueden tener las respuestas de la pregunta.
 	 */
-	@override public int getRangoSup() {
-		return rangoSup;;
+	@Override public int getRangoSup() {
+		return rangoSup;
 	}
 
 	/**

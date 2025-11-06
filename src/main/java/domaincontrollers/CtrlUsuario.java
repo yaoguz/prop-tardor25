@@ -5,6 +5,7 @@ import domain.Usuario;
 import java.util.HashMap;
 import java.util.Map;
 
+// pendiente de borrar
 
 public class CtrlUsuario {
 	

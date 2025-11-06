@@ -84,9 +84,6 @@ public class RespuestaLibre extends Respuesta {
         
         String nuevoTexto = (String) nuevaRespuesta;
         
-        if (nuevoTexto == null) {
-            throw new IllegalArgumentException("El texto de la respuesta no puede ser nulo");
-        }
         if (nuevoTexto.trim().isEmpty()) {
             throw new IllegalArgumentException("El texto de la respuesta no puede estar vacío");
         }

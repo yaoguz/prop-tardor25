@@ -49,7 +49,7 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 * Devuelve todas las opciones de la pregunta.
 	 * @return la lista de opciones de la pregunta
 	 */
-	@override public ArrayList<String> getOpciones() {
+	@Override public ArrayList<String> getOpciones() {
 		return opciones;
 	}
 	
@@ -57,7 +57,7 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 * Devuelve si las opciones siguen un orden.
 	 * @return booleano indicando si es ordenada o no
 	 */
-	@override public boolean esOrdenada() {
+	@Override public boolean esOrdenada() {
 		return ordenada;
 	}
 

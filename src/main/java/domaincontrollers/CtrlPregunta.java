@@ -6,6 +6,9 @@ import java.util.Map;
 import domain.Encuesta;
 import domain.Pregunta;
 
+// pendiente de borrar
+
+
 /**
  * Controlador de Pregunta
  */

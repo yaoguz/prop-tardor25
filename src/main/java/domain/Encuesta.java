@@ -2,6 +2,8 @@ package domain;
 
 import java.util.ArrayList;
 
+// falta getTitulo, setTitulo...
+
 /**
  * Implementacion de la clase Encuesta
  */
@@ -60,7 +62,7 @@ public class Encuesta {
      * @param IdPregunta de la nueva pregunta que se quiere añadir
      */
     public void guardarPregunta(Integer IdPregunta) {
-        this.preguntas.add(IdPregunta);
+        this.IdPreguntas.add(IdPregunta);
     }
 
     /*

@@ -188,13 +188,14 @@ public class CtrlDominioEncuesta {
 	 */
 	public void eliminarEncuesta(int idEncuesta, 
 	                              CtrlDominioPregunta ctrlDominioPregunta,
+	                              CtrlDominioRespuesta ctrlDominioRespuesta,
 	                              CtrlDominioUsuario ctrlDominioUsuario) {
 		Encuesta e = getEncuesta(idEncuesta);
 		List<Integer> idPreguntas = e.getIdPreguntas();
 		
 		// eliminar cada pregunta (esto eliminará tambien sus respuestas)
 		for (Integer idP : idPreguntas) {
-			ctrlDominioPregunta.eliminarPregunta(idP);
+			ctrlDominioPregunta.eliminarPregunta(idP, ctrlDominioRespuesta, this, ctrlDominioUsuario);
 		}
 		
 		// eliminar de usuario creador

@@ -49,7 +49,7 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	 * Devuelve todas las opciones de la pregunta.
 	 * @return la lista de opciones de la pregunta
 	 */
-	@override public ArrayList<String> getOpciones() {
+	@Override public ArrayList<String> getOpciones() {
 		return opciones;
 	}
 	
@@ -57,14 +57,14 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	 * Devuelve el número máximo de opciones a escoger de la pregunta.
 	 * @return el número máximo de opciones que puede seleccionar la respuesta.
 	 */
-	@override public int getNumMaxOpc() {
+	@Override public int getNumMaxOpc() {
 		return numMaxOpc;
 	}
 	
 	/**
 	 * Asigna el número máximo de opciones seleccionables para esta pregunta.
 	 */
-	@override public void setNumMaxOpc(numMaxOpc) {
+	@Override public void setNumMaxOpc(numMaxOpc) {
 		this.numMaxOpc = numMaxOpc;
 	}
 
