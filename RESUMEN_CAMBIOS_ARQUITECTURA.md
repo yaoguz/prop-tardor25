@@ -137,13 +137,14 @@ public int darRespuesta(String nomU, int idP, T resp) {
 
 ## ⚠️ LO QUE FALTA (MÍNIMO)
 
-### **Tarea 1: Actualizar Tests**
+### **Tarea 1: Actualizar Tests y Drivers**
 - [ ] TestCtrlDominioUsuario.java - actualizar para nueva arquitectura
 - [ ] TestCtrlDominioEncuesta.java - actualizar para nueva arquitectura  
-- [ ] testPregunta.java - revisar deprecation warnings
+- [ ] TestPregunta.java - revisar deprecation warnings
+- [ ] Todos los drivers (sin mocks)
 
-### **Tarea 2: Limpieza (Opcional)**
-- [ ] Eliminar CtrlUsuario.java, CtrlEncuesta.java, CtrlPregunta.java (si no se usan en drivers)
+### **Tarea 2: Limpieza**
+- [ ] Eliminar CtrlUsuario.java, CtrlEncuesta.java, CtrlPregunta.java
 
 ### **Tarea 3: Revisión del Compañero**
 - [ ] **GestorPersistencia**: Revisar métodos marcados "Implementado por el copilot, pendiente de revisar"
@@ -201,7 +202,7 @@ R: **Campo**: Solo TreeMap propio. **Parámetro**: Otros CtrlDominioXXX.
 ## 📚 REFERENCIAS
 
 - `ANALISIS_ARQUITECTURA_3CAPAS.txt` - Análisis arquitectura completo
-- `info_3capas.txt` - PDF arquitectura PROP 3 capas
+- `info_3capas.txt` - Transparencias arquitectura PROP 3 capas
 - `notes classe.txt` - Notas sobre persistencia
 
 ---
