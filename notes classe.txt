@@ -89,3 +89,44 @@ la mateixa assignacio ini (random), pero en lloc d'agafar la mitjana, agafa 2 ce
 
 Driver: un per cada controlador
 test: un per cada funcionalitat (no funció!)
+
+
+================================================================================
+PERSISTENCIA: COMO DEBE FUNCIONAR (segun notas de clase)
+================================================================================
+
+VUESTRA IMPLEMENTACION ACTUAL:
+-------------------------------
+CtrlPersistence es un STUB con HashMaps -> CORRECTO para 1er lliurament
+
+persistence.CtrlPersistence:
+    private Map<String, Usuario> usuarios;
+    private Map<Integer, Encuesta> encuestas;
+    // Simula disco en memoria
+
+CtrlDominio llama a ctrlPersistence.guardarUsuario(), etc.
+
+
+ARQUITECTURA CORRECTA (segun PDF + notas):
+-------------------------------------------
+1. STUB para el 1er lliurament (ya lo teneis)
+2. En el futuro: GestorPersistencia lee/escribe ficheros JSON/XML
+
+GestorPersistencia:
+    public void cargar() {
+        // Lee ficheros del disco
+        // Llena las estructuras en CtrlDominioXXX
+    }
+    
+    public void guardar() {
+        // Escribe ficheros al disco
+    }
+
+CtrlDominio:
+    public void inicializar() {
+        gestorPersistencia.cargar();  // Al inicio
+    }
+    
+    public void cerrar() {
+        gestorPersistencia.guardar();  // Al salir
+    }

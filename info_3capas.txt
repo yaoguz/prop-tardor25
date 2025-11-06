@@ -1,0 +1,155 @@
+✅ Arquitectura en 3 capas (PROP)
+👉 Capas
+
+Presentación
+
+Interacción con el usuario (consola en el ejemplo).
+
+No toca datos internos.
+
+Solo llama al CtrlPresentación.
+
+Dominio
+
+Lógica de la aplicación.
+
+Contiene:
+
+Clases del modelo (Jugador)
+
+Controladores del dominio (CtrlDominioMantJugador)
+
+Estructuras auxiliares (CjtJugadores / Map, List…)
+
+Persistencia (no incluida en el ejemplo, pero mencionada)
+
+Cargar y guardar datos.
+
+Si existiera, habría un GestorJugador llamado por el CtrlDominio.
+
+✔ Cada capa solo se comunica con la capa inmediatamente inferior
+
+Vista → Presentación → Dominio → (Persistencia)
+
+✔ Los controladores no imprimen nada (solo la presentación imprime)
+✔ El dominio no conoce a la vista
+✔ No hay dependencias cruzadas
+
+✔ Si existiera persistencia:
+
+CtrlDominio tendría un GestorJugador que carga datos al iniciar y los guarda al cerrar
+
+El resto de la estructura NO cambia
+
+✅ Estructura del ejemplo
+Caso: Mantenimiento de jugadores
+
+Operaciones:
+
+Alta jugador
+
+Baja jugador
+
+Consulta jugador
+
+Ejemplo simplificado:
+
+La clase Jugador
+public class Jugador {
+private int idJugador;
+private String nombreJugador;
+public Jugador() {
+}
+public int getId() {
+return idJugador;
+}
+public String getNombre() {
+}
+return nombre Jugador;
+public boolean setId (int id) {
+}
+idJugador = id;
+return true;
+public boolean setNombre (String nombre) {
+nombre Jugador = nombre;
+return true;
+}
+}
+
+La clase CtrlDominio
+public class CtrlDominio {
+}
+private CtrlDominioMantJugador CDmj; //*** Agregacion
+public CtrlDominio() {
+}
+CDmj = new CtrlDominioMant Jugador();
+public CtrlDominioMant Jugador getCtrlDominioMant Jugador() { return CDmj;
+}
+// Esto es un ejemplo: En un caso real habria mas cosas...
+
+La clase CtrlDominioMant Jugador
+import java.util.*;
+public class CtrlDominioMant Jugador {
+//*** Los datos se guardan en un TreeMap con clave - idJugador (int) private TreeMap<Integer, Jugador> Jugadores; //*** Agregacion
+Lid de Jugador
+public CtrlDominioMant Jugador() {
+Jugadores new TreeMap<Integer, Jugador>();
+}
+}
+
+
+
+public Vector<String> consultaJugadores() {
+//*** La informacion se devuelve en estructuras generales (Vector<String>) Vector<String> sdatos = new Vector<String>();
+Set<Integer> setkeys Jugadores.keySet();
+Iterator<Integer> iterkeys = setkeys.iterator(); while (iterkeys.hasNext()) {
+Integer idj
+Jugador jug
+String = "";
+s
+iterkeys.next();
+Jugadores.get(idj);
+S+ jug.getId(); s += " ";
+s += jug.getNombre();
+sdatos.add(s);
+}
+return sdatos;
+}
+private boolean existe Jugador (int idj) { //*** private return Jugadores.containsKey (Integer.valueOf(idj));
+}
+
+
+public int altaJugador (int idj, Vector<String> datos) {
+//*** La informacion viene en estructuras generales (Vector<String>)
+if (existe Jugador (idj))
+return 1;
+else { // Alta del jugador
+Jugador newj = new Jugador();
+if (!newj.setId(idj)) return -1;
+//*** El nombre esta en la posicion 0
+String nomj = datos.get(0);
+// Esto no pasara nunca
+de moments.
+if (!newj.setNombre (nomj)) return -1; // Esto no pasara nunca
+Jugadores.put(Integer.valueOf(idj), newj);
+}
+return 0; alta ok.
+}
+public int bajaJugador (int idj) {
+if (!existe Jugador (idj))
+return 1;
+else{ // Baja del jugador
+Jugadores.remove (Integer.valueOf(idj));}
+return 0;
+}
+
+
+La clase Main
+public class Main {
+private static CtrlPresentacion CP;
+public static void main (String[] args) throws Exception {
+CP = new Ctrl Presentacion();
+CP. iniciarControlador();
+// Esto es un ejemplo: Antes de llegar aqui pasara por otros sitios CP. iniciarMantenimiento ();
+}
+}
