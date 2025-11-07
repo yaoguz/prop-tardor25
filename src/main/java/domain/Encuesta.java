@@ -89,8 +89,16 @@ public class Encuesta {
      * Se quiere actualizar/cambiar el titulo de la encuesta
      * @param titulo al que se quiere actualizar
      */
-    public void cambiarTitulo(String titulo) {
+    public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    /**
+     * Obtenemos el titulo de una encuesta
+     * @return titulo de la encuesta
+     */
+    public String getTitulo() {
+        return titulo;
     }
 
 
