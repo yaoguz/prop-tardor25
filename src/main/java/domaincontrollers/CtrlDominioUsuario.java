@@ -211,6 +211,11 @@ public class CtrlDominioUsuario {
 		return new ArrayList<>(idEncuestas); // convertir set en un arraylist
 	}
 
+	public List<Respuesta> getRespuestasEncuesta(String nomUsuario, 
+				) {
+
+	}
+
 	/**
 	 * Obtiene todos los usuarios almacenados en memoria.
 	 * 
