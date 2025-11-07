@@ -23,8 +23,6 @@ public class RespuestaNumerica extends Respuesta {
 
     private double valor;
 
-    /** Constructora **/
-
     /**
      * Crea una nueva respuesta numérica.
      * 
@@ -46,8 +44,6 @@ public class RespuestaNumerica extends Respuesta {
         
         this.valor = valor;
     }
-
-    /** Métodos públicos **/
     
     /**
      * Obtiene el valor numérico de la respuesta.
@@ -93,24 +89,24 @@ public class RespuestaNumerica extends Respuesta {
         this.valor = nuevoValor;
     }
     
-    /**
-     * Verifica si el valor es un número entero.
-     * 
-     * @return true si no tiene decimales, false en caso contrario
-     */
-    public boolean esEntero() {
-        return valor == Math.floor(valor);
-    }
+    // /**
+    //  * Verifica si el valor es un número entero.
+    //  * 
+    //  * @return true si no tiene decimales, false en caso contrario
+    //  */
+    // public boolean esEntero() {
+    //     return valor == Math.floor(valor);
+    // }
     
-    /**
-     * Representación en String de la respuesta numérica.
-     * 
-     * @return Descripción con el valor numérico
-     */
-    @Override
-    public String toString() {
-        String valorStr = esEntero() ? String.valueOf((int) valor) : String.valueOf(valor);
-        return String.format("RespuestaNumerica[id=%d, usuario=%s, valor=%s]", 
-                           getId(), getNomUsuario(), valorStr);
-    }
+    // /**
+    //  * Representación en String de la respuesta numérica.
+    //  * 
+    //  * @return Descripción con el valor numérico
+    //  */
+    // @Override
+    // public String toString() {
+    //     String valorStr = esEntero() ? String.valueOf((int) valor) : String.valueOf(valor);
+    //     return String.format("RespuestaNumerica[id=%d, usuario=%s, valor=%s]", 
+    //                        getId(), getNomUsuario(), valorStr);
+    // }
 }

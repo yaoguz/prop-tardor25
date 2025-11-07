@@ -158,7 +158,7 @@ public class CtrlDominioEncuesta {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	private EncuestaImportData parsearFicheroEncuesta(File fichero) {
-		// TODO: Implementar según formato específico ************
+		// TO DO: Implementar según formato específico ************
 		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
 	}
 	

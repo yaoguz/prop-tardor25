@@ -24,8 +24,6 @@ public class RespuestaOpcionUnica extends Respuesta {
 
     private int indiceOpcion;
 
-    /** Constructora **/
-
     /**
      * Crea una nueva respuesta de opción única.
      * 
@@ -44,8 +42,6 @@ public class RespuestaOpcionUnica extends Respuesta {
         
         this.indiceOpcion = indiceOpcion;
     }
-
-    /** Métodos públicos **/
     
     /**
      * Obtiene el índice de la opción seleccionada.
@@ -98,14 +94,14 @@ public class RespuestaOpcionUnica extends Respuesta {
         return this.indiceOpcion == indice;
     }
     
-    /**
-     * Representación en String de la respuesta de opción única.
-     * 
-     * @return Descripción con el índice de la opción seleccionada
-     */
-    @Override
-    public String toString() {
-        return String.format("RespuestaOpcionUnica[id=%d, usuario=%s, opcionSeleccionada=%d]", 
-                           getId(), getNomUsuario(), indiceOpcion);
-    }
+    // /**
+    //  * Representación en String de la respuesta de opción única.
+    //  * 
+    //  * @return Descripción con el índice de la opción seleccionada
+    //  */
+    // @Override
+    // public String toString() {
+    //     return String.format("RespuestaOpcionUnica[id=%d, usuario=%s, opcionSeleccionada=%d]", 
+    //                        getId(), getNomUsuario(), indiceOpcion);
+    // }
 }

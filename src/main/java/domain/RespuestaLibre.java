@@ -19,8 +19,6 @@ public class RespuestaLibre extends Respuesta {
     private String texto;
     private static final int MAX_LENGTH = 5000; // Longitud máxima del texto
 
-    /** Constructora **/
-
     /**
      * Crea una nueva respuesta de texto libre.
      * 
@@ -46,8 +44,6 @@ public class RespuestaLibre extends Respuesta {
         
         this.texto = texto;
     }
-
-    /** Métodos públicos **/
     
     /**
      * Obtiene el contenido de texto de la respuesta.
@@ -112,15 +108,15 @@ public class RespuestaLibre extends Respuesta {
         return texto.length();
     }
     
-    /**
-     * Representación en String de la respuesta libre.
-     * 
-     * @return Descripción con los primeros 50 caracteres del texto
-     */
-    @Override
-    public String toString() {
-        String preview = texto.length() > 50 ? texto.substring(0, 47) + "..." : texto;
-        return String.format("RespuestaLibre[id=%d, usuario=%s, texto=\"%s\"]", 
-                           getId(), getNomUsuario(), preview);
-    }
+    // /**
+    //  * Representación en String de la respuesta libre.
+    //  * 
+    //  * @return Descripción con los primeros 50 caracteres del texto
+    //  */
+    // @Override
+    // public String toString() {
+    //     String preview = texto.length() > 50 ? texto.substring(0, 47) + "..." : texto;
+    //     return String.format("RespuestaLibre[id=%d, usuario=%s, texto=\"%s\"]", 
+    //                        getId(), getNomUsuario(), preview);
+    // }
 }
