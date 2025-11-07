@@ -1,9 +1,14 @@
 package drivers;
 
 import java.util.Scanner;
+import java.util.List;
+import java.util.TreeMap;
 
 import domaincontrollers.CtrlDominioUsuario;
-import persistence.GestorPersistencia;
+import domaincontrollers.CtrlDominioPregunta;
+import domaincontrollers.CtrlDominioRespuesta;
+import domain.Usuario;
+import domain.Respuesta;
 
 /**
  * Driver interactivo para probar CtrlDominioUsuario.
@@ -16,16 +21,16 @@ import persistence.GestorPersistencia;
  */
 public class DriverUsuario {
     private static CtrlDominioUsuario ctrlDominioUsuario;
-    private static CtrlDominioRespuesta ctrlDominioRespuesta;
     private static CtrlDominioPregunta ctrlDominioPregunta;
-
+    private static CtrlDominioRespuesta ctrlDominioRespuesta;
     private static Scanner scanner;
     private static String usuarioActual = null; // Usuario con sesión iniciada
     
     public static void main(String[] args) {
         // Inicializar dependencias (capa real, no mocks)
-        GestorPersistencia ctrlPersistence = new GestorPersistencia();
-        ctrlDominioUsuario = new CtrlDominioUsuario(ctrlPersistence);
+        CtrlDominioRespuesta ctrlDominioRespuesta = new CtrlDominioRespuesta();
+        CtrlDominioPregunta ctrlDominioPregunta = new CtrlDominioPregunta();
+        ctrlDominioUsuario = new CtrlDominioUsuario();
         scanner = new Scanner(System.in);
         
         boolean salir = false;
@@ -178,7 +183,7 @@ public class DriverUsuario {
                 System.out.println("\nSesión iniciada correctamente. Bienvenido, " + nomUsuario + "!");
             } else if (estado == 1) {
                 System.out.println("\nYa hay un usuario activo.");
-            } else (estado == 2) {
+            } else if (estado == 2) {
                 System.out.println("\nCredenciales incorrectas. Inicio de sesión fallido.");
             }
         } catch (IllegalArgumentException e) {
@@ -222,7 +227,6 @@ public class DriverUsuario {
             } else {
                 System.out.println("\nNo hay ningún usuario activo.");
             }
-            return activo;
         } catch (Exception e) {
             System.out.println("\nError inesperado: " + e.getMessage());
             e.printStackTrace();
@@ -278,8 +282,11 @@ public class DriverUsuario {
         int idEncuesta = leerEntero();
         
         try {
-            List<Integer> respuestas = ctrlDominioUsuario.getRespuestasEncuesta(nomUsuario, idEncuesta, ctrlDominioRespuesta, ctrlDominioPregunta);
-            System.out.println("\nRespuestas de la encuesta " + idEncuesta + " del usuario " + nomUsuario + ": " + respuestas);
+            List<Respuesta> respuestas = ctrlDominioUsuario.getRespuestasEncuesta(nomUsuario, idEncuesta, ctrlDominioRespuesta, ctrlDominioPregunta);
+            System.out.println("\nRespuestas de la encuesta " + idEncuesta + " del usuario " + nomUsuario + ": " );
+            for (Respuesta r : respuestas) {
+                System.out.println("ID Respuesta: " + r.getId() + ", ID Pregunta: " + r.getIdPregunta());
+            }
         } catch (Exception e) {
             System.out.println("\nError inesperado: " + e.getMessage());
             e.printStackTrace();
