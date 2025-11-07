@@ -23,8 +23,7 @@ import java.util.Set;
  * 
  * INVARIANTE: No puede haber índices duplicados en el array.
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class RespuestaOpcionMultiple extends Respuesta {
     
@@ -108,9 +107,6 @@ public class RespuestaOpcionMultiple extends Respuesta {
         
         int[] nuevosIndices = (int[]) nuevaRespuesta;
         
-        if (nuevosIndices == null) {
-            throw new IllegalArgumentException("El array de índices no puede ser nulo");
-        }
         if (nuevosIndices.length == 0) {
             throw new IllegalArgumentException("Debe seleccionar al menos una opción");
         }

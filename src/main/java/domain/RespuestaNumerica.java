@@ -15,8 +15,7 @@ package domain;
  * NOTA: La validación de rangos la realiza PreguntaNumerica. Esta clase
  * solo almacena y gestiona el valor numérico.
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class RespuestaNumerica extends Respuesta {
     
@@ -95,15 +94,6 @@ public class RespuestaNumerica extends Respuesta {
     }
     
     /**
-     * Obtiene el valor como entero (truncando decimales).
-     * 
-     * @return Valor como int
-     */
-    public int getValorEntero() {
-        return (int) valor;
-    }
-    
-    /**
      * Verifica si el valor es un número entero.
      * 
      * @return true si no tiene decimales, false en caso contrario
@@ -119,7 +109,7 @@ public class RespuestaNumerica extends Respuesta {
      */
     @Override
     public String toString() {
-        String valorStr = esEntero() ? String.valueOf(getValorEntero()) : String.valueOf(valor);
+        String valorStr = esEntero() ? String.valueOf((int) valor) : String.valueOf(valor);
         return String.format("RespuestaNumerica[id=%d, usuario=%s, valor=%s]", 
                            getId(), getNomUsuario(), valorStr);
     }

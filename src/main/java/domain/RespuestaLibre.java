@@ -10,8 +10,7 @@ package domain;
  * - "¿Qué te pareció el curso?" → "El curso fue muy interesante y útil..."
  * - "Comentarios adicionales:" → "Ninguno"
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class RespuestaLibre extends Respuesta {
     

@@ -169,11 +169,11 @@ public abstract class Pregunta {
 	}
 	
 	/**
-	 * Devuelve null si no es del tipo de subclase correspondiente.
-	 * @return null
+	 * Devuelve false si no es del tipo de subclase correspondiente.
+	 * @return false por defecto
 	 */
 	public boolean esOrdenada() {
-		return null;
+		return false;
 	}
 	
 	//Operación abstracta (cada subclase devuelve su tipo)

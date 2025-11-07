@@ -16,8 +16,7 @@ package domain;
  * - Facilitar análisis estadístico
  * - Validación más eficiente
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class RespuestaOpcionUnica extends Respuesta {
     
@@ -87,15 +86,6 @@ public class RespuestaOpcionUnica extends Respuesta {
         }
         
         this.indiceOpcion = nuevoIndice;
-    }
-    
-    /**
-     * Obtiene el índice de la opción seleccionada.
-     * 
-     * @return Índice de la opción
-     */
-    public int getIndiceOpcion() {
-        return indiceOpcion;
     }
     
     /**

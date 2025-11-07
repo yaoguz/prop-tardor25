@@ -31,7 +31,7 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 */
 	public PreguntaOpcionUnica(int idEncuesta, int idPregunta, String enunciado, boolean ordenada) throws IllegalArgumentException {
 		super(idEncuesta, idPregunta, enunciado);
-		opciones = new ArrayList<String>()
+		opciones = new ArrayList<String>();
 		this.ordenada = ordenada;
 	}
 	
