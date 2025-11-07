@@ -1,4 +1,4 @@
-package domaincontroller;
+package domaincontrollers;
 
 import main.domini.*;
 import java.util.*;
@@ -9,239 +9,136 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+//import org.mockito.MockitoAnnotations; o runner o este
 import org.mockito.junit.MockitoJUnitRunner;
 
-import persistence.IGestorPersistencia;
+import classcontroller.CtrlUsuario;
+import persistence.CtrlPersistence;
 import domain.Usuario;
-import domaincontrollers.CtrlDominioUsuario;
-import domaincontrollers.CtrlUsuario;
 
-/**
- * Tests unitarios para CtrlDominioUsuario usando MOCKS con JUnit 4.
- * 
- * Demuestra cómo usar Mockito para simular dependencias y verificar interacciones.
- * 
- * @author Equipo PROP
- * @version 2.0 - JUnit 4
- */
 @RunWith(MockitoJUnitRunner.class)
 public class TestCtrlDominioUsuario {
-    
     @Mock
     private CtrlUsuario mockCtrlUsuario;
     
     @Mock
-    private IGestorPersistencia mockPersistence;
+    private CtrlPersistence mockPersistence;
     
     private CtrlDominioUsuario ctrlDominioUsuario;
-    
-    /**
-     * Configuración inicial antes de cada test.
-     * Inicializa los mocks y el controlador bajo prueba.
-     */
+
     @Before
     public void setUp() {
-        // Inicializar mocks de Mockito (opcional con @RunWith(MockitoJUnitRunner.class))
-        MockitoAnnotations.initMocks(this);
-        
-        // Crear el controlador bajo prueba con dependencias mockeadas
+   
         ctrlDominioUsuario = new CtrlDominioUsuario(mockCtrlUsuario, mockPersistence);
     }
-    
-    // ==================== TESTS DE REGISTRO ====================
-    
-    /**
-     * Test: Registrar usuario con contraseñas coincidentes debe crear usuario y guardarlo.
-     */
+
     @Test
-    public void testRegistrarUsuario_ContrasenasCoinciden_CreaYGuardaUsuario() {
-        // ARRANGE (Preparar)
-        String nomUsuario = "testUser";
-        String contrasena = "password123";
-        String confirmacion = "password123";
+    public void testRegistrarUsuario() {
         
-        // Configurar comportamiento del mock: cuando se llame a existeUsuario, devolver false
-        when(mockCtrlUsuario.existeUsuario(nomUsuario)).thenReturn(false);
+        String nomUsuario = "tester";
+        String contrasena = "123456";
+        String confirmacion = "123456";
         
-        // Configurar que crearUsuario devuelva un usuario específico
-        Usuario usuarioEsperado = new Usuario(nomUsuario, contrasena);
-        when(mockCtrlUsuario.crearUsuario(nomUsuario, contrasena)).thenReturn(usuarioEsperado);
         
-        // ACT (Actuar)
-        String resultado = ctrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
+        Usuario usuario = new Usuario(nomUsuario, contrasena);
+        when(mockCtrlUsuario.crearUsuario(nomUsuario, contrasena)).thenReturn(usuario);
         
-        // ASSERT (Verificar)
-        assertEquals("Usuario registrado con éxito: " + nomUsuario, resultado);
         
-        // VERIFICAR INTERACCIONES: comprobar que se llamaron los métodos correctos
-        verify(mockCtrlUsuario, times(1)).existeUsuario(nomUsuario);
+        String nomUser = ctrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
+        
+        assertEquals("Usuario registrado mal", nomUsuario, nomUser);
+
+      
         verify(mockCtrlUsuario, times(1)).crearUsuario(nomUsuario, contrasena);
-        verify(mockPersistence, times(1)).guardarUsuario(usuarioEsperado);
+        verify(mockPersistence, times(1)).guardarUsuario(usuario);
     }
-    
-    /**
-     * Test: Registrar usuario ya existente debe lanzar excepción.
-     */
-    @Test
-    public void testRegistrarUsuario_UsuarioExistente_LanzaExcepcion() {
+
+
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testRegistrarUsuario_ContrasenasNoCoinciden() {
         // ARRANGE
-        String nomUsuario = "existingUser";
-        String contrasena = "password123";
-        String confirmacion = "password123";
+        String nomUsuario = "tester";
+        String contrasena = "123456";
+        String confirmacion = "654321";
         
-        // Configurar mock: usuario ya existe
-        when(mockCtrlUsuario.existeUsuario(nomUsuario)).thenReturn(true);
         
-        // ACT & ASSERT
-        try {
-            ctrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
-            fail("Debería haber lanzado IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            assertEquals("Error: el nombre de usuario ya existe", e.getMessage());
-        }
+        Usuario usuario = new Usuario(nomUsuario, contrasena);
+        when(mockCtrlUsuario.crearUsuario(nomUsuario, contrasena)).thenReturn(usuario);
+        ctrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
         
-        // VERIFICAR: NO se debe haber llamado a crearUsuario ni guardarUsuario
-        verify(mockCtrlUsuario, never()).crearUsuario(anyString(), anyString());
-        verify(mockPersistence, never()).guardarUsuario(any(Usuario.class));
+        
     }
-    
-    /**
-     * Test: Registrar usuario con contraseñas diferentes debe lanzar excepción.
-     */
+
     @Test
-    public void testRegistrarUsuario_ContrasenasNoCoinciden_LanzaExcepcion() {
-        // ARRANGE
-        String nomUsuario = "testUser";
-        String contrasena = "password123";
-        String confirmacion = "differentPassword";
+    public void testIniciarSesion() {
         
-        when(mockCtrlUsuario.existeUsuario(nomUsuario)).thenReturn(false);
-        
-        // ACT & ASSERT
-        try {
-            ctrlDominioUsuario.registrarUsuario(nomUsuario, contrasena, confirmacion);
-            fail("Debería haber lanzado IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            assertEquals("Error: las contraseñas no coinciden", e.getMessage());
-        }
-        
-        // VERIFICAR: NO se debe haber creado ni guardado usuario
-        verify(mockCtrlUsuario, never()).crearUsuario(anyString(), anyString());
-        verify(mockPersistence, never()).guardarUsuario(any(Usuario.class));
-    }
-    
-    // ==================== TESTS DE INICIO DE SESIÓN ====================
-    
-    /**
-     * Test: Iniciar sesión con credenciales correctas debe retornar true.
-     */
-    @Test
-    public void testIniciarSesion_CredencialesCorrectas_RetornaTrue() {
-        // ARRANGE
-        String nomUsuario = "testUser";
-        String contrasena = "password123";
+        String nomUsuario = "tester";
+        String contrasena = "123456";
         
         Usuario mockUsuario = mock(Usuario.class);
-        when(mockCtrlUsuario.existeUsuario(nomUsuario)).thenReturn(true);
-        when(mockCtrlUsuario.getUsuario(nomUsuario)).thenReturn(mockUsuario);
+
+        when(mockPersistence.cargarUsuario(nomUsuario)).thenReturn(mockUsuario);
         when(mockUsuario.comprobarContrasena(contrasena)).thenReturn(true);
+        when(mockCtrlUsuario.iniciarSesion(nomUsuario, contrasena)).thenReturn(true);
         
-        // ACT
+  
         boolean resultado = ctrlDominioUsuario.iniciarSesion(nomUsuario, contrasena);
         
-        // ASSERT
-        assertTrue("El inicio de sesión debería ser exitoso", resultado);
         
-        // VERIFICAR INTERACCIONES
-        verify(mockCtrlUsuario).existeUsuario(nomUsuario);
-        verify(mockCtrlUsuario).getUsuario(nomUsuario);
-        verify(mockUsuario).comprobarContrasena(contrasena);
+        assertTrue("No inicio correctamente", resultado);
+        
+        
+        verify(mockPersistence, times(1)).cargarUsuario(nomUsuario);
+        verify(mockUsuario, times(1)).comprobarContrasena(contrasena);
+        verify(mockCtrlUsuario, times(1)).iniciarSesion(nomUsuario, contrasena);
     }
-    
-    /**
-     * Test: Iniciar sesión con usuario inexistente debe retornar false.
-     */
+
     @Test
-    public void testIniciarSesion_UsuarioInexistente_RetornaFalse() {
-        // ARRANGE
-        String nomUsuario = "nonExistentUser";
-        String contrasena = "password123";
+    public void testIniciarSesion_ContrasenaIncorrecta() {
         
-        when(mockCtrlUsuario.existeUsuario(nomUsuario)).thenReturn(false);
-        
-        // ACT
-        boolean resultado = ctrlDominioUsuario.iniciarSesion(nomUsuario, contrasena);
-        
-        // ASSERT
-        assertFalse("El inicio de sesión debería fallar", resultado);
-        
-        // VERIFICAR: NO se debe haber llamado a getUsuario
-        verify(mockCtrlUsuario, never()).getUsuario(anyString());
-    }
-    
-    /**
-     * Test: Iniciar sesión con contraseña incorrecta debe retornar false.
-     */
-    @Test
-    public void testIniciarSesion_ContrasenaIncorrecta_RetornaFalse() {
-        // ARRANGE
-        String nomUsuario = "testUser";
-        String contrasena = "wrongPassword";
+        String nomUsuario = "tester";
+        String contrasena = "123456";
         
         Usuario mockUsuario = mock(Usuario.class);
-        when(mockCtrlUsuario.existeUsuario(nomUsuario)).thenReturn(true);
-        when(mockCtrlUsuario.getUsuario(nomUsuario)).thenReturn(mockUsuario);
+        
+        when(mockPersistence.cargarUsuario(nomUsuario)).thenReturn(mockUsuario);
         when(mockUsuario.comprobarContrasena(contrasena)).thenReturn(false);
         
-        // ACT
+       
         boolean resultado = ctrlDominioUsuario.iniciarSesion(nomUsuario, contrasena);
         
-        // ASSERT
-        assertFalse("El inicio de sesión debería fallar con contraseña incorrecta", resultado);
+        
+        assertFalse("Ha entrado con contraseña incorrecta", resultado);
+
+        verify(mockPersistence, times(1)).cargarUsuario(nomUsuario);
+        verify(mockUsuario, times(1)).comprobarContrasena(contrasena);
+        verify(mockCtrlUsuario, never()).iniciarSesion(nomUsuario, contrasena);
     }
-    
-    // ==================== TESTS DE MODIFICAR CONTRASEÑA ====================
-    
-    /**
-     * Test: Modificar contraseña debe actualizar el usuario y persistirlo.
-     */
-    @Test
-    public void testModificarContrasena_ActualizaYPersiste() {
-        // ARRANGE
+
+     @Test
+    public void testModificarContrasena() {
+        
         String nomUsuario = "testUser";
-        String nuevaContrasena = "newPassword456";
+        String nuevaContrasena = "nuevaContrasena";
         
         Usuario mockUsuario = mock(Usuario.class);
         when(mockCtrlUsuario.getUsuario(nomUsuario)).thenReturn(mockUsuario);
         
-        // ACT
+      
         ctrlDominioUsuario.modificarContrasena(nomUsuario, nuevaContrasena);
         
-        // ASSERT - VERIFICAR INTERACCIONES
-        verify(mockCtrlUsuario).getUsuario(nomUsuario);
-        verify(mockUsuario).newContrasena(nuevaContrasena);
-        verify(mockPersistence).guardarUsuario(mockUsuario);
+        
+        verify(mockCtrlUsuario, time(1)).getUsuario(nomUsuario);
+        verify(mockUsuario, time(1)).newContrasena(nuevaContrasena);
+        verify(mockPersistence, time(1)).actualizarUsuario(mockUsuario);
     }
-    
-    // ==================== TESTS DE CERRAR SESIÓN ====================
-    
-    /**
-     * Test: Cerrar sesión debe guardar el estado del usuario.
-     */
+
     @Test
-    public void testCerrarSesion_GuardaEstadoUsuario() {
-        // ARRANGE
-        String nomUsuario = "testUser";
+    public void testCerrarSesion() {
+
+        ctrlDominioUsuario.cerrarSesion();
         
-        Usuario mockUsuario = mock(Usuario.class);
-        when(mockCtrlUsuario.getUsuario(nomUsuario)).thenReturn(mockUsuario);
-        
-        // ACT
-        ctrlDominioUsuario.cerrarSesion(nomUsuario);
-        
-        // ASSERT - VERIFICAR INTERACCIONES
-        verify(mockCtrlUsuario).getUsuario(nomUsuario);
-        verify(mockPersistence).guardarUsuario(mockUsuario);
+        verify(mockCtrlUsuario, time(1)).cerrarSesion();
     }
 }
