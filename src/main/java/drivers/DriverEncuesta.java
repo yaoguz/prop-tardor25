@@ -2,15 +2,22 @@ package drivers;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;  
+import java.util.Set; 
+import java.util.TreeMap;
 
-import persistence.CtrlPersistence;
-import domaincontroller.CtrlDominioUsuario;
+
+import domaincontrollers.CtrlDominioUsuario;
 import domaincontrollers.CtrlDominioEncuesta;
 import domaincontrollers.CtrlDominioPregunta;
 import domaincontrollers.CtrlDominioRespuesta;
 import domaincontrollers.CtrlDominioUsuario;
 import domain.Encuesta;
 import domain.Usuario;
+import domain.Pregunta;
+import domain.Respuesta;
 
 /**
  * Driver interactivo para probar CtrlDominioEncuesta.
@@ -25,6 +32,9 @@ import domain.Usuario;
 /*Clase que testea la clase Encuesta */
 public class DriverEncuesta {
     private static CtrlDominioEncuesta ctrlDominioEncuesta;
+    private static CtrlDominioUsuario ctrlUsuario; 
+    private static CtrlDominioPregunta ctrlPregunta;
+    private static CtrlDominioRespuesta ctrlRespuesta;
     private static Scanner scanner;
 
     /*
@@ -34,16 +44,15 @@ public class DriverEncuesta {
 
     public static void main (String[] args) {
         // Inicializar dependencias (capa real, no mocks)
-        CtrlDominioUsuario ctrlUsuario = new CtrlDominioUsuario();
-        CtrlDominioPregunta ctrlPregunta = new CtrlDominioPregunta();
-        CtrlDominioRespuesta ctrlRespuesta = new CtrlDominioRespuesta();
-        CtrlDominioPersistence ctrlPersistence = new CtrlDominioPersistence();
+        ctrlUsuario = new CtrlDominioUsuario();
+        ctrlPregunta = new CtrlDominioPregunta();
+        ctrlRespuesta = new CtrlDominioRespuesta();
 
         ctrlDominioEncuesta = new CtrlDominioEncuesta();
         scanner = new Scanner(System.in);
 
-        Usuario prueba = ctrlUsuario.crearUsuario("prueba",  "1");
-        int idE = ctrlEncuesta.crearEncuesta("prueba", "E1",ctrlUsuario);
+        String prueba = ctrlUsuario.registrarUsuario("prueba",  "1", "1");
+        int idE = ctrlDominioEncuesta.crearEncuesta("prueba", "E1",ctrlUsuario);
 
 
         boolean salir = false;
@@ -217,7 +226,7 @@ public class DriverEncuesta {
         int idEncuesta= scanner.nextInt();
 
         try {
-            List<Integer> result = ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta,ctrlRespuesta, ctrlPregunta);
+            Map<Pregunta, Set<Respuesta>> result = ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta,ctrlRespuesta, ctrlPregunta);
             for (Map.Entry<Pregunta, Set<Respuesta>> entry : result.entrySet()) {
                 System.out.println("Pregunta: " + entry.getKey());
                 

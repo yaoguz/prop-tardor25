@@ -89,7 +89,7 @@ public class Encuesta {
      * Se quiere actualizar/cambiar el titulo de la encuesta
      * @param titulo al que se quiere actualizar
      */
-    public void setTitulo(String titulo) {
+    public void cambiarTitulo(String titulo) {
         this.titulo = titulo;
     }
 
