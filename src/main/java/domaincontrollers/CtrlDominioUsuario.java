@@ -185,13 +185,13 @@ public class CtrlDominioUsuario {
 	 * Representa: "Qué encuestas respondió ESTE usuario".
 	 * 
 	 * @param nomUsuario Nombre del usuario
-	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
-	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
 	 * @return Lista de IDs de encuestas respondidas
 	 */
 	public List<Integer> getEncuestasRespondidas(String nomUsuario,
-	                                               CtrlDominioRespuesta ctrlDominioRespuesta,
-	                                               CtrlDominioPregunta ctrlDominioPregunta) {
+												CtrlDominioRespuesta ctrlDominioRespuesta,
+												CtrlDominioPregunta ctrlDominioPregunta) {
 		Usuario u = getUsuario(nomUsuario);
 		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
 		
@@ -201,19 +201,38 @@ public class CtrlDominioUsuario {
 		// por cada respuesta, obtener la pregunta y luego la encuesta
 		for (Integer idR : idRespuestas) {
 			Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
-			int idPregunta = r.getIdPregunta();
-			
-			Pregunta p = ctrlDominioPregunta.getPregunta(idPregunta);
-			int idEncuesta = p.getIdEncuesta();
-			
-			idEncuestas.add(idEncuesta);
+			Pregunta p = ctrlDominioPregunta.getPregunta(r.getIdPregunta());
+			idEncuestas.add(p.getIdEncuesta());
 		}
 		return new ArrayList<>(idEncuestas); // convertir set en un arraylist
 	}
 
+	/**
+	 * Obtiene las respuestas que ha respondido el usuario nomUsuario en la encuesta idEncuesta
+	 * 
+	 * @param nomUsuario Nombre del usuario
+	 * @param idEncuesta ID de la encuesta
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
+	 * @return Lista de las respuestas respondidas por el usuario en esta encuesta
+	 */
 	public List<Respuesta> getRespuestasEncuesta(String nomUsuario, 
-				) {
+												int idEncuesta, 
+												CtrlDominioRespuesta ctrlDominioRespuesta,
+												CtrlDominioPregunta ctrlDominioPregunta) {
+		Usuario u = getUsuario(nomUsuario);
+		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
+		
+		ArrayList<Respuesta> respuestas = new ArrayList<>();
+										
+		// por cada respuesta, mirar si coincide el idEncuesta
+		for (Integer idR : idRespuestas) {
+			Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
+			Pregunta p = ctrlDominioPregunta.getPregunta(r.getIdPregunta());
+			if (p.getIdEncuesta() == idEncuesta) respuestas.add(r);
+		}
 
+		return respuestas;
 	}
 
 	/**
