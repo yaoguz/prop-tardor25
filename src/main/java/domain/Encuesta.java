@@ -27,7 +27,7 @@ public class Encuesta {
         this.idEncuesta = idEncuesta;
         this.titulo = titulo;
         this.creador = creador;   
-        this.IdPreguntas = new ArrayList<>(); //!!!!! cambiarlo por SET por si 
+        this.IdPreguntas = new ArrayList<>();
     }
 
     /** Metodos **/

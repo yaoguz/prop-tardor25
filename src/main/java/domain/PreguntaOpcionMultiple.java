@@ -64,7 +64,7 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	/**
 	 * Asigna el número máximo de opciones seleccionables para esta pregunta.
 	 */
-	@Override public void setNumMaxOpc(numMaxOpc) {
+	@Override public void setNumMaxOpc(int numMaxOpc) {
 		this.numMaxOpc = numMaxOpc;
 	}
 

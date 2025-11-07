@@ -149,7 +149,7 @@ public abstract class Pregunta {
 	/**
 	 * No hace nada si no es del tipo de subclase correspondiente.
 	 */
-	public void setNumMaxOpc(numMaxOpc) {}
+	public void setNumMaxOpc(int numMaxOpc) {}
 	//rangoInf (de numerica)
 	/**
 	 * Devuelve un -1 si no es del tipo de subclase correspondiente.

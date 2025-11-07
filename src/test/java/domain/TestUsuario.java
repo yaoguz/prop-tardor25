@@ -10,10 +10,10 @@ import org.junit.Test;
 /**
  * Clase testeadora de Usuario
  */
-public Class TestUsuario() {
+public class TestUsuario {
 
     private Usuario usuario;
-    private final Stirng userName = "tester";
+    private final String userName = "tester";
     private final String contrasena = "123456";
 
     /**
@@ -90,7 +90,7 @@ public Class TestUsuario() {
         usuario.guardarIdRespuesta(2);
         usuario.guardarIdRespuesta(3);
         
-        Set<Integer> respuestas = usuario.getIdRespuestas();
+        ArrayList<Integer> respuestas = usuario.getIdRespuestas();
         assertEquals("No se guardo todo idR", 3, respuestas.size());
         assertTrue("No contiene lo guardado de idR", respuestas.contains(1));
         assertTrue("No contiene lo guardado de idR",respuestas.contains(2));
@@ -108,7 +108,7 @@ public Class TestUsuario() {
         // Eliminar respuesta 2
         usuario.eliminarIdRespuesta(2);
         
-        Set<Integer> respuestas = usuario.getIdRespuestas();
+        ArrayList<Integer> respuestas = usuario.getIdRespuestas();
         assertEquals("IdR no eliminado", 2, respuestas.size());
         assertTrue("IdR borrado incorrecto", respuestas.contains(1));
         assertFalse("IdR no borrado", respuestas.contains(2));
@@ -122,7 +122,7 @@ public Class TestUsuario() {
         // Intentar eliminar ID que no existe
         usuario.eliminarIdRespuesta(999);
         
-        Set<Integer> respuestas = usuario.getIdRespuestas();
+        ArrayList<Integer> respuestas = usuario.getIdRespuestas();
         assertEquals("IdR borrado", 1, respuestas.size());
         assertTrue("IdR borrado", respuestas.contains(1));
     }
@@ -133,7 +133,7 @@ public Class TestUsuario() {
         usuario.guardarIdEncuesta(10);
         usuario.guardarIdEncuesta(20);
         
-        Set<Integer> encuestas = usuario.getIdEncuestasCreadas();
+        ArrayList<Integer> encuestas = usuario.getIdEncuestasCreadas();
         assertEquals("No se guardo todo idE",2, encuestas.size());
         assertTrue("No contiene lo guardado de idE",encuestas.contains(10));
         assertTrue("No contiene lo guardado de idE", encuestas.contains(20));
@@ -147,7 +147,7 @@ public Class TestUsuario() {
         
         usuario.eliminarIdEncuesta(20);
         
-        Set<Integer> encuestas = usuario.getIdEncuestasCreadas();
+        ArrayList<Integer> encuestas = usuario.getIdEncuestasCreadas();
         assertEquals("IdE no borrado", 2, encuestas.size());
         assertTrue("IdE borrado incorrecto", encuesta.contains(10));
         assertFalse("IdE no borrado",encuestas.contains(20));
