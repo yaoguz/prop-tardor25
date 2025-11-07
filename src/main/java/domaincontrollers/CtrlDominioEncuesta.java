@@ -174,8 +174,7 @@ public class CtrlDominioEncuesta {
 			throw new IllegalArgumentException("El título no puede estar vacío");
 		}
 		Encuesta e = getEncuesta(idEncuesta);
-		e.cambiarTitulo(titulo);
-		// NO persistencia - solo en memoria
+		e.setTitulo(titulo);
 	}
 	
 	/**
