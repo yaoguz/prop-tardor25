@@ -51,7 +51,7 @@ public class Usuario {
      */
     public void newContrasena(String newContrasena) {
         if (this.contrasena.equals(newContrasena)) {
-            
+            throw new IllegalArgumentException("La nueva contrasena no puede ser igual a la anterior.");
         }
         this.contrasena = newContrasena;
     }
@@ -77,7 +77,7 @@ public class Usuario {
      * @param {int} idR - Id de la Respuesta que se desea eliminar.
      */
     public void eliminarIdRespuesta(int idR) {
-        this.idRespuestas.remove(idR); 
+        this.idRespuestas.remove(Integer.valueOf(idR)); 
     }
 
     /**
@@ -101,7 +101,7 @@ public class Usuario {
      * @param {int} idE - Id de la Encuesta que se desea eliminar.
      */
     public void eliminarIdEncuestaCreada(int idE) {
-        this.idEncuestasCreadas.remove(idE);
+        this.idEncuestasCreadas.remove(Integer.valueOf(idE));
     }
 
     /**
