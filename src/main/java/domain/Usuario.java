@@ -23,9 +23,9 @@ public class Usuario {
     public Usuario(String nomUsuario, String contrasena) {
         this.nomUsuario = nomUsuario;
         this.contrasena = contrasena;
-        idPerfiles = new HashSet<>();
-        idEncuestasCreadas = new HashSet<>();
-        idRespuestas = new HashSet<>();
+        this.idPerfiles = new ArrayList<>();
+        this.idEncuestasCreadas = new ArrayList<>();
+        this.idRespuestas = new ArrayList<>();
     }
 
     /** Metodos publicos**/
@@ -86,7 +86,7 @@ public class Usuario {
      * Se obtiene un ArrayList con todas las idEncuestas creadas por el Usuario.
      * @return {ArrayList<Integer>} idEncuestas de las Encuestas creadas por el Usuario.
      */
-    public Set<Integer> getIdEncuestasCreadas() {
+    public ArrayList<Integer> getIdEncuestasCreadas() {
         return idEncuestasCreadas;
     }
 
@@ -110,7 +110,7 @@ public class Usuario {
      * Se obtiene un ArrayList con todas los idPerfiles del Usuario.
      * @return {ArrayList<Integer>} idPerfiles de los Perfiles del Usuario.
      */
-    public Set<Integer> getIdPerfiles() {
+    public ArrayList<Integer> getIdPerfiles() {
         return idPerfiles;
     }
 
