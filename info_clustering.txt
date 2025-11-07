@@ -1,0 +1,193 @@
+Informació addicional pel projecte de PROP
+Quadrimestre de tardor, curs 25/26
+Extractor de prototipus de comportament o perfils
+Un possible joc de proves podrien ser les enquestes del CIS:
+https://www.kaggle.com/code/amcamc/encuesta-bar-metro-cis-66010323
+Representació de les dades
+S’utilitzarà el model d’espai vectorial per a representar les dades. El conjunt de N respostes d’una
+persona i es representarà com un vector 𝑋𝑋𝑖𝑖 = [𝑋𝑋𝑖𝑖1,𝑋𝑋𝑖𝑖2, … , 𝑋𝑋𝑖𝑖𝑖𝑖]. Així doncs, el conjunt de totes les
+respostes de totes les M persones serà una matriu 𝑋𝑋 = �
+𝑋𝑋11 ⋯ 𝑋𝑋1𝑁𝑁
+⋮ ⋱ ⋮
+𝑋𝑋𝑀𝑀1 ⋯ 𝑋𝑋𝑀𝑀𝑀𝑀
+� on cada resposta a una
+pregunta (𝑋𝑋.𝑗𝑗) no és més que una variable d’un cert tipus. Les variables que modelitzen les
+respostes podran ser:
+• Variables quantitatives o numèriques, que emmagatzemen un sol valor numèric.
+• Variables qualitatives ordenades, que emmagatzemen un sol valor o modalitat qualitativa
+(i.e. molt-poc/poc/normal/força/molt). Les diferents modalitats possibles són ordenades.
+• Variables qualitatives no ordenades, que emmagatzemen un sol valor o modalitat
+qualitativa (i.e. groc/blau/verd/vermell/lila/marró). Les diferents modalitats possibles no
+són ordenades.
+• Variables qualitatives no ordenades, que emmagatzemen un conjunt de p valors o
+modalitats qualitatives d’un màxim de q modalitats diferents (1 ≤ p ≤ q) (i.e. {groc, verd,
+lila}). Les diferents modalitats possibles no són ordenades.
+• Variables string en format lliure, que emmagatzemen un sol valor que és un string
+qualsevol. No existeix cap valor predeterminat.
+Mesures de semblança o distàncies
+Els algorismes de clustering consisteixen fonamentalment en una sèrie de processos iteratius,
+que es basen en càlculs de semblances o distàncies entre els diferents objectes que es volen
+agrupar (respostes de les persones en el nostre cas), o entre centroides dels clústers o grups o
+entre ambdós tipus d’elements.
+Els conceptes de semblança i distància són inversos i habitualment els seus valors estan
+normalitzats en l’interval [0,1]. Així la semblança entre dues persones Xi i Xj es pot calcular a
+partir de la seva distància i viceversa:
+𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆�𝑋𝑋𝑖𝑖, 𝑋𝑋𝑗𝑗� = 1 − 𝐷𝐷�𝑋𝑋𝑖𝑖,𝑋𝑋𝑗𝑗�
+En el cas de que els objectes siguin vectors la distància entre dos objectes és la agregació de les
+distàncies locals entre cada component del mateix. És a dir, es pot expressar la distància entre
+dues respostes de persones Xi i Xj com:
+𝐷𝐷�𝑋𝑋𝑖𝑖,𝑋𝑋𝑗𝑗� = �𝑤𝑤𝑘𝑘 ∗ 𝐷𝐷𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙(𝑋𝑋𝑖𝑖𝑖𝑖, 𝑋𝑋𝑗𝑗𝑗𝑗)
+∑ 𝑤𝑤𝑘𝑘
+𝑁𝑁
+𝑘𝑘=1
+𝑁𝑁
+𝑘𝑘=1
+ 𝑜𝑜𝑜𝑜 0 ≤ 𝑤𝑤𝑘𝑘 ≤ 1
+on wk representa el pes o importància (weight) d’aquella variable. De moment, podeu treballar
+pensant que totes les respostes (variables) tenen el mateix pes. Llavors, és trivial veure que el
+càlcul de la distància es transforma en:
+𝐷𝐷�𝑋𝑋𝑖𝑖,𝑋𝑋𝑗𝑗� = �𝐷𝐷𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙(𝑋𝑋𝑖𝑖𝑖𝑖, 𝑋𝑋𝑗𝑗𝑗𝑗)
+𝑁𝑁
+𝑁𝑁
+𝑘𝑘=1
+La distància global sempre pertany a l’interval [0,1], ja que les distàncies locals també pertanyen
+a l’interval [0,1]. Aquesta fórmula per la 𝐷𝐷 correspon a l’anomenada distància L1, o Manhattan
+normalitzada. Alternativament, es pot utilitzar també la distància Euclídea, que es calcula de la
+següent manera:
+𝐷𝐷�𝑋𝑋𝑖𝑖,𝑋𝑋𝑗𝑗� =
+�∑ 𝐷𝐷𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙(𝑋𝑋𝑖𝑖𝑖𝑖, 𝑋𝑋𝑗𝑗𝑗𝑗) 𝑁𝑁 2
+𝑘𝑘=1
+𝑁𝑁
+Podeu escollir la funció de distància que considereu més adient pel vostre conjunt de dades.
+Depenent del cas, és possible que considereu implementar i utilitzar més d’una.
+El càlcul de les distàncies locals de cada component del vector (de cada resposta) depèn del tipus
+de variable que emmagatzema la resposta. Per tant, això comporta que la distància global
+utilitzada sigui de tipus heterogènia. Les distàncies locals (normalitzades a l’interval [0,1]) més
+habituals que s’utilitzen i que us recomanem utilitzar són:
+1. 𝐷𝐷𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙�𝑋𝑋𝑖𝑖𝑖𝑖, 𝑋𝑋𝑗𝑗𝑗𝑗� = �𝑋𝑋𝑖𝑖𝑖𝑖−𝑋𝑋𝑗𝑗𝑗𝑗�
+𝑉𝑉𝑚𝑚𝑚𝑚𝑚𝑚(𝑋𝑋.𝑘𝑘)−𝑉𝑉𝑚𝑚𝑚𝑚𝑚𝑚(𝑋𝑋.𝑘𝑘)
+𝑜𝑜𝑜𝑜 𝑉𝑉𝑚𝑚𝑚𝑚𝑚𝑚(𝑋𝑋.𝑘𝑘) 𝑖𝑖 𝑉𝑉𝑚𝑚𝑚𝑚𝑚𝑚(𝑋𝑋.𝑘𝑘) 𝑠𝑠ó𝑛𝑛 𝑒𝑒𝑒𝑒𝑒𝑒 𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣 𝑚𝑚à𝑥𝑥𝑥𝑥𝑥𝑥 𝑖𝑖 𝑚𝑚í𝑛𝑛𝑛𝑛𝑛𝑛 𝑑𝑑𝑑𝑑 𝑙𝑙𝑙𝑙 𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣 𝑋𝑋.𝑘𝑘
+
+quan la variable X.k és numèrica o quantitativa
+2. 𝐷𝐷𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙�𝑋𝑋𝑖𝑖𝑖𝑖,𝑋𝑋𝑗𝑗𝑗𝑗� = �𝑚𝑚𝑚𝑚𝑚𝑚(𝑋𝑋𝑖𝑖𝑖𝑖)−𝑚𝑚𝑚𝑚𝑚𝑚(𝑋𝑋𝑗𝑗𝑗𝑗)�
+#𝑚𝑚𝑚𝑚𝑚𝑚−1
+ 𝑜𝑜𝑜𝑜 𝑚𝑚𝑚𝑚𝑚𝑚(𝑋𝑋𝑖𝑖𝑖𝑖) és el numeral corresponent a l’ordinal que li correspon a aquesta
+ modalitat, després d'ordenar totes les modalitats existents,
+ i #𝑚𝑚𝑚𝑚𝑚𝑚 és el nombre de modalitats existents
+quan la variable X.k és qualitativa ordenada i emmagatzema un sol valor
+3. 𝐷𝐷𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙�𝑋𝑋𝑖𝑖𝑖𝑖,𝑋𝑋𝑗𝑗𝑗𝑗� = �
+0 𝑠𝑠𝑠𝑠 𝑋𝑋𝑖𝑖𝑖𝑖 = 𝑋𝑋𝑗𝑗𝑗𝑗
+1 𝑠𝑠𝑠𝑠 𝑋𝑋𝑖𝑖𝑖𝑖 ≠ 𝑋𝑋𝑗𝑗𝑗𝑗
+quan la variable X.k és qualitativa no ordenada i emmagatzema un sol valor
+4. 𝐷𝐷𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙�𝑋𝑋𝑖𝑖𝑘𝑘,𝑋𝑋𝑗𝑗𝑗𝑗� = 1 − 𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽�𝑋𝑋𝑖𝑖𝑖𝑖, 𝑋𝑋𝑗𝑗𝑗𝑗� = 1 − # �{𝑋𝑋𝑖𝑖𝑖𝑖} ∩ �𝑋𝑋𝑗𝑗𝑗𝑗��
+# �{𝑋𝑋𝑖𝑖𝑖𝑖} ∪ �𝑋𝑋𝑗𝑗𝑗𝑗��
+on {𝑋𝑋𝑖𝑖𝑖𝑖} és el conjunt de valors de la variable
+i 𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽𝐽�𝑋𝑋𝑖𝑖𝑖𝑖, 𝑋𝑋𝑗𝑗𝑗𝑗� és el coeficient de semblança de Jaccard
+quan la variable X.k és qualitativa no ordenada i emmagatzema un conjunt de p valors o
+modalitats qualitatives d’un màxim de q modalitats diferents (1 ≤ p ≤ q)
+5. 𝐷𝐷𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙�𝑋𝑋𝑖𝑖𝑖𝑖,𝑋𝑋𝑗𝑗𝑗𝑗� = 𝑙𝑙𝑙𝑙𝑙𝑙𝑋𝑋𝑖𝑖𝑖𝑖,𝑋𝑋𝑗𝑗𝑗𝑗�𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙ℎ(𝑋𝑋𝑖𝑖𝑖𝑖),𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙ℎ(𝑋𝑋𝑗𝑗𝑗𝑗)� − |𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙ℎ(𝑋𝑋𝑖𝑖𝑖𝑖) − 𝑙𝑙𝑙𝑙𝑙𝑙𝑔𝑔𝑔𝑔ℎ (𝑋𝑋𝑗𝑗𝑗𝑗)|
+𝑚𝑚𝑚𝑚𝑚𝑚 �𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙ℎ(𝑋𝑋𝑖𝑖𝑖𝑖),𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙ℎ(𝑋𝑋𝑗𝑗𝑗𝑗)� − |𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙ℎ(𝑋𝑋𝑖𝑖𝑖𝑖) − 𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙ℎ (𝑋𝑋𝑗𝑗𝑗𝑗)|
+on
+𝑙𝑙𝑙𝑙𝑙𝑙𝑎𝑎,𝑏𝑏(𝑖𝑖,𝑗𝑗) =
+⎩
+⎪
+⎨
+⎪
+⎧ max(𝑖𝑖,𝑗𝑗) 𝑠𝑠𝑠𝑠 min(𝑖𝑖,𝑗𝑗) = 0
+min
+⎩
+⎪
+⎨
+⎪
+⎧𝑙𝑙𝑙𝑙𝑙𝑙𝑎𝑎,𝑏𝑏(𝑖𝑖 − 1,𝑗𝑗) + 1
+𝑙𝑙𝑙𝑙𝑙𝑙𝑎𝑎,𝑏𝑏(𝑖𝑖,𝑗𝑗 − 1) + 1
+𝑙𝑙𝑙𝑙𝑙𝑙𝑎𝑎,𝑏𝑏(𝑖𝑖 − 1,𝑗𝑗 − 1) + �
+1 𝑠𝑠𝑠𝑠 𝑎𝑎𝑖𝑖 ≠ 𝑏𝑏𝑗𝑗
+0 𝑠𝑠𝑠𝑠 𝑎𝑎𝑖𝑖 = 𝑏𝑏𝑗𝑗
+𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎𝑎
+és la distància de Levenshtein entre els primers i caràcters de l’string a i els primers j
+caràcters de l’string b.
+quan la variable X.k és un string en format lliure, que emmagatzema un sol valor que és
+un string qualsevol
+Centroide d’un clúster
+Donat un clúster 𝐶𝐶𝑝𝑝 = �𝑋𝑋1.
+𝑝𝑝
+,𝑋𝑋2.
+𝑝𝑝
+, … , 𝑋𝑋𝑁𝑁𝑝𝑝.
+𝑝𝑝 � 𝑜𝑜𝑜𝑜 𝑁𝑁𝑝𝑝 = #𝐶𝐶𝑝𝑝 , es defineix el centroide d’un clúster com el
+següent vector:
+𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶𝐶 �𝐶𝐶𝑝𝑝� = [𝑋𝑋.1 ���𝑝𝑝�, 𝑋𝑋.2 ���𝑝𝑝�, … , 𝑋𝑋.𝑁𝑁 ���
+𝑝𝑝� ] on cada component es calcula de forma diferent depenent
+de la tipologia de la variable:
+𝑋𝑋.𝚥𝚥 ���𝑝𝑝� =
+⎩
+⎪
+⎪
+⎪
+⎨
+⎪
+⎪
+⎪
+⎧ �𝑋𝑋𝑖𝑖𝑖𝑖
+𝑝𝑝
+𝑁𝑁𝑝𝑝
+𝑁𝑁𝑝𝑝
+𝑖𝑖=1
+𝑠𝑠𝑠𝑠 𝑋𝑋.𝑗𝑗
+𝑝𝑝
+é𝑠𝑠 𝑢𝑢𝑢𝑢𝑢𝑢 𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣 𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞 𝑜𝑜 𝑛𝑛𝑛𝑛𝑛𝑛è𝑟𝑟𝑟𝑟𝑟𝑟𝑟𝑟
+𝑚𝑚𝑚𝑚𝑚𝑚𝑚𝑚�𝑋𝑋.𝑗𝑗
+𝑝𝑝
+� 𝑠𝑠𝑠𝑠 𝑋𝑋.𝑗𝑗
+𝑝𝑝
+é𝑠𝑠 𝑢𝑢𝑢𝑢𝑢𝑢 𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣 𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑎𝑎 𝑎𝑎𝑎𝑎𝑎𝑎 1 𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣 𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝
+arg max
+𝑖𝑖∈1..𝑁𝑁𝑝𝑝
+𝑓𝑓𝑓𝑓𝑓𝑓𝑓𝑓�𝑋𝑋𝑖𝑖𝑖𝑖
+𝑝𝑝� 𝑠𝑠𝑠𝑠 𝑋𝑋.𝑗𝑗
+𝑝𝑝
+é𝑠𝑠 𝑢𝑢𝑢𝑢𝑢𝑢 𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣 𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞𝑞 𝑎𝑎𝑎𝑎𝑎𝑎 𝑚𝑚é𝑠𝑠 𝑑𝑑′
+𝑢𝑢𝑢𝑢 𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣 𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝
+arg max
+𝑖𝑖∈1..𝑁𝑁𝑝𝑝,𝑙𝑙∈1,..#𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑖𝑖𝑖𝑖
+𝑝𝑝 𝑓𝑓𝑓𝑓𝑓𝑓𝑓𝑓 �𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑖𝑖𝑖𝑖
+𝑝𝑝(𝑙𝑙)� 𝑠𝑠𝑠𝑠 𝑋𝑋.𝑗𝑗
+𝑝𝑝
+é𝑠𝑠 𝑢𝑢𝑢𝑢𝑢𝑢 𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣𝑣 𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠 𝑒𝑒𝑒𝑒 𝑓𝑓𝑓𝑓𝑓𝑓𝑓𝑓𝑓𝑓𝑓𝑓 𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙𝑙
+On �𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑖𝑖𝑖𝑖
+𝑝𝑝(𝑙𝑙)� = 𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆 𝑊𝑊𝑊𝑊𝑊𝑊𝑊𝑊𝑊𝑊 {𝑋𝑋𝑖𝑖𝑖𝑖
+𝑝𝑝}𝑙𝑙=1,..,#𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑆𝑖𝑖𝑖𝑖
+𝑝𝑝 és el conjunt de paraules amb significat
+semàntic (noms) que hi ha a l’string.
+Mesures d’avaluació de la qualitat d’un clustering
+En clustering, com no disposem de mesures ni etiquetes (grups) de referència respecte les quals
+fer una avaluació (en ser aprenentatge no supervisat), cal utilitzar mètriques internes per estimar
+la qualitat dels resultats obtinguts. Aquestes mètriques es basen exclusivament en els nivell de
+cohesió i separació dels clusters.
+Com a mínim us demanem que implementeu la mètrica de Coeficient de Silhouete, que mesura,
+per a cada individu, com n’és de similar als members del seu clúster en comparació amb els altres
+clústers:
+𝑠𝑠(𝑖𝑖) = 𝑏𝑏(𝑖𝑖) − 𝑎𝑎(𝑖𝑖)
+max{𝑎𝑎(𝑖𝑖), 𝑏𝑏(𝑖𝑖)}
+On 𝑎𝑎(𝑖𝑖) és la distància mitjana entre 𝑎𝑎(𝑖𝑖) i la resta d’elements del seu propi clúster (cohesió),
+ i 𝑏𝑏(𝑖𝑖) és la distància mitjana mínima entre 𝑖𝑖 i els elements de qualsevol altre clúster
+(separació).
+El valor global del clustering es calcula com la mitjana:
+𝑆𝑆 = 1
+𝑛𝑛�𝑠𝑠(𝑖𝑖)
+𝑛𝑛
+𝑖𝑖=1
+Si 𝑆𝑆 s’aproxima a 1, es considera que els clústers ben separats i compactes; si s’aproxima a 0,
+s’interpreta que els individus estan massa propers a les fronteres entre clústers, i 𝑆𝑆 < 0 indica
+que hi ha molts individus incorrectament assignats.
+Com a alternativa o com a complement, podeu investigar i explorar els següents mètodes:
+• Índex Calinski-Harabasz: es basa en avaluar la relació entre la dispersió inter-cluster i la
+dispersió intra-cluster.
+• Índex Davies-Bouldin: quantifica la similitud entre clústers.
+Determinació del nombre de clústers 𝒌𝒌
+Com a funcionalitat opcional, podeu implementar un procediment de selecció automàtica de la 𝑘𝑘.
+Una opció és mitjançant el mètode del colze (Elbow Method), en el qual es calcula la variança
+explicada pels clústers obtinguts en funció de 𝑘𝑘 i es tria la 𝑘𝑘 on la reducció marginal s’estabilitza
+(el punt de “colze”, veure figura).
+Figure 1. Punt de colze identificat (imatge de: https://es.wikipedia.org/wiki/Método_del_codo_(agrupamiento)) 
