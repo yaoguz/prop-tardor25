@@ -175,6 +175,14 @@ public abstract class Pregunta {
 	public boolean esOrdenada() {
 		return false;
 	}
+
+	/**
+	 * Devuelve -1 si no es del tipo de subclase correspondiente.
+	 * @return un -1.
+	 */
+	public int getCantidad() {
+		return -1;
+	}
 	
 	//Operación abstracta (cada subclase devuelve su tipo)
 	/**

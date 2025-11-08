@@ -62,6 +62,15 @@ public class PreguntaOpcionUnica extends Pregunta {
 	}
 
 	/**
+	 * Devuelve el número de opciones de la pregunta.
+	 * @return entero indicando el número de opciones que tiene la pregunta
+	 */
+	@Override 
+	public int getCantidad() {
+		return opciones.size();
+	}
+
+	/**
 	 * Devuelve el tipo de pregunta.
 	 * @return el string "OpcionUnica".
 	 */
