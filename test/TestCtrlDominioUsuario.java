@@ -1,6 +1,6 @@
 package domaincontroller;
 
-import main.domini.*;
+import main.domin.*;
 import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -129,9 +129,9 @@ public class TestCtrlDominioUsuario {
         ctrlDominioUsuario.modificarContrasena(nomUsuario, nuevaContrasena);
         
         
-        verify(mockCtrlUsuario, time(1)).getUsuario(nomUsuario);
-        verify(mockUsuario, time(1)).newContrasena(nuevaContrasena);
-        verify(mockPersistence, time(1)).actualizarUsuario(mockUsuario);
+        verify(mockCtrlUsuario, times(1)).getUsuario(nomUsuario);
+        verify(mockUsuario, times(1)).newContrasena(nuevaContrasena);
+        verify(mockPersistence, times(1)).actualizarUsuario(mockUsuario);
     }
 
     @Test
@@ -139,6 +139,6 @@ public class TestCtrlDominioUsuario {
 
         ctrlDominioUsuario.cerrarSesion();
         
-        verify(mockCtrlUsuario, time(1)).cerrarSesion();
+        verify(mockCtrlUsuario, times(1)).cerrarSesion();
     }
 }
