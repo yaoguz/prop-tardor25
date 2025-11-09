@@ -31,7 +31,7 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 */
 	public PreguntaOpcionUnica(int idEncuesta, int idPregunta, String enunciado, boolean ordenada) throws IllegalArgumentException {
 		super(idEncuesta, idPregunta, enunciado);
-		opciones = new ArrayList<String>()
+		opciones = new ArrayList<String>();
 		this.ordenada = ordenada;
 	}
 	
@@ -59,6 +59,15 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 */
 	@Override public boolean esOrdenada() {
 		return ordenada;
+	}
+
+	/**
+	 * Devuelve el número de opciones de la pregunta.
+	 * @return entero indicando el número de opciones que tiene la pregunta
+	 */
+	@Override 
+	public int getCantidad() {
+		return opciones.size();
 	}
 
 	/**

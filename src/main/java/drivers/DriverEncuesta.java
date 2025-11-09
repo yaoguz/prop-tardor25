@@ -2,15 +2,22 @@ package drivers;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;  
+import java.util.Set; 
+import java.util.TreeMap;
 
-import persistence.CtrlPersistence;
-import domaincontroller.CtrlDominioUsuario;
-import domaincontrollers.CtrlEncuesta;
-import domaincontrollers.CtrlPregunta;
-import domaincontrollers.CtrlRespuesta;
-import domaincontrollers.CtrlUsuario;
+
+import domaincontrollers.CtrlDominioUsuario;
+import domaincontrollers.CtrlDominioEncuesta;
+import domaincontrollers.CtrlDominioPregunta;
+import domaincontrollers.CtrlDominioRespuesta;
+import domaincontrollers.CtrlDominioUsuario;
 import domain.Encuesta;
 import domain.Usuario;
+import domain.Pregunta;
+import domain.Respuesta;
 
 /**
  * Driver interactivo para probar CtrlDominioEncuesta.
@@ -19,12 +26,15 @@ import domain.Usuario;
  * El profesor lo ejecuta y prueba casos de uso por consola.
  * 
  * @author Peiyu Wang
- * @version 1.0
+ * @version 2.0
  */
 
 /*Clase que testea la clase Encuesta */
 public class DriverEncuesta {
     private static CtrlDominioEncuesta ctrlDominioEncuesta;
+    private static CtrlDominioUsuario ctrlUsuario; 
+    private static CtrlDominioPregunta ctrlPregunta;
+    private static CtrlDominioRespuesta ctrlRespuesta;
     private static Scanner scanner;
 
     /*
@@ -34,18 +44,15 @@ public class DriverEncuesta {
 
     public static void main (String[] args) {
         // Inicializar dependencias (capa real, no mocks)
-        CtrlEncuesta ctrlEncuesta = new CtrlEncuesta();
-        CtrlUsuario ctrlUsuario = new CtrlUsuario();
-        CtrlPregunta ctrlPregunta = new CtrlPregunta();
-        CtrlRespuesta ctrlRespuesta = new CtrlRespuesta();
-        CtrlPersistence ctrlPersistence = new CtrlPersistence();
+        ctrlUsuario = new CtrlDominioUsuario();
+        ctrlPregunta = new CtrlDominioPregunta();
+        ctrlRespuesta = new CtrlDominioRespuesta();
 
-        ctrlDominioEncuesta = new CtrlDominioEncuesta(ctrlUsuario,ctrlEncuesta,
-	                             ctrlPregunta,ctrlRespuesta, ctrlPersistence);
+        ctrlDominioEncuesta = new CtrlDominioEncuesta();
         scanner = new Scanner(System.in);
 
-        Usuario prueba = ctrlUsuario.crearUsuario("prueba",  "1");
-        int idE = ctrlEncuesta.crearEncuesta("prueba", "E1");
+        String prueba = ctrlUsuario.registrarUsuario("prueba",  "1", "1");
+        int idE = ctrlDominioEncuesta.crearEncuesta("prueba", "E1",ctrlUsuario);
 
 
         boolean salir = false;
@@ -81,6 +88,15 @@ public class DriverEncuesta {
                 case 7:
                     testAnadirPregunta();
                     break;
+                case 8:
+                    testExisteEncuesta();
+                    break;
+                case 9:
+                    testObtenerEncuesta();
+                    break;
+                case 10:
+                    testObtenerAllEncuestas();
+                    break;
                 case 0:
                     salir = true;
                     System.out.println("\nSaliendo del driver...\n");
@@ -101,6 +117,9 @@ public class DriverEncuesta {
         System.out.println("5. Eliminar encuesta");
         System.out.println("6. Obtener respuestas de una encuesta");
         System.out.println("7. Añadir pregunta");
+        System.out.println("8. Comprobar la existencia de una encuesta");
+        System.out.println("9. Obtener una encuesta");
+        System.out.println("10. Obtener todas las encuestas");
         System.out.println("0. Salir");
         
     }
@@ -143,7 +162,7 @@ public class DriverEncuesta {
         String titulo = scanner.nextLine();
 
         try {
-            int idE = ctrlDominioEncuesta.crearEncuesta(username,titulo);
+            int idE = ctrlDominioEncuesta.crearEncuesta(username,titulo,ctrlUsuario);
             System.out.println("Se ha creado una encuesta con id: " +idE);
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
@@ -193,7 +212,7 @@ public class DriverEncuesta {
         int idEncuesta= scanner.nextInt();
 
         try {
-            ctrlDominioEncuesta.eliminarEncuesta(idEncuesta,ctrlDominioPregunta); // COMO obtengo ctrlDominio
+            ctrlDominioEncuesta.eliminarEncuesta(idEncuesta,ctrlPregunta, ctrlRespuesta, ctrlUsuario);
             System.out.println("Se ha eliminado la encuesta correctamente");
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
@@ -207,7 +226,7 @@ public class DriverEncuesta {
         int idEncuesta= scanner.nextInt();
 
         try {
-            Map<Pregunta, Set<Respuesta>> result = ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
+            Map<Pregunta, Set<Respuesta>> result = ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta,ctrlRespuesta, ctrlPregunta);
             for (Map.Entry<Pregunta, Set<Respuesta>> entry : result.entrySet()) {
                 System.out.println("Pregunta: " + entry.getKey());
                 
@@ -229,12 +248,59 @@ public class DriverEncuesta {
         int idEncuesta= scanner.nextInt();
 
         //QUE ES PREGUNTA IMPORT DATA?????
-
+        /*
         try {
             int idPregunta = ctrlDominioEncuesta.anadirPregunta(idEncuesta,...); //falta el import data
             System.out.println("Se ha añadido una pregunta con id" +idPregunta);
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
         }
+        */
+    }
+
+    private static void testExisteEncuesta() {
+        System.out.println("\nTEST: ANADIR PREGUNTA");
+    
+        System.out.print("Introduzca un id de encuesta: ");
+        int idEncuesta= scanner.nextInt();
+
+        boolean b = ctrlDominioEncuesta.existeEncuesta(idEncuesta);
+        if(b) {
+            System.out.println("Existe una encuesta con id" +idEncuesta);
+        }
+        else {
+            System.out.println("NO existe encuesta con id " +idEncuesta);
+        }
+
+    }
+
+    private static void testObtenerEncuesta() {
+        System.out.println("\nTEST: OBTENER INFO ENCUESTA");
+    
+        System.out.print("Introduzca un id de encuesta: ");
+        int idEncuesta= scanner.nextInt();
+        try {
+            Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+            System.out.println("ID de la encuesta: " +e.getIdEncuesta());
+            System.out.println("Titulo de la encuesta: " +e.getTitulo());
+            System.out.println("Creador de la encuesta: " +e.getIdCreador());
+            System.out.println("Para las preguntas introduzca 1 ");
+        } catch (IllegalArgumentException e) {
+            System.out.println("\nError: " + e.getMessage());
+        }
+    }
+
+    private static void testObtenerAllEncuestas() {
+        System.out.println("\nTEST: OBTENER INFO ALL ENCUESTAS");
+        TreeMap<Integer, Encuesta> encuestas = ctrlDominioEncuesta.getAllEncuestas();
+        System.out.println("No se mostraran los ids de las preguntas.");
+        for(Encuesta e : encuestas.values())
+        {
+            System.out.println("ID de la encuesta: " +e.getIdEncuesta());
+            System.out.println("Titulo de la encuesta: " +e.getTitulo());
+            System.out.println("Creador de la encuesta: " +e.getIdCreador());
+            System.out.println("------------------------");  
+        }
+        
     }
 }

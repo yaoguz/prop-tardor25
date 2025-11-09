@@ -125,7 +125,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el usuario no existe
 	 * @throws IllegalStateException si la contraseña es incorrecta
 	 */
-	public boolean iniciarSesion(String nomU, String contrasena) {
+	public int iniciarSesion(String nomU, String contrasena) {
 		return ctrlDominioUsuario.iniciarSesion(nomU, contrasena);
 	}
 	

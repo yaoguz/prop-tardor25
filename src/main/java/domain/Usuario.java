@@ -1,6 +1,4 @@
 package domain;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.ArrayList;
 
 public class Usuario {
@@ -23,9 +21,9 @@ public class Usuario {
     public Usuario(String nomUsuario, String contrasena) {
         this.nomUsuario = nomUsuario;
         this.contrasena = contrasena;
-        idPerfiles = new HashSet<>();
-        idEncuestasCreadas = new HashSet<>();
-        idRespuestas = new HashSet<>();
+        this.idPerfiles = new ArrayList<>();
+        this.idEncuestasCreadas = new ArrayList<>();
+        this.idRespuestas = new ArrayList<>();
     }
 
     /** Metodos publicos**/
@@ -53,7 +51,7 @@ public class Usuario {
      */
     public void newContrasena(String newContrasena) {
         if (this.contrasena.equals(newContrasena)) {
-            
+            throw new IllegalArgumentException("La nueva contrasena no puede ser igual a la anterior.");
         }
         this.contrasena = newContrasena;
     }
@@ -79,14 +77,14 @@ public class Usuario {
      * @param {int} idR - Id de la Respuesta que se desea eliminar.
      */
     public void eliminarIdRespuesta(int idR) {
-        this.idRespuestas.remove(idR); 
+        this.idRespuestas.remove(Integer.valueOf(idR)); 
     }
 
     /**
      * Se obtiene un ArrayList con todas las idEncuestas creadas por el Usuario.
      * @return {ArrayList<Integer>} idEncuestas de las Encuestas creadas por el Usuario.
      */
-    public Set<Integer> getIdEncuestasCreadas() {
+    public ArrayList<Integer> getIdEncuestasCreadas() {
         return idEncuestasCreadas;
     }
 
@@ -103,14 +101,14 @@ public class Usuario {
      * @param {int} idE - Id de la Encuesta que se desea eliminar.
      */
     public void eliminarIdEncuestaCreada(int idE) {
-        this.idEncuestasCreadas.remove(idE);
+        this.idEncuestasCreadas.remove(Integer.valueOf(idE));
     }
 
     /**
      * Se obtiene un ArrayList con todas los idPerfiles del Usuario.
      * @return {ArrayList<Integer>} idPerfiles de los Perfiles del Usuario.
      */
-    public Set<Integer> getIdPerfiles() {
+    public ArrayList<Integer> getIdPerfiles() {
         return idPerfiles;
     }
 

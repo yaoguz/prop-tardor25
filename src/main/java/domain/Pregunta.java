@@ -149,7 +149,7 @@ public abstract class Pregunta {
 	/**
 	 * No hace nada si no es del tipo de subclase correspondiente.
 	 */
-	public void setNumMaxOpc(numMaxOpc) {}
+	public void setNumMaxOpc(int numMaxOpc) {}
 	//rangoInf (de numerica)
 	/**
 	 * Devuelve un -1 si no es del tipo de subclase correspondiente.
@@ -169,11 +169,19 @@ public abstract class Pregunta {
 	}
 	
 	/**
-	 * Devuelve null si no es del tipo de subclase correspondiente.
-	 * @return null
+	 * Devuelve false si no es del tipo de subclase correspondiente.
+	 * @return false por defecto
 	 */
 	public boolean esOrdenada() {
-		return null;
+		return false;
+	}
+
+	/**
+	 * Devuelve -1 si no es del tipo de subclase correspondiente.
+	 * @return un -1.
+	 */
+	public int getCantidad() {
+		return -1;
 	}
 	
 	//Operación abstracta (cada subclase devuelve su tipo)

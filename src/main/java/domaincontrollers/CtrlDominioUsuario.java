@@ -118,15 +118,16 @@ public class CtrlDominioUsuario {
 	 * 
 	 * @param nomU Nombre de usuario
 	 * @param contrasena Contraseña del usuario
-	 * @return true si el inicio de sesión es exitoso
+	 * @return 0 si el inicio de sesión es exitoso, sino devuelve el codigo de error
 	 * @throws IllegalArgumentException si el usuario no existe
 	 * @throws IllegalStateException si la contraseña es incorrecta
 	 * @throws IllegalStateException si ya hay un usuario activo
 	 */
-	public boolean iniciarSesion(String nomU, String contrasena) {
+	public int iniciarSesion(String nomU, String contrasena) {
 		// validar que no hay usuario activo
 		if (usuarioActivo != null) {
-			throw new IllegalStateException("Ya hay un usuario activo: " + usuarioActivo);
+			//throw new IllegalStateException("Ya hay un usuario activo: " + usuarioActivo);
+			return 1;
 		}
 		
 		// validar que el usuario existe
@@ -134,12 +135,13 @@ public class CtrlDominioUsuario {
 		
 		// validar contraseña
 		if (!u.comprobarContrasena(contrasena)) {
-			throw new IllegalStateException("Contraseña incorrecta");
+			//throw new IllegalStateException("Contraseña incorrecta");
+			return 2;
 		}
 		
 		// marcar sesión activa
 		usuarioActivo = u.getNomUsuario();
-		return true;
+		return 0;
 	}
 	
 	/**
@@ -161,12 +163,11 @@ public class CtrlDominioUsuario {
 	/**
 	 * Modifica la contraseña del usuario actualmente en sesión.
 	 * 
-	 * @param nomUsuario Nombre del usuario cuya contraseña se modificará
 	 * @param newContrasena Nueva contraseña
 	 * @throws IllegalStateException si la nueva contraseña es igual a la actual
 	 * @throws IllegalArgumentException si la nueva contraseña no cumple requisitos
 	 */
-	public void modificarContrasena(String nomUsuario, String newContrasena) {
+	public void modificarContrasena(String newContrasena) {
 		if (newContrasena == null || newContrasena.isEmpty()) {
 			throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
 		}
@@ -174,25 +175,20 @@ public class CtrlDominioUsuario {
 			throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres");
 		}
 		
-		Usuario u = getUsuario(nomUsuario);
+		Usuario u = getUsuario(usuarioActivo);
 		u.newContrasena(newContrasena); // puede lanzar exc: newContrasena es igual a la actual
 	}
 
 	/**
-	 * Obtiene los IDs de las encuestas respondidas por un usuario.
+	 * Obtiene los IDs de las encuestas respondidas por el usuario iniciado sesion
 	 * 
-	 * Esta operación pertenece a CtrlDominioUsuario porque el aggregate root es Usuario.
-	 * Representa: "Qué encuestas respondió ESTE usuario".
-	 * 
-	 * @param nomUsuario Nombre del usuario
-	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
-	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
 	 * @return Lista de IDs de encuestas respondidas
 	 */
-	public List<Integer> getEncuestasRespondidas(String nomUsuario,
-	                                               CtrlDominioRespuesta ctrlDominioRespuesta,
-	                                               CtrlDominioPregunta ctrlDominioPregunta) {
-		Usuario u = getUsuario(nomUsuario);
+	public List<Integer> getEncuestasRespondidas(CtrlDominioRespuesta ctrlDominioRespuesta,
+												CtrlDominioPregunta ctrlDominioPregunta) {
+		Usuario u = getUsuario(usuarioActivo);
 		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
 		
 		// set para evitar duplicados (un usuario puede responder multiples preguntas de la misma encuesta)
@@ -201,14 +197,38 @@ public class CtrlDominioUsuario {
 		// por cada respuesta, obtener la pregunta y luego la encuesta
 		for (Integer idR : idRespuestas) {
 			Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
-			int idPregunta = r.getIdPregunta();
-			
-			Pregunta p = ctrlDominioPregunta.getPregunta(idPregunta);
-			int idEncuesta = p.getIdEncuesta();
-			
-			idEncuestas.add(idEncuesta);
+			Pregunta p = ctrlDominioPregunta.getPregunta(r.getIdPregunta());
+			idEncuestas.add(p.getIdEncuesta());
 		}
 		return new ArrayList<>(idEncuestas); // convertir set en un arraylist
+	}
+
+	/**
+	 * Obtiene las respuestas que ha respondido el usuario nomUsuario en la encuesta idEncuesta
+	 * 
+	 * @param nomUsuario Nombre del usuario
+	 * @param idEncuesta ID de la encuesta
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
+	 * @return Lista de las respuestas respondidas por el usuario en esta encuesta
+	 */
+	public List<Respuesta> getRespuestasEncuesta(String nomUsuario, 
+												int idEncuesta, 
+												CtrlDominioRespuesta ctrlDominioRespuesta,
+												CtrlDominioPregunta ctrlDominioPregunta) {
+		Usuario u = getUsuario(nomUsuario);
+		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
+		
+		ArrayList<Respuesta> respuestas = new ArrayList<>();
+										
+		// por cada respuesta, mirar si coincide el idEncuesta
+		for (Integer idR : idRespuestas) {
+			Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
+			Pregunta p = ctrlDominioPregunta.getPregunta(r.getIdPregunta());
+			if (p.getIdEncuesta() == idEncuesta) respuestas.add(r);
+		}
+
+		return respuestas;
 	}
 
 	/**

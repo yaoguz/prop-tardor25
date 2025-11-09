@@ -13,8 +13,7 @@ package domain;
  * - Permitir modificación con validación de tipo
  * - Proporcionar acceso a usuario y pregunta asociados
  * 
- * @author Yaoyao Guo
- * @version 2.0
+ * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public abstract class Respuesta {
 
@@ -23,8 +22,6 @@ public abstract class Respuesta {
     private int id;
     private String nomUsuario;
     private int idPregunta;
-
-    /** Constructora **/
 
     /**
      * Constructora base para todas las respuestas.
@@ -53,7 +50,7 @@ public abstract class Respuesta {
     /** Métodos públicos - Getters **/
     
     /**
-     * Obtiene el ID único de esta respuesta.
+     * Obtiene el ID de esta respuesta.
      * 
      * @return ID de la respuesta
      */
@@ -62,7 +59,7 @@ public abstract class Respuesta {
     }
     
     /**
-     * Obtiene el nombre del usuario que proporcionó esta respuesta.
+     * Obtiene el nombre del usuario que ha respondido esta respuesta.
      * 
      * @return Nombre del usuario
      */
@@ -78,16 +75,14 @@ public abstract class Respuesta {
     public int getIdPregunta() {
         return idPregunta;
     }
-
-    /** Métodos abstractos - Deben ser implementados por subclases **/
     
     /**
      * Obtiene el contenido de la respuesta.
      * El tipo de retorno depende de la subclase:
      * - RespuestaLibre: String
      * - RespuestaNumerica: Double
-     * - RespuestaOpcionUnica: Integer (índice de la opción)
-     * - RespuestaOpcionMultiple: int[] (índices de las opciones)
+     * - RespuestaOpcionUnica: Integer (índice de la opción seleccionada)
+     * - RespuestaOpcionMultiple: int[] (índices de las opciones seleccionadas)
      * 
      * @return Contenido de la respuesta
      */
@@ -103,46 +98,46 @@ public abstract class Respuesta {
     /**
      * Modifica el contenido de la respuesta.
      * 
-     * @param nuevaRespuesta Nuevo contenido de la respuesta
+     * @param nuevaRespuesta La nueva respuesta
      * @throws IllegalArgumentException si el tipo de nuevaRespuesta no es compatible
      */
     public abstract void modificar(Object nuevaRespuesta);
     
     /** Métodos de comparación y representación **/
     
-    /**
-     * Compara esta respuesta con otro objeto.
-     * Dos respuestas son iguales si tienen el mismo ID.
-     * 
-     * @param obj Objeto a comparar
-     * @return true si son iguales, false en caso contrario
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Respuesta other = (Respuesta) obj;
-        return id == other.id;
-    }
+    // /**
+    //  * Compara esta respuesta con otro objeto.
+    //  * Dos respuestas son iguales si tienen el mismo ID.
+    //  * 
+    //  * @param obj Objeto a comparar
+    //  * @return true si son iguales, false en caso contrario
+    //  */
+    // @Override
+    // public boolean equals(Object obj) {
+    //     if (this == obj) return true;
+    //     if (obj == null || getClass() != obj.getClass()) return false;
+    //     Respuesta other = (Respuesta) obj;
+    //     return id == other.id;
+    // }
     
-    /**
-     * Calcula el código hash de esta respuesta.
-     * 
-     * @return Código hash basado en el ID
-     */
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(id);
-    }
+    // /**
+    //  * Calcula el código hash de esta respuesta.
+    //  * 
+    //  * @return Código hash basado en el ID
+    //  */
+    // @Override
+    // public int hashCode() {
+    //     return Integer.hashCode(id);
+    // }
     
-    /**
-     * Representación en String de la respuesta.
-     * 
-     * @return Descripción de la respuesta
-     */
-    @Override
-    public String toString() {
-        return String.format("Respuesta[id=%d, usuario=%s, pregunta=%d, tipo=%s]", 
-                           id, nomUsuario, idPregunta, getTipo());
-    }
+    // /**
+    //  * Representación en String de la respuesta.
+    //  * 
+    //  * @return Descripción de la respuesta
+    //  */
+    // @Override
+    // public String toString() {
+    //     return String.format("Respuesta[id=%d, usuario=%s, pregunta=%d, tipo=%s]", 
+    //                        id, nomUsuario, idPregunta, getTipo());
+    // }
 }

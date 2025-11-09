@@ -27,7 +27,7 @@ public class Encuesta {
         this.idEncuesta = idEncuesta;
         this.titulo = titulo;
         this.creador = creador;   
-        this.IdPreguntas = new ArrayList<>(); //!!!!! cambiarlo por SET por si 
+        this.IdPreguntas = new ArrayList<>();
     }
 
     /** Metodos **/
@@ -91,6 +91,14 @@ public class Encuesta {
      */
     public void cambiarTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    /**
+     * Obtenemos el titulo de una encuesta
+     * @return titulo de la encuesta
+     */
+    public String getTitulo() {
+        return titulo;
     }
 
 

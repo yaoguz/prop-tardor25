@@ -158,7 +158,7 @@ public class CtrlDominioEncuesta {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	private EncuestaImportData parsearFicheroEncuesta(File fichero) {
-		// TODO: Implementar según formato específico ************
+		// TO DO: Implementar según formato específico ************
 		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
 	}
 	
@@ -174,8 +174,7 @@ public class CtrlDominioEncuesta {
 			throw new IllegalArgumentException("El título no puede estar vacío");
 		}
 		Encuesta e = getEncuesta(idEncuesta);
-		e.cambiarTitulo(titulo);
-		// NO persistencia - solo en memoria
+		e.setTitulo(titulo);
 	}
 	
 	/**
