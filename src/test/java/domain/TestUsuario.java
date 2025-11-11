@@ -6,7 +6,9 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.Test;
 
-
+/**
+ * @author Alessandro Jin
+ */
 /**
  * Clase testeadora de Usuario
  */
@@ -56,12 +58,12 @@ public class TestUsuario {
         assertEquals("Nombre obtenido incorrecto", NOMBRE_USUARIO, usuario.getNomUsuario());
     }
 
-    @test
+    @Test
     public void testComprobarContrasenaCorrecta() {
         assertTrue("Contrasena incorrecta", usuario.comprobarContrasena(contrasena));
     }
 
-    @test
+    @Test
     public void testComprobarContrasenaIncorrecta() {
         assertFalse("Contrasena incorrecta pasa", usuario.comprobarContrasena("otraContrasena"));
     }

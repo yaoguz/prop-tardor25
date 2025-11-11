@@ -16,6 +16,10 @@ import classcontroller.CtrlUsuario;
 import persistence.CtrlPersistence;
 import domain.Usuario;
 
+/**
+ * @author Alessandro Jin
+ */
+
 @RunWith(MockitoJUnitRunner.class)
 public class TestCtrlDominioUsuario {
     @Mock

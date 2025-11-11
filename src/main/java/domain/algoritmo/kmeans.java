@@ -7,13 +7,18 @@ import java.util.*;
  * @author Alessandro Jin
  */
 
-public class Kmeans {
+public class Kmeans implements ClusteringAlgorithm {
 
     private static final int MAX_ITERACIONES = 150;
 
     //devolver listado de nombre por grupo
+    @Override
+    public String getNombre() {
+        return "Kmeans"
+    }
     
-    public static Map<Centroide,List<String>> ejecutarClustering(List<List<Respuesta>> respuestas, List<Pregunta> variables, int k) {
+    @Override
+    public Map<Centroide,List<String>> ejecutarClustering(List<List<Respuesta>> respuestas, List<Pregunta> variables, int k) {
         // 1. Inicialización aleatoria de centroides
         List<Cluster> clusters = inicializarClusters(k, respuestas);
         
