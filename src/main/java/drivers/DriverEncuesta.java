@@ -3,21 +3,13 @@ package drivers;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;  
+import java.util.Map; 
 import java.util.Set; 
 import java.util.TreeMap;
 
 
-import domaincontrollers.CtrlDominioUsuario;
-import domaincontrollers.CtrlDominioEncuesta;
-import domaincontrollers.CtrlDominioPregunta;
-import domaincontrollers.CtrlDominioRespuesta;
-import domaincontrollers.CtrlDominioUsuario;
-import domain.Encuesta;
-import domain.Usuario;
-import domain.Pregunta;
-import domain.Respuesta;
+import domaincontrollers.*;
+import domain.*;
 
 /**
  * Driver interactivo para probar CtrlDominioEncuesta.
@@ -51,7 +43,8 @@ public class DriverEncuesta {
         ctrlDominioEncuesta = new CtrlDominioEncuesta();
         scanner = new Scanner(System.in);
 
-        String prueba = ctrlUsuario.registrarUsuario("prueba",  "1", "1");
+    // la contraseña debe tener al menos 6 caracteres (requisito en CtrlDominioUsuario)
+        String prueba = ctrlUsuario.registrarUsuario("prueba",  "123456", "123456");
         int idE = ctrlDominioEncuesta.crearEncuesta("prueba", "E1",ctrlUsuario);
 
 
@@ -193,6 +186,7 @@ public class DriverEncuesta {
         
         System.out.print("Introduzca un id de encuesta: ");
         int idEncuesta= scanner.nextInt();
+        scanner.nextLine();
 
         System.out.print("Introduzca un titulo de encuesta: ");
         String titulo = scanner.nextLine();
@@ -210,6 +204,7 @@ public class DriverEncuesta {
         
         System.out.print("Introduzca un id de encuesta: ");
         int idEncuesta= scanner.nextInt();
+        scanner.nextLine();
 
         try {
             ctrlDominioEncuesta.eliminarEncuesta(idEncuesta,ctrlPregunta, ctrlRespuesta, ctrlUsuario);
@@ -224,6 +219,7 @@ public class DriverEncuesta {
         
         System.out.print("Introduzca un id de encuesta: ");
         int idEncuesta= scanner.nextInt();
+        scanner.nextLine();
 
         try {
             Map<Pregunta, Set<Respuesta>> result = ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta,ctrlRespuesta, ctrlPregunta);
@@ -246,6 +242,7 @@ public class DriverEncuesta {
         
         System.out.print("Introduzca un id de encuesta: ");
         int idEncuesta= scanner.nextInt();
+        scanner.nextLine();
 
         //QUE ES PREGUNTA IMPORT DATA?????
         /*
@@ -263,10 +260,11 @@ public class DriverEncuesta {
     
         System.out.print("Introduzca un id de encuesta: ");
         int idEncuesta= scanner.nextInt();
+        scanner.nextLine();
 
         boolean b = ctrlDominioEncuesta.existeEncuesta(idEncuesta);
         if(b) {
-            System.out.println("Existe una encuesta con id" +idEncuesta);
+            System.out.println("Existe una encuesta con id " +idEncuesta);
         }
         else {
             System.out.println("NO existe encuesta con id " +idEncuesta);
@@ -279,6 +277,7 @@ public class DriverEncuesta {
     
         System.out.print("Introduzca un id de encuesta: ");
         int idEncuesta= scanner.nextInt();
+        scanner.nextLine();
         try {
             Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
             System.out.println("ID de la encuesta: " +e.getIdEncuesta());
