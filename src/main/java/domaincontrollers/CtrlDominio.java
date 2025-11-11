@@ -317,7 +317,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaLibre(int idEncuesta, String enunciado) {
-		return ctrlDominioPregunta.anadirPreguntaLibre(idEncuesta, enunciado, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaLibre(idEncuesta, enunciado, ctrlDominioEncuesta);
 	}
 	
 	/**
@@ -330,7 +330,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaNumerica(int idEncuesta, String enunciado, double min, double max) {
-		return ctrlDominioPregunta.anadirPreguntaNumerica(idEncuesta, enunciado, min, max, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaNumerica(idEncuesta, enunciado, (int)min, (int)max, ctrlDominioEncuesta);
 	}
 	
 	/**
@@ -342,7 +342,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones) {
-		return ctrlDominioPregunta.anadirPreguntaOpcionUnica(idEncuesta, enunciado, opciones, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaOpcionUnica(idEncuesta, enunciado, opciones, false, ctrlDominioEncuesta);
 	}
 	
 	/**
@@ -354,7 +354,9 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones) {
-		return ctrlDominioPregunta.anadirPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, ctrlDominioEncuesta);
+		// usar numMaxOpc = tamano de opciones como valor por defecto
+		int numMaxOpc = (opciones != null) ? opciones.size() : 10;
+		return ctrlDominioPregunta.crearPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMaxOpc, ctrlDominioEncuesta);
 	}
 	
 	/**

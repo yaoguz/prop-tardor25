@@ -78,7 +78,7 @@ public class CtrlDominioEncuesta {
 	}
 	
 	/**
-	 * Crea una nueva encuesta.
+	 * Crea una nueva encuesta (aún sin preguntas).
 	 * 
 	 * @param nomUsuario Nombre del usuario creador
 	 * @param titulo Título de la encuesta
@@ -135,7 +135,7 @@ public class CtrlDominioEncuesta {
 	/**
 	 * Clase auxiliar para datos importados de encuesta.
 	 */
-	private static class EncuestaImportData {
+	public static class EncuestaImportData {
 		String titulo;
 		String nomAutor;
 		List<PreguntaImportData> preguntas;
@@ -174,7 +174,7 @@ public class CtrlDominioEncuesta {
 			throw new IllegalArgumentException("El título no puede estar vacío");
 		}
 		Encuesta e = getEncuesta(idEncuesta);
-		e.setTitulo(titulo);
+		e.cambiarTitulo(titulo);
 	}
 	
 	/**
@@ -251,7 +251,7 @@ public class CtrlDominioEncuesta {
 	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
 	 * @return ID de la pregunta creada
 	 */
-	private int anadirPregunta(int idEncuesta, PreguntaImportData infoP,
+	public int anadirPregunta(int idEncuesta, PreguntaImportData infoP,
 	                            CtrlDominioPregunta ctrlDominioPregunta) {
 		Encuesta e = getEncuesta(idEncuesta);
 		
@@ -260,9 +260,19 @@ public class CtrlDominioEncuesta {
                   infoP.tipo, infoP.atributosEspecificos, this);
 
 		e.guardarPregunta(idP);
-		// NO persistencia - solo en memoria
 		return idP;
 	}
+
+		// // pregunta numerica
+        // PreguntaImportData infoP1 = new PreguntaImportData();
+        // infoP1.enunciado = "¿Cuántas horas a la semana haces deporte?";
+        // infoP1.tipo = "numerica";
+        // infoP1.atributosEspecificos = new HashMap<>();
+        // infoP1.atributosEspecificos.put("min", 0);
+        // infoP1.atributosEspecificos.put("max", 40);
+        // int idP1 = ctrlEncuesta.anadirPregunta(idEncuesta1, infoP1, ctrlPregunta);
+
+
 	
 	/**
 	 * Obtiene todas las encuestas almacenadas en memoria.

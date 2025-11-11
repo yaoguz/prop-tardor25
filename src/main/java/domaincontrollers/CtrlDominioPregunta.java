@@ -117,18 +117,29 @@ public class CtrlDominioPregunta {
 	 * 
 	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
 	 * @param enunciado el enunciado de la pregunta
+	 * @param opciones lista de opciones disponibles (puede ser null o vacía)
+	 * @param numMaxOpc número máximo de opciones que se pueden seleccionar
 	 * @param ctrlDominioEncuesta controlador de encuestas (inyección por parámetros)
 	 * @return idPregunta de la pregunta creada
 	 * @throws IllegalArgumentException si el enunciado está vacío o es null
 	 */
-	public int crearPreguntaOpcionMultiple(int idEncuesta, String enunciado,
+	public int crearPreguntaOpcionMultiple(int idEncuesta, String enunciado, 
+	                                        List<String> opciones, int numMaxOpc,
 	                                        CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
 		int idPregunta = nextId;
 		nextId++;
-		Pregunta p = new PreguntaOpcionMultiple(idEncuesta, idPregunta, enunciado);
+		PreguntaOpcionMultiple p = new PreguntaOpcionMultiple(idEncuesta, idPregunta, enunciado);
+		
+		// anadir opciones
+		if (opciones != null) {
+			for (String opcion : opciones) {
+				p.addOpcion(opcion);
+			}
+		}
+		p.setNumMaxOpc(numMaxOpc);
+		
 		preguntas.put(idPregunta, p);
 		
-		// Actualizar encuesta (NO persistencia - solo memoria)
 		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
 		e.guardarPregunta(idPregunta);
 		
@@ -140,19 +151,28 @@ public class CtrlDominioPregunta {
 	 * 
 	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
 	 * @param enunciado el enunciado de la pregunta
+	 * @param opciones lista de opciones disponibles (puede ser null o vacía)
 	 * @param ordenada indica si la pregunta es ordenada
 	 * @param ctrlDominioEncuesta controlador de encuestas (inyección por parámetros)
 	 * @return idPregunta de la pregunta creada
 	 * @throws IllegalArgumentException si el enunciado está vacío o es null
 	 */
-	public int crearPreguntaOpcionUnica(int idEncuesta, String enunciado, boolean ordenada,
+	public int crearPreguntaOpcionUnica(int idEncuesta, String enunciado, 
+	                                     List<String> opciones, boolean ordenada,
 	                                     CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
 		int idPregunta = nextId;
 		nextId++;
-		Pregunta p = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, ordenada);
+		PreguntaOpcionUnica p = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, ordenada);
+		
+		// Añadir opciones usando addOpcion() (aprovecha validación existente)
+		if (opciones != null) {
+			for (String opcion : opciones) {
+				p.addOpcion(opcion);
+			}
+		}
+		
 		preguntas.put(idPregunta, p);
 		
-		// Actualizar encuesta (NO persistencia - solo memoria)
 		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
 		e.guardarPregunta(idPregunta);
 		
@@ -202,63 +222,6 @@ public class CtrlDominioPregunta {
 	}
 	
 	/**
-	 * Añade una pregunta libre a una encuesta (método simplificado para CtrlDominio).
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @param enunciado Enunciado de la pregunta
-	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
-	 * @return ID de la pregunta creada
-	 */
-	public int anadirPreguntaLibre(int idEncuesta, String enunciado,
-	                                CtrlDominioEncuesta ctrlDominioEncuesta) {
-		return crearPreguntaLibre(idEncuesta, enunciado, ctrlDominioEncuesta);
-	}
-	
-	/**
-	 * Añade una pregunta numérica a una encuesta (método simplificado para CtrlDominio).
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @param enunciado Enunciado de la pregunta
-	 * @param min Valor mínimo permitido
-	 * @param max Valor máximo permitido
-	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
-	 * @return ID de la pregunta creada
-	 */
-	public int anadirPreguntaNumerica(int idEncuesta, String enunciado, double min, double max,
-	                                   CtrlDominioEncuesta ctrlDominioEncuesta) {
-		return crearPreguntaNumerica(idEncuesta, enunciado, (int)min, (int)max, ctrlDominioEncuesta);
-	}
-	
-	/**
-	 * Añade una pregunta de opción única a una encuesta (método simplificado para CtrlDominio).
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @param enunciado Enunciado de la pregunta
-	 * @param opciones Lista de opciones disponibles
-	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
-	 * @return ID de la pregunta creada
-	 */
-	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones,
-	                                      CtrlDominioEncuesta ctrlDominioEncuesta) {
-		// Por ahora, asumimos que no es ordenada (se puede añadir parámetro si es necesario)
-		return crearPreguntaOpcionUnica(idEncuesta, enunciado, false, ctrlDominioEncuesta);
-	}
-	
-	/**
-	 * Añade una pregunta de opción múltiple a una encuesta (método simplificado para CtrlDominio).
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @param enunciado Enunciado de la pregunta
-	 * @param opciones Lista de opciones disponibles
-	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencias)
-	 * @return ID de la pregunta creada
-	 */
-	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones,
-	                                         CtrlDominioEncuesta ctrlDominioEncuesta) {
-		return crearPreguntaOpcionMultiple(idEncuesta, enunciado, ctrlDominioEncuesta);
-	}
-	
-	/**
 	 * Crea una pregunta genérica a partir de PreguntaImportData (para importación).
 	 * Usado por CtrlDominioEncuesta.importarEncuesta().
 	 * 
@@ -280,12 +243,23 @@ public class CtrlDominioPregunta {
 				int max = (int) atributosEspecificos.get("max");
 				return crearPreguntaNumerica(idEncuesta, enunciado, min, max, ctrlDominioEncuesta);
 			case "opcion_unica":
+				List<String> opcionesOU = atributosEspecificos.containsKey("opciones")
+				                          ? (List<String>) atributosEspecificos.get("opciones")
+				                          : null;
 				boolean ordenada = atributosEspecificos.containsKey("ordenada") 
 				                   ? (boolean) atributosEspecificos.get("ordenada") 
 				                   : false;
-				return crearPreguntaOpcionUnica(idEncuesta, enunciado, ordenada, ctrlDominioEncuesta);
+				return crearPreguntaOpcionUnica(idEncuesta, enunciado, opcionesOU, ordenada, ctrlDominioEncuesta);
+				
 			case "opcion_multiple":
-				return crearPreguntaOpcionMultiple(idEncuesta, enunciado, ctrlDominioEncuesta);
+				List<String> opcionesOM = atributosEspecificos.containsKey("opciones")
+				                          ? (List<String>) atributosEspecificos.get("opciones")
+				                          : null;
+				int numMaxOpc = atributosEspecificos.containsKey("numMaxOpc")
+				                ? (int) atributosEspecificos.get("numMaxOpc")
+				                : 10; // valor por defecto
+				return crearPreguntaOpcionMultiple(idEncuesta, enunciado, opcionesOM, numMaxOpc, ctrlDominioEncuesta);
+				
 			default:
 				throw new IllegalArgumentException("Tipo de pregunta desconocido: " + tipo);
 		}

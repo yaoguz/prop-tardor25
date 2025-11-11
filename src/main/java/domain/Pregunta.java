@@ -79,6 +79,7 @@ public abstract class Pregunta {
 		return this.idRespuestas;
 	}
 
+	// antes era addRespuesta
 	/**
 	 * Añade un identificador de respuesta a la lista de respuestas.
 	 * @param r el identificador de la respuesta a añadir.
@@ -86,14 +87,8 @@ public abstract class Pregunta {
 	public void guardarIdRespuesta(int r) {
 		this.idRespuestas.add(r);
 	}
-	
-	/**
-	 * @deprecated Use guardarIdRespuesta instead
-	 */
-	public void addRespuesta(Integer r) {
-		guardarIdRespuesta(r);
-	}
 
+	// antes era eliminarRespuesta
 	/**
 	 * Elimina un identificador de respuesta de la lista de respuestas.
 	 * @param r el identificador de la respuesta a eliminar.
@@ -101,13 +96,6 @@ public abstract class Pregunta {
 	public void eliminarIdRespuesta(int r) throws IllegalArgumentException {
 		boolean b = this.idRespuestas.remove(Integer.valueOf(r));
 		if(!b) throw new IllegalArgumentException("La pregunta no tiene la respuesta del parámetro");
-	}
-	
-	/**
-	 * @deprecated Use eliminarIdRespuesta instead
-	 */
-	public void eliminarRespuesta(Integer r) throws IllegalArgumentException {
-		eliminarIdRespuesta(r);
 	}
 	
 	/**
