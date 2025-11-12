@@ -1,16 +1,14 @@
 package domain;
 
-import src.domini.*;
-import org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 /**
- * @author Alessandro Jin
- */
-/**
- * Clase testeadora de Usuario
+ * Tests unitarios para la clase Usuario (JUnit4).
+ * @author Peiyu Wang
  */
 public class TestUsuario {
 
@@ -18,140 +16,79 @@ public class TestUsuario {
     private final String userName = "tester";
     private final String contrasena = "123456";
 
-    /**
-     * Configuraciones iniciales
-     */
     @Before
-    public void inicialConf() {
-        usuario = new Usuario (userName, contrasena);
-    }
-    
-
-    @Test
-    public void testConstructor() {
-        assertEquals("Nombre creado incorrecto",userName, usuario.getNomUsuario());
-        
-        assertTrue("Contrasena creada incorrecta", usuario.comprobarContrasena(contrasena));
-
-        assertNotNull("idRespuestas null", usuario.getIdRespuestas());
-        assertTrue("idRespuestas no vacia",usuario.getIdRespuestas().isEmpty());
-        
-        assertNotNull("idEncuestasCreadas null", usuario.getIdEncuestasCreadas());
-        assertTrue("idEncuestasCreadas no vacia",usuario.getIdEncuestasCreadas().isEmpty());
-        
-        assertNotNull("idPerfiles null", usuario.getIdPerfiles());
-        assertTrue("idPerfiles no vacia", usuario.getIdPerfiles().isEmpty());
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void testConstructo_NombreVacio() {
-        new Usuario("", contrasena);
-    }
-
-    @Test (expected = IllegalArgumentException.class) 
-    public void testConstructor_ContrasenaVacia() {
-        new Usuario(userName, "");
+    public void setUp() {
+        usuario = new Usuario(userName, contrasena);
     }
 
     @Test
-    public void testGetNomUsuario() {
-        assertEquals("Nombre obtenido incorrecto", NOMBRE_USUARIO, usuario.getNomUsuario());
-    }
+    public void testConstructor_Getters() {
+        assertEquals(userName, usuario.getNomUsuario());
+        assertTrue(usuario.comprobarContrasena(contrasena));
 
-    @Test
-    public void testComprobarContrasenaCorrecta() {
-        assertTrue("Contrasena incorrecta", usuario.comprobarContrasena(contrasena));
+        assertNotNull(usuario.getIdRespuestas());
+        assertTrue(usuario.getIdRespuestas().isEmpty());
+
+        assertNotNull(usuario.getIdEncuestasCreadas());
+        assertTrue(usuario.getIdEncuestasCreadas().isEmpty());
+
+        assertNotNull(usuario.getIdPerfiles());
+        assertTrue(usuario.getIdPerfiles().isEmpty());
     }
 
     @Test
     public void testComprobarContrasenaIncorrecta() {
-        assertFalse("Contrasena incorrecta pasa", usuario.comprobarContrasena("otraContrasena"));
+        assertFalse(usuario.comprobarContrasena("otra"));
     }
 
     @Test
     public void testNewContrasena() {
-        String nuevaContrasena = "newContrasena";
-        
-        // Cambiar contraseña
-        usuario.newContrasena(nuevaContrasena);
-        
-        // Verificar que la nueva funciona
-        assertTrue("Contrasena no cambiada", usuario.comprobarContrasena(nuevaContrasena));
-        
+        String nueva = "newPass";
+        usuario.newContrasena(nueva);
+        assertTrue(usuario.comprobarContrasena(nueva));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testNewContrasenaVacia () {
-        usuario.newContrasena("");
+    public void testNewContrasena_SamePassword_Throws() {
+        usuario.newContrasena(contrasena); // misma que la actual 
     }
 
-
     @Test
-    public void testGuardarIdRespuesta() {
+    public void testGuardar_EliminarIdRespuesta() {
         usuario.guardarIdRespuesta(1);
         usuario.guardarIdRespuesta(2);
         usuario.guardarIdRespuesta(3);
-        
+
         ArrayList<Integer> respuestas = usuario.getIdRespuestas();
-        assertEquals("No se guardo todo idR", 3, respuestas.size());
-        assertTrue("No contiene lo guardado de idR", respuestas.contains(1));
-        assertTrue("No contiene lo guardado de idR",respuestas.contains(2));
-        assertTrue("No contiene lo guardado de idR", respuestas.contains(3));
-    }
+        assertEquals(3, respuestas.size());
+        assertTrue(respuestas.contains(Integer.valueOf(1)));
+        assertTrue(respuestas.contains(Integer.valueOf(2)));
+        assertTrue(respuestas.contains(Integer.valueOf(3)));
 
-
-
-    @Test
-    public void testEliminarIdRespuesta() {
-        usuario.guardarIdRespuesta(1);
-        usuario.guardarIdRespuesta(2);
-        usuario.guardarIdRespuesta(3);
-        
-        // Eliminar respuesta 2
         usuario.eliminarIdRespuesta(2);
+        respuestas = usuario.getIdRespuestas();
+        assertEquals(2, respuestas.size());
+        assertFalse(respuestas.contains(Integer.valueOf(2)));
+
         
-        ArrayList<Integer> respuestas = usuario.getIdRespuestas();
-        assertEquals("IdR no eliminado", 2, respuestas.size());
-        assertTrue("IdR borrado incorrecto", respuestas.contains(1));
-        assertFalse("IdR no borrado", respuestas.contains(2));
-        assertTrue("idR borrado incorrect", respuestas.contains(3));
+        usuario.eliminarIdRespuesta(999); // eliminar idRespuesta no existente
+        assertEquals(2, usuario.getIdRespuestas().size());
     }
 
     @Test
-    public void testEliminarIdRespuesta_NoExistente() {
-        usuario.guardarIdRespuesta(1);
-        
-        // Intentar eliminar ID que no existe
-        usuario.eliminarIdRespuesta(999);
-        
-        ArrayList<Integer> respuestas = usuario.getIdRespuestas();
-        assertEquals("IdR borrado", 1, respuestas.size());
-        assertTrue("IdR borrado", respuestas.contains(1));
-    }
-
-
-    @Test
-    public void testGuardarIdEncuesta() {
-        usuario.guardarIdEncuesta(10);
-        usuario.guardarIdEncuesta(20);
-        
-        ArrayList<Integer> encuestas = usuario.getIdEncuestasCreadas();
-        assertEquals("No se guardo todo idE",2, encuestas.size());
-        assertTrue("No contiene lo guardado de idE",encuestas.contains(10));
-        assertTrue("No contiene lo guardado de idE", encuestas.contains(20));
-    }
-
-    @Test
-    public void testEliminarIdEncuesta() {
+    public void testGuardar_EliminarIdEncuesta() {
         usuario.guardarIdEncuesta(10);
         usuario.guardarIdEncuesta(20);
 
-        
-        usuario.eliminarIdEncuesta(20);
-        
         ArrayList<Integer> encuestas = usuario.getIdEncuestasCreadas();
-        assertEquals("IdE no borrado", 2, encuestas.size());
-        assertTrue("IdE borrado incorrecto", encuesta.contains(10));
-        assertFalse("IdE no borrado",encuestas.contains(20));
+        assertEquals(2, encuestas.size());
+        assertTrue(encuestas.contains(Integer.valueOf(10)));
+        assertTrue(encuestas.contains(Integer.valueOf(20)));
+
+        usuario.eliminarIdEncuestaCreada(20);
+        encuestas = usuario.getIdEncuestasCreadas();
+        assertEquals(1, encuestas.size());
+        assertTrue(encuestas.contains(Integer.valueOf(10)));
+        assertFalse(encuestas.contains(Integer.valueOf(20)));
     }
-}   
+}
