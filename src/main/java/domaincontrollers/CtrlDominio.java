@@ -121,12 +121,11 @@ public class CtrlDominio {
 	 * 
 	 * @param nomU Nombre de usuario
 	 * @param contrasena Contraseña del usuario
-	 * @return true si el inicio de sesión es exitoso
 	 * @throws IllegalArgumentException si el usuario no existe
 	 * @throws IllegalStateException si la contraseña es incorrecta
 	 */
-	public int iniciarSesion(String nomU, String contrasena) {
-		return ctrlDominioUsuario.iniciarSesion(nomU, contrasena);
+	public void iniciarSesion(String nomU, String contrasena) {
+		ctrlDominioUsuario.iniciarSesion(nomU, contrasena);
 	}
 	
 	/**
@@ -137,20 +136,18 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si la nueva contraseña es igual a la actual
 	 * @throws IllegalArgumentException si la nueva contraseña no cumple requisitos
 	 */
-	public void modificarContrasena(String nomUsuario, String newContrasena) {
-		ctrlDominioUsuario.modificarContrasena(nomUsuario, newContrasena);
+	public void modificarContrasena(String newContrasena) {
+		ctrlDominioUsuario.modificarContrasena(newContrasena);
 	}
 
 	/**
-	 * Obtiene los IDs de las encuestas respondidas por un usuario.
+	 * Obtiene los IDs de las encuestas respondidas por el usuario actualmente en sesión.
 	 * 
-	 * @param nomUsuario Nombre del usuario
 	 * @return Lista de IDs de encuestas respondidas
 	 */
-	public List<Integer> getEncuestasRespondidas(String nomUsuario) {
-		return ctrlDominioUsuario.getEncuestasRespondidas(nomUsuario, 
-		                                                   ctrlDominioRespuesta, 
-		                                                   ctrlDominioPregunta);
+	public List<Integer> getEncuestasRespondidas() {
+		return ctrlDominioUsuario.getEncuestasRespondidas(ctrlDominioRespuesta, 
+		                                                  ctrlDominioPregunta);
 	}
 
 	/**

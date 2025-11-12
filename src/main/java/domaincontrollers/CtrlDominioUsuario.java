@@ -118,30 +118,24 @@ public class CtrlDominioUsuario {
 	 * 
 	 * @param nomU Nombre de usuario
 	 * @param contrasena Contraseña del usuario
-	 * @return 0 si el inicio de sesión es exitoso, sino devuelve el codigo de error
 	 * @throws IllegalArgumentException si el usuario no existe
 	 * @throws IllegalStateException si la contraseña es incorrecta
 	 * @throws IllegalStateException si ya hay un usuario activo
 	 */
-	public int iniciarSesion(String nomU, String contrasena) {
-		// validar que no hay usuario activo
-		if (usuarioActivo != null) {
-			//throw new IllegalStateException("Ya hay un usuario activo: " + usuarioActivo);
-			return 1;
-		}
+	public void iniciarSesion(String nomU, String contrasena) {
+		// comprobar que no hay usuario activo
+		if (usuarioActivo != null)
+			throw new IllegalStateException("Ya hay un usuario activo: " + usuarioActivo);
 		
 		// validar que el usuario existe
 		Usuario u = getUsuario(nomU);  // lanza exc si no existe
 		
 		// validar contraseña
-		if (!u.comprobarContrasena(contrasena)) {
-			//throw new IllegalStateException("Contraseña incorrecta");
-			return 2;
-		}
+		if (!u.comprobarContrasena(contrasena))
+			throw new IllegalStateException("Contraseña incorrecta");
 		
 		// marcar sesión activa
 		usuarioActivo = u.getNomUsuario();
-		return 0;
 	}
 	
 	/**
