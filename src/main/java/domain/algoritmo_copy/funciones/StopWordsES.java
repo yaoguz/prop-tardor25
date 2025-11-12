@@ -1,4 +1,4 @@
-package domain.algoritmo;
+package domain.algoritmo.funciones;
 
 import java.util.Set;
 import java.util.HashSet;

@@ -1,9 +1,10 @@
-package domain.clustering_ejemplo;
+package domain.algoritmo;
 
 import java.util.List;
 import java.util.Map;
 
 import domain.Respuesta;
+import domain.algoritmo.estructuras.Centroide;
 
 /**
  * Interfaz para algoritmos de clustering.

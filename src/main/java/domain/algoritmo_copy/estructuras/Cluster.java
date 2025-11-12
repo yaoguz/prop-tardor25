@@ -1,8 +1,7 @@
-package domain.algoritmo;
+package domain.algoritmo.estructuras;
 
 import java.util.List;
 import java.util.ArrayList;
-import domain.*;
 
 /**
  * @author Alessandro Jin

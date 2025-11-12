@@ -1,6 +1,7 @@
 package domaincontrollers;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -273,6 +274,55 @@ public class CtrlDominioEncuesta {
         // int idP1 = ctrlEncuesta.anadirPregunta(idEncuesta1, infoP1, ctrlPregunta);
 
 
+	
+	/**
+	 * Obtiene las respuestas de todos los usuarios que han respondido una encuesta.
+	 * Formato requerido para algoritmos de clustering: matriz M x N donde:
+	 * - M = numero de usuarios que han respondido
+	 * - N = numero de preguntas de la encuesta
+	 * - Las preguntas no respondidas se representan con null
+	 * 
+	 * El algoritmo de clustering ignora los valores nulos en los calculos.
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
+	 * @return List<List<Respuesta>> donde cada sublista es un usuario con sus respuestas ordenadas por pregunta
+	 */
+	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta,
+	                                CtrlDominioRespuesta ctrlDominioRespuesta,
+	                                CtrlDominioPregunta ctrlDominioPregunta) {
+		Encuesta e = getEncuesta(idEncuesta);
+		List<Integer> idPreguntas = e.getIdPreguntas();
+		Map<String, Map<Integer, Respuesta>> respuestasPorUsuario = new HashMap<>();
+		
+		for (Integer idP : idPreguntas) {
+			Pregunta p = ctrlDominioPregunta.getPregunta(idP);
+			List<Integer> idRespuestas = p.getIdRespuestas();
+			
+			for (Integer idR : idRespuestas) {
+				Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
+				String usuario = r.getNomUsuario();
+				
+				respuestasPorUsuario.putIfAbsent(usuario, new HashMap<>());
+				respuestasPorUsuario.get(usuario).put(idP, r);
+			}
+		}
+		
+		// convertir a matriz List<List<Respuesta>>
+		List<List<Respuesta>> matriz = new ArrayList<>();
+		
+		for (Map<Integer, Respuesta> respuestasUsuario : respuestasPorUsuario.values()) {
+			List<Respuesta> filaUsuario = new ArrayList<>();
+			for (Integer idP : idPreguntas) { // respuestas ordenadas segun id de preguntas
+				Respuesta r = respuestasUsuario.get(idP);
+				filaUsuario.add(r); // puede ser nulo (pregunta no respondida)
+			}
+			matriz.add(filaUsuario);
+		}
+		
+		return matriz;
+	}
 	
 	/**
 	 * Obtiene todas las encuestas almacenadas en memoria.

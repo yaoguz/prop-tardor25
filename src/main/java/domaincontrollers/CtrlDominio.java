@@ -291,7 +291,7 @@ public class CtrlDominio {
 	}
 	
 	/**
-	 * Obtiene todas las respuestas de una encuesta organizadas por pregunta.
+	 * Obtiene las respuestas de todos los usuarios que han respondido una encuesta.
 	 * 
 	 * NOTA: Solo el autor de la encuesta debería tener acceso (validación en capa de presentación).
 	 * 
@@ -301,6 +301,19 @@ public class CtrlDominio {
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
 		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta, ctrlDominioRespuesta, 
 		                                                   ctrlDominioPregunta);
+	}
+
+	/**
+	 * Obtiene las respuestas de una encuesta en formato matriz para clustering.
+	 * Formato: List<List<Respuesta>> donde cada sublista es un usuario con sus respuestas ordenadas.
+	 * Las respuestas no contestadas se representan con null.
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @return Matriz M x N (M usuarios, N preguntas)
+	 */
+	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta) {
+		return ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta, ctrlDominioRespuesta, 
+		                                                         ctrlDominioPregunta);
 	}
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================

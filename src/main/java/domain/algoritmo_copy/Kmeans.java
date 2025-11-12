@@ -2,6 +2,8 @@ package domain.algoritmo;
 
 import domain.*;
 import java.util.*;
+import domain.algoritmo.estructuras.*;
+import domain.algoritmo.funciones.*;
 
 /**
  * @author Alessandro Jin
@@ -10,15 +12,20 @@ import java.util.*;
 public class Kmeans implements ClusteringAlgorithm {
 
     private static final int MAX_ITERACIONES = 150;
+    private List<Pregunta> variables;
+    
+    public Kmeans(List<Pregunta> variables) {
+        this.variables = variables;
+    }
 
     //devolver listado de nombre por grupo
     @Override
     public String getNombre() {
-        return "Kmeans"
+        return "Kmeans";
     }
     
     @Override
-    public Map<Centroide,List<String>> ejecutarClustering(List<List<Respuesta>> respuestas, List<Pregunta> variables, int k) {
+    public Map<Centroide,List<String>> ejecutarClustering(List<List<Respuesta>> respuestas, int k) {
         // 1. Inicialización aleatoria de centroides
         List<Cluster> clusters = inicializarClusters(k, respuestas);
         

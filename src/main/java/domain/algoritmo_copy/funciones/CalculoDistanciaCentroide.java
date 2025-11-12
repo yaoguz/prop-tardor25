@@ -1,8 +1,9 @@
-package domain.algoritmo;
+package domain.algoritmo.funciones;
 
 import java.util.List;
 import java.util.ArrayList;
 import domain.*;
+import domain.algoritmo.estructuras.*;
 
 /**
  * @author Alessandro Jin
@@ -17,13 +18,19 @@ public class CalculoDistanciaCentroide {
         int N = variables.size();
 
         double sumaDistanciaLocales = 0.0;
+        int contadorValidas = 0;
 
         //distancia local de cada variable
         for (int i = 0; i < N; ++i) {
-            sumaDistanciaLocales += calcularDistanciaLocal(p.get(i), centro.getComponente(i), variables.get(i));
+            Respuesta r = p.get(i);
+            if (r != null) {
+                sumaDistanciaLocales += calcularDistanciaLocal(r, centro.getComponente(i), variables.get(i));
+                contadorValidas++;
+            }
+            // si r es null, ignoramos esa variable en el calculo
         }
 
-        return sumaDistanciaLocales/N; //distancia global
+        return (contadorValidas > 0) ? sumaDistanciaLocales/contadorValidas : 0.0; // distancia global
 
     }
 
@@ -41,7 +48,7 @@ public class CalculoDistanciaCentroide {
         }
 
         else if (r instanceof RespuestaLibre && comp instanceof ComponenteLibre && variable instanceof PreguntaLibre) {
-            return distanciaLocalLibre((RespuestaLibre) r, (ComponenteLibre) comp, (PreguntaLibre) variable);
+            return distanciaLocalLibre((RespuestaLibre) r, (ComponenteLibre) comp);
         }
 
         //incompatibles
@@ -93,7 +100,11 @@ public class CalculoDistanciaCentroide {
     }
 
     private static double distanciaLocalOpcionMultiple(RespuestaOpcionMultiple r, ComponenteMultiple comp, PreguntaOpcionMultiple variable) {
-        List<Integer> indices1 = new ArrayList<>(r.getRespuesta());
+        int[] indices1Array = r.getRespuesta();
+        List<Integer> indices1 = new ArrayList<>();
+        for (int i : indices1Array) {
+            indices1.add(i);
+        }
         List<Integer> indices2 = new ArrayList<>(comp.getIndices());
 
         List<Integer> inter = new ArrayList<>(indices1);

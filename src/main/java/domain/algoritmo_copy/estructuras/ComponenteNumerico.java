@@ -1,0 +1,16 @@
+package domain.algoritmo.estructuras;
+
+/**
+ * Componente numerico del centroide.
+ */
+public class ComponenteNumerico extends ComponenteCentroide {
+    private final double valor;
+    
+    public ComponenteNumerico(double valor) {
+        this.valor = valor;
+    }
+    
+    public double getValor() {
+        return valor;
+    }
+}
