@@ -40,8 +40,10 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	/**
 	 * Añade una opción al conjunto de opciones ded la pregunta.
 	 * @param opcion el texto de la opción a añadir.
+	 * @throws IllegalArgumentException si la opción es vacía o es null.
 	 */
-	public void addOpcion(String opcion){
+	public void addOpcion(String opcion) throws IllegalArgumentException {
+		if(opcion == null || opcion == "") throw new IllegalArgumentException("opción no válida");
 		this.opciones.add(opcion);
 	}
 	
@@ -64,7 +66,8 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	/**
 	 * Asigna el número máximo de opciones seleccionables para esta pregunta.
 	 */
-	@Override public void setNumMaxOpc(int numMaxOpc) {
+	@Override public void setNumMaxOpc(int numMaxOpc) throws IllegalArgumentException {
+		if(numMaxOpc < 2 || numMaxOpc > opciones.size()) throw new IllegalArgumentException("número máximo de opciones menor a 2 o mayor que el número de opciones");
 		this.numMaxOpc = numMaxOpc;
 	}
 

@@ -257,7 +257,7 @@ public class CtrlDominioPregunta {
 				                          : null;
 				int numMaxOpc = atributosEspecificos.containsKey("numMaxOpc")
 				                ? (int) atributosEspecificos.get("numMaxOpc")
-				                : 10; // valor por defecto
+				                : 2; // valor por defecto
 				return crearPreguntaOpcionMultiple(idEncuesta, enunciado, opcionesOM, numMaxOpc, ctrlDominioEncuesta);
 				
 			default:
@@ -284,6 +284,8 @@ public class CtrlDominioPregunta {
 		// obtener pregunta actual para saber su encuesta
 		Pregunta pVieja = getPregunta(idPregunta);
 		int idEncuesta = pVieja.getIdEncuesta();
+		//infoP.tipo = pVieja.tipoPregunta();
+		//if(infoP.tipo.contains("OpcionUnica")) infoP.tipo = "OpcionUnica";
 		
 		// eliminar pregunta antigua (y sus respuestas)
 		eliminarPregunta(idPregunta, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
