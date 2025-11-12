@@ -61,16 +61,21 @@ public class PreguntaNumerica extends Pregunta {
 	}
 	
 	/**
-	 * Factory method: Crea una RespuestaNumerica.
+	 * Factory method: Crea una RespuestaNumerica validando el rango.
 	 * 
 	 * @param <T> Tipo de la respuesta (debe ser Double)
 	 * @param idRespuesta ID único de la respuesta
 	 * @param nomUsuario Nombre del usuario que responde
 	 * @param respuesta Contenido de la respuesta (Double)
 	 * @return RespuestaNumerica creada
+	 * @throws IllegalArgumentException si el valor está fuera del rango [rangoInf, rangoSup]
 	 */
 	@Override
 	public <T> Respuesta crearRespuesta(int idRespuesta, String nomUsuario, T respuesta) {
-		return new RespuestaNumerica(idRespuesta, nomUsuario, getIdPregunta(), (Double) respuesta);
+		double valor = (Double) respuesta;
+		if (valor < rangoInf || valor > rangoSup) {
+			throw new IllegalArgumentException("Valor " + valor + " fuera de rango [" + rangoInf + ", " + rangoSup + "]");
+		}
+		return new RespuestaNumerica(idRespuesta, nomUsuario, getIdPregunta(), valor);
 	}
 }

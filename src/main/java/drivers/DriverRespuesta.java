@@ -8,8 +8,6 @@ import java.util.TreeMap;
 import domain.*;
 import domaincontrollers.*;
 
-// pnd: documentación
-
 /**
  * Driver interactivo para probar CtrlDominioRespuesta.
  * Prueba creación, modificación, eliminación y consulta de respuestas.
@@ -18,18 +16,25 @@ import domaincontrollers.*;
  */
 public class DriverRespuesta {
     
+    /** Controladores */
     private static CtrlDominioRespuesta ctrlRespuesta;
     private static CtrlDominioUsuario ctrlUsuario;
     private static CtrlDominioPregunta ctrlPregunta;
     private static CtrlDominioEncuesta ctrlEncuesta;
+    
+    /** Scanner para entrada de usuario */
     private static Scanner scanner;
     
+    /** IDs de prueba */
     private static int idEncuesta;
     private static int idPreguntaNumerica;
     private static int idPreguntaOpcionUnica;
     private static int idPreguntaOpcionMultiple;
     private static int idPreguntaLibre;
     
+    /**
+     * Punto de entrada del driver.
+     */
     public static void main(String[] args) {
         inicializarControladores();
         crearDatosDePrueba();
@@ -94,6 +99,9 @@ public class DriverRespuesta {
         scanner.close();
     }
     
+    /**
+     * Inicializa los controladores.
+     */
     private static void inicializarControladores() {
         ctrlRespuesta = new CtrlDominioRespuesta();
         ctrlUsuario = new CtrlDominioUsuario();
@@ -101,6 +109,9 @@ public class DriverRespuesta {
         ctrlEncuesta = new CtrlDominioEncuesta();
     }
     
+    /**
+     * Crea datos de prueba: usuarios, encuesta y preguntas (para poder probar funcionalidades de Respuesta).
+     */
     private static void crearDatosDePrueba() {        
         // Crear usuarios
         ctrlUsuario.registrarUsuario("ana", "pass123", "pass123");
@@ -150,6 +161,9 @@ public class DriverRespuesta {
             "Describe tu rutina de ejercicio favorita", ctrlEncuesta);
     }
     
+    /**
+     * Muestra el menu principal.
+     */
     private static void mostrarMenu() {
         System.out.println("\n=== MENÚ PRINCIPAL ===");
         System.out.println("1. Crear respuesta numérica");
@@ -166,163 +180,229 @@ public class DriverRespuesta {
         System.out.print("Escoge una opción: ");
     }
     
+    /**
+     * Crea una respuesta numerica.
+     */
     private static void crearRespuestaNumerica() {
         System.out.println("\n--- Crear Respuesta Numerica ---");
         mostrarUsuariosDisponibles();
         System.out.print("Usuario: ");
         String usuario = scanner.nextLine().trim();
         
-        PreguntaNumerica pregunta = (PreguntaNumerica) ctrlPregunta.getPregunta(idPreguntaNumerica);
-        System.out.println("\nPregunta: " + pregunta.getEnunciado());
-        System.out.println("Rango valido: [" + pregunta.getRangoInf() + ", " + pregunta.getRangoSup() + "]");
-        System.out.print("Respuesta: ");
-        double valor = Double.parseDouble(scanner.nextLine().trim());
-        
-        int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaNumerica, 
-            valor, ctrlUsuario, ctrlPregunta);
-        
-        System.out.println("\nRespuesta creada con ID: " + idRespuesta);
+        try {
+            PreguntaNumerica pregunta = (PreguntaNumerica) ctrlPregunta.getPregunta(idPreguntaNumerica);
+            System.out.println("\nPregunta: " + pregunta.getEnunciado());
+            System.out.println("Rango valido: [" + pregunta.getRangoInf() + ", " + pregunta.getRangoSup() + "]");
+            System.out.print("Respuesta: ");
+            double valor = Double.parseDouble(scanner.nextLine().trim());
+            
+            int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaNumerica, 
+                valor, ctrlUsuario, ctrlPregunta);
+            
+            System.out.println("\nRespuesta creada con ID: " + idRespuesta);
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: Debes introducir un numero valido.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
     }
     
+    /**
+     * Crea una respuesta de opcion unica.
+     */
     private static void crearRespuestaOpcionUnica() {
         System.out.println("\n--- Crear Respuesta Opcion Unica ---");
         mostrarUsuariosDisponibles();
         System.out.print("Usuario: ");
         String usuario = scanner.nextLine().trim();
         
-        PreguntaOpcionUnica pregunta = (PreguntaOpcionUnica) ctrlPregunta.getPregunta(idPreguntaOpcionUnica);
-        System.out.println("\nPregunta: " + pregunta.getEnunciado());
-        System.out.println("Opciones:");
-        for (int i = 0; i < pregunta.getOpciones().size(); i++) {
-            System.out.println("  " + i + ". " + pregunta.getOpciones().get(i));
+        try {
+            PreguntaOpcionUnica pregunta = (PreguntaOpcionUnica) ctrlPregunta.getPregunta(idPreguntaOpcionUnica);
+            System.out.println("\nPregunta: " + pregunta.getEnunciado());
+            System.out.println("Opciones:");
+            for (int i = 0; i < pregunta.getOpciones().size(); i++) {
+                System.out.println("  " + i + ". " + pregunta.getOpciones().get(i));
+            }
+            System.out.print("Selecciona opcion (indice): ");
+            int indice = Integer.parseInt(scanner.nextLine().trim());
+            
+            int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaOpcionUnica, 
+                indice, ctrlUsuario, ctrlPregunta);
+            
+            System.out.println("\nRespuesta creada con ID: " + idRespuesta);
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: Debes introducir un numero entero.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
-        System.out.print("Selecciona opcion (indice): ");
-        int indice = Integer.parseInt(scanner.nextLine().trim());
-        
-        int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaOpcionUnica, 
-            indice, ctrlUsuario, ctrlPregunta);
-        
-        System.out.println("\nRespuesta creada con ID: " + idRespuesta);
     }
     
+    /**
+     * Crea una respuesta de opcion multiple.
+     */
     private static void crearRespuestaOpcionMultiple() {
         System.out.println("\n--- Crear Respuesta Opcion Multiple ---");
         mostrarUsuariosDisponibles();
         System.out.print("Usuario: ");
         String usuario = scanner.nextLine().trim();
         
-        PreguntaOpcionMultiple pregunta = (PreguntaOpcionMultiple) ctrlPregunta.getPregunta(idPreguntaOpcionMultiple);
-        System.out.println("\nPregunta: " + pregunta.getEnunciado());
-        System.out.println("Opciones:");
-        for (int i = 0; i < pregunta.getOpciones().size(); i++) {
-            System.out.println("  " + i + ". " + pregunta.getOpciones().get(i));
+        try {
+            PreguntaOpcionMultiple pregunta = (PreguntaOpcionMultiple) ctrlPregunta.getPregunta(idPreguntaOpcionMultiple);
+            System.out.println("\nPregunta: " + pregunta.getEnunciado());
+            System.out.println("Opciones:");
+            for (int i = 0; i < pregunta.getOpciones().size(); i++) {
+                System.out.println("  " + i + ". " + pregunta.getOpciones().get(i));
+            }
+            System.out.println("Máximo de opciones: " + pregunta.getNumMaxOpc());
+            System.out.print("Selecciona opciones (separadas por comas, sin espacios, ej: 0,2,4): ");
+            String input = scanner.nextLine().trim();
+            
+            String[] partes = input.split(",");
+            int[] indices = new int[partes.length];
+            for (int i = 0; i < partes.length; i++) {
+                indices[i] = Integer.parseInt(partes[i].trim());
+            }
+            
+            int idRespuesta = ctrlRespuesta.darRespuesta(usuario, 
+                idPreguntaOpcionMultiple, indices, ctrlUsuario, ctrlPregunta);
+            
+            System.out.println("\nRespuesta creada con ID: " + idRespuesta);
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: Formato incorrecto. Usa numeros separados por comas.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
-        System.out.println("Máximo de opciones: " + pregunta.getNumMaxOpc());
-        System.out.print("Selecciona opciones (separadas por comas, sin espacios, ej: 0,2,4): ");
-        String input = scanner.nextLine().trim();
-        
-        String[] partes = input.split(",");
-        int[] indices = new int[partes.length];
-        for (int i = 0; i < partes.length; i++) {
-            indices[i] = Integer.parseInt(partes[i].trim());
-        }
-        
-        int idRespuesta = ctrlRespuesta.darRespuesta(usuario, 
-            idPreguntaOpcionMultiple, indices, ctrlUsuario, ctrlPregunta);
-        
-        System.out.println("\nRespuesta creada con ID: " + idRespuesta);
     }
     
+    /**
+     * Crea una respuesta libre.
+     */
     private static void crearRespuestaLibre() {
         System.out.println("\n--- Crear Respuesta Libre ---");
         mostrarUsuariosDisponibles();
         System.out.print("Usuario: ");
         String usuario = scanner.nextLine().trim();
         
-        Pregunta pregunta = ctrlPregunta.getPregunta(idPreguntaLibre);
-        System.out.println("\nPregunta: " + pregunta.getEnunciado());
-        System.out.print("Respuesta: ");
-        String texto = scanner.nextLine();
-        
-        int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaLibre, 
-            texto, ctrlUsuario, ctrlPregunta);
-        
-        System.out.println("\nRespuesta creada con ID: " + idRespuesta);
+        try {
+            Pregunta pregunta = ctrlPregunta.getPregunta(idPreguntaLibre);
+            System.out.println("\nPregunta: " + pregunta.getEnunciado());
+            System.out.print("Respuesta: ");
+            String texto = scanner.nextLine();
+            
+            int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaLibre, 
+                texto, ctrlUsuario, ctrlPregunta);
+            
+            System.out.println("\nRespuesta creada con ID: " + idRespuesta);
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
     }
     
+    /**
+     * Modifica una respuesta existente.
+     */
     private static void modificarRespuesta() {
         System.out.println("\n--- Modificar Respuesta ---");
         listarTodasRespuestas();
-        System.out.print("\nID de la respuesta a modificar: ");
-        int idRespuesta = Integer.parseInt(scanner.nextLine().trim());
-        Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
-        System.out.println("\nRespuesta actual:");
-        mostrarRespuestaDetallada(r);
         
-        if (r instanceof RespuestaNumerica) {
-            System.out.print("\nNuevo valor: ");
-            double nuevoValor = Double.parseDouble(scanner.nextLine().trim());
-            ctrlRespuesta.modificarRespuesta(idRespuesta, nuevoValor);
-        } 
-        else if (r instanceof RespuestaOpcionUnica) {
-            PreguntaOpcionUnica pregunta = (PreguntaOpcionUnica) ctrlPregunta.getPregunta(r.getIdPregunta());
-            System.out.println("\nOpciones:");
-            for (int i = 0; i < pregunta.getOpciones().size(); i++) {
-                System.out.println("  " + i + ". " + pregunta.getOpciones().get(i));
+        try {
+            System.out.print("\nID de la respuesta a modificar: ");
+            int idRespuesta = Integer.parseInt(scanner.nextLine().trim());
+            Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
+            System.out.println("\nRespuesta actual:");
+            mostrarRespuestaDetallada(r);
+            
+            if (r instanceof RespuestaNumerica) {
+                System.out.print("\nNuevo valor: ");
+                double nuevoValor = Double.parseDouble(scanner.nextLine().trim());
+                ctrlRespuesta.modificarRespuesta(idRespuesta, nuevoValor);
+            } 
+            else if (r instanceof RespuestaOpcionUnica) {
+                PreguntaOpcionUnica pregunta = (PreguntaOpcionUnica) ctrlPregunta.getPregunta(r.getIdPregunta());
+                System.out.println("\nOpciones:");
+                for (int i = 0; i < pregunta.getOpciones().size(); i++) {
+                    System.out.println("  " + i + ". " + pregunta.getOpciones().get(i));
+                }
+                System.out.print("Nuevo indice: ");
+                int nuevoIndice = Integer.parseInt(scanner.nextLine().trim());
+                ctrlRespuesta.modificarRespuesta(idRespuesta, nuevoIndice);
+            } 
+            else if (r instanceof RespuestaOpcionMultiple) {
+                PreguntaOpcionMultiple pregunta = (PreguntaOpcionMultiple) ctrlPregunta.getPregunta(r.getIdPregunta());
+                System.out.println("\nOpciones:");
+                for (int i = 0; i < pregunta.getOpciones().size(); i++) {
+                    System.out.println("  " + i + ". " + pregunta.getOpciones().get(i));
+                }
+                System.out.print("Nuevos indices (separados por comas, sin espacios): ");
+                String input = scanner.nextLine().trim();
+                String[] partes = input.split(",");
+                int[] nuevosIndices = new int[partes.length];
+                for (int i = 0; i < partes.length; i++) {
+                    nuevosIndices[i] = Integer.parseInt(partes[i].trim());
+                }
+                ctrlRespuesta.modificarRespuesta(idRespuesta, nuevosIndices);
+            } 
+            else if (r instanceof RespuestaLibre) {
+                System.out.print("\nNuevo texto: ");
+                String nuevoTexto = scanner.nextLine();
+                ctrlRespuesta.modificarRespuesta(idRespuesta, nuevoTexto);
             }
-            System.out.print("Nuevo indice: ");
-            int nuevoIndice = Integer.parseInt(scanner.nextLine().trim());
-            ctrlRespuesta.modificarRespuesta(idRespuesta, nuevoIndice);
-        } 
-        else if (r instanceof RespuestaOpcionMultiple) {
-            PreguntaOpcionMultiple pregunta = (PreguntaOpcionMultiple) ctrlPregunta.getPregunta(r.getIdPregunta());
-            System.out.println("\nOpciones:");
-            for (int i = 0; i < pregunta.getOpciones().size(); i++) {
-                System.out.println("  " + i + ". " + pregunta.getOpciones().get(i));
-            }
-            System.out.print("Nuevos indices (separados por comas, sin espacios): ");
-            String input = scanner.nextLine().trim();
-            String[] partes = input.split(",");
-            int[] nuevosIndices = new int[partes.length];
-            for (int i = 0; i < partes.length; i++) {
-                nuevosIndices[i] = Integer.parseInt(partes[i].trim());
-            }
-            ctrlRespuesta.modificarRespuesta(idRespuesta, nuevosIndices);
-        } 
-        else if (r instanceof RespuestaLibre) {
-            System.out.print("\nNuevo texto: ");
-            String nuevoTexto = scanner.nextLine();
-            ctrlRespuesta.modificarRespuesta(idRespuesta, nuevoTexto);
+            System.out.println("Respuesta modificada.");
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: Formato incorrecto.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
-        System.out.println("Respuesta modificada.");
     }
     
+    /**
+     * Elimina una respuesta.
+     */
     private static void eliminarRespuesta() {
         System.out.println("\n--- Eliminar Respuesta ---");
         listarTodasRespuestas();
-        System.out.print("\nID de la respuesta a eliminar: ");
-        int idRespuesta = Integer.parseInt(scanner.nextLine().trim());
-        Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
         
-        System.out.println("\nEstás seguro? (s/n): ");
-        mostrarRespuestaDetallada(r);
-        System.out.print("Confirmar: ");
-        String confirmacion = scanner.nextLine().trim().toLowerCase();
-        if (confirmacion.equals("s") || confirmacion.equals("si")) {
-            ctrlRespuesta.eliminarRespuesta(idRespuesta, ctrlUsuario, ctrlPregunta);
-            System.out.println("\nRespuesta eliminada.");
-        } 
-        else System.out.println("Eliminacion cancelada.");
+        try {
+            System.out.print("\nID de la respuesta a eliminar: ");
+            int idRespuesta = Integer.parseInt(scanner.nextLine().trim());
+            Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
+            
+            System.out.println("\nEstás seguro? (s/n): ");
+            mostrarRespuestaDetallada(r);
+            System.out.print("Confirmar: ");
+            String confirmacion = scanner.nextLine().trim().toLowerCase();
+            if (confirmacion.equals("s") || confirmacion.equals("si")) {
+                ctrlRespuesta.eliminarRespuesta(idRespuesta, ctrlUsuario, ctrlPregunta);
+                System.out.println("\nRespuesta eliminada.");
+            } 
+            else System.out.println("Eliminacion cancelada.");
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: ID invalido.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
     }
     
+    /**
+     * Consulta una respuesta por ID.
+     */
     private static void consultarRespuesta() {
         System.out.println("\n--- Consultar respuesta ---");
-        System.out.print("ID de la respuesta: ");
-        int idRespuesta = Integer.parseInt(scanner.nextLine().trim());
-        Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
-        mostrarRespuestaDetallada(r);
+        try {
+            System.out.print("ID de la respuesta: ");
+            int idRespuesta = Integer.parseInt(scanner.nextLine().trim());
+            Respuesta r = ctrlRespuesta.getRespuesta(idRespuesta);
+            mostrarRespuestaDetallada(r);
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: ID invalido.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
     }
     
+    /**
+     * Lista todas las respuestas.
+     */
     private static void listarTodasRespuestas() {
         System.out.println("\n--- Todas las respuestas ---");
         TreeMap<Integer, Respuesta> todas = ctrlRespuesta.getAllRespuestas();
@@ -338,26 +418,37 @@ public class DriverRespuesta {
         }
     }
     
+    /**
+     * Lista las respuestas de un usuario.
+     */
     private static void listarRespuestasUsuario() {
         System.out.println("\n--- Respuestas por usuario ---");
         mostrarUsuariosDisponibles();
         System.out.print("Usuario: ");
         String nomUsuario = scanner.nextLine().trim();
-        Usuario u = ctrlUsuario.getUsuario(nomUsuario);
-        List<Integer> idsRespuestas = new ArrayList<>(u.getIdRespuestas());
         
-        if (idsRespuestas.isEmpty()) {
-            System.out.println("\nEl usuario no tiene respuestas.");
-            return;
-        }
-        
-        System.out.println("\nRespuestas de " + nomUsuario + ": " + idsRespuestas.size());
-        for (int idResp : idsRespuestas) {
-            Respuesta r = ctrlRespuesta.getRespuesta(idResp);
-            mostrarRespuestaResumida(r);
+        try {
+            Usuario u = ctrlUsuario.getUsuario(nomUsuario);
+            List<Integer> idsRespuestas = new ArrayList<>(u.getIdRespuestas());
+            
+            if (idsRespuestas.isEmpty()) {
+                System.out.println("\nEl usuario no tiene respuestas.");
+                return;
+            }
+            
+            System.out.println("\nRespuestas de " + nomUsuario + ": " + idsRespuestas.size());
+            for (int idResp : idsRespuestas) {
+                Respuesta r = ctrlRespuesta.getRespuesta(idResp);
+                mostrarRespuestaResumida(r);
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
     
+    /**
+     * Lista las respuestas de una pregunta.
+     */
     private static void listarRespuestasPregunta() {
         System.out.println("\n--- Respuestas de una pregunta ---");
         System.out.println("Preguntas:");
@@ -366,23 +457,32 @@ public class DriverRespuesta {
         System.out.println("  " + idPreguntaOpcionMultiple + ". Que deportes practicas?");
         System.out.println("  " + idPreguntaLibre + ". Describe tu rutina de ejercicio favorita");
         
-        System.out.print("\nID de la pregunta: ");
-        int idPregunta = Integer.parseInt(scanner.nextLine().trim());
-        Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-        List<Integer> idsRespuestas = new ArrayList<>(p.getIdRespuestas());
-        
-        if (idsRespuestas.isEmpty()) {
-            System.out.println("\nLa pregunta no tiene respuestas.");
-            return;
-        }        
-        System.out.println("\nPregunta: " + p.getEnunciado());
-        System.out.println("Respuestas: " + idsRespuestas.size());
-        for (int idResp : idsRespuestas) {
-            Respuesta r = ctrlRespuesta.getRespuesta(idResp);
-            mostrarRespuestaResumida(r);
+        try {
+            System.out.print("\nID de la pregunta: ");
+            int idPregunta = Integer.parseInt(scanner.nextLine().trim());
+            Pregunta p = ctrlPregunta.getPregunta(idPregunta);
+            List<Integer> idsRespuestas = new ArrayList<>(p.getIdRespuestas());
+            
+            if (idsRespuestas.isEmpty()) {
+                System.out.println("\nLa pregunta no tiene respuestas.");
+                return;
+            }        
+            System.out.println("\nPregunta: " + p.getEnunciado());
+            System.out.println("Respuestas: " + idsRespuestas.size());
+            for (int idResp : idsRespuestas) {
+                Respuesta r = ctrlRespuesta.getRespuesta(idResp);
+                mostrarRespuestaResumida(r);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: ID invalido.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
     
+    /**
+     * Muestra informacion detallada de una respuesta.
+     */
     private static void mostrarRespuestaDetallada(Respuesta r) {
         System.out.println("\nID: " + r.getId());
         System.out.println("Usuario: " + r.getNomUsuario());
@@ -422,6 +522,9 @@ public class DriverRespuesta {
         }
     }
     
+    /**
+     * Muestra resumen de una respuesta (para listados).
+     */
     private static void mostrarRespuestaResumida(Respuesta r) {
         String tipo = "";
         String valor = "";
@@ -446,6 +549,9 @@ public class DriverRespuesta {
             r.getId(), tipo, r.getNomUsuario(), r.getIdPregunta(), valor);
     }
     
+    /**
+     * Muestra los usuarios disponibles.
+     */
     private static void mostrarUsuariosDisponibles() {
         System.out.println("Usuarios disponibles: ana, pol, joan");
     }
