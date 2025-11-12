@@ -2,8 +2,6 @@ package domain;
 
 import java.util.ArrayList;
 
-// falta getTitulo, setTitulo...
-
 /**
  * Implementacion de la clase Encuesta
  */
@@ -57,6 +55,14 @@ public class Encuesta {
     }
 
     /**
+     * Obtenemos el titulo de una encuesta
+     * @return titulo de la encuesta
+     */
+    public String getTitulo() {
+        return titulo;
+    }
+
+    /**
      * Se añade una pregunta con IdPregunta en la encuesta, se guarda
      * en el ArrayList de idPreguntas
      * @param IdPregunta de la nueva pregunta que se quiere añadir
@@ -93,13 +99,7 @@ public class Encuesta {
         this.titulo = titulo;
     }
 
-    /**
-     * Obtenemos el titulo de una encuesta
-     * @return titulo de la encuesta
-     */
-    public String getTitulo() {
-        return titulo;
-    }
+    
 
 
 
