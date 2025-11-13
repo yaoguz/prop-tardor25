@@ -13,7 +13,6 @@ import java.util.ArrayList;
  * Solo prueban lógica interna.
  * 
  * @author Peiyu Wang
- * @version 1.0 - JUnit 4
  */
 public class TestEncuesta {
     
