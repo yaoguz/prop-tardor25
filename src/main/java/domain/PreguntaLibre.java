@@ -26,11 +26,11 @@ public class PreguntaLibre extends Pregunta {
 	/** Métodos públicos **/
 	/**
 	 * Devuelve el tipo de pregunta.
-	 * @return el string "Libre".
+	 * @return el string "libre".
 	 */
 	@Override 
 	public String tipoPregunta() {
-		return "Libre";
+		return "libre";
 	}
 	
 	/**
