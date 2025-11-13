@@ -376,7 +376,7 @@ public class CtrlDominio {
 	 * (Alternativa: implementar modificación in-situ si se requiere mantener respuestas.)
 	 * 
 	 * @param idPregunta ID de la pregunta a modificar
-	 * @param infoP Nueva información de la pregunta
+	 * @param infoP Nueva información de la pregunta (el tipo da igual, se sobreescribe con el de la pregunta a modificar)
 	 * @return ID de la nueva pregunta
 	 */
 	public int modificarPregunta(int idPregunta, CtrlDominioPregunta.PreguntaImportData infoP) {

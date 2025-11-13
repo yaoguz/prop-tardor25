@@ -271,7 +271,7 @@ public class CtrlDominioPregunta {
 	 * NOTA: Este enfoque mantiene la integridad referencial pero pierde el historial.
 	 * 
 	 * @param idPregunta ID de la pregunta a modificar
-	 * @param infoP Nueva información de la pregunta
+	 * @param infoP Nueva información de la pregunta (el tipo da igual, se sobreescribe con el de la pregunta a modificar)
 	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
 	 * @param ctrlDominioEncuesta Controlador de encuestas (inyección de dependencia)
 	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
@@ -284,8 +284,7 @@ public class CtrlDominioPregunta {
 		// obtener pregunta actual para saber su encuesta
 		Pregunta pVieja = getPregunta(idPregunta);
 		int idEncuesta = pVieja.getIdEncuesta();
-		//infoP.tipo = pVieja.tipoPregunta();
-		//if(infoP.tipo.contains("OpcionUnica")) infoP.tipo = "OpcionUnica";
+		infoP.tipo = pVieja.tipoPregunta();
 		
 		// eliminar pregunta antigua (y sus respuestas)
 		eliminarPregunta(idPregunta, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
