@@ -24,17 +24,32 @@ public class CtrlDominioEncuesta {
 
 	private static CtrlDominioEncuesta singletonInstance;
 	private GestorPersistencia gestor;
+	private CtrlDominioPregunta ctrlDominioPregunta;
+	private CtrlDominioEncuesta ctrlDominioRespuesta;
+	private CtrlDominioUsuario ctrlDominioUsuario;
 
-	private CtrlDominioEncuesta(GestorPersistencia gestor) {
+	private CtrlDominioEncuesta(GestorPersistencia gestor,
+								CtrlDominioPregunta ctrlDominioPregunta,
+								CtrlDominioEncuesta ctrlDominioRespuesta,
+								CtrlDominioUsuario ctrlDominioUsuario) {
 		this.gestor = gestor;
+		this.ctrlDominioPregunta = ctrlDominioPregunta; 
+		this.ctrlDominioRespuesta = ctrlDominioRespuesta; 
+		this.ctrlDominioUsuario = ctrlDominioUsuario; 
 	}
 
 	/** 
 	 * Implementación sigleton
 	 */
-	public static CtrlDominioEncuesta getInstance(GestorPersistencia gestor) {
+	public static CtrlDominioEncuesta getInstance(GestorPersistencia gestor, 
+	                              CtrlDominioPregunta ctrlDominioPregunta,
+	                              CtrlDominioRespuesta ctrlDominioRespuesta,
+	                              CtrlDominioUsuario ctrlDominioUsuario) {
 		if (singletonInstance == null) {
-			singletonInstance = new CtrlDominioEncuesta(gestor);
+			singletonInstance = new CtrlDominioEncuesta(gestor, 
+														ctrlDominioPregunta,
+														ctrlDominioRespuesta,
+														ctrlDominioUsuario);
 		}
 		return singletonInstance;
 	}
@@ -113,11 +128,10 @@ public class CtrlDominioEncuesta {
 	 * 
 	 * @param nomUsuario Nombre del usuario creador
 	 * @param titulo Título de la encuesta
-	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
 	 * @return ID de la encuesta creada
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
-	public int crearEncuesta(String nomUsuario, String titulo, CtrlDominioUsuario ctrlDominioUsuario) {
+	public int crearEncuesta(String nomUsuario, String titulo) {
 		if (titulo == null || titulo.trim().isEmpty()) {
 			throw new IllegalArgumentException("El título de la encuesta no puede estar vacío");
 		}
@@ -139,23 +153,19 @@ public class CtrlDominioEncuesta {
 	 * Formato esperado: {titulo, [{enunciado, [info según tipo]}], idAutor}
 	 * 
 	 * @param fichero Archivo con los datos de la encuesta
-	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
-	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
 	 * @return ID de la encuesta creada
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
-	public int importarEncuesta(File fichero,
-	                             CtrlDominioUsuario ctrlDominioUsuario,
-	                             CtrlDominioPregunta ctrlDominioPregunta) {
+	public int importarEncuesta(File fichero) {
 		// parser del fichero
 		EncuestaImportData datos = parsearFicheroEncuesta(fichero);
 		
 		// crear encuesta
-		int idE = crearEncuesta(datos.nomAutor, datos.titulo, ctrlDominioUsuario);
+		int idE = crearEncuesta(datos.nomAutor, datos.titulo);
 		
 		// anadir preguntas a la encuesta
 		for (PreguntaImportData infoP : datos.preguntas) {
-			anadirPregunta(idE, infoP, ctrlDominioPregunta);
+			anadirPregunta(idE, infoP);
 		}
 
 		gestor.actualizarEncuesta(getEncuesta(idE));
@@ -213,19 +223,14 @@ public class CtrlDominioEncuesta {
 	 * Requiere acceso a CtrlDominioPregunta para eliminar preguntas.
 	 * 
 	 * @param idEncuesta ID de la encuesta a eliminar
-	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
-	 * @param ctrlDominioUsuario Controlador de usuarios (inyección de dependencia)
 	 */
-	public void eliminarEncuesta(int idEncuesta, 
-	                              CtrlDominioPregunta ctrlDominioPregunta,
-	                              CtrlDominioRespuesta ctrlDominioRespuesta,
-	                              CtrlDominioUsuario ctrlDominioUsuario) {
+	public void eliminarEncuesta(int idEncuesta) {
 		Encuesta e = getEncuesta(idEncuesta);
 		List<Integer> idPreguntas = e.getIdPreguntas();
 		
 		// eliminar cada pregunta (esto eliminará tambien sus respuestas)
 		for (Integer idP : idPreguntas) {
-			ctrlDominioPregunta.eliminarPregunta(idP, ctrlDominioRespuesta, this, ctrlDominioUsuario);
+			ctrlDominioPregunta.eliminarPregunta(idP);
 		}
 		
 		// eliminar de usuario creador
@@ -246,13 +251,9 @@ public class CtrlDominioEncuesta {
 	 * NOTA: Solo el autor de la encuesta debería tener acceso (validación en capa de presentación).
 	 * 
 	 * @param idEncuesta ID de la encuesta
-	 * @param ctrlDominioRespuesta Controlador de respuestas (inyección de dependencia)
-	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
 	 * @return Mapa de Pregunta -> Set de Respuestas
 	 */
-	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta,
-	                            CtrlDominioRespuesta ctrlDominioRespuesta,
-	                            CtrlDominioPregunta ctrlDominioPregunta) {
+	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
 		Encuesta e = getEncuesta(idEncuesta);
 		List<Integer> idPreguntas = e.getIdPreguntas();
 
@@ -279,11 +280,9 @@ public class CtrlDominioEncuesta {
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param infoP Información de la pregunta (enunciado, tipo, atributos específicos)
-	 * @param ctrlDominioPregunta Controlador de preguntas (inyección de dependencia)
 	 * @return ID de la pregunta creada
 	 */
-	public int anadirPregunta(int idEncuesta, PreguntaImportData infoP,
-	                            CtrlDominioPregunta ctrlDominioPregunta) {
+	public int anadirPregunta(int idEncuesta, PreguntaImportData infoP) {
 		Encuesta e = getEncuesta(idEncuesta);
 		
 		// Crear pregunta polimórfica según tipo
@@ -314,13 +313,9 @@ public class CtrlDominioEncuesta {
 	 * El algoritmo de clustering ignora los valores nulos en los calculos.
 	 * 
 	 * @param idEncuesta ID de la encuesta
-	 * @param ctrlDominioRespuesta Controlador de respuestas
-	 * @param ctrlDominioPregunta Controlador de preguntas
 	 * @return List<List<Respuesta>> donde cada sublista es un usuario con sus respuestas ordenadas por pregunta
 	 */
-	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta,
-	                                CtrlDominioRespuesta ctrlDominioRespuesta,
-	                                CtrlDominioPregunta ctrlDominioPregunta) {
+	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta) {
 		Encuesta e = getEncuesta(idEncuesta);
 		List<Integer> idPreguntas = e.getIdPreguntas();
 		Map<String, Map<Integer, Respuesta>> respuestasPorUsuario = new HashMap<>();

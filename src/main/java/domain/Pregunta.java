@@ -99,7 +99,7 @@ public abstract class Pregunta {
 	}
 	
 	/**
-	 * FACTORY METHOD (polimórfico): Crea una respuesta del tipo correspondiente.
+	 * Crea una respuesta del tipo correspondiente (Factory method)
 	 * 
 	 * Cada subclase implementa este método para crear su tipo de respuesta.
 	 * Esto respeta el principio Abierto/Cerrado: si se añade un nuevo tipo de pregunta,

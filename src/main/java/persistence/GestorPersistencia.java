@@ -25,6 +25,14 @@ getNextIdPregunta
 actualizarPregunta
 eliminarPregunta
 
+existeRespuesta
+getRespuesta
+getNextIdRespuesta
+guardarRespuesta  // respuestas.put(Integer.valueOf(idR), nuevaRespuesta);
+actualizarRespuesta
+eliminarRespuesta
+
+actualizarUsuario
  */
 
 /**

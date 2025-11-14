@@ -66,9 +66,11 @@ public class CtrlDominio {
 	private CtrlDominio() {
 		gestorPersistencia = GestorPersistencia.getInstance();
 		ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestorPersistencia);
-		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia);
+		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia,
+			ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
 		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia);
-		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia);
+		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia,
+			ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);
 		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(gestorPersistencia);
 	}
 
@@ -155,8 +157,7 @@ public class CtrlDominio {
 	 * @return ID de la respuesta creada
 	 */
 	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
-		return ctrlDominioRespuesta.darRespuesta(nomUsuario, idPregunta, respuesta,
-		                                          ctrlDominioUsuario, ctrlDominioPregunta);
+		return ctrlDominioRespuesta.darRespuesta(nomUsuario, idPregunta, respuesta);
 	}
 	
 	/**
@@ -177,7 +178,7 @@ public class CtrlDominio {
 	 * @param idRespuesta ID de la respuesta a eliminar
 	 */
 	public void eliminarRespuesta(int idRespuesta) {
-		ctrlDominioRespuesta.eliminarRespuesta(idRespuesta, ctrlDominioUsuario, ctrlDominioPregunta);
+		ctrlDominioRespuesta.eliminarRespuesta(idRespuesta);
 	}
 	
 	/**
@@ -190,8 +191,7 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si los IDs no existen en el sistema
 	 */
 	public void importarRespuestas(File fichero) {
-		ctrlDominioRespuesta.importarRespuestas(fichero, ctrlDominioUsuario, 
-		                                         ctrlDominioEncuesta, ctrlDominioPregunta);
+		ctrlDominioRespuesta.importarRespuestas(fichero);
 	}
 
 	// ==================== GESTIÓN DE ENCUESTAS ====================
@@ -216,7 +216,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
-		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo, ctrlDominioUsuario);
+		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
 	}
 	
 	/**
@@ -229,7 +229,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	public int importarEncuesta(File fichero) {
-		return ctrlDominioEncuesta.importarEncuesta(fichero, ctrlDominioUsuario, ctrlDominioPregunta);
+		return ctrlDominioEncuesta.importarEncuesta(fichero);
 	}
 	
 	/**
@@ -249,8 +249,7 @@ public class CtrlDominio {
 	 * @param idEncuesta ID de la encuesta a eliminar
 	 */
 	public void eliminarEncuesta(int idEncuesta) {
-		ctrlDominioEncuesta.eliminarEncuesta(idEncuesta, ctrlDominioPregunta, 
-									ctrlDominioRespuesta, ctrlDominioUsuario);
+		ctrlDominioEncuesta.eliminarEncuesta(idEncuesta);
 	}
 	
 	/**
@@ -262,8 +261,7 @@ public class CtrlDominio {
 	 * @return Mapa de Pregunta -> Set de Respuestas
 	 */
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
-		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta, ctrlDominioRespuesta, 
-		                                                   ctrlDominioPregunta);
+		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
 	}
 
 	/**
@@ -275,8 +273,7 @@ public class CtrlDominio {
 	 * @return Matriz M x N (M usuarios, N preguntas)
 	 */
 	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta) {
-		return ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta, ctrlDominioRespuesta, 
-		                                                         ctrlDominioPregunta);
+		return ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
 	}
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================

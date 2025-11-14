@@ -15,7 +15,7 @@ import domain.Respuesta;
 import persistence.GestorPersistencia;
 
 /**
- * Controlador de Dominio para la gestión de preguntas.
+ * Controlador de dominio para la gestión de preguntas.
  * 
  * Responsabilidades:
  * - Añadir preguntas de diferentes tipos a encuestas
