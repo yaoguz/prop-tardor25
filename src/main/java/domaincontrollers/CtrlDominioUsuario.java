@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
 
 import domain.Pregunta;
 import domain.Respuesta;
@@ -29,12 +28,28 @@ public class CtrlDominioUsuario {
 
 	/** Atributos **/
 
+	/** Instancia única del controlador (patrón singleton) */
 	private static CtrlDominioUsuario singletonInstance;
+	
+	/** Gestor de persistencia del sistema */
 	private GestorPersistencia gestor;
-	private String usuarioActivo;  // usuario con sesion activa
+	
+	/** Nombre del usuario con sesión activa (null si no hay sesión) */
+	private String usuarioActivo;
+	
+	/** Controlador de respuestas (inyección de dependencia) */
 	CtrlDominioRespuesta ctrlDominioRespuesta;
+	
+	/** Controlador de preguntas (inyección de dependencia) */
 	CtrlDominioPregunta ctrlDominioPregunta;
 
+	/**
+	 * Constructor privado (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
+	 */
 	private CtrlDominioUsuario(GestorPersistencia gestor, 
 								CtrlDominioRespuesta ctrlDominioRespuesta,
 								CtrlDominioPregunta ctrlDominioPregunta) {
@@ -44,6 +59,14 @@ public class CtrlDominioUsuario {
 		this.ctrlDominioPregunta = ctrlDominioPregunta;
 	}
 
+	/**
+	 * Obtiene la instancia única del controlador (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
+	 * @return Instancia única de CtrlDominioUsuario
+	 */
 	public static CtrlDominioUsuario getInstance(GestorPersistencia gestor, 
 											CtrlDominioRespuesta ctrlDominioRespuesta,
 											CtrlDominioPregunta ctrlDominioPregunta) {

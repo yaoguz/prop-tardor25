@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import domain.Usuario;
 import persistence.GestorPersistencia;
@@ -22,15 +21,24 @@ import domain.Respuesta;
  */
 public class CtrlDominioEncuesta {
 
+	/** Instancia única del controlador (patrón singleton) */
 	private static CtrlDominioEncuesta singletonInstance;
+	
+	/** Gestor de persistencia del sistema */
 	private GestorPersistencia gestor;
+	
+	/** Controlador de preguntas (inyección de dependencia) */
 	private CtrlDominioPregunta ctrlDominioPregunta;
-	private CtrlDominioEncuesta ctrlDominioRespuesta;
+	
+	/** Controlador de respuestas (inyección de dependencia) */
+	private CtrlDominioRespuesta ctrlDominioRespuesta;
+	
+	/** Controlador de usuarios (inyección de dependencia) */
 	private CtrlDominioUsuario ctrlDominioUsuario;
 
 	private CtrlDominioEncuesta(GestorPersistencia gestor,
 								CtrlDominioPregunta ctrlDominioPregunta,
-								CtrlDominioEncuesta ctrlDominioRespuesta,
+								CtrlDominioRespuesta ctrlDominioRespuesta,
 								CtrlDominioUsuario ctrlDominioUsuario) {
 		this.gestor = gestor;
 		this.ctrlDominioPregunta = ctrlDominioPregunta; 
@@ -38,8 +46,14 @@ public class CtrlDominioEncuesta {
 		this.ctrlDominioUsuario = ctrlDominioUsuario; 
 	}
 
-	/** 
-	 * Implementación sigleton
+	/**
+	 * Obtiene la instancia única del controlador (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia
+	 * @param ctrlDominioPregunta Controlador de preguntas
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioUsuario Controlador de usuarios
+	 * @return Instancia única de CtrlDominioEncuesta
 	 */
 	public static CtrlDominioEncuesta getInstance(GestorPersistencia gestor, 
 	                              CtrlDominioPregunta ctrlDominioPregunta,
@@ -287,7 +301,7 @@ public class CtrlDominioEncuesta {
 		
 		// Crear pregunta polimórfica según tipo
 		int idP = ctrlDominioPregunta.crearPregunta(idEncuesta, infoP.enunciado,
-                  infoP.tipo, infoP.atributosEspecificos, this);
+                  infoP.tipo, infoP.atributosEspecificos);
 
 		e.guardarPregunta(idP);
 		gestor.actualizarEncuesta(e);

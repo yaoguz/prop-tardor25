@@ -12,36 +12,61 @@ import domain.clustering_ejemplo.ClusterEvaluator;
 import domain.clustering_ejemplo.ClusteringAlgorithm;
 import domain.clustering_ejemplo.KMeans;
 import domain.clustering_ejemplo.KMeansPlusPlus;
-
-// orquesta clustering !!
+import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de perfiles.
  * 
  * Responsabilidades:
  * - Obtener perfiles de usuarios
- * - Generar perfiles basados en respuestas
+ * - Generar perfiles basados en respuestas mediante clustering
  * - Comparar perfiles entre usuarios
- * - Clustering y análisis de usuarios
+ * - Orquestación de algoritmos de clustering
  * 
- * NOTA: La funcionalidad completa de perfiles está pendiente de implementación.
+ * NOTA: CtrlDominioPerfil no gestiona datos propios, solo realiza análisis
+ * sobre datos existentes en otros controladores.
  * 
  * @author Alessandro Jin
  */
 public class CtrlDominioPerfil {
 
+	/** Atributos **/
+
+	private static CtrlDominioPerfil singletonInstance;
+	private GestorPersistencia gestor;
+
+	/** Constructor **/
+
 	/**
-	 * Constructora vacía (sin dependencias almacenadas).
-	 * CtrlDominioPerfil no gestiona datos propios, solo hace análisis.
+	 * Constructor privado (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia del sistema
 	 */
-	public CtrlDominioPerfil() {}
+	private CtrlDominioPerfil(GestorPersistencia gestor) {
+		this.gestor = gestor;
+	}
+
+	/**
+	 * Obtiene la instancia única del controlador (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia
+	 * @return Instancia única de CtrlDominioPerfil
+	 */
+	public static CtrlDominioPerfil getInstance(GestorPersistencia gestor) {
+		if (singletonInstance == null) {
+			singletonInstance = new CtrlDominioPerfil(gestor);
+		}
+		return singletonInstance;
+	}
+
+	/** Métodos públicos **/
 	
 	/**
-	 * Obtiene los perfiles de un usuario (funcionalidad de clustering/análisis).
+	 * Obtiene los perfiles de un usuario.
 	 * 
 	 * @param nomUsuario Nombre del usuario
-	 * @param ctrlDominioUsuario Controlador de usuarios (inyección por parámetros)
-	 * @return Lista de perfiles del usuario
+	 * @param ctrlDominioUsuario Controlador de usuarios (inyección)
+	 * @return Lista de IDs de perfiles del usuario
 	 */
 	public List<Integer> getPerfilesUsuario(String nomUsuario, CtrlDominioUsuario ctrlDominioUsuario) {
 		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
@@ -77,7 +102,15 @@ public class CtrlDominioPerfil {
         
         return clusters;
     }
+
+	/** Métodos privados **/
     
+	/**
+	 * Selecciona el algoritmo de clustering según el nombre.
+	 * 
+	 * @param nombre Nombre del algoritmo ("kmeans" o "kmeans++")
+	 * @return Instancia del algoritmo seleccionado
+	 */
     private ClusteringAlgorithm seleccionarAlgoritmo(String nombre) {
         switch (nombre.toLowerCase()) {
             case "kmeans++":
@@ -88,6 +121,13 @@ public class CtrlDominioPerfil {
         }
     }
     
+	/**
+	 * Obtiene todas las respuestas de una encuesta agrupadas por usuario.
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @return Mapa usuario -> lista de respuestas
+	 */
     private Map<String, List<Respuesta>> obtenerRespuestasPorUsuario(
             int idEncuesta, CtrlDominioRespuesta ctrlDominioRespuesta) {
         // TODO: Obtener todas las respuestas de la encuesta

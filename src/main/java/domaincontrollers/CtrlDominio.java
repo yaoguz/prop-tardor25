@@ -18,31 +18,41 @@ import persistence.GestorPersistencia;
  *     ↓
  * CAPA DE DOMINIO:
  *   - CtrlDominio (Facade MINIMALISTA - punto de entrada, solo delega)
- *   - CtrlDominioUsuario (gestiona TreeMap<String, Usuario> + lógica de usuarios)
- *   - CtrlDominioEncuesta (gestiona TreeMap<Integer, Encuesta> + lógica de encuestas)
- *   - CtrlDominioPregunta (gestiona TreeMap<Integer, Pregunta> + lógica de preguntas)
- *   - CtrlDominioRespuesta (gestiona TreeMap<Integer, Respuesta> + lógica de respuestas)
+ *   - CtrlDominioUsuario (lógica de usuarios)
+ *   - CtrlDominioEncuesta (lógica de encuestas)
+ *   - CtrlDominioPregunta (lógica de preguntas)
+ *   - CtrlDominioRespuesta (lógica de respuestas)
  *   - CtrlDominioPerfil (lógica de clustering, no gestiona datos propios)
  *     ↓
  * CAPA DE PERSISTENCIA:
- *   - GestorPersistencia (STUB - import/export en apertura/cierre de sesión)
+ *   - GestorPersistencia (STUB - almacenamiento en HashMap, simula BD)
+ * 
+ * CAMBIO ARQUITECTÓNICO IMPORTANTE:
+ * Los datos (HashMap<K,V>) ya NO están en CtrlDominioXXX, sino en GestorPersistencia.
+ * Los controladores de dominio solo contienen LÓGICA DE NEGOCIO.
  * 
  * RESPONSABILIDAD DE CtrlDominio (Facade):
  * - Punto de entrada único para la capa de presentación
  * - Delegación pura a controladores especializados
  * - Coordinación de operaciones que cruzan múltiples controladores
  * - NO contiene lógica de negocio compleja
- * - NO gestiona datos (TreeMaps están en CtrlDominioXXX)
+ * - NO gestiona datos (HashMap están en GestorPersistencia)
+ * 
+ * PATRÓN SINGLETON:
+ * Todos los controladores (CtrlDominio, CtrlDominioUsuario, etc.) son singleton
+ * para garantizar una única instancia y estado consistente del sistema.
  * 
  * VENTAJAS:
  * 1. **Facade Pattern**: Interfaz simplificada para presentación
  * 2. **Single Responsibility**: Cada CtrlDominioXXX gestiona una entidad
  * 3. **Low Coupling**: Presentación solo conoce CtrlDominio
  * 4. **High Cohesion**: Lógica de negocio encapsulada en controladores especializados
+ * 5. **Persistencia independiente**: Los datos están centralizados en un solo lugar
  * 
  * PATRÓN DE DISEÑO APLICADO:
  * - Facade Pattern: CtrlDominio oculta la complejidad de los controladores internos
  * - Dependency Injection: CtrlDominio inyecta dependencias entre controladores
+ * - Singleton Pattern: Garantiza única instancia de cada controlador
  * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
@@ -50,12 +60,25 @@ public class CtrlDominio {
 
 	/** Atributos **/
 
+	/** Instancia única del controlador (patrón singleton) */
 	private static CtrlDominio singletonInstance;
-	private GestorPersistencia gestorPersistencia;	
+	
+	/** Gestor de persistencia del sistema */
+	private GestorPersistencia gestorPersistencia;
+	
+	/** Controlador de usuarios */
 	private CtrlDominioUsuario ctrlDominioUsuario;
+	
+	/** Controlador de encuestas */
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
+	
+	/** Controlador de preguntas */
 	private CtrlDominioPregunta ctrlDominioPregunta;
+	
+	/** Controlador de respuestas */
 	private CtrlDominioRespuesta ctrlDominioRespuesta;
+	
+	/** Controlador de perfiles y clustering */
 	private CtrlDominioPerfil ctrlDominioPerfil;
 
 	/** Constructor y métodos de inicialización **/
@@ -74,8 +97,7 @@ public class CtrlDominio {
 															ctrlDominioUsuario);
 		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, 
 															ctrlDominioRespuesta,
-															ctrlDominioEncuesta,
-															ctrlDominioUsuario);
+															ctrlDominioEncuesta);
 		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia,
 															ctrlDominioUsuario, 
 															ctrlDominioEncuesta, 
@@ -295,7 +317,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaLibre(int idEncuesta, String enunciado) {
-		return ctrlDominioPregunta.crearPreguntaLibre(idEncuesta, enunciado, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaLibre(idEncuesta, enunciado);
 	}
 	
 	/**
@@ -308,7 +330,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaNumerica(int idEncuesta, String enunciado, double min, double max) {
-		return ctrlDominioPregunta.crearPreguntaNumerica(idEncuesta, enunciado, (int)min, (int)max, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaNumerica(idEncuesta, enunciado, (int)min, (int)max);
 	}
 	
 	/**
@@ -319,8 +341,8 @@ public class CtrlDominio {
 	 * @param opciones Lista de opciones disponibles
 	 * @return ID de la pregunta creada
 	 */
-	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones) {
-		return ctrlDominioPregunta.crearPreguntaOpcionUnica(idEncuesta, enunciado, opciones, false, ctrlDominioEncuesta);
+	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones, boolean ordenada) {
+		return ctrlDominioPregunta.crearPreguntaOpcionUnica(idEncuesta, enunciado, opciones, ordenada);
 	}
 	
 	/**
@@ -334,7 +356,7 @@ public class CtrlDominio {
 	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones) {
 		// usar numMaxOpc = tamano de opciones como valor por defecto
 		int numMaxOpc = (opciones != null) ? opciones.size() : 10;
-		return ctrlDominioPregunta.crearPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMaxOpc, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMaxOpc);
 	}
 	
 	/**
@@ -345,7 +367,7 @@ public class CtrlDominio {
 	 * @return ID de la nueva pregunta
 	 */
 	public int modificarPregunta(int idPregunta, CtrlDominioPregunta.PreguntaImportData infoP) {
-		return ctrlDominioPregunta.modificarPregunta(idPregunta, infoP, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
+		return ctrlDominioPregunta.modificarPregunta(idPregunta, infoP);
 	}
 	
 	/**
@@ -354,7 +376,7 @@ public class CtrlDominio {
 	 * @param idPregunta ID de la pregunta a eliminar
 	 */
 	public void eliminarPregunta(int idPregunta) {
-		ctrlDominioPregunta.eliminarPregunta(idPregunta, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
+		ctrlDominioPregunta.eliminarPregunta(idPregunta);
 	}
 
 	// ==================== GESTIÓN DE PERFILES ====================

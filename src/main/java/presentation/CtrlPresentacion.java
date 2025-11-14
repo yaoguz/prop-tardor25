@@ -20,15 +20,13 @@ public class CtrlPresentacion {
 	/** Constructor y metodos de inicializacion **/
 
 	public CtrlPresentacion() {
-		controladorDominio = new CtrlDominio();
+		controladorDominio = CtrlDominio.getInstance();
 		/*vistaPrincipal = new VistaPrincipal(this);
 		vistaSecundaria = new VistaSecundaria(this);
 		vistaLEEME = new VistaLEEME();*/
 	}
 
 	public void inicializarPresentacion() {
-		controladorDominio.inicializarCtrlDominio();
-
 		/*vistaLEEME.hacerVisible();
 		vistaPrincipal
 				.hacerVisible(controladorDominio.getAlumnoSeleccionado() != null);*/

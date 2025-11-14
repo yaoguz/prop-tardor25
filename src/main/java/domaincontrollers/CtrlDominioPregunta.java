@@ -2,7 +2,6 @@ package domaincontrollers;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.ArrayList;
 
 import domain.Encuesta;
@@ -25,38 +24,49 @@ import persistence.GestorPersistencia;
  * @author Yaoyao Guo Zhang
  */
 public class CtrlDominioPregunta {
-	
-	// /** Mapa de preguntas (clave: idPregunta, valor: Pregunta) */
-	// private TreeMap<Integer, Pregunta> preguntas;
-	
-	// /** ID para la próxima pregunta a crear */
-	// private int nextId;
 
+	/** Instancia única del controlador (patrón singleton) */
 	private static CtrlDominioPregunta singletonInstance;
+	
+	/** Gestor de persistencia del sistema */
     private GestorPersistencia gestor;
+	
+	/** Controlador de respuestas (inyección de dependencia) */
 	private CtrlDominioRespuesta ctrlDominioRespuesta;
+	
+	/** Controlador de encuestas (inyección de dependencia) */
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
-	private CtrlDominioUsuario ctrlDominioUsuario;
 
+	/**
+	 * Constructor privado (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioEncuesta Controlador de encuestas
+	 */
     private CtrlDominioPregunta(GestorPersistencia gestor, 
 								CtrlDominioRespuesta ctrlDominioRespuesta,
-								CtrlDominioEncuesta ctrlDominioEncuesta,
-								CtrlDominioUsuario ctrlDominioUsuario) {
+								CtrlDominioEncuesta ctrlDominioEncuesta) {
         this.gestor = gestor;
 		this.ctrlDominioRespuesta = ctrlDominioRespuesta; 
 		this.ctrlDominioEncuesta = ctrlDominioEncuesta; 
-		this.ctrlDominioUsuario = ctrlDominioUsuario; 
     }
 
+	/**
+	 * Obtiene la instancia única del controlador (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia
+	 * @param ctrlDominioRespuesta Controlador de respuestas
+	 * @param ctrlDominioEncuesta Controlador de encuestas
+	 * @return Instancia única de CtrlDominioPregunta
+	 */
     public static CtrlDominioPregunta getInstance(GestorPersistencia gestor, 
 	                              CtrlDominioRespuesta ctrlDominioRespuesta,
-	                              CtrlDominioEncuesta ctrlDominioEncuesta,
-	                              CtrlDominioUsuario ctrlDominioUsuario) {
+	                              CtrlDominioEncuesta ctrlDominioEncuesta) {
         if (singletonInstance == null) {
             singletonInstance = new CtrlDominioPregunta(gestor, 
 	                              ctrlDominioRespuesta,
-	                              ctrlDominioEncuesta,
-	                              ctrlDominioUsuario);
+	                              ctrlDominioEncuesta);
         }
         return singletonInstance;
     }
@@ -228,7 +238,7 @@ public class CtrlDominioPregunta {
         }
 
 		int idP = gestor.getNextIdPregunta();
-		PreguntaOpcionUnica p = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, ordenada);
+		PreguntaOpcionUnica p = new PreguntaOpcionUnica(idEncuesta, idP, enunciado, ordenada);
 
 		// anadir opciones
 		if (opciones != null) {
@@ -299,6 +309,7 @@ public class CtrlDominioPregunta {
 	 * @param atributosEspecificos Atributos específicos según tipo
 	 * @return ID de la pregunta creada
 	 */
+	@SuppressWarnings("unchecked")
 	public int crearPregunta(int idEncuesta, String enunciado, String tipo, 
 	                          Map<String, Object> atributosEspecificos) {
 		switch (tipo) {

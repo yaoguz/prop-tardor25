@@ -2,7 +2,6 @@ package domaincontrollers;
 
 import java.io.File;
 import java.util.List;
-import java.util.TreeMap;
 
 import domain.Pregunta;
 import domain.Respuesta;
@@ -23,19 +22,31 @@ import persistence.GestorPersistencia;
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioRespuesta {
-	
-	// private TreeMap<Integer, Respuesta> respuestas;
-	// private int nextId;
 
-	/** Constructor **/
-
+	/** Instancia única del controlador (patrón singleton) */
 	private static CtrlDominioRespuesta singletonInstance;
+	
+	/** Gestor de persistencia del sistema */
     private GestorPersistencia gestor;
+	
+	/** Controlador de usuarios (inyección de dependencia) */
 	private CtrlDominioUsuario ctrlDominioUsuario;
+	
+	/** Controlador de encuestas (inyección de dependencia) */
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
+	
+	/** Controlador de preguntas (inyección de dependencia) */
 	private CtrlDominioPregunta ctrlDominioPregunta;
 
-    private CtrlDominioRespuesta(GestorPersistencia gestor,
+	/**
+	 * Constructor privado (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia
+	 * @param ctrlDominioUsuario Controlador de usuarios
+	 * @param ctrlDominioEncuesta Controlador de encuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
+	 */
+	private CtrlDominioRespuesta(GestorPersistencia gestor,
 								CtrlDominioUsuario ctrlDominioUsuario,
 								CtrlDominioEncuesta ctrlDominioEncuesta,
 								CtrlDominioPregunta ctrlDominioPregunta) {
@@ -45,6 +56,15 @@ public class CtrlDominioRespuesta {
 		this.ctrlDominioPregunta = ctrlDominioPregunta; 
     }
 
+	/**
+	 * Obtiene la instancia única del controlador (patrón singleton).
+	 * 
+	 * @param gestor Gestor de persistencia
+	 * @param ctrlDominioUsuario Controlador de usuarios
+	 * @param ctrlDominioEncuesta Controlador de encuestas
+	 * @param ctrlDominioPregunta Controlador de preguntas
+	 * @return Instancia única de CtrlDominioRespuesta
+	 */
     public static CtrlDominioRespuesta getInstance(GestorPersistencia gestor,
 	                                CtrlDominioUsuario ctrlDominioUsuario,
 	                                CtrlDominioEncuesta ctrlDominioEncuesta,
