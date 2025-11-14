@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import domain.Pregunta;
 import domain.Respuesta;
 import domain.Usuario;
+import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de usuarios.
@@ -27,18 +28,33 @@ import domain.Usuario;
 public class CtrlDominioUsuario {
 
 	/** Atributos **/
-	
-	// Los datos se guardan en un TreeMap con clave - nomUsuario (String)
-	private TreeMap<String, Usuario> usuarios;
-	private String usuarioActivo;  // Usuario con sesión activa
 
-	/**
-	 * Constructora. Inicializa el TreeMap de usuarios.
-	 */
-	public CtrlDominioUsuario() {
-		this.usuarios = new TreeMap<String, Usuario>();
+	private static CtrlDominioUsuario singletonInstance;
+	private GestorPersistencia gestor;
+	private String usuarioActivo;  // usuario con sesion activa
+	CtrlDominioRespuesta ctrlDominioRespuesta;
+	CtrlDominioPregunta ctrlDominioPregunta;
+
+	private CtrlDominioUsuario(GestorPersistencia gestor, 
+								CtrlDominioRespuesta ctrlDominioRespuesta,
+								CtrlDominioPregunta ctrlDominioPregunta) {
+		this.gestor = gestor;
 		this.usuarioActivo = null;
+		this.ctrlDominioRespuesta = ctrlDominioRespuesta;
+		this.ctrlDominioPregunta = ctrlDominioPregunta;
 	}
+
+	public static CtrlDominioUsuario getInstance(GestorPersistencia gestor, 
+											CtrlDominioRespuesta ctrlDominioRespuesta,
+											CtrlDominioPregunta ctrlDominioPregunta) {
+		if (singletonInstance == null) {
+			singletonInstance = new CtrlDominioUsuario(gestor,
+												ctrlDominioRespuesta,
+												ctrlDominioPregunta);
+		}
+		return singletonInstance;
+	}
+
 	
 	/**
 	 * Verifica si existe un usuario con el nombre dado.
@@ -47,7 +63,7 @@ public class CtrlDominioUsuario {
 	 * @return true si existe, false en caso contrario
 	 */
 	public boolean existeUsuario(String nomU) {
-		return usuarios.containsKey(nomU);
+		return gestor.existeUsuario(nomU);
 	}
 	
 	/**
@@ -58,7 +74,7 @@ public class CtrlDominioUsuario {
 	 * @throws IllegalArgumentException si el usuario no existe
 	 */
 	public Usuario getUsuario(String nomUsuario) {
-		Usuario u = usuarios.get(nomUsuario);
+		Usuario u = gestor.getUsuario(nomUsuario);
 		if (u == null) {
 			throw new IllegalArgumentException("Usuario " + nomUsuario + " no existe");
 		}
@@ -106,11 +122,10 @@ public class CtrlDominioUsuario {
 			throw new IllegalStateException("Ya existe un usuario con el nombre " + nomU);
 		}
 		
-		// crear y guardar EN MEMORIA
+		// crear y guardar
 		Usuario u = new Usuario(nomU, contrasena);
-		usuarios.put(nomU, u);
-		
-		return u.getNomUsuario();
+		gestor.guardarUsuario(u); //usuarios.put(nomU, u);
+		return nomU;
 	}
 	
 	/**
@@ -158,10 +173,13 @@ public class CtrlDominioUsuario {
 	 * Modifica la contraseña del usuario actualmente en sesión.
 	 * 
 	 * @param newContrasena Nueva contraseña
-	 * @throws IllegalStateException si la nueva contraseña es igual a la actual
+	 * @throws IllegalStateException si no hay un usuario activo
 	 * @throws IllegalArgumentException si la nueva contraseña no cumple requisitos
 	 */
 	public void modificarContrasena(String newContrasena) {
+	    if (usuarioActivo == null) {
+			throw new IllegalStateException("No hay usuario activo");
+		}
 		if (newContrasena == null || newContrasena.isEmpty()) {
 			throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
 		}
@@ -171,6 +189,7 @@ public class CtrlDominioUsuario {
 		
 		Usuario u = getUsuario(usuarioActivo);
 		u.newContrasena(newContrasena); // puede lanzar exc: newContrasena es igual a la actual
+		gestor.actualizarUsuario(u);
 	}
 
 	/**
@@ -179,9 +198,12 @@ public class CtrlDominioUsuario {
 	 * @param ctrlDominioRespuesta Controlador de respuestas
 	 * @param ctrlDominioPregunta Controlador de preguntas
 	 * @return Lista de IDs de encuestas respondidas
+	 * @throws IllegalStateException si no hay un usuario activo
 	 */
-	public List<Integer> getEncuestasRespondidas(CtrlDominioRespuesta ctrlDominioRespuesta,
-												CtrlDominioPregunta ctrlDominioPregunta) {
+	public List<Integer> getEncuestasRespondidas() {
+		if (usuarioActivo == null) {
+			throw new IllegalStateException("No hay usuario activo");
+		}
 		Usuario u = getUsuario(usuarioActivo);
 		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
 		
@@ -206,10 +228,7 @@ public class CtrlDominioUsuario {
 	 * @param ctrlDominioPregunta Controlador de preguntas
 	 * @return Lista de las respuestas respondidas por el usuario en esta encuesta
 	 */
-	public List<Respuesta> getRespuestasEncuesta(String nomUsuario, 
-												int idEncuesta, 
-												CtrlDominioRespuesta ctrlDominioRespuesta,
-												CtrlDominioPregunta ctrlDominioPregunta) {
+	public List<Respuesta> getRespuestasEncuesta(String nomUsuario, int idEncuesta) {
 		Usuario u = getUsuario(nomUsuario);
 		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
 		
@@ -225,27 +244,27 @@ public class CtrlDominioUsuario {
 		return respuestas;
 	}
 
-	/**
-	 * Obtiene todos los usuarios almacenados en memoria.
-	 * 
-	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
-	 * para exportar todos los datos a persistencia al cerrar la aplicación.
-	 * 
-	 * @return TreeMap con todos los usuarios (clave: nomUsuario)
-	 */
-	public TreeMap<String, Usuario> getAllUsuarios() {
-		return new TreeMap<>(usuarios); // devolver copia para evitar modificaciones externas
-	}
+	// /**
+	//  * Obtiene todos los usuarios almacenados en memoria.
+	//  * 
+	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
+	//  * para exportar todos los datos a persistencia al cerrar la aplicación.
+	//  * 
+	//  * @return TreeMap con todos los usuarios (clave: nomUsuario)
+	//  */
+	// public TreeMap<String, Usuario> getAllUsuarios() {
+	// 	return new TreeMap<>(usuarios); // devolver copia para evitar modificaciones externas
+	// }
 	
-	/**
-	 * Importa usuarios desde persistencia al iniciar aplicación.
-	 * 
-	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
-	 * para cargar los datos guardados de la sesión anterior.
-	 * 
-	 * @param usuariosImportados TreeMap con los usuarios a cargar
-	 */
-	public void cargarUsuarios(TreeMap<String, Usuario> usuariosImportados) {
-		this.usuarios = usuariosImportados;
-	}
+	// /**
+	//  * Importa usuarios desde persistencia al iniciar aplicación.
+	//  * 
+	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
+	//  * para cargar los datos guardados de la sesión anterior.
+	//  * 
+	//  * @param usuariosImportados TreeMap con los usuarios a cargar
+	//  */
+	// public void cargarUsuarios(TreeMap<String, Usuario> usuariosImportados) {
+	// 	this.usuarios = usuariosImportados;
+	// }
 }

@@ -28,10 +28,12 @@ eliminarPregunta
 existeRespuesta
 getRespuesta
 getNextIdRespuesta
-guardarRespuesta  // respuestas.put(Integer.valueOf(idR), nuevaRespuesta);
+guardarRespuesta 
 actualizarRespuesta
 eliminarRespuesta
 
+existeUsuario
+getUsuario
 actualizarUsuario
  */
 

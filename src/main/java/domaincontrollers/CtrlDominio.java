@@ -65,12 +65,21 @@ public class CtrlDominio {
 	 */
 	private CtrlDominio() {
 		gestorPersistencia = GestorPersistencia.getInstance();
-		ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestorPersistencia);
+		ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestorPersistencia,
+															ctrlDominioRespuesta,
+															ctrlDominioPregunta);
 		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia,
-			ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
-		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia);
+															ctrlDominioPregunta, 
+															ctrlDominioRespuesta, 
+															ctrlDominioUsuario);
+		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, 
+															ctrlDominioRespuesta,
+															ctrlDominioEncuesta,
+															ctrlDominioUsuario);
 		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia,
-			ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);
+															ctrlDominioUsuario, 
+															ctrlDominioEncuesta, 
+															ctrlDominioPregunta);
 		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(gestorPersistencia);
 	}
 
@@ -133,8 +142,7 @@ public class CtrlDominio {
 	 * @return Lista de IDs de encuestas respondidas
 	 */
 	public List<Integer> getEncuestasRespondidas() {
-		return ctrlDominioUsuario.getEncuestasRespondidas(ctrlDominioRespuesta, 
-		                                                  ctrlDominioPregunta);
+		return ctrlDominioUsuario.getEncuestasRespondidas();
 	}
 
 	/**
