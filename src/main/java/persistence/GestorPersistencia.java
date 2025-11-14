@@ -9,7 +9,17 @@ import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
 
-// *** pnd de revisar a partir de la linea 289
+/*
+
+PND:
+
+existeEncuesta
+getEncuesta
+getNextIdEncuesta
+actualizarEncuesta(Encuesta e)
+eliminarEncuesta(idE)
+
+ */
 
 /**
  * Controlador de datos del sistema
@@ -18,6 +28,9 @@ import domain.Respuesta;
  */
 public class GestorPersistencia {
     /** Atributos **/
+
+    private static GestorPersistencia singletonInstance;
+
     /**
      * Mapa que almacena los usuarios existentes del sistema.
      * <p>
@@ -49,20 +62,23 @@ public class GestorPersistencia {
 
     /** Constructor y metodos de inicializacion **/
 
-	public GestorPersistencia() {
-		inicializarGestorPersistencia();
-	}
-
-
     /**
      * Inicialización de los atributos de la clase
      */
-	public void inicializarGestorPersistencia() {
-        usuarios = new HashMap();
-        encuestas = new HashMap();
-        preguntas = new HashMap();
-        respuestas = new HashMap();
+	public GestorPersistencia() {
+        usuarios = new HashMap<>();
+        encuestas = new HashMap<>();
+        preguntas = new HashMap<>();
+        respuestas = new HashMap<>();
     }
+
+    public static GestorPersistencia getInstance() {
+        if (singletonInstance == null) {
+            singletonInstance = new GestorPersistencia();
+        }
+        return singletonInstance;
+    }
+
 
     /**
 	 * Funciones que se llaman desde el controlador de Dominio. 
@@ -288,143 +304,143 @@ public class GestorPersistencia {
         respuestas.remove(id);
     }
 
-    // ==================== MÉTODOS PARA NUEVA ARQUITECTURA (Singleton + TreeMap bulk operations) ====================
+    // // ==================== MÉTODOS PARA NUEVA ARQUITECTURA (Singleton + TreeMap bulk operations) ====================
     
-    /**
-     * Instancia única de GestorPersistencia (Singleton).
-     * Implementado por el copilot, pendiente de revisar.
-     */
-    private static GestorPersistencia singletonInstance;
+    // /**
+    //  * Instancia única de GestorPersistencia (Singleton).
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  */
+    // private static GestorPersistencia singletonInstance;
     
-    /**
-     * Obtiene la instancia única de GestorPersistencia (patrón Singleton).
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @return Instancia única de GestorPersistencia
-     */
-    public static GestorPersistencia getInstance() {
-        if (singletonInstance == null) {
-            singletonInstance = new GestorPersistencia();
-        }
-        return singletonInstance;
-    }
+    // /**
+    //  * Obtiene la instancia única de GestorPersistencia (patrón Singleton).
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @return Instancia única de GestorPersistencia
+    //  */
+    // public static GestorPersistencia getInstance() {
+    //     if (singletonInstance == null) {
+    //         singletonInstance = new GestorPersistencia();
+    //     }
+    //     return singletonInstance;
+    // }
     
-    /**
-     * Carga todos los usuarios desde persistencia al iniciar la aplicación.
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @return TreeMap con todos los usuarios (clave: nomUsuario)
-     */
-    public TreeMap<String, Usuario> cargarTodosUsuarios() {
-        // Implementado por el copilot, pendiente de revisar
-        TreeMap<String, Usuario> resultado = new TreeMap<>();
-        for (Map.Entry<String, Usuario> entry : usuarios.entrySet()) {
-            resultado.put(entry.getKey(), entry.getValue());
-        }
-        return resultado;
-    }
+    // /**
+    //  * Carga todos los usuarios desde persistencia al iniciar la aplicación.
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @return TreeMap con todos los usuarios (clave: nomUsuario)
+    //  */
+    // public TreeMap<String, Usuario> cargarTodosUsuarios() {
+    //     // Implementado por el copilot, pendiente de revisar
+    //     TreeMap<String, Usuario> resultado = new TreeMap<>();
+    //     for (Map.Entry<String, Usuario> entry : usuarios.entrySet()) {
+    //         resultado.put(entry.getKey(), entry.getValue());
+    //     }
+    //     return resultado;
+    // }
     
-    /**
-     * Guarda todos los usuarios en persistencia al cerrar la aplicación.
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @param todosUsuarios TreeMap con todos los usuarios a guardar
-     */
-    public void guardarTodosUsuarios(TreeMap<String, Usuario> todosUsuarios) {
-        // Implementado por el copilot, pendiente de revisar
-        this.usuarios.clear();
-        this.usuarios.putAll(todosUsuarios);
-    }
+    // /**
+    //  * Guarda todos los usuarios en persistencia al cerrar la aplicación.
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @param todosUsuarios TreeMap con todos los usuarios a guardar
+    //  */
+    // public void guardarTodosUsuarios(TreeMap<String, Usuario> todosUsuarios) {
+    //     // Implementado por el copilot, pendiente de revisar
+    //     this.usuarios.clear();
+    //     this.usuarios.putAll(todosUsuarios);
+    // }
     
-    /**
-     * Carga todas las encuestas desde persistencia al iniciar la aplicación.
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @return TreeMap con todas las encuestas (clave: idEncuesta)
-     */
-    public TreeMap<Integer, Encuesta> cargarTodasEncuestas() {
-        // Implementado por el copilot, pendiente de revisar
-        TreeMap<Integer, Encuesta> resultado = new TreeMap<>();
-        for (Map.Entry<Integer, Encuesta> entry : encuestas.entrySet()) {
-            resultado.put(entry.getKey(), entry.getValue());
-        }
-        return resultado;
-    }
+    // /**
+    //  * Carga todas las encuestas desde persistencia al iniciar la aplicación.
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @return TreeMap con todas las encuestas (clave: idEncuesta)
+    //  */
+    // public TreeMap<Integer, Encuesta> cargarTodasEncuestas() {
+    //     // Implementado por el copilot, pendiente de revisar
+    //     TreeMap<Integer, Encuesta> resultado = new TreeMap<>();
+    //     for (Map.Entry<Integer, Encuesta> entry : encuestas.entrySet()) {
+    //         resultado.put(entry.getKey(), entry.getValue());
+    //     }
+    //     return resultado;
+    // }
     
-    /**
-     * Guarda todas las encuestas en persistencia al cerrar la aplicación.
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @param todasEncuestas TreeMap con todas las encuestas a guardar
-     */
-    public void guardarTodasEncuestas(TreeMap<Integer, Encuesta> todasEncuestas) {
-        // Implementado por el copilot, pendiente de revisar
-        this.encuestas.clear();
-        this.encuestas.putAll(todasEncuestas);
-    }
+    // /**
+    //  * Guarda todas las encuestas en persistencia al cerrar la aplicación.
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @param todasEncuestas TreeMap con todas las encuestas a guardar
+    //  */
+    // public void guardarTodasEncuestas(TreeMap<Integer, Encuesta> todasEncuestas) {
+    //     // Implementado por el copilot, pendiente de revisar
+    //     this.encuestas.clear();
+    //     this.encuestas.putAll(todasEncuestas);
+    // }
     
-    /**
-     * Carga todas las preguntas desde persistencia al iniciar la aplicación.
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @return TreeMap con todas las preguntas (clave: idPregunta)
-     */
-    public TreeMap<Integer, Pregunta> cargarTodasPreguntas() {
-        // Implementado por el copilot, pendiente de revisar
-        TreeMap<Integer, Pregunta> resultado = new TreeMap<>();
-        for (Map.Entry<Integer, Pregunta> entry : preguntas.entrySet()) {
-            resultado.put(entry.getKey(), entry.getValue());
-        }
-        return resultado;
-    }
+    // /**
+    //  * Carga todas las preguntas desde persistencia al iniciar la aplicación.
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @return TreeMap con todas las preguntas (clave: idPregunta)
+    //  */
+    // public TreeMap<Integer, Pregunta> cargarTodasPreguntas() {
+    //     // Implementado por el copilot, pendiente de revisar
+    //     TreeMap<Integer, Pregunta> resultado = new TreeMap<>();
+    //     for (Map.Entry<Integer, Pregunta> entry : preguntas.entrySet()) {
+    //         resultado.put(entry.getKey(), entry.getValue());
+    //     }
+    //     return resultado;
+    // }
     
-    /**
-     * Guarda todas las preguntas en persistencia al cerrar la aplicación.
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @param todasPreguntas TreeMap con todas las preguntas a guardar
-     */
-    public void guardarTodasPreguntas(TreeMap<Integer, Pregunta> todasPreguntas) {
-        // Implementado por el copilot, pendiente de revisar
-        this.preguntas.clear();
-        this.preguntas.putAll(todasPreguntas);
-    }
+    // /**
+    //  * Guarda todas las preguntas en persistencia al cerrar la aplicación.
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @param todasPreguntas TreeMap con todas las preguntas a guardar
+    //  */
+    // public void guardarTodasPreguntas(TreeMap<Integer, Pregunta> todasPreguntas) {
+    //     // Implementado por el copilot, pendiente de revisar
+    //     this.preguntas.clear();
+    //     this.preguntas.putAll(todasPreguntas);
+    // }
     
-    /**
-     * Carga todas las respuestas desde persistencia al iniciar la aplicación.
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @return TreeMap con todas las respuestas (clave: idRespuesta)
-     */
-    public TreeMap<Integer, Respuesta> cargarTodasRespuestas() {
-        // Implementado por el copilot, pendiente de revisar
-        TreeMap<Integer, Respuesta> resultado = new TreeMap<>();
-        for (Map.Entry<Integer, Respuesta> entry : respuestas.entrySet()) {
-            resultado.put(entry.getKey(), entry.getValue());
-        }
-        return resultado;
-    }
+    // /**
+    //  * Carga todas las respuestas desde persistencia al iniciar la aplicación.
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @return TreeMap con todas las respuestas (clave: idRespuesta)
+    //  */
+    // public TreeMap<Integer, Respuesta> cargarTodasRespuestas() {
+    //     // Implementado por el copilot, pendiente de revisar
+    //     TreeMap<Integer, Respuesta> resultado = new TreeMap<>();
+    //     for (Map.Entry<Integer, Respuesta> entry : respuestas.entrySet()) {
+    //         resultado.put(entry.getKey(), entry.getValue());
+    //     }
+    //     return resultado;
+    // }
     
-    /**
-     * Guarda todas las respuestas en persistencia al cerrar la aplicación.
-     * Implementado por el copilot, pendiente de revisar.
-     * 
-     * @param todasRespuestas TreeMap con todas las respuestas a guardar
-     */
-    public void guardarTodasRespuestas(TreeMap<Integer, Respuesta> todasRespuestas) {
-        // Implementado por el copilot, pendiente de revisar
-        this.respuestas.clear();
-        this.respuestas.putAll(todasRespuestas);
-    }
+    // /**
+    //  * Guarda todas las respuestas en persistencia al cerrar la aplicación.
+    //  * Implementado por el copilot, pendiente de revisar.
+    //  * 
+    //  * @param todasRespuestas TreeMap con todas las respuestas a guardar
+    //  */
+    // public void guardarTodasRespuestas(TreeMap<Integer, Respuesta> todasRespuestas) {
+    //     // Implementado por el copilot, pendiente de revisar
+    //     this.respuestas.clear();
+    //     this.respuestas.putAll(todasRespuestas);
+    // }
 
-    public void actualizarUsuario(Usuario u) {
-        String userName = u.getNomUsuario();
+    // public void actualizarUsuario(Usuario u) {
+    //     String userName = u.getNomUsuario();
 
-        if (!usuarios.remove(u)) {
-            throw new IllegalArgumentException("El usuario con nombre: " + userName + " no existe");
-        }
+    //     if (!usuarios.remove(u)) {
+    //         throw new IllegalArgumentException("El usuario con nombre: " + userName + " no existe");
+    //     }
 
         
-    }
+    // }
 }
 

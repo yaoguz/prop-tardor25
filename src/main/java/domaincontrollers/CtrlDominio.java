@@ -48,12 +48,10 @@ import persistence.GestorPersistencia;
  */
 public class CtrlDominio {
 
-	/** Atributos - Capa de Datos **/
+	/** Atributos **/
 
-	private GestorPersistencia gestorPersistencia;
-
-	/** Atributos - Controladores de dominio especializados **/
-	
+	private static CtrlDominio singletonInstance;
+	private GestorPersistencia gestorPersistencia;	
 	private CtrlDominioUsuario ctrlDominioUsuario;
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
 	private CtrlDominioPregunta ctrlDominioPregunta;
@@ -65,37 +63,24 @@ public class CtrlDominio {
 	/**
 	 * Constructora por defecto. Inicializa todos los controladores.
 	 */
-	public CtrlDominio() {
-		inicializarCtrlDominio();
+	private CtrlDominio() {
+		gestorPersistencia = GestorPersistencia.getInstance();
+		ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestorPersistencia);
+		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia);
+		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia);
+		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia);
+		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(gestorPersistencia);
 	}
 
-	/**
-	 * Inicializa y carga todos los datos del sistema.
-	 * 
-	 * IMPORTANTE: Este método se llama al iniciar la aplicación.
-	 * Carga todos los datos desde persistencia a memoria.
+    /**
+	 * Implementación patrón singleton
+	 * @return instancia del CtrlDominio
 	 */
-	public void inicializarCtrlDominio() {
-		// inicializar gestor de persistencia
-		gestorPersistencia = GestorPersistencia.getInstance();
-		
-		// inicializar controladores de dominio especializados (sin dependencias)
-		ctrlDominioUsuario = new CtrlDominioUsuario();
-		ctrlDominioEncuesta = new CtrlDominioEncuesta();
-		ctrlDominioPregunta = new CtrlDominioPregunta();
-		ctrlDominioRespuesta = new CtrlDominioRespuesta();
-		ctrlDominioPerfil = new CtrlDominioPerfil();
-		
-		// cargar datos desde persistencia
-		try {
-			ctrlDominioUsuario.cargarUsuarios(gestorPersistencia.cargarTodosUsuarios());
-			ctrlDominioEncuesta.cargarEncuestas(gestorPersistencia.cargarTodasEncuestas());
-			ctrlDominioPregunta.cargarPreguntas(gestorPersistencia.cargarTodasPreguntas());
-			ctrlDominioRespuesta.cargarRespuestas(gestorPersistencia.cargarTodasRespuestas());
-		} catch (Exception e) {
-			// Si es la primera vez que se ejecuta la app, no hay datos que cargar
-			System.out.println("Iniciando aplicación sin datos previos (primera ejecución)");
+	public static CtrlDominio getInstance() {
+		if (singletonInstance == null) {
+			singletonInstance = new CtrlDominio();
 		}
+		return singletonInstance;
 	}
 
 	// ==================== GESTIÓN DE USUARIOS ====================
@@ -151,31 +136,9 @@ public class CtrlDominio {
 	}
 
 	/**
-	 * Cierra la sesión del usuario actual y guarda todos los datos en persistencia.
-	 * 
-	 * ARQUITECTURA: Este es el ÚNICO momento en que se llama a persistencia para guardar.
-	 * Durante toda la sesión, los datos viven en memoria (TreeMaps en cada CtrlDominioXXX).
-	 * 
-	 * Pasos:
-	 * 1. Exportar todos los datos a persistencia (GestorPersistencia)
-	 * 2. Cerrar sesión del usuario actual
-	 * 
-	 * @throws IllegalStateException si hay errores al guardar en persistencia
+	 * Cierra la sesión del usuario actual (todos los datos ya estarán en persistencia.
 	 */
 	public void cerrarSesion() {
-		// 1. GUARDAR TODO EN PERSISTENCIA (solo aquí, no durante operaciones CRUD)
-		try {
-			// Cada CtrlDominioXXX debe implementar un método getAllXXX() que devuelva su TreeMap
-			gestorPersistencia.guardarTodosUsuarios(ctrlDominioUsuario.getAllUsuarios());
-			gestorPersistencia.guardarTodasEncuestas(ctrlDominioEncuesta.getAllEncuestas());
-			gestorPersistencia.guardarTodasPreguntas(ctrlDominioPregunta.getAllPreguntas());
-			gestorPersistencia.guardarTodasRespuestas(ctrlDominioRespuesta.getAllRespuestas());
-			// ctrlDominioPerfil no tiene datos propios, solo calcula sobre usuarios
-		} catch (Exception e) {
-			throw new IllegalStateException("Error al guardar datos en persistencia: " + e.getMessage());
-		}
-		
-		// 2. Cerrar sesión del usuario
 		ctrlDominioUsuario.cerrarSesionActual();
 	}
 
@@ -371,9 +334,6 @@ public class CtrlDominio {
 	
 	/**
 	 * Modifica una pregunta existente (elimina la antigua y crea una nueva).
-	 * 
-	 * NOTA: Este enfoque mantiene la integridad referencial pero pierde el historial.
-	 * (Alternativa: implementar modificación in-situ si se requiere mantener respuestas.)
 	 * 
 	 * @param idPregunta ID de la pregunta a modificar
 	 * @param infoP Nueva información de la pregunta (el tipo da igual, se sobreescribe con el de la pregunta a modificar)

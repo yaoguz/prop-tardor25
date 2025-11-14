@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import domain.Usuario;
+import persistence.GestorPersistencia;
 import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
@@ -17,31 +18,43 @@ import domain.Respuesta;
 /**
  * Controlador de Dominio para la gestión de encuestas.
  * 
- * Responsabilidades:
- * - Creación de encuestas
- * - Modificación de encuestas
- * - Eliminación de encuestas
- * - Importación/Exportación de encuestas
- * - Consulta de preguntas y respuestas de encuestas
- * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioEncuesta {
-	
-	/** Mapa de encuestas (clave: idEncuesta, valor: Encuesta) */
-	private TreeMap<Integer, Encuesta> encuestas;
-	
-	/** ID para la próxima encuesta a crear */
-	private int nextId;
 
-	/**
-	 * Constructora. Inicializa las estructuras de datos.
-	 */
-	public CtrlDominioEncuesta() {
-		this.encuestas = new TreeMap<>();
-		this.nextId = 1;
+	private static CtrlDominioEncuesta singletonInstance;
+	private GestorPersistencia gestor;
+
+	private CtrlDominioEncuesta(GestorPersistencia gestor) {
+		this.gestor = gestor;
 	}
+
+	/** 
+	 * Implementación sigleton
+	 */
+	public static CtrlDominioEncuesta getInstance(GestorPersistencia gestor) {
+		if (singletonInstance == null) {
+			singletonInstance = new CtrlDominioEncuesta(gestor);
+		}
+		return singletonInstance;
+	}
+
+	// /** Mapa de encuestas (clave: idEncuesta, valor: Encuesta) */
+	// private TreeMap<Integer, Encuesta> encuestas;
 	
+	// /** ID para la próxima encuesta a crear */
+	// private int nextId;
+
+	// /**
+	//  * Verifica si existe una encuesta con el ID especificado.
+	//  * 
+	//  * @param idE ID de la encuesta
+	//  * @return true si existe, false en caso contrario
+	//  */
+	// public boolean existeEncuesta(int idE) {
+	// 	return encuestas.containsKey(idE);
+	// }
+
 	/**
 	 * Verifica si existe una encuesta con el ID especificado.
 	 * 
@@ -49,9 +62,25 @@ public class CtrlDominioEncuesta {
 	 * @return true si existe, false en caso contrario
 	 */
 	public boolean existeEncuesta(int idE) {
-		return encuestas.containsKey(idE);
+		return gestor.existeEncuesta(idE);
 	}
+
 	
+	// /**
+	//  * Obtiene una instancia de Encuesta con el id idEncuesta.
+	//  * 
+	//  * @param idEncuesta ID de la encuesta
+	//  * @return Instancia de Encuesta
+	//  * @throws IllegalStateException si no existe una encuesta con ese ID
+	//  */
+	// public Encuesta getEncuesta(int idEncuesta) {
+	// 	Encuesta e = encuestas.get(idEncuesta);
+	// 	if (e == null) {
+	// 		throw new IllegalStateException("No existe encuesta con id " + idEncuesta);
+	// 	}
+	// 	return e;
+	// }
+
 	/**
 	 * Obtiene una instancia de Encuesta con el id "idEncuesta".
 	 * 
@@ -60,12 +89,13 @@ public class CtrlDominioEncuesta {
 	 * @throws IllegalStateException si no existe una encuesta con ese ID
 	 */
 	public Encuesta getEncuesta(int idEncuesta) {
-		Encuesta e = encuestas.get(idEncuesta);
+		Encuesta e = gestor.getEncuesta(idEncuesta);
 		if (e == null) {
 			throw new IllegalStateException("No existe encuesta con id " + idEncuesta);
 		}
 		return e;
 	}
+
 	
 	/**
 	 * Obtiene los IDs de las preguntas de una encuesta.
@@ -95,12 +125,10 @@ public class CtrlDominioEncuesta {
 		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
 		
 		// crear encuesta directamente
-		int idE = nextId;
-		nextId++;
+		int idE = gestor.getNextIdEncuesta();
 		Encuesta e = new Encuesta(idE, titulo, nomUsuario);
-		encuestas.put(idE, e);
-		
-		// guardar en usuario (NO persistencia - solo en memoria)
+		gestor.guardarEncuesta(e); // en persistencia: encuestas.put(idE, e); nextId++;
+
 		u.guardarIdEncuesta(idE);
 		return idE;
 	}
@@ -129,7 +157,8 @@ public class CtrlDominioEncuesta {
 		for (PreguntaImportData infoP : datos.preguntas) {
 			anadirPregunta(idE, infoP, ctrlDominioPregunta);
 		}
-		
+
+		gestor.actualizarEncuesta(getEncuesta(idE));
 		return idE;
 	}
 	
@@ -176,6 +205,7 @@ public class CtrlDominioEncuesta {
 		}
 		Encuesta e = getEncuesta(idEncuesta);
 		e.cambiarTitulo(titulo);
+		gestor.actualizarEncuesta(e);
 	}
 	
 	/**
@@ -203,8 +233,8 @@ public class CtrlDominioEncuesta {
 		Usuario u = ctrlDominioUsuario.getUsuario(nomCreador);
 		u.eliminarIdEncuestaCreada(idEncuesta);
 		
-		// eliminar del TreeMap (NO persistencia - solo en memoria)
-		encuestas.remove(idEncuesta);
+		// eliminar de persistencia
+		gestor.eliminarEncuesta(idEncuesta); //persistencia: encuestas.remove(idEncuesta);
 	}
 	
 	/**
@@ -261,6 +291,7 @@ public class CtrlDominioEncuesta {
                   infoP.tipo, infoP.atributosEspecificos, this);
 
 		e.guardarPregunta(idP);
+		gestor.actualizarEncuesta(e);
 		return idP;
 	}
 
@@ -273,8 +304,6 @@ public class CtrlDominioEncuesta {
         // infoP1.atributosEspecificos.put("max", 40);
         // int idP1 = ctrlEncuesta.anadirPregunta(idEncuesta1, infoP1, ctrlPregunta);
 
-
-	
 	/**
 	 * Obtiene las respuestas de todos los usuarios que han respondido una encuesta.
 	 * Formato requerido para algoritmos de clustering: matriz M x N donde:
@@ -324,32 +353,32 @@ public class CtrlDominioEncuesta {
 		return matriz;
 	}
 	
-	/**
-	 * Obtiene todas las encuestas almacenadas en memoria.
-	 * 
-	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
-	 * para exportar todos los datos a persistencia al cerrar la aplicación.
-	 * 
-	 * @return TreeMap con todas las encuestas (clave: idEncuesta)
-	 */
-	public TreeMap<Integer, Encuesta> getAllEncuestas() {
-		return new TreeMap<>(encuestas); // devolver copia para evitar modificaciones externas
-	}
+	// /**
+	//  * Obtiene todas las encuestas almacenadas en memoria.
+	//  * 
+	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
+	//  * para exportar todos los datos a persistencia al cerrar la aplicación.
+	//  * 
+	//  * @return TreeMap con todas las encuestas (clave: idEncuesta)
+	//  */
+	// public TreeMap<Integer, Encuesta> getAllEncuestas() {
+	// 	return new TreeMap<>(encuestas); // devolver copia para evitar modificaciones externas
+	// }
 	
-	/**
-	 * Importa encuestas desde persistencia al iniciar aplicación.
-	 * 
-	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
-	 * para cargar los datos guardados de la sesión anterior.
-	 * 
-	 * @param encuestasImportadas TreeMap con las encuestas a cargar
-	 */
-	public void cargarEncuestas(TreeMap<Integer, Encuesta> encuestasImportadas) {
-		this.encuestas = encuestasImportadas;
+	// /**
+	//  * Importa encuestas desde persistencia al iniciar aplicación.
+	//  * 
+	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
+	//  * para cargar los datos guardados de la sesión anterior.
+	//  * 
+	//  * @param encuestasImportadas TreeMap con las encuestas a cargar
+	//  */
+	// public void cargarEncuestas(TreeMap<Integer, Encuesta> encuestasImportadas) {
+	// 	this.encuestas = encuestasImportadas;
 		
-		// Actualizar nextId para que sea mayor que el ID más alto
-		if (!encuestas.isEmpty()) {
-			this.nextId = encuestas.lastKey() + 1;
-		}
-	}
+	// 	// Actualizar nextId para que sea mayor que el ID más alto
+	// 	if (!encuestas.isEmpty()) {
+	// 		this.nextId = encuestas.lastKey() + 1;
+	// 	}
+	// }
 }
