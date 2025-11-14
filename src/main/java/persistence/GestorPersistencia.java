@@ -19,6 +19,12 @@ getNextIdEncuesta
 actualizarEncuesta(Encuesta e)
 eliminarEncuesta(idE)
 
+existePregunta
+getPregunta
+getNextIdPregunta
+actualizarPregunta
+eliminarPregunta
+
  */
 
 /**

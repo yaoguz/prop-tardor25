@@ -12,6 +12,7 @@ import domain.PreguntaNumerica;
 import domain.PreguntaOpcionMultiple;
 import domain.PreguntaOpcionUnica;
 import domain.Respuesta;
+import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de preguntas.
@@ -21,48 +22,80 @@ import domain.Respuesta;
  * - Modificar preguntas existentes
  * - Eliminar preguntas
  * 
- * @author Denis Roca
+ * @author Yaoyao Guo Zhang
  */
 public class CtrlDominioPregunta {
 	
-	/** Mapa de preguntas (clave: idPregunta, valor: Pregunta) */
-	private TreeMap<Integer, Pregunta> preguntas;
+	// /** Mapa de preguntas (clave: idPregunta, valor: Pregunta) */
+	// private TreeMap<Integer, Pregunta> preguntas;
 	
-	/** ID para la próxima pregunta a crear */
-	private int nextId;
+	// /** ID para la próxima pregunta a crear */
+	// private int nextId;
+
+	private static CtrlDominioPregunta singletonInstance;
+    private GestorPersistencia gestor;
+
+    private CtrlDominioPregunta(GestorPersistencia gestor) {
+        this.gestor = gestor;
+    }
+
+    public static CtrlDominioPregunta getInstance(GestorPersistencia gestor) {
+        if (singletonInstance == null) {
+            singletonInstance = new CtrlDominioPregunta(gestor);
+        }
+        return singletonInstance;
+    }
+	
+	// /**
+	//  * Se verifica si existe una pregunta con el ID especificado.
+	//  * 
+	//  * @param idP ID de la pregunta
+	//  * @return true si existe, false en caso contrario
+	//  */
+	// public boolean existePregunta(int idP) {
+	// 	return preguntas.containsKey(idP);
+	// }
+	
+	// /**
+	//  * Se obtiene la instancia de Pregunta con el id pasasdo por parámetro.
+	//  * 
+	//  * @param idPregunta ID de la pregunta a obtener.
+	//  * @return la Pregunta cuyo identificador se ha pasado por parámetro.
+	//  * @throws IllegalArgumentException si no existe una instancia de Pregunta con identificador idPregunta.
+	//  */
+	// public Pregunta getPregunta(int idPregunta) {
+	// 	Pregunta p = preguntas.get(idPregunta);
+	// 	if (p == null) {
+	// 		throw new IllegalArgumentException("No existe la pregunta");
+	// 	}
+	// 	return p;
+	// }
 
 	/**
-	 * Constructora. Inicializa las estructuras de datos.
-	 */
-	public CtrlDominioPregunta() {
-		this.preguntas = new TreeMap<>();
-		this.nextId = 1;
-	}
-	
-	/**
-	 * Se verifica si existe una pregunta con el ID especificado.
+	 * Se verifica si existe una pregunta con id idP.
 	 * 
 	 * @param idP ID de la pregunta
 	 * @return true si existe, false en caso contrario
 	 */
 	public boolean existePregunta(int idP) {
-		return preguntas.containsKey(idP);
-	}
-	
+        return gestor.existePregunta(idP);
+    }
+
 	/**
-	 * Se obtiene la instancia de Pregunta con el id pasasdo por parámetro.
+	 * Se obtiene la instancia de Pregunta con id idPregunta.
 	 * 
 	 * @param idPregunta ID de la pregunta a obtener.
 	 * @return la Pregunta cuyo identificador se ha pasado por parámetro.
 	 * @throws IllegalArgumentException si no existe una instancia de Pregunta con identificador idPregunta.
 	 */
-	public Pregunta getPregunta(int idPregunta) {
-		Pregunta p = preguntas.get(idPregunta);
-		if (p == null) {
-			throw new IllegalArgumentException("No existe la pregunta");
-		}
-		return p;
-	}
+    public Pregunta getPregunta(int idPregunta) {
+        Pregunta p = gestor.getPregunta(idPregunta);
+        if (p == null) {
+            throw new IllegalStateException("No existe pregunta con id " + idPregunta);
+        }
+        return p;
+    }
+
 
 	/**
 	 * Crea una nueva pregunta de tipo libre con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
@@ -74,17 +107,22 @@ public class CtrlDominioPregunta {
 	 * @throws IllegalArgumentException si el enunciado está vacío o es null
 	 */
 	public int crearPreguntaLibre(int idEncuesta, String enunciado, 
-	                               CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
-		int idPregunta = nextId;
-		nextId++;
-		Pregunta p = new PreguntaLibre(idEncuesta, idPregunta, enunciado);
-		preguntas.put(idPregunta, p);
+	                               CtrlDominioEncuesta ctrlDominioEncuesta) 
+								   throws IllegalArgumentException {
+		if (enunciado == null || enunciado.trim().isEmpty()) {
+            throw new IllegalArgumentException("El enunciado no puede estar vacío");
+        }
+
+        int idP = gestor.getNextIdPregunta();
+		Pregunta p = new PreguntaLibre(idEncuesta, idP, enunciado);
+        gestor.guardarPregunta(p); // persistencia: preguntas.put(idPregunta, p);
 		
-		// Actualizar encuesta
+		// actualizar encuesta
 		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
-		e.guardarPregunta(idPregunta);
-		
-		return idPregunta;
+		e.guardarPregunta(idP);
+		gestor.actualizarEncuesta(e);
+
+		return idP;
 	}
 
 	/**
@@ -99,17 +137,25 @@ public class CtrlDominioPregunta {
 	 * @throws IllegalArgumentException si el enunciado está vacío o es null
 	 */
 	public int crearPreguntaNumerica(int idEncuesta, String enunciado, int min, int max,
-	                                  CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
-		int idPregunta = nextId;
-		nextId++;
-		Pregunta p = new PreguntaNumerica(idEncuesta, idPregunta, enunciado, min, max);
-		preguntas.put(idPregunta, p);
+	                                  CtrlDominioEncuesta ctrlDominioEncuesta) 
+									  throws IllegalArgumentException {
+		if (enunciado == null || enunciado.trim().isEmpty()) {
+            throw new IllegalArgumentException("El enunciado no puede estar vacío");
+        }
+        if (min >= max) {
+            throw new IllegalArgumentException("El rango [" + min + ", " + max + "] no es válido");
+        }
+
+		int idP = gestor.getNextIdPregunta();
+		Pregunta p = new PreguntaNumerica(idEncuesta, idP, enunciado, min, max);
+        gestor.guardarPregunta(p);
 		
-		// Actualizar encuesta
+		// actualizar encuesta
 		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
-		e.guardarPregunta(idPregunta);
-		
-		return idPregunta;
+		e.guardarPregunta(idP);
+		gestor.actualizarEncuesta(e);
+
+		return idP;
 	}
 
 	/**
@@ -125,25 +171,31 @@ public class CtrlDominioPregunta {
 	 */
 	public int crearPreguntaOpcionMultiple(int idEncuesta, String enunciado, 
 	                                        List<String> opciones, int numMaxOpc,
-	                                        CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
-		int idPregunta = nextId;
-		nextId++;
-		PreguntaOpcionMultiple p = new PreguntaOpcionMultiple(idEncuesta, idPregunta, enunciado);
-		
+	                                        CtrlDominioEncuesta ctrlDominioEncuesta) 
+											throws IllegalArgumentException {
+		if (enunciado == null || enunciado.trim().isEmpty()) {
+            throw new IllegalArgumentException("El enunciado no puede estar vacío");
+        }
+        if (opciones == null || opciones.size() < 2) {
+            throw new IllegalArgumentException("Se requieren al menos 2 opciones");
+        }
+
+		int idP = gestor.getNextIdPregunta();
+		PreguntaOpcionMultiple p = new PreguntaOpcionMultiple(idEncuesta, idP, enunciado);
+
 		// anadir opciones
 		if (opciones != null) {
-			for (String opcion : opciones) {
-				p.addOpcion(opcion);
-			}
+			for (String opcion : opciones) p.addOpcion(opcion);
 		}
 		p.setNumMaxOpc(numMaxOpc);
-		
-		preguntas.put(idPregunta, p);
+
+        gestor.guardarPregunta(p);
 		
 		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
-		e.guardarPregunta(idPregunta);
-		
-		return idPregunta;
+		e.guardarPregunta(idP);
+		gestor.actualizarEncuesta(e);
+
+		return idP;
 	}
 
 	/**
@@ -159,57 +211,67 @@ public class CtrlDominioPregunta {
 	 */
 	public int crearPreguntaOpcionUnica(int idEncuesta, String enunciado, 
 	                                     List<String> opciones, boolean ordenada,
-	                                     CtrlDominioEncuesta ctrlDominioEncuesta) throws IllegalArgumentException {
-		int idPregunta = nextId;
-		nextId++;
+	                                     CtrlDominioEncuesta ctrlDominioEncuesta) 
+										 throws IllegalArgumentException {
+		if (enunciado == null || enunciado.trim().isEmpty()) {
+            throw new IllegalArgumentException("El enunciado no puede estar vacío");
+        }
+        if (opciones == null || opciones.size() < 2) {
+            throw new IllegalArgumentException("Se requieren al menos 2 opciones");
+        }
+
+		int idP = gestor.getNextIdPregunta();
 		PreguntaOpcionUnica p = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, ordenada);
-		
-		// Añadir opciones usando addOpcion() (aprovecha validación existente)
+
+		// anadir opciones
 		if (opciones != null) {
-			for (String opcion : opciones) {
-				p.addOpcion(opcion);
-			}
+			for (String opcion : opciones) p.addOpcion(opcion);
 		}
-		
-		preguntas.put(idPregunta, p);
+
+        gestor.guardarPregunta(p);
 		
 		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
-		e.guardarPregunta(idPregunta);
-		
-		return idPregunta;
+		e.guardarPregunta(idP);
+		gestor.actualizarEncuesta(e);
+
+		return idP;
 	}
 
 	/**
-	 * Se añade un identificador de respuesta a la lista de respuestas de la pregunta.
+	 * Se añade una respuesta a la lista de respuestas de la pregunta.
 	 * 
 	 * @param idPregunta identificador de la pregunta a la que se quiere añadir la respuesta
 	 * @param idRespuesta identificador de la respuesta a añadir
 	 * @throws IllegalArgumentException si no existe la pregunta
 	 */
-	public void anadirRespuesta(int idPregunta, int idRespuesta) throws IllegalArgumentException {
-		Pregunta p = preguntas.get(idPregunta);
+	public void anadirRespuesta(int idPregunta, int idRespuesta) 
+								throws IllegalArgumentException {
+		Pregunta p = getPregunta(idPregunta);
 		if (p == null) {
 			throw new IllegalArgumentException("No existe la pregunta");
 		}
 		p.guardarIdRespuesta(idRespuesta);
+		gestor.actualizarPregunta(p);
 	}
 
 	/**
-	 * Se quita un identificador de respuesta de la lista de respuestas de la pregunta.
+	 * Se elimina una respuesta de la lista de respuestas de la pregunta.
 	 * 
-	 * IMPORTANTE: Este método solo elimina la referencia en Pregunta, NO elimina la respuesta.
-	 * Usado por CtrlDominioRespuesta.eliminarRespuesta() para actualizar referencias.
+	 * IMPORTANTE: solo elimina la referencia en Pregunta, NO elimina la respuesta.
+	 * Usado por CtrlDominioRespuesta.eliminarRespuesta()
 	 * 
 	 * @param idPregunta identificador de la pregunta a la cual se le quiere quitar la respuesta
 	 * @param idRespuesta identificador de la respuesta a eliminar
 	 * @throws IllegalArgumentException si no existe la pregunta o la pregunta no tiene esa respuesta
 	 */
-	public void eliminarRespuestaReferencia(int idPregunta, int idRespuesta) throws IllegalArgumentException {
-		Pregunta p = preguntas.get(idPregunta);
+	public void eliminarRespuestaReferencia(int idPregunta, int idRespuesta) 
+											throws IllegalArgumentException {
+		Pregunta p = getPregunta(idPregunta);
 		if (p == null) {
 			throw new IllegalArgumentException("No existe la pregunta");
 		}
 		p.eliminarIdRespuesta(idRespuesta);
+		gestor.actualizarPregunta(p);
 	}
 	
 	/**
@@ -222,8 +284,7 @@ public class CtrlDominioPregunta {
 	}
 	
 	/**
-	 * Crea una pregunta genérica a partir de PreguntaImportData (para importación).
-	 * Usado por CtrlDominioEncuesta.importarEncuesta().
+	 * Crea una pregunta genérica a partir de PreguntaImportData.
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
@@ -267,8 +328,6 @@ public class CtrlDominioPregunta {
 	
 	/**
 	 * Se modifica una pregunta existente (elimina la antigua y crea una nueva).
-	 * 
-	 * NOTA: Este enfoque mantiene la integridad referencial pero pierde el historial.
 	 * 
 	 * @param idPregunta ID de la pregunta a modificar
 	 * @param infoP Nueva información de la pregunta (el tipo da igual, se sobreescribe con el de la pregunta a modificar)
@@ -323,8 +382,7 @@ public class CtrlDominioPregunta {
 		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
 		e.eliminarPregunta(idPregunta);
 		
-		// eliminar del TreeMap (NO persistencia - solo memoria)
-		preguntas.remove(idPregunta);
+		gestor.eliminarPregunta(idPregunta);
 	}
 	
 	/**
@@ -351,32 +409,32 @@ public class CtrlDominioPregunta {
 		return respuestas;
 	}
 	
-	/**
-	 * Obtiene todas las preguntas almacenadas en memoria.
-	 * 
-	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
-	 * para exportar todos los datos a persistencia al cerrar la aplicación.
-	 * 
-	 * @return TreeMap con todas las preguntas (clave: idPregunta)
-	 */
-	public TreeMap<Integer, Pregunta> getAllPreguntas() {
-		return new TreeMap<>(preguntas); // devolver copia para evitar modificaciones externas
-	}
+	// /**
+	//  * Obtiene todas las preguntas almacenadas en memoria.
+	//  * 
+	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
+	//  * para exportar todos los datos a persistencia al cerrar la aplicación.
+	//  * 
+	//  * @return TreeMap con todas las preguntas (clave: idPregunta)
+	//  */
+	// public TreeMap<Integer, Pregunta> getAllPreguntas() {
+	// 	return new TreeMap<>(preguntas); // devolver copia para evitar modificaciones externas
+	// }
 	
-	/**
-	 * Importa preguntas desde persistencia al iniciar aplicación.
-	 * 
-	 * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
-	 * para cargar los datos guardados de la sesión anterior.
-	 * 
-	 * @param preguntasImportadas TreeMap con las preguntas a cargar
-	 */
-	public void cargarPreguntas(TreeMap<Integer, Pregunta> preguntasImportadas) {
-		this.preguntas = preguntasImportadas;
+	// /**
+	//  * Importa preguntas desde persistencia al iniciar aplicación.
+	//  * 
+	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
+	//  * para cargar los datos guardados de la sesión anterior.
+	//  * 
+	//  * @param preguntasImportadas TreeMap con las preguntas a cargar
+	//  */
+	// public void cargarPreguntas(TreeMap<Integer, Pregunta> preguntasImportadas) {
+	// 	this.preguntas = preguntasImportadas;
 		
-		// Actualizar nextId para que sea mayor que el ID más alto
-		if (!preguntas.isEmpty()) {
-			this.nextId = preguntas.lastKey() + 1;
-		}
-	}
+	// 	// Actualizar nextId para que sea mayor que el ID más alto
+	// 	if (!preguntas.isEmpty()) {
+	// 		this.nextId = preguntas.lastKey() + 1;
+	// 	}
+	// }
 }
