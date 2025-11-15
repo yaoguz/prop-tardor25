@@ -82,7 +82,7 @@ public class DriverPregunta {
         scanner = new Scanner(System.in);
 
         // Inicializar datos de prueba
-        nomU = ctrlUsuario.registrarUsuario("Test5", "123456", "123456");
+        nomU = ctrlUsuario.registrarUsuario("Tester", "123456", "123456");
         idE = ctrlEncuesta.crearEncuesta(nomU, "Título");
         int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:");
         int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "Respuesta Libre");
@@ -235,7 +235,7 @@ public class DriverPregunta {
 	/**
 	 * Prueba el caso de uso de crear una pregunta en una encuesta.
 	 * 
-     * Primero pregunta al testeador el enuunciado de la pregunta que quiere crear.
+     * Primero pregunta al testeador el enunciado de la pregunta que quiere crear.
      * Luego pide el tipo de la pregunta a partir de una selección numérica:
      *   0 -> Se creará una pregunta con respuesta libre.
      *   1 -> Se creará una pregunta con respuesta de valor numérico.
@@ -319,7 +319,26 @@ public class DriverPregunta {
     }
 
 
-    // 0/1
+	/**
+	 * Prueba el caso de uso de modificar una pregunta en una encuesta.
+	 * 
+     * Primero pide el identificador de la pregunta que se quiere modificar.
+     * Luego pregunta el enunciado modificado o si no quiere cambiarlo.
+     * 
+     * Dependiendo del tipo de la pregunta a cambiar, se pedirán los datos correspondientes y se modificará la pregunta con esos datos. Los cuales son:
+     *   Libre ------------> No necesita más datos.
+     *   Numérica ---------> Número mínimo y máximo del rango en el que podrá estar la respuesta de la pregunta.
+     *   Opción múltiple --> Todas las opciones de la pregunta de una en una y luego el número máximo de opciones que se podrán escoger.
+     *   Opción única -----> Todas las opciones de la pregunta de una en una y luego si las opciones tienen un orden, que se indica con un 1
+     *                       si está ordenada o 0 si no (el código sólo comprueba si es 1, así que cualquier otro número será no ordenada).
+     * 
+     * En caso de error se indicará si alguno de los parámetros no es válido por alguna razón. Por ejemplo:
+     * 
+     * Error: El enunciado no puede ser vacío.
+     * 
+     * Si el error es uno no definido en las funciones que se llamen, se indicará con "Error inesperado" en vez de "Error".
+	 * 
+	 */
     private static void testModificarPregunta() {
         System.out.println("\n--{ MODIFICAR UNA PREGUNTA }--");
         
@@ -334,8 +353,10 @@ public class DriverPregunta {
         }
         CtrlDominioPregunta.PreguntaImportData info = new CtrlDominioPregunta.PreguntaImportData();
         
-        System.out.print("Introduzca el enunciado modificado: ");
-        info.enunciado = scanner.nextLine();
+        System.out.print("Introduzca el enunciado modificado (escriba _igual para mantener el enunciado antiguo): ");
+        String s = scanner.nextLine();
+        if(s == "_igual") info.enunciado = p.getEnunciado();
+        else info.enunciado = s;
 
         switch(p.tipoPregunta()){
             case "numerica":
@@ -380,6 +401,19 @@ public class DriverPregunta {
         }
     }
 
+
+	/**
+	 * Prueba el caso de uso de eliminar una pregunta en una encuesta.
+	 * 
+     * Pide el identificador de la pregunta a eliminar y la elimina.
+     * 
+     * En caso de error se indicará si alguno de los parámetros no es válido por alguna razón. Por ejemplo:
+     * 
+     * Error: No existe pregunta con id 42.
+     * 
+     * Si el error es uno no definido en las funciones que se llamen, se indicará con "Error inesperado" en vez de "Error".
+	 * 
+	 */
     private static void testEliminarPregunta() {
         System.out.println("\n--{ ELIMINAR UNA PREGUNTA }--");
         
@@ -396,6 +430,25 @@ public class DriverPregunta {
         }
     }
 
+
+	/**
+	 * Prueba la funcionalidad de obtener una pregunta.
+	 * 
+     * Pide el identificador de la pregunta que se quiere obtener y muestra los siguientes datos sobre ella:
+     * 
+     *   - Su identificador.
+     *   - El identificador de su encuesta.
+     *   - Su enunciado.
+     *   - Su tipo (en formato minúsculas con separaciones de guión bajo).
+     *   - El número de respuestas que tiene.
+     * 
+     * En caso de error se indicará si alguno de los parámetros no es válido por alguna razón. Por ejemplo:
+     * 
+     * Error: No existe la pregunta con id 13.
+     * 
+     * Si el error es uno no definido en las funciones que se llamen, se indicará con "Error inesperado" en vez de "Error".
+	 * 
+	 */
     private static void testGetPregunta() {
         System.out.println("\n--{ OBTENER UNA PREGUNTA }--");
         
@@ -404,11 +457,12 @@ public class DriverPregunta {
 
         try {
             Pregunta p = ctrlPregunta.getPregunta(idPregunta);
-            System.out.println("Información de la pregunta:");
+            System.out.println("Información de la pregunta:\n");
             System.out.println("Id: " +p.getIdPregunta());
             System.out.println("Id de su encuesta: " +p.getIdEncuesta());
             System.out.println("Enunciado: " +p.getEnunciado());
             System.out.println("Tipo: " +p.tipoPregunta());
+            System.out.println("Número de respuestas: " +p.getIdRespuestas().size());
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
@@ -416,23 +470,45 @@ public class DriverPregunta {
         }
     }
 
+
+	/**
+	 * Prueba la funcionalidad de obtener todas las preguntas.
+	 * 
+     * Muestra el número de preguntas seguido de los identificadores de
+     * todas las preguntas (en caso de haberlos).
+     * 
+     * En caso de error se indicará con "Error inesperado:" seguido del
+     * error, ya que esta función no debería dar error.
+	 * 
+	 */
     private static void testGetAllPreguntas() {
         System.out.println("\n--{ OBTENER TODAS LAS PREGUNTAS }--");
 
         try {
             HashMap<Integer, Pregunta> preguntas = new HashMap<>(ctrlPregunta.getAllPreguntas());
             System.out.println("Total de preguntas: " + preguntas.size());
-            System.out.println("Preguntas:");
-            for(Pregunta p : preguntas.values()){
-                System.out.println("Id: " +p.getIdPregunta());
+            if(preguntas.size > 0){
+                System.out.println("Preguntas:");
+                for(Pregunta p : preguntas.values()){
+                    System.out.println("Id: " +p.getIdPregunta());
+                }
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("\nError inesperado: " + e.getMessage());
         }
     }
 
+
+	/**
+	 * Prueba la funcionalidad de comprobar la existencia de una pregunta.
+	 * 
+     * Pide el identificador de la pregunta que se quiere obtener e
+     * indica si existe o no una pregunta con ese identificador.
+     * 
+     * En caso de error se indicará con "Error inesperado:" seguido del
+     * error, ya que esta función no debería dar error.
+	 * 
+	 */
     private static void testExistePregunta() {
         System.out.println("\n--{ COMPROBAR EXISTENCIA DE UNA PREGUNTA }--");
 
@@ -442,15 +518,28 @@ public class DriverPregunta {
         try {
             if(ctrlPregunta.existePregunta(idPregunta)) System.out.println("La pregunta con id " + idPregunta + " existe");
             else System.out.println("La pregunta con id " + idPregunta + " no existe");
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("\nError inesperado: " + e.getMessage());
         }
     }
 
 
-    
+	/**
+	 * Prueba el caso de uso de añadir una respuesta a una pregunta.
+	 * 
+     * Primero pide el nombre del usuario que responde.
+     * Luego pide el identificador de la pregunta a responder.
+     * Seguidamente se crea una respuesta del mismo tipo que la pregunta y con unos atributos aleatorios y legales conforme
+     * a las restricciones, si hay, de la pregunta a responder.
+     * Finalmente se muestra el identificador de la pregunta creada.
+     * 
+     * En caso de error se indicará si alguno de los parámetros no es válido por alguna razón. Por ejemplo:
+     * 
+     * Error: No existe la pregunta con id 4.
+     * 
+     * Si el error es uno no definido en las funciones que se llamen, se indicará con "Error inesperado" en vez de "Error".
+	 * 
+	 */
     private static void testAnadirRespuesta() {
         System.out.println("\n--{ AÑADIR UNA RESPUESTA A UNA PREGUNTA }--");
 
@@ -482,6 +571,7 @@ public class DriverPregunta {
                     r = ctrlRespuesta.darRespuesta(usr, idPregunta, random.nextInt(p.getCantidad()));
                     break;
             }
+            System.out.println("Creada respuesta con id: " +r);
         }
         catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
