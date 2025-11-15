@@ -3,6 +3,8 @@ package domain;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import domain.Pregunta;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Alessandro Jin
@@ -13,7 +15,7 @@ public class TestPregunta {
     private final int idEncuesta = 3;
 	private final int idPregunta = 10;
     private final String enunciado = "test";
-    private final ArrayList<Integer> idRespuestas = Arraylist<> (Arrays.aslist(1,2,3));
+    private final ArrayList<Integer> idRespuestas = new ArrayList<>(Arrays.asList(1,2,3));
     
     /**
      * Configuración inicial antes de cada test.

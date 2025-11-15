@@ -1,8 +1,6 @@
-package domain.algoritmo.estructuras;
+package domain.algorithm.estructuras;
 
 import java.util.List;
-import java.util.Map;
-import domain.*;
 
 /**
  * @author Alessandro Jin
@@ -12,7 +10,7 @@ public class Perfil {
     private final String representante;
 
     private final Centroide centroide;
-    private final List<String>> miembros;
+    private final List<String> miembros;
 
     public Perfil (String representante,  Centroide centroide, List<String> miembros) {
         this.representante = representante;

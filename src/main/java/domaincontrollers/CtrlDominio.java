@@ -1,12 +1,10 @@
 package domaincontrollers;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
 import persistence.GestorPersistencia;
@@ -103,7 +101,7 @@ public class CtrlDominio {
 		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia, ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);
 		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, ctrlDominioRespuesta, ctrlDominioEncuesta);
 		
-		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(gestorPersistencia);
+		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(gestorPersistencia, ctrlDominioUsuario, ctrlDominioRespuesta, ctrlDominioEncuesta);
 	}
 
     /**
@@ -400,6 +398,18 @@ public class CtrlDominio {
 	 * @return Lista de perfiles del usuario
 	 */
 	public List<Integer> getPerfilesUsuario(String nomUsuario) {
-		return ctrlDominioPerfil.getPerfilesUsuario(nomUsuario, ctrlDominioUsuario);
+		return ctrlDominioPerfil.getPerfilesUsuario(nomUsuario);
 	}
+
+	/**
+     * Ejecuta análisis de clustering sobre una encuesta.
+     * 
+     * @param idEncuesta ID de la encuesta a analizar
+     * @param k Número de clusters (perfiles) deseados
+     * @param algoritmo "kmeans" o "kmeans++"
+     * @return Lista de perfiles obtenidos
+     */
+    public List<domain.algorithm.estructuras.Perfil> ejecutarClustering(int idEncuesta, int k, String algoritmo) {
+        return ctrlDominioPerfil.ejecutarClustering(idEncuesta, k, algoritmo);
+    }
 }

@@ -7,8 +7,11 @@ import java.util.List;
 import domaincontrollers.CtrlDominioUsuario;
 import domaincontrollers.CtrlDominioPregunta;
 import domaincontrollers.CtrlDominioRespuesta;
+import domaincontrollers.CtrlDominioEncuesta;
 import persistence.GestorPersistencia;
 import domain.Respuesta;
+import domain.Encuesta;
+import domain.Pregunta;
 import domain.Usuario;
 
 /**
@@ -23,6 +26,7 @@ public class DriverUsuario {
     private static CtrlDominioUsuario ctrlDominioUsuario;
     private static CtrlDominioPregunta ctrlDominioPregunta;
     private static CtrlDominioRespuesta ctrlDominioRespuesta;
+    private static CtrlDominioEncuesta ctrlDominioEncuesta;
     private static Scanner scanner;
     private static String usuarioActual = null; // Usuario con sesión iniciada
     
@@ -30,10 +34,17 @@ public class DriverUsuario {
         // Inicializar dependencias (capa real, no mocks)
         GestorPersistencia gestor = GestorPersistencia.getInstance();
         
-        ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
+        ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestor, null, null);
+        ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlDominioUsuario, null, null);
         ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlDominioRespuesta, null);
+        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
+
         ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlDominioRespuesta, ctrlDominioPregunta);
-        
+        ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);
+        ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlDominioRespuesta, ctrlDominioEncuesta);
+
+        crearDatosDePrueba();
+
         scanner = new Scanner(System.in);
         
         boolean salir = false;
@@ -75,9 +86,6 @@ public class DriverUsuario {
                 case 10:
                     testGetAllUsuarios();
                     break;
-                case 11:
-                    testCargarUsuarios();
-                    break;
                 case 0:
                     salir = true;
                     System.out.println("\nSaliendo del driver...\n");
@@ -88,6 +96,16 @@ public class DriverUsuario {
         }
         
         scanner.close();
+    }
+
+    private static void crearDatosDePrueba() {
+        String nomUsuario = ctrlDominioUsuario.registrarUsuario("user1", "123456", "123456");
+        int idEncuesta = ctrlDominioEncuesta.crearEncuesta("user1", "Encuesta1");
+        int idPreguntaLibre = ctrlDominioPregunta.crearPreguntaLibre(idEncuesta,
+            "Quien eres?");
+        String texto = "Soy user1";
+        int idRespuesta = ctrlDominioRespuesta.darRespuesta(nomUsuario, idPreguntaLibre, 
+                texto);
     }
     
     private static void mostrarMenu() {
@@ -102,7 +120,6 @@ public class DriverUsuario {
         System.out.println("8. Get Encuestas Respondidas");
         System.out.println("9. Get Respuestas Encuesta");
         System.out.println("10. Get All Usuarios");
-        System.out.println("11. Cargar Usuarios");
         System.out.println("0. Salir");
         
         if (usuarioActual != null) {

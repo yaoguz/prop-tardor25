@@ -1,33 +1,39 @@
-package domain.algoritmo;
+package domain.algorithm;
 
 import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 
-import domain.Respuesta;
-import domain.algoritmo.estructuras.Centroide;
+import domain.*;
+import domain.algorithm.estructuras.*;
+import domain.algorithm.funciones.*;
 
 
 /**
+<<<<<<< HEAD:src/main/java/domain/algorithm/kAlgorithm.java
  * @author Alessandro Jin
  */
 
 public class Kalgorithm implements ClusteringAlgorithm  {
+=======
+ * Clase base abstracta para algoritmos de clustering basados en K.
+ * Implementa la lógica común de asignación y recálculo de centroides.
+ * 
+ * @author Alessandro Jin
+ */
+public abstract class Kalgorithm implements ClusteringAlgorithm  {
+    
+>>>>>>> eab6dee8406447f30561d82028742e68bec9a3c5:src/main/java/domain/algorithm/Kalgorithm.java
     /**
-     * Ejecuta el algoritmo de clustering.
-     * 
-     * @param respuestas Mapa de idUsuario -> lista de respuestas
-     * @param k Número de clusters deseados
-     * @return Lista de clusters obtenidos
+     * Las subclases deben implementar este método para especificar
+     * cómo inicializar los clusters.
      */
+    public abstract List<domain.algorithm.estructuras.Perfil> ejecutarClustering(List<Pregunta> variables, List<List<Respuesta>> respuestas, int k);
     
     @Override
-    List<Perfil> ejecutarClustering(List<Pregunta> variables, List<List<Respuesta>> respuestas, int k);
-
-    @Override
-    String getNombre();
+    public abstract String getNombre();
 
     
-    private static Boolean asignarUsuarioClusters(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables, Boolean [] cambiados) {
+    protected static Boolean asignarUsuariosAClusters(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables, Boolean [] cambiados) {
         int N = respuestas.size();
         int M = clusters.size();
 
@@ -81,7 +87,7 @@ public class Kalgorithm implements ClusteringAlgorithm  {
         return cambio;
     }
 
-    private static void recalcularCentroides(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables,  Boolean [] cambiados) {
+    protected static void recalcularCentroides(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables,  Boolean [] cambiados) {
         int N = clusters.size();
 
         for (int i = 0; i < N; ++i) {
@@ -105,8 +111,8 @@ public class Kalgorithm implements ClusteringAlgorithm  {
         return cluster;
     }
 
-    private static List<Perfil> listaPerfil(List<Cluster> clusters,List<List<Respuesta>> respuestas, List<Pregunta> variables) {
-        List<Perfil> perfiles = new ArrayList<>();
+    protected static List<domain.algorithm.estructuras.Perfil> listaPerfil(List<Cluster> clusters,List<List<Respuesta>> respuestas, List<Pregunta> variables) {
+        List<domain.algorithm.estructuras.Perfil> perfiles = new ArrayList<>();
 
         for (Cluster cluster: clusters) {
             List<String> usuarios = new ArrayList<>();
@@ -120,14 +126,14 @@ public class Kalgorithm implements ClusteringAlgorithm  {
                 usuarios.add(name);
             }
 
-            perfiles.add(Perfil(representante, cluster.getCentroide(), usuarios));
+            perfiles.add(new domain.algorithm.estructuras.Perfil(representante, cluster.getCentroide(), usuarios));
         }
 
         return perfiles;
     }
 
     private static String representanteCluster (Cluster cluster, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
-        Centride c = cluster.getCentroide();
+        Centroide c = cluster.getCentroide();
         List<Integer> miembros = cluster.getMiembros();
         List<List<Respuesta>> respuestasGente = sacarMiembros (miembros, respuestas);
 

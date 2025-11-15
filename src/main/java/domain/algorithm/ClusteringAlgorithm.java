@@ -1,10 +1,10 @@
-package domain.algoritmo;
+package domain.algorithm;
 
 import java.util.List;
-import java.util.Map;
 
 import domain.Respuesta;
-import domain.algoritmo.estructuras.Centroide;
+import domain.Pregunta;
+import domain.algorithm.estructuras.Perfil;
 
 
 /**
