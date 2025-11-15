@@ -7,6 +7,7 @@ import java.util.Map;
 
 import domain.Respuesta;
 import domain.Usuario;
+import domain.Pregunta;
 import domain.clustering_ejemplo.Cluster;
 import domain.clustering_ejemplo.ClusterEvaluator;
 import domain.clustering_ejemplo.ClusteringAlgorithm;
@@ -34,9 +35,6 @@ public class CtrlDominioPerfil {
 
 	private static CtrlDominioPerfil singletonInstance;
 	private GestorPersistencia gestor;
-
-	/** Controlador de respuestas (inyección de dependencia) */
-	private CtrlDominioRespuesta ctrlDominioRespuesta;
 	
 	/** Controlador de encuestas (inyección de dependencia) */
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
@@ -50,7 +48,7 @@ public class CtrlDominioPerfil {
 	 */
 	private CtrlDominioPerfil(GestorPersistencia gestor, CtrlDominioRespuesta ctrlDominioRespuesta, CtrlDominioEncuesta ctrlDominioEncuesta) {
 		this.gestor = gestor;
-		this.ctrlDominioRespuesta = ctrlDominioRespuesta;
+	
 		this.ctrlDominioEncuesta = ctrlDominioEncuesta;
 	}
 
@@ -91,21 +89,23 @@ public class CtrlDominioPerfil {
      * @param ctrlDominioRespuesta Controlador de respuestas (inyección)
      * @return Lista de clusters obtenidos
      */
-    public Map<Centroide,List<String>> ejecutarClustering(int idEncuesta, int k, String algoritmo) {
+    public List<Perfil> ejecutarClustering(int idEncuesta, int k, String algoritmo) {
 
         // 1. Obtener todas las respuestas de la encuesta agrupadas por usuario
         List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
+
+		List<Pregunta> variables = 
         
-        // 2. Seleccionar algoritmo
+        // 3. Seleccionar algoritmo
         ClusteringAlgorithm alg = seleccionarAlgoritmo(algoritmo);
         
-        // 3. Ejecutar clustering
-        Map<Centroide,List<String>> clusters = alg.ejecutarClustering(respuestasPorUsuario, k);
+        // 4. Ejecutar clustering
+        List<Perfil> perfiles = alg.ejecutarClustering(variables, respuestasPorUsuario, k);
         
-        // 4. Evaluar calidad
-        double silueta = ClusterEvaluator.calcularCoeficienteSilueta(clusters, respuestasPorUsuario);
+        // 5. Evaluar calidad
+        //double silueta = ClusterEvaluator.calcularCoeficienteSilueta(clusters, respuestasPorUsuario);
         
-        return clusters;
+        return perfiles;
     }
 
 	/** Métodos privados **/

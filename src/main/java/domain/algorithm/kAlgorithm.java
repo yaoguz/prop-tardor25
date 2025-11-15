@@ -20,7 +20,7 @@ public class Kalgorithm implements ClusteringAlgorithm  {
      */
     
     @Override
-    List<Perfil> ejecutarClustering(List<List<Respuesta>> respuestas, int k);
+    List<Perfil> ejecutarClustering(List<Pregunta> variables, List<List<Respuesta>> respuestas, int k);
 
     @Override
     String getNombre();
@@ -104,7 +104,7 @@ public class Kalgorithm implements ClusteringAlgorithm  {
         return cluster;
     }
 
-    private static List<Perfil> listaPerfil(List<Cluster> clusters,List<List<Respuesta>> respuestas) {
+    private static List<Perfil> listaPerfil(List<Cluster> clusters,List<List<Respuesta>> respuestas, List<Pregunta> variables) {
         List<Perfil> perfiles = new ArrayList<>();
 
         for (Cluster cluster: clusters) {
@@ -112,7 +112,7 @@ public class Kalgorithm implements ClusteringAlgorithm  {
 
             List<Integer> miembros = cluster.getMiembros();
 
-            String representante = representanteCluster (cluster, respuestas);
+            String representante = representanteCluster (cluster, respuestas, variables);
 
             for (Integer i : miembros) {
                 String name = respuestas.get(i).get(0).getNomUsuario(); // toda la fila es de un usuario
@@ -125,7 +125,7 @@ public class Kalgorithm implements ClusteringAlgorithm  {
         return perfiles;
     }
 
-    private static String representanteCluster (Cluster cluster, List<List<Respuesta>> respuestas) {
+    private static String representanteCluster (Cluster cluster, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
         Centride c = cluster.getCentroide();
         List<Integer> miembros = cluster.getMiembros();
         List<List<Respuesta>> respuestasGente = sacarMiembros (miembros, respuestas);

@@ -12,11 +12,6 @@ import domain.algoritmo.funciones.*;
 public class Kmeans extends Kalgorithm {
 
     private static final int MAX_ITERACIONES = 150;
-    private List<Pregunta> variables;
-    
-    public Kmeans(List<Pregunta> variables) {
-        this.variables = variables;
-    }
 
     //devolver listado de nombre por grupo
     @Override
@@ -25,7 +20,7 @@ public class Kmeans extends Kalgorithm {
     }
     
     @Override
-    public Map<Centroide,List<String>> ejecutarClustering(List<List<Respuesta>> respuestas, int k) {
+    public List<Perfil> ejecutarClustering(List<Pregunta> variables,List<List<Respuesta>> respuestas, int k) {
         // 1. Inicialización aleatoria de centroides
         List<Cluster> clusters = inicializarClusters(k, respuestas);
         
@@ -44,7 +39,7 @@ public class Kmeans extends Kalgorithm {
             iteracion++;
         }
         
-        return listaPerfil(clusters, respuestas);
+        return listaPerfil(clusters, respuestas, variables);
     }
 
     private static List<Cluster> inicializarClusters (int k, List<List<Respuesta>> respuestas) {
