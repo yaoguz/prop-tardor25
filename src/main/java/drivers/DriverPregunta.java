@@ -32,10 +32,11 @@ public class DriverPregunta {
     private static Scanner scanner;
     private static String nomU;
     private static int idE;
+    private int intU = 1;
 
     /*
-    Al principio tendrá una encuesta con 5 preguntaspor defecto para que pueda
-    interactuar con ella sin tener que darle siempre a la opción de crear pregunta.
+    Al principio tendrá una encuesta con 5 preguntas por defecto para que pueda
+    interactuar con ellas sin tener que darle siempre a la opción de crear pregunta.
     */
 
     public static void main (String[] args) {
@@ -76,7 +77,7 @@ public class DriverPregunta {
 
         boolean salir = false;
 
-        System.out.println("DRIVER - CONTROLADOR DE PREGUNTA");
+        System.out.println("DRIVER INTERACTIVO - CONTROLADOR DE PREGUNTA");
         System.out.println("Dispone de un usuario con nombre: " +nomU);
         System.out.println("que tiene una encuesta creada con id: " +idE);
         System.out.println("que tiene 5 preguntas:");
@@ -90,7 +91,7 @@ public class DriverPregunta {
         System.out.println("  que el mismo usuario ha respuesto con la respuesta con id: " +idROUN);
         System.out.println("- Una pregunta de opción única ordenada con id: " +idPOUO);
         System.out.println("  que el mismo usuario ha respuesto con la respuesta con id: " +idROUO);
-        System.out.println("Todas las acciones que necesiten una encuesta o usuario usarán los ya mencionados");
+        System.out.println("Todas las acciones se realizan sobre la encuesta "  +idE);
 
         while (!salir) {
             mostrarMenu();
@@ -112,6 +113,11 @@ public class DriverPregunta {
                     testGetPregunta();
                 case 6:
                     testGetAllPreguntas();
+                case 7:
+                    testExistePregunta();
+                case 8:
+                    testAnadirRespuesta();
+                    ++intU;
                 case 0:
                     salir = true;
                     System.out.println("\nSaliendo del driver...\n");
@@ -124,13 +130,15 @@ public class DriverPregunta {
     }
 
     private static void mostrarMenu() {
-        System.out.println("\nMENÚ PRINCIPAL");
+        System.out.println("\nMENÚ DRIVER PREGUNTA");
         System.out.println("1. Obtener respuestas de una pregunta");
         System.out.println("2. Crear pregunta");
-        System.out.println("3. Modificar pregunta [por implementar]");
+        System.out.println("3. Modificar pregunta");
         System.out.println("4. Eliminar pregunta");
         System.out.println("5. Obtener pregunta");
         System.out.println("6. Obtener todas las preguntas");
+        System.out.println("7. Comprobar existencia de una pregunta");
+        System.out.println("8. Añadir respuesta a una pregunta [por implementar]");
         System.out.println("0. Salir");
         
     }
@@ -147,7 +155,7 @@ public class DriverPregunta {
     }
 
     private static void testObtenerRespuestas() {
-        System.out.println("\nTEST: OBTENER RESPUESTAS DE UNA PREGUNTA");
+        System.out.println("\n--{ OBTENER RESPUESTAS DE UNA PREGUNTA }--");
         
         System.out.print("Introduzca el id de la pregunta cuyas respuestas quiere obtener: ");
         int idPregunta = scanner.nextInt();
@@ -165,8 +173,10 @@ public class DriverPregunta {
         }
     }
 
+
+    // 0/1
     private static void testCrearPregunta(){
-        System.out.println("\nTEST: CREAR UNA PREGUNTA");
+        System.out.println("\n--{ CREAR UNA PREGUNTA }--");
         
         System.out.print("Introduzca el enunciado de la pregunta a crear: ");
         String enunciado = scanner.nextLine();
@@ -195,7 +205,7 @@ public class DriverPregunta {
                     ArrayList<String> opsM = new ArrayList<>();
                     String sm = null;
                     while(sm != "_fin"){
-                        System.out.print("Introduzca una opción de la pregunta (escribe _fin para dejar de añadir opciones): ");
+                        System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
                         sm = scanner.nextLine();
                         if(sm != "_fin") opsM.add(sm);
                     }
@@ -207,7 +217,7 @@ public class DriverPregunta {
                     ArrayList<String> opsU = new ArrayList<>();
                     String su = null;
                     while(su != "_fin"){
-                        System.out.print("Introduzca una opción de la pregunta (escribe _fin para dejar de añadir opciones): ");
+                        System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
                         su = scanner.nextLine();
                         if(su != "_fin") opsU.add(su);
                     }
@@ -225,18 +235,56 @@ public class DriverPregunta {
 
     }
 
+
+    // 0/1
     private static void testModificarPregunta() {
-        System.out.println("\nTEST: MODIFICAR UNA PREGUNTA");
+        System.out.println("\n--{ MODIFICAR UNA PREGUNTA }--");
         
         System.out.print("Introduzca el id de la pregunta a modificar: ");
         int idPregunta = scanner.nextInt();
-
+        try{ Pregunta p = ctrlPregunta.getPregunta(idPregunta);}
+        catch (IllegalArgumentException e) {
+            System.out.println("\nError: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("\nError inesperado: " + e.getMessage());
+        }
         CtrlDominioPregunta.PreguntaImportData info = new CtrlDominioPregunta.PreguntaImportData();
         
         System.out.print("Introduzca el enunciado modificado: ");
         info.enunciado = scanner.nextLine();
 
-        //por acabar
+        switch(p.tipoPregunta()){
+            case "numerica":
+                System.out.print("Introduzca el número mínimo(incluido) del rango en el que puede estar la respuesta a la pregunta: ");
+                info.atributosEspecificos.put("min", scanner.nextInt());
+                System.out.print("Introduzca el número máximo(incluido) del rango en el que puede estar la respuesta a la pregunta: ");
+                info.atributosEspecificos.put("max", scanner.nextInt());
+                break;
+            case "opcion_multiple":
+                ArrayList<String> opsM = new ArrayList<>();
+                String opm = null;
+                while(opm != "_fin"){
+                    System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
+                    opm = scanner.nextLine();
+                    if(opm != "_fin") opsM.add(opm);
+                }
+                info.atributosEspecificos.put("opciones", opsM);
+                System.out.print("Introduzca el número máximo(incluido) de opciones seleccionables para la pregunta: ");
+                info.atributosEspecificos.put("numMaxOpc", scanner.nextInt());
+                break;
+            case "opcion_unica":
+                ArrayList<String> opsU = new ArrayList<>();
+                String opu = null;
+                while(opu != "_fin"){
+                    System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
+                    opu = scanner.nextLine();
+                    if(opu != "_fin") opsU.add(opu);
+                }
+                info.atributosEspecificos.put("opciones", opsU);
+                System.out.print("Introduzca 1 si las opciones siguen un orden o 0 si no lo siguen: ");
+                info.atributosEspecificos.put("ordenada", scanner.nextInt() == 1);
+                break;
+        }
 
         try {
             int idNuevaPregunta = ctrlPregunta.modificarPregunta(idPregunta, info);
@@ -249,7 +297,7 @@ public class DriverPregunta {
     }
 
     private static void testEliminarPregunta() {
-        System.out.println("\nTEST: ELIMINAR UNA PREGUNTA");
+        System.out.println("\n--{ ELIMINAR UNA PREGUNTA }--");
         
         System.out.print("Introduzca el id de la pregunta a eliminar: ");
         int idPregunta = scanner.nextInt();
@@ -265,7 +313,7 @@ public class DriverPregunta {
     }
 
     private static void testGetPregunta() {
-        System.out.println("\nTEST: OBTENER UNA PREGUNTA");
+        System.out.println("\n--{ OBTENER UNA PREGUNTA }--");
         
         System.out.print("Introduzca el id de la pregunta a obtener: ");
         int idPregunta = scanner.nextInt();
@@ -285,7 +333,7 @@ public class DriverPregunta {
     }
 
     private static void testGetAllPreguntas() {
-        System.out.println("\nTEST: OBTENER TODAS LAS PREGUNTAS");
+        System.out.println("\n--{ OBTENER TODAS LAS PREGUNTAS }--");
 
         try {
             HashMap<Integer, Pregunta> preguntas = ctrlPregunta.getAllPreguntas();
@@ -295,6 +343,79 @@ public class DriverPregunta {
                 System.out.println("Id: " +p.getIdPregunta());
             }
         } catch (IllegalArgumentException e) {
+            System.out.println("\nError: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("\nError inesperado: " + e.getMessage());
+        }
+    }
+
+    private static void testExistePregunta() {
+        System.out.println("\n--{ COMPROBAR EXISTENCIA DE UNA PREGUNTA }--");
+
+        System.out.print("Introduzca el id de la pregunta a comprobar: ");
+        int idPregunta = scanner.nextInt();
+
+        try {
+            if(ctrlPregunta.existePregunta(idPregunta)) System.out.println("La pregunta con id " + idPregunta + " existe");
+            else System.out.println("La pregunta con id " + idPregunta + " no existe");
+            System.out.println("Total de preguntas: " + preguntas.size());
+            for(Pregunta p : preguntas.values()){
+                System.out.println("Id: " +p.getIdPregunta());
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("\nError: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("\nError inesperado: " + e.getMessage());
+        }
+    }
+
+
+    
+    private static void testAnadirRespuesta() {
+        System.out.println("\n--{ AÑADIR UNA RESPUESTA A UNA PREGUNTA }--");
+        
+        System.out.print("Introduzca el id de la pregunta a responder: ");
+        int idPregunta = scanner.nextInt();
+        ctrlUsuario.registrarUsuario("Test" + intU, "12345", "12345");
+        int r = 0;
+        try{ Pregunta p = ctrlPregunta.getPregunta(idPregunta);
+            switch(p.tipoPregunta()){
+                case "libre":
+                    r = ctrlRespuesta.darRespuesta("Test" + intU, idPregunta, "Respuesta" + intU);
+                case "numerica":
+                    r = ctrlRespuesta.darRespuesta("Test" + intU, idPregunta, pregunta.getRangoInf()+Math.random());
+                    break;
+            /*    case "opcion_multiple":
+                    ArrayList<int> opsM = new ArrayList<>();
+                    opsM.add(0);
+                    opsM.add((p.getCantidad())Math.Random())
+                    r = ctrlRespuesta.darRespuesta("Test" + intU, idPregunta)
+                    ArrayList<String> opsM = new ArrayList<>();
+                    String opm = null;
+                    while(opm != "_fin"){
+                        System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
+                        opm = scanner.nextLine();
+                        if(opm != "_fin") opsM.add(opm);
+                    }
+                    info.atributosEspecificos.put("opciones", opsM);
+                    System.out.print("Introduzca el número máximo(incluido) de opciones seleccionables para la pregunta: ");
+                    info.atributosEspecificos.put("numMaxOpc", scanner.nextInt());
+                    break;
+                case "opcion_unica":
+                    ArrayList<String> opsU = new ArrayList<>();
+                    String opu = null;
+                    while(opu != "_fin"){
+                        System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
+                        opu = scanner.nextLine();
+                        if(opu != "_fin") opsU.add(opu);
+                    }
+                    info.atributosEspecificos.put("opciones", opsU);
+                    System.out.print("Introduzca 1 si las opciones siguen un orden o 0 si no lo siguen: ");
+                    info.atributosEspecificos.put("ordenada", scanner.nextInt() == 1);
+                    break;*/
+            }
+        }
+        catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("\nError inesperado: " + e.getMessage());
