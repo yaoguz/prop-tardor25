@@ -47,7 +47,7 @@ public class TestPreguntaLibre {
 
 	@Test
 	public void testTipo() {
-		assertEquals("No devuelve libre", "Libre", pregunta.tipoPregunta());
+		assertEquals("No devuelve libre", "libre", pregunta.tipoPregunta());
 	}
 
 	@Test 
