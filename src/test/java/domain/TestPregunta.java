@@ -5,112 +5,63 @@ import org.junit.Test;
 import domain.Pregunta;
 
 /**
- * Clase testeadora de Pregunta
+ * @author Alessandro Jin
  */
- 
+
 public class TestPregunta {
-    
     private Pregunta pregunta;
     private final int idEncuesta = 3;
 	private final int idPregunta = 10;
     private final String enunciado = "test";
+    private final ArrayList<Integer> idRespuestas = Arraylist<> (Arrays.aslist(1,2,3));
     
     /**
      * Configuración inicial antes de cada test.
      */
     @Before
     public void setUp() {
+        assertEquals("No se guardo idEncuesta bien", idEncuesta, pregunta.getIdEncuesta());
+        assertEquals("No se guardo idPregunt bien", idPregunta, pregunta.getIdPregunta());
+        assertEquals("No se guardo enunciado correcto", enunciado, pregunta.getEnunciado());
+        assertEquals("No se guardo idRespuesta", idRespuestas, pregunta.getIdRespuestas());
         pregunta = new Pregunta(idEncuesta, idPregunta, enunciado);
     }
 
 
-	@Test
-	public void testConstructoraOk() {
-	  	assertEquals(3, pregunta.getIdEncuesta());
-	  	assertEquals(10, pregunta.getIdPregunta());
-	  	assertEquals("test", pregunta.getEnunciado());
-		assertEquals(0, pregunta.getIdRespuestas().size());
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorExcepcionNulo() {
+        pregunta = new Pregunta(idEncuesta, idPregunta, null);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testConstructoraExceptionNull() {
-		Pregunta p = new Pregunta(idEncuesta, idPregunta, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorExcepcionNulo() {
+        pregunta = new Pregunta(idEncuesta, idPregunta, null);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testConstructoraExceptionVacia() {
-		Pregunta p = new Pregunta(idEncuesta, idPregunta, "");
-	}
+    @Test(expected = IllegalArgumentException.class) 
+    public void testConstructorExcepcionVacio() {
+        pregunta = new Pregunta(idEncuesta, idPregunta, "");
+    }
 
-	@Test
-	public void testGetIdEncuesta() {
-		assertEquals(3, pregunta.getIdEncuesta());
-	}
+    @Test 
+    public void TestGuardarIdRespuesta() {
+        pregunta.guardarIdRespuesta(4);
+        assertEquals("No se guardo correcto", Arrays.asList(1,2,3,4), pregunta.getIdRespuestas());
+    }
 
-	@Test
-	public void testGetIdPregunta() {
-		assertEquals(10, pregunta.getIdPregunta());
-	}
+    @Test 
+    public void testEliminarIdRespuestaBueno() {
+        pregunta.eliminarIdRespuesta(1);
 
-	@Test
-	public void testGetEnunciado() {
-		assertEquals("test", pregunta.getEnunciado());
-	}
+        ArrayList<Integer> res = pregunta.getIdRespuestas();
 
-	@Test
-	public void testGetIdRespuestas() {
-		assertEquals(0, pregunta.getIdRespuestas().size());
-	}
+        assertEquals("No se elimino el correcto", res, Arrays.aslist(2,3));
+    }
 
-	@Test
-	public void testAgregarRespuesta() {
-		pregunta.addRespuesta(22);
-		pregunta.addRespuesta(23);
-		pregunta.addRespuesta(42);
-		pregunta.addRespuesta(99);
-		ArrayList<Integer> l = pregunta.getIdRespuestas();
-		assertTrue(l.contains(22));
-		assertTrue(l.contains(23));
-		assertTrue(l.contains(42));
-		assertTrue(l.contains(99));
-	}
+    @Test(expected = IllegalArgumentException.class) 
+    public void testEliminarIdRespuestaExcepcion() {
+        pregunta.eliminarIdRespuesta(4);
+    }
 
-	@Test
-	public void testBorrarRespuesta() {
-		pregunta.addRespuesta(33);
-		pregunta.eliminarRespuesta(33);
-		assertEquals(0, pregunta.getIdRespuestas().size());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testBorrarRespuesetaNoExiste() {
-		pregunta.eliminarRespuesta(2);
-	}
-
-	//Tests de subclases (funciones genéricas)
-
-	@Test
-	public void testGetOpciones() {
-		assertEquals(0, pregunta.getOpciones().size());
-	}
-
-	@Test
-	public void testNumMax() {
-		assertEquals(-1, pregunta.getNumMaxOpc());
-	}
-
-	@Test
-	public void testRangoInf() {
-		assertEquals(-1, pregunta.getRangoInf());
-	}
-
-	@Test
-	public void testRangoSup() {
-		assertEquals(-1, pregunta.getRangoSup());
-	}
-
-	@Test
-	public void testOrdenada() {
-		assertNull(pregunta.esOrdenada());
-	}
+    
 }

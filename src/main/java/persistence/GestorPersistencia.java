@@ -132,6 +132,21 @@ public class GestorPersistencia {
         return new ArrayList<> (respuestas.values());
     }
 
+    public Usuario getUsuario(String username) {
+        return usuarios.get(username);
+    }
+
+    public Encuesta getEncuesta(int id) {
+        return encuestas.get(id);
+    }
+
+    public Pregunta getPregunta(int id) {
+        return preguntas.get(id);
+    }
+
+    public Respuesta getRespuesta(int id) {
+        return respuestas.get(id);
+    }
 
     /**
     * Guarda un nuevo usuario en el mapa {@code usuarios}.

@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 //import org.mockito.MockitoAnnotations; o runner o este
 import org.mockito.junit.MockitoJUnitRunner;
+
+
 import domain.Usuario;
 
 /**
@@ -22,7 +24,6 @@ public class TestCtrlDominioUsuario {
     @Mock
     private TreeMap<String, Usuario> mockUsuarios;
     
-
     private CtrlDominioUsuario ctrlDominioUsuario;   
 
     @Before
