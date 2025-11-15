@@ -1,312 +1,340 @@
 package drivers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
-
-import domaincontrollers.*;
 import domain.*;
+import domaincontrollers.*;
 import persistence.GestorPersistencia;
 
 /**
- * Driver interactivo para probar CtrlDominioEncuesta.
- * 
- * Este es un programa MANUAL con menú para el 1er lliurament.
- * El profesor lo ejecuta y prueba casos de uso por consola.
+ * Driver interactivo para probar CtrlDominioEncuesta
  * 
  * @author Peiyu Wang
  */
-
-/*Clase que testea la clase Encuesta */
 public class DriverEncuesta {
-    private static CtrlDominioEncuesta ctrlDominioEncuesta;
-    private static CtrlDominioUsuario ctrlUsuario; 
+
+    private static CtrlDominioEncuesta ctrlEncuesta;
     private static CtrlDominioPregunta ctrlPregunta;
     private static CtrlDominioRespuesta ctrlRespuesta;
+    private static CtrlDominioUsuario ctrlUsuario;
     private static GestorPersistencia gestor;
+
     private static Scanner scanner;
 
-    /*
-    Al principio tendrá una encuesta por defecto para que pueda interactuar con ella
-    sin tener que darle siempre a la opcion de crear encuesta
-    */
+    private static int idEncuestaPrueba;
 
-    public static void main (String[] args) {
-        // Inicializar dependencias (capa real, no mocks)
-        gestor = GestorPersistencia.getInstance();
-        
-        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
-        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
-        ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);
-        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlRespuesta, ctrlUsuario);
-        
-        // Actualizar referencias circulares
-        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlUsuario, ctrlDominioEncuesta, ctrlPregunta);
-        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, ctrlDominioEncuesta);
-        
+    public static void main(String[] args) {
+        inicializarControladores();
+        crearDatosPrueba();
+
         scanner = new Scanner(System.in);
-
-    // la contraseña debe tener al menos 6 caracteres (requisito en CtrlDominioUsuario)
-        ctrlUsuario.registrarUsuario("prueba",  "123456", "123456");
-        int idE = ctrlDominioEncuesta.crearEncuesta("prueba", "E1");
-
-
         boolean salir = false;
 
-        System.out.println("DRIVER - CONTROLADOR DE ENCUESTA");
-        System.out.println("Su nombre de usuario es: prueba");
-        System.out.println("Dispone de una encuesta con id:" +idE);
+        System.out.println("DRIVER INTERACTIVO - CONTROLADOR DE DOMINIO ENCUESTA");
 
         while (!salir) {
             mostrarMenu();
+            String opcion = scanner.nextLine().trim();
+            try {
+                switch (opcion) {
+                    case "1": 
+                        crearEncuesta(); 
+                        break;
+                    case "2": 
+                        anadirPregunta(); 
+                        break;
+                    case "3": 
+                        obtenerPreguntas(); 
+                        break;
+                    case "4": 
+                        modificarTitulo(); 
+                        break;
+                    case "5": 
+                        eliminarEncuesta(); 
+                        break;
+                    case "6": 
+                        existeEncuesta(); 
+                        break;
+                    case "7": 
+                        obtenerEncuesta(); 
+                        break;
+                    case "8": 
+                        obtenerAllEncuestas(); 
+                        break;
+                    case "9": 
+                        obtenerRespuestasEncuesta(); 
+                        break;
+                    case "0": 
+                        salir = true; 
+                        break;
+                    default: System.out.println("Opcion no valida.");
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
+                System.out.println("Tipo: " + e.getClass().getSimpleName());
+            }
 
-            int opcion = leerEntero();
-            
-            switch (opcion) {
-                case 1:
-                    testObtenerPreguntas();
-                    break;
-                case 2:
-                    testCrearEncuesta();
-                    break;
-                case 3:
-                    testImportarEncuesta();
-                    break;
-                case 4:
-                    testModificarTitulo();
-                    break;
-                case 5:
-                    testEliminarEncuesta();
-                    break;
-                case 6:
-                    testObtenerRespuestas();
-                    break;
-                case 7:
-                    testAnadirPregunta();
-                    break;
-                case 8:
-                    testExisteEncuesta();
-                    break;
-                case 9:
-                    testObtenerEncuesta();
-                    break;
-                case 10:
-                    testObtenerAllEncuestas();
-                    break;
-                case 0:
-                    salir = true;
-                    System.out.println("\nSaliendo del driver...\n");
-                    break;
-                default:
-                    System.out.println("\nOpción no válida. Intenta de nuevo.\n");
+            if (!salir) {
+                System.out.println("\nPulsa ENTER para continuar...");
+                scanner.nextLine();
             }
         }
         scanner.close();
     }
 
+    private static void inicializarControladores() {
+        gestor = GestorPersistencia.getInstance();
+
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
+        ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);
+        ctrlEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlRespuesta, ctrlUsuario);
+
+        // actualizar referencias circulares
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlUsuario, ctrlEncuesta, ctrlPregunta);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, ctrlEncuesta);
+    }
+
+    private static void crearDatosPrueba() {
+        // crear usuarios
+        
+        ctrlUsuario.registrarUsuario("ana", "pass123", "pass123");
+        ctrlUsuario.registrarUsuario("pol", "pass123", "pass123");
+        ctrlUsuario.registrarUsuario("joan", "pass123", "pass123");
+       
+
+        // crear una encuesta de prueba
+        idEncuestaPrueba = ctrlEncuesta.crearEncuesta("ana", "Encuesta prueba");
+
+    // crear algunas preguntas con ctrlPregunta (guardar los ids para crear respuestas)
+    List<String> ops = new ArrayList<>();
+    ops.add("Si");
+    ops.add("No");
+    int idP_opUnica = ctrlPregunta.crearPreguntaOpcionUnica(idEncuestaPrueba, "¿Te gusta programar?", ops, false);
+    int idP_numerica = ctrlPregunta.crearPreguntaNumerica(idEncuestaPrueba, "¿Cuántas horas al dia programas?", 0, 24);
+    int idP_libre = ctrlPregunta.crearPreguntaLibre(idEncuestaPrueba, "Comentarios sobre la encuesta");
+
+    // Añadir respuestas de prueba para las preguntas creadas
+    // Respuestas a pregunta opción única (indices 0=Si, 1=No)
+    ctrlRespuesta.darRespuesta("ana", idP_opUnica, Integer.valueOf(0));
+    ctrlRespuesta.darRespuesta("pol", idP_opUnica, Integer.valueOf(1));
+
+    // Respuestas a pregunta numérica
+    ctrlRespuesta.darRespuesta("ana", idP_numerica, Double.valueOf(2.0));
+    ctrlRespuesta.darRespuesta("joan", idP_numerica, Double.valueOf(5.0));
+
+    // Respuestas a pregunta libre
+    ctrlRespuesta.darRespuesta("pol", idP_libre, "Me gusta mucho");
+    ctrlRespuesta.darRespuesta("joan", idP_libre, "Podría mejorar") ;
+    }
+
     private static void mostrarMenu() {
-        System.out.println("\nMENÚ PRINCIPAL");
-        System.out.println("1. Obtener preguntas de una encuesta");
-        System.out.println("2. Crear encuesta");
-        System.out.println("3. Importar encuesta");
+        System.out.println("\n=== MENU ENCUESTA ===");
+        System.out.println("1. Crear encuesta");
+        System.out.println("2. Añadir pregunta a encuesta");
+        System.out.println("3. Obtener preguntas de una encuesta");
         System.out.println("4. Modificar titulo de una encuesta");
         System.out.println("5. Eliminar encuesta");
-        System.out.println("6. Obtener respuestas de una encuesta");
-        System.out.println("7. Añadir pregunta");
-        System.out.println("8. Comprobar la existencia de una encuesta");
-        System.out.println("9. Obtener una encuesta");
-        System.out.println("10. Obtener todas las encuestas");
+        System.out.println("6. Comprobar existencia de encuesta");
+        System.out.println("7. Obtener info de una encuesta");
+        System.out.println("8. Listar todas las encuestas");
+        System.out.println("9. Obtener respuestas de una encuesta");
+        System.out.println("10. Importar Encuesta");
         System.out.println("0. Salir");
-        
+        System.out.print("Escoge una opción: ");
     }
 
-    private static int leerEntero() {
-        while (true) {
-            try {
-                String input = scanner.nextLine();
-                return Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                System.out.print("Entrada inválida. Introduce un número: ");
+    /**
+     * Muestra los usuarios disponibles.
+     */
+    private static void mostrarUsuariosDisponibles() {
+        System.out.println("Usuarios disponibles: ana, pol, joan");
+    }
+
+    private static void crearEncuesta() {
+        System.out.println("\n--- Crear Encuesta ---");
+        mostrarUsuariosDisponibles();
+        System.out.print("Nombre usuario creador: ");
+        String usuario = scanner.nextLine().trim();
+        // Solo permitir crear encuestas con usuarios previamente registrados en crearDatosPrueba
+        if (!ctrlUsuario.existeUsuario(usuario)) {
+            System.out.println("ERROR: Usa uno de los usuarios mostrados.");
+            return;
+        }
+        System.out.print("Titulo encuesta: ");
+        String titulo = scanner.nextLine();
+        int id = ctrlEncuesta.crearEncuesta(usuario, titulo);
+        System.out.println("Encuesta creada con id: " + id);
+    }
+
+    private static void anadirPregunta() {
+        System.out.println("\n--- Anadir Pregunta ---");
+        System.out.print("ID encuesta: ");
+        int idE = Integer.parseInt(scanner.nextLine().trim());
+        System.out.println("Tipo de pregunta: 1=libre, 2=numerica, 3=opcion_unica, 4=opcion_multiple");
+        System.out.print("Introduzca un numero: ");
+        String tipo = scanner.nextLine().trim();
+
+        try {
+            switch (tipo) {
+                case "1":
+                    System.out.print("Enunciado: ");
+                    String en = scanner.nextLine();
+                    int idP1 = ctrlPregunta.crearPreguntaLibre(idE, en);
+                    System.out.println("Pregunta libre creada id=" + idP1);
+                    break;
+                case "2":
+                    System.out.print("Enunciado: ");
+                    String enn = scanner.nextLine();
+                    System.out.print("Rango min: ");
+                    int min = Integer.parseInt(scanner.nextLine().trim());
+                    System.out.print("Rango max: ");
+                    int max = Integer.parseInt(scanner.nextLine().trim());
+                    int idP2 = ctrlPregunta.crearPreguntaNumerica(idE, enn, min, max);
+                    System.out.println("Pregunta numerica creada id=" + idP2);
+                    break;
+                case "3":
+                    System.out.print("Enunciado: ");
+                    String eun = scanner.nextLine();
+                    System.out.println("Introduce opciones separadas por comas (ej: A,B,C): ");
+                    String line = scanner.nextLine();
+                    String[] parts = line.split(",");
+                    List<String> opciones = new ArrayList<>();
+                    for (String s : parts) opciones.add(s.trim());
+                    int idP3 = ctrlPregunta.crearPreguntaOpcionUnica(idE, eun, opciones, false);
+                    System.out.println("Pregunta opcion unica creada id=" + idP3);
+                    break;
+                case "4":
+                    System.out.print("Enunciado: ");
+                    String eum = scanner.nextLine();
+                    System.out.println("Introduce opciones separadas por comas (ej: A,B,C): ");
+                    String line2 = scanner.nextLine();
+                    String[] parts2 = line2.split(",");
+                    List<String> opciones2 = new ArrayList<>();
+                    for (String s : parts2) opciones2.add(s.trim());
+                    System.out.print("Numero maximo de opciones seleccionables: ");
+                    int numMax = Integer.parseInt(scanner.nextLine().trim());
+                    int idP4 = ctrlPregunta.crearPreguntaOpcionMultiple(idE, eum, opciones2, numMax);
+                    System.out.println("Pregunta opcion multiple creada id=" + idP4);
+                    break;
+                default:
+                    System.out.println("Tipo no valido.");
             }
-        }
-    }
-
-    private static void testObtenerPreguntas() {
-        System.out.println("\nTEST: OBTENER PREGUNTAS");
-        
-        System.out.print("Introduzca un id de encuesta: ");
-        int idEncuesta= scanner.nextInt();
-
-        try {
-            List<Integer> preguntas = ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
-            System.out.println("Ids de las preguntas de la encuesta: ");
-            System.out.println(preguntas);
         } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
         }
-        
     }
 
-
-    private static void testCrearEncuesta() {
-        System.out.println("\nTEST: CREAR ENCUESTA");
-        
-        System.out.print("Introduzca su nombre de usuario: ");
-        String username = scanner.nextLine();
-
-        System.out.print("Introduzca un titulo de encuesta: ");
-        String titulo = scanner.nextLine();
-
+    private static void obtenerPreguntas() {
+        System.out.println("\n--- Obtener Preguntas de una Encuesta ---");
+        System.out.print("ID encuesta: ");
+        int idE = Integer.parseInt(scanner.nextLine().trim());
         try {
-            int idE = ctrlDominioEncuesta.crearEncuesta(username,titulo);
-            System.out.println("Se ha creado una encuesta con id: " +idE);
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
+            List<Integer> ids = ctrlEncuesta.getIdPreguntasEncuesta(idE);
+            if (ids.isEmpty()) {
+                System.out.println("La encuesta no tiene preguntas.");
+                return;
+            }
+            System.out.println("Preguntas (id : enunciado):");
+            for (Integer idP : ids) {
+                Pregunta p = ctrlPregunta.getPregunta(idP);
+                System.out.println("  " + idP + " : " + p.getEnunciado());
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {  
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 
-    private static void testImportarEncuesta() {
-        System.out.println("\nTEST: IMPORTAR ENCUESTA");
-        
-        /*
-        System.out.print("Introduzca su nombre de usuario: ");
-        String username = scanner.nextLine();
-
-        System.out.print("Introduzca un titulo de encuesta: ");
-        String titulo = scanner.nextLine();
-
+    private static void modificarTitulo() {
+        System.out.println("\n--- Modificar Titulo ---");
+        System.out.print("ID encuesta: ");
+        int idE = Integer.parseInt(scanner.nextLine().trim());
+        System.out.print("Nuevo titulo: ");
+        String nuevo = scanner.nextLine();
         try {
-            int idE = ctrlDominioEncuesta.crearEncuesta(username,titulo);
-            System.out.println("Se ha creado una encuesta con id: " +idE);
+            ctrlEncuesta.modificarTituloEncuesta(idE, nuevo);
+            System.out.println("Titulo modificado.");
         } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
         }
-        */
     }
 
-    private static void testModificarTitulo() {
-        System.out.println("\nTEST: MODIFICAR TITULO");
-        
-        System.out.print("Introduzca un id de encuesta: ");
-        int idEncuesta= scanner.nextInt();
-        scanner.nextLine();
-
-        System.out.print("Introduzca un titulo de encuesta: ");
-        String titulo = scanner.nextLine();
-
+    private static void eliminarEncuesta() {
+        System.out.println("\n--- Eliminar Encuesta ---");
+        System.out.print("ID encuesta: ");
+        int idE = Integer.parseInt(scanner.nextLine().trim());
+        System.out.print("Estas seguro? (s/n): ");
+        String c = scanner.nextLine().trim().toLowerCase(); // a minusculas
+        if (!(c.equals("s") || c.equals("si"))) { 
+            System.out.println("Cancelado."); 
+            return; 
+        }
         try {
-            ctrlDominioEncuesta.modificarTituloEncuesta(idEncuesta,titulo);
-            System.out.println("Se ha modificado el titulo correctamente");
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
+            ctrlEncuesta.eliminarEncuesta(idE);
+            System.out.println("Encuesta eliminada.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 
-    private static void testEliminarEncuesta() {
-        System.out.println("\nTEST: ELIMINAR ENCUESTA");
-        
-        System.out.print("Introduzca un id de encuesta: ");
-        int idEncuesta= scanner.nextInt();
-        scanner.nextLine();
+    private static void existeEncuesta() {
+        System.out.println("\n--- Existe Encuesta ---");
+        System.out.print("ID encuesta: ");
+        int idE = Integer.parseInt(scanner.nextLine().trim());
+        boolean b = ctrlEncuesta.existeEncuesta(idE);
+        if(b) System.out.println("Existe.");
+        else System.out.println("No existe.");
+    }
 
+    private static void obtenerEncuesta() {
+        System.out.println("\n--- Obtener Encuesta ---");
+        System.out.print("ID encuesta: ");
+        int idE = Integer.parseInt(scanner.nextLine().trim());
         try {
-            ctrlDominioEncuesta.eliminarEncuesta(idEncuesta);
-            System.out.println("Se ha eliminado la encuesta correctamente");
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
+            Encuesta e = ctrlEncuesta.getEncuesta(idE);
+            System.out.println("ID: " + e.getIdEncuesta());
+            System.out.println("Titulo: " + e.getTitulo());
+            System.out.println("Creador: " + e.getIdCreador());
+            System.out.println("Preguntas: " + e.getIdPreguntas());
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 
-    private static void testObtenerRespuestas() {
-        System.out.println("\nTEST: OBTENER RESPUESTAS");
-        
-        System.out.print("Introduzca un id de encuesta: ");
-        int idEncuesta= scanner.nextInt();
-        scanner.nextLine();
+    private static void obtenerAllEncuestas() {
+        System.out.println("\n--- Todas las Encuestas ---");
+        HashMap<Integer, Encuesta> all = ctrlEncuesta.getAllEncuestas();
+        System.out.println("Total: " + all.size());
+        for (Encuesta e : all.values()) {
+            System.out.println("ID=" + e.getIdEncuesta() + " Titulo='" + e.getTitulo() + "' Creador='" + e.getIdCreador() + "'");
+        }
+    }
 
+    private static void obtenerRespuestasEncuesta() {
+        System.out.println("\n--- Respuestas de Encuesta ---");
+        System.out.print("ID encuesta: ");
+        int idE = Integer.parseInt(scanner.nextLine().trim());
         try {
-            Map<Pregunta, Set<Respuesta>> result = ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
-            for (Map.Entry<Pregunta, Set<Respuesta>> entry : result.entrySet()) {
-                System.out.println("Pregunta: " + entry.getKey());
-                
-                System.out.println("Respuestas:");
-                for (Respuesta respuesta : entry.getValue()) {
-                    System.out.println(respuesta);
-                } 
-                System.out.println(); 
-            } //Ns si printea bien asi
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
+            Map<Pregunta, Set<Respuesta>> mapa = ctrlEncuesta.getRespuestasEncuesta(idE);
+            for (Map.Entry<Pregunta, Set<Respuesta>> entry : mapa.entrySet()) {
+                Pregunta p = entry.getKey();
+                System.out.println("Pregunta: " + p.getIdPregunta() + " - " + p.getEnunciado());
+                for (Respuesta r : entry.getValue()) {
+                    System.out.println("  Respuesta id = " + r.getId() + " usuario = " + r.getNomUsuario() + " tipo = " + r.getTipo());
+                }
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 
-    private static void testAnadirPregunta() {
-        System.out.println("\nTEST: ANADIR PREGUNTA");
-        
-        System.out.print("Introduzca un id de encuesta: ");
-        int idEncuesta= scanner.nextInt();
-        scanner.nextLine();
-
-        //QUE ES PREGUNTA IMPORT DATA?????
-        /*
-        try {
-            int idPregunta = ctrlDominioEncuesta.anadirPregunta(idEncuesta,...); //falta el import data
-            System.out.println("Se ha añadido una pregunta con id" +idPregunta);
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
-        }
-        */
-    }
-
-    private static void testExisteEncuesta() {
-        System.out.println("\nTEST: ANADIR PREGUNTA");
-    
-        System.out.print("Introduzca un id de encuesta: ");
-        int idEncuesta= scanner.nextInt();
-        scanner.nextLine();
-
-        boolean b = ctrlDominioEncuesta.existeEncuesta(idEncuesta);
-        if(b) {
-            System.out.println("Existe una encuesta con id " +idEncuesta);
-        }
-        else {
-            System.out.println("NO existe encuesta con id " +idEncuesta);
-        }
-
-    }
-
-    private static void testObtenerEncuesta() {
-        System.out.println("\nTEST: OBTENER INFO ENCUESTA");
-    
-        System.out.print("Introduzca un id de encuesta: ");
-        int idEncuesta= scanner.nextInt();
-        scanner.nextLine();
-        try {
-            Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
-            System.out.println("ID de la encuesta: " +e.getIdEncuesta());
-            System.out.println("Titulo de la encuesta: " +e.getTitulo());
-            System.out.println("Creador de la encuesta: " +e.getIdCreador());
-            System.out.println("Para las preguntas introduzca 1 ");
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nError: " + e.getMessage());
-        }
-    }
-
-    private static void testObtenerAllEncuestas() {
-        System.out.println("\nTEST: OBTENER INFO ALL ENCUESTAS");
-        HashMap<Integer, Encuesta> encuestas = ctrlDominioEncuesta.getAllEncuestas();
-        System.out.println("Total de encuestas: " + encuestas.size());
-        System.out.println("No se mostraran los ids de las preguntas.");
-        for(Encuesta e : encuestas.values())
-        {
-            System.out.println("ID de la encuesta: " +e.getIdEncuesta());
-            System.out.println("Titulo de la encuesta: " +e.getTitulo());
-            System.out.println("Creador de la encuesta: " +e.getIdCreador());
-            System.out.println("------------------------");  
-        }
-        
+    //FALTA IMPLEMENTAR
+    private static void importarEncuesta() {
+        System.out.println("\n--- Importar encuesta ---");
     }
 }
