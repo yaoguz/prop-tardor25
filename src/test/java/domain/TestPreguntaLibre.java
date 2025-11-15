@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
  /**
  * @author Alessandro Jin
@@ -37,12 +37,12 @@ public class TestPreguntaLibre {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructoraExceptionNull() {
-		Pregunta p = new Pregunta(idEncuesta, idPregunta, null);
+		PreguntaLibre p = new PreguntaLibre(idEncuesta, idPregunta, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructoraExceptionVacia() {
-		Pregunta p = new Pregunta(idEncuesta, idPregunta, "");
+		PreguntaLibre p = new PreguntaLibre(idEncuesta, idPregunta, "");
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class TestPreguntaLibre {
 
         ArrayList<Integer> res = pregunta.getIdRespuestas();
 
-        assertEquals("No se elimino el correcto", res, Arrays.aslist(2,3));
+        assertEquals("No se elimino el correcto", Arrays.asList(2,3), res);
     }
 
     @Test(expected = IllegalArgumentException.class) 

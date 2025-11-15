@@ -15,7 +15,7 @@ public class TestRespuestaOpcionUnica {
         assertEquals("ivan", r.getNomUsuario());
         assertEquals(30, r.getIdPregunta());
         assertEquals("opcion_unica", r.getTipo());
-        assertEquals(2, r.getRespuesta());
+        assertEquals((Integer)2, r.getRespuesta());
         assertTrue(r.esOpcion(2));
         assertFalse(r.esOpcion(1));
     }
@@ -28,9 +28,9 @@ public class TestRespuestaOpcionUnica {
     @Test
     public void modificarValido() {
         RespuestaOpcionUnica r = new RespuestaOpcionUnica(21, "pol", 31, 0);
-        assertEquals(0, r.getRespuesta());
+        assertEquals((Integer)0, r.getRespuesta());
         r.modificar(2);
-        assertEquals(2, r.getRespuesta());
+        assertEquals((Integer)2, r.getRespuesta());
     }
 
     @Test(expected = IllegalArgumentException.class)

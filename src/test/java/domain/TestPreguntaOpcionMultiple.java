@@ -2,7 +2,8 @@ package domain;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import domain.Pregunta;
+import org.junit.Before;
+import java.util.*;
 
  /**
  * @author Alessandro Jin
@@ -36,12 +37,12 @@ public class TestPreguntaOpcionMultiple {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructoraExceptionNull() {
-		Pregunta p = new Pregunta(idEncuesta, idPregunta, null);
+		PreguntaOpcionMultiple p = new PreguntaOpcionMultiple(idEncuesta, idPregunta, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructoraExceptionVacia() {
-		Pregunta p = new Pregunta(idEncuesta, idPregunta, "");
+		PreguntaOpcionMultiple p = new PreguntaOpcionMultiple(idEncuesta, idPregunta, "");
 	}
 
 	@Test
@@ -76,7 +77,7 @@ public class TestPreguntaOpcionMultiple {
 	@Test
 	public void testSetNumMaxOpc() {
 		pregunta.setNumMaxOpc(numMaxOpc);
-		assertEquals("No se setea numMaxOpc", numMaxOpc, pregunta.setNumMaxOpc());
+		assertEquals("No se setea numMaxOpc", numMaxOpc, pregunta.getNumMaxOpc());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -102,7 +103,7 @@ public class TestPreguntaOpcionMultiple {
 		pregunta.addOpcion("hasta manana");
 		pregunta.addOpcion("monkey");
 		pregunta.setNumMaxOpc(4);
-		assertEquals("No se setea numMaxOpc", 4, pregunta.setNumMaxOpc());
+		assertEquals("No se setea numMaxOpc", 4, pregunta.getNumMaxOpc());
 	}
 
 	@Test
@@ -123,7 +124,7 @@ public class TestPreguntaOpcionMultiple {
 
         ArrayList<Integer> res = pregunta.getIdRespuestas();
 
-        assertEquals("No se elimino el correcto", res, Arrays.aslist(2,3));
+        assertEquals("No se elimino el correcto", Arrays.asList(2,3), res);
     }
 
     @Test(expected = IllegalArgumentException.class) 

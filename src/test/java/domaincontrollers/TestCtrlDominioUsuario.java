@@ -1,6 +1,7 @@
 package domaincontrollers;
 
-import main.domini.*;
+import domain.*;
+import persistence.*;
 import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -11,9 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 //import org.mockito.MockitoAnnotations; o runner o este
 import org.mockito.junit.MockitoJUnitRunner;
-
-
-import domain.Usuario;
 
 /**
  * @author Alessandro Jin
@@ -35,7 +33,7 @@ public class TestCtrlDominioUsuario {
     @Before
     public void setUp() {
    
-        ctrlDominioUsuario = CtrlDominioUsuario.getInstance(mockGestor, ctrlDominioRespuesta, ctrlDominioPregunta);
+        ctrlDominioUsuario = CtrlDominioUsuario.getInstance(mockGestor, mockCtrlDominioRespuesta, mockCtrlDominioPregunta);
     }
 
     @Test
@@ -147,7 +145,7 @@ public class TestCtrlDominioUsuario {
       
         assertEquals("No se activo el usuario", "Alessandro", ctrlDominioUsuario.getUsuarioActivo());
 
-        verify(mockGestor, times(1)).get("Alessandro");
+        verify(mockGestor, times(1)).getUsuario("Alessandro");
         verify(mockUser, times(1)).comprobarContrasena("123456");
     }
 
@@ -283,7 +281,7 @@ public class TestCtrlDominioUsuario {
         Pregunta mockP2 = mock(Pregunta.class);
 
         
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.comprobarContrasena("123456")).thenReturn(true);
         when(mockUser.getNomUsuario()).thenReturn("Alessandro");
         ctrlDominioUsuario.iniciarSesion("Alessandro", "123456");
@@ -302,7 +300,7 @@ public class TestCtrlDominioUsuario {
         when(mockP2.getIdEncuesta()).thenReturn(200);
 
       
-        List<Integer> resultado = ctrlDominioUsuario.getEncuestasRespondidas(mockCtrlDominioRespuesta, mockCtrlDominioPregunta);
+        List<Integer> resultado = ctrlDominioUsuario.getEncuestasRespondidas();
 
         
         assertEquals("Size no coincide", 2, resultado.size());
@@ -327,7 +325,7 @@ public class TestCtrlDominioUsuario {
         Pregunta mockP2 = mock(Pregunta.class);
         Pregunta mockP3 = mock(Pregunta.class);
 
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.getIdRespuestas()).thenReturn(new ArrayList<>(Arrays.asList(1, 2, 3)));
 
         when(mockCtrlDominioRespuesta.getRespuesta(1)).thenReturn(mockR1);
@@ -346,7 +344,7 @@ public class TestCtrlDominioUsuario {
         when(mockP2.getIdEncuesta()).thenReturn(200);
         when(mockP3.getIdEncuesta()).thenReturn(100);
 
-        List<Respuesta> resultado = ctrlDominioUsuario.getRespuestasEncuesta("Alessandro", 100, mockCtrlDominioRespuesta, mockCtrlDominioPregunta);
+        List<Respuesta> resultado = ctrlDominioUsuario.getRespuestasEncuesta("Alessandro", 100);
 
         assertEquals("Size no coincide", 2, resultado.size());
         assertEquals("no devuelve en el lugar", mockR1, resultado.get(0));
@@ -364,7 +362,7 @@ public class TestCtrlDominioUsuario {
         ArrayList<Usuario> users = new ArrayList<>(Arrays.asList(mockUser1, mockUser2));
         when(mockGestor.getUsuarios()).thenReturn(users);
 
-        HashMap<String, Usuario> copia = ctrlDominioUsuario.getAllUsuarios();
+        Map<String, Usuario> copia = ctrlDominioUsuario.getAllUsuarios();
 
         assertEquals("Size no coinciden", 2, copia.size());
         assertNotSame("No son iguales", users, copia);

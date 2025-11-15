@@ -180,7 +180,7 @@ public class TestCtrlDominioPregunta {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testEliminarRespuestaReferencia() {
+    public void testEliminarRespuestaReferenciaConPreguntaNull() {
         when(mockGestor.getPregunta(1)).thenReturn(null);
 
         ctrlDominioPregunta.anadirRespuesta(1, 100);
@@ -203,7 +203,7 @@ public class TestCtrlDominioPregunta {
         verify(mockCtrlDominioRespuesta, times(2)).eliminarRespuesta(anyInt());
         verify(mockGestor).eliminarPregunta(10);
         verify(mockPregunta).getIdEncuesta();
-        verify(mockEncuesta).eliminarPregunta();
+        verify(mockEncuesta).eliminarPregunta(10);
     }
 
     @Test
@@ -226,7 +226,7 @@ public class TestCtrlDominioPregunta {
         Pregunta p = mock(PreguntaLibre.class);
      
         when(mockGestor.getPregunta(10)).thenReturn(p);
-        when(mockPregunta.getIdRespuestas()).thenReturn(new ArrayList<> (Arrays.asList(100,200)));
+        when(p.getIdRespuestas()).thenReturn(new ArrayList<> (Arrays.asList(100,200)));
         
         Respuesta r1 = mock(Respuesta.class);
         Respuesta r2 = mock(Respuesta.class);

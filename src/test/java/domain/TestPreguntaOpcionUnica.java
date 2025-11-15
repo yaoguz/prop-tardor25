@@ -2,7 +2,8 @@ package domain;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import domain.Pregunta;
+import org.junit.Before;
+import java.util.*;
 
  /**
  * @author Alessandro Jin
@@ -23,7 +24,7 @@ public class TestPreguntaOpcionUnica {
     @Before
     public void setUp() {
         pregunta = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, false);
-        preguntaOrdenada = new new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, true);
+        preguntaOrdenada = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, true);
     }
 
 
@@ -39,12 +40,12 @@ public class TestPreguntaOpcionUnica {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructoraExceptionNull() {
-		Pregunta p = new Pregunta(idEncuesta, idPregunta, null);
+		PreguntaOpcionUnica p = new PreguntaOpcionUnica(idEncuesta, idPregunta, null, false);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructoraExceptionVacia() {
-		Pregunta p = new Pregunta(idEncuesta, idPregunta, "");
+		PreguntaOpcionUnica p = new PreguntaOpcionUnica(idEncuesta, idPregunta, "", false);
 	}
 
 	@Test
@@ -65,7 +66,7 @@ public class TestPreguntaOpcionUnica {
 
         ArrayList<Integer> res = pregunta.getIdRespuestas();
 
-        assertEquals("No se elimino el correcto", res, Arrays.aslist(2,3));
+        assertEquals("No se elimino el correcto", Arrays.asList(2,3), res);
     }
 
     @Test(expected = IllegalArgumentException.class) 
