@@ -239,7 +239,8 @@ public class DriverPregunta {
         
         System.out.print("Introduzca el id de la pregunta a modificar: ");
         int idPregunta = scanner.nextInt();
-        try{ Pregunta p = ctrlPregunta.getPregunta(idPregunta);}
+        Pregunta p = null;
+        try{p = ctrlPregunta.getPregunta(idPregunta);}
         catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
@@ -355,10 +356,6 @@ public class DriverPregunta {
         try {
             if(ctrlPregunta.existePregunta(idPregunta)) System.out.println("La pregunta con id " + idPregunta + " existe");
             else System.out.println("La pregunta con id " + idPregunta + " no existe");
-            System.out.println("Total de preguntas: " + preguntas.size());
-            for(Pregunta p : preguntas.values()){
-                System.out.println("Id: " +p.getIdPregunta());
-            }
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
@@ -378,21 +375,22 @@ public class DriverPregunta {
         int idPregunta = scanner.nextInt();
         ctrlUsuario.registrarUsuario(usr, "12345", "12345");
         int r = 0;
+        Random random = new Random();
         try{ Pregunta p = ctrlPregunta.getPregunta(idPregunta);
             switch(p.tipoPregunta()){
                 case "libre":
                     r = ctrlRespuesta.darRespuesta(usr, idPregunta, "Respuesta" + usr + " :)");
                 case "numerica":
-                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, pregunta.getRangoInf()+Math.random());
+                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, pregunta.getRangoInf()+random.nextInt(pregunta.getRangoSup()-pregunta.getRangoInf()));
                     break;
                 case "opcion_multiple":
-                    ArrayList<int> opsM = new ArrayList<>();
+                    ArrayList<Integer> opsM = new ArrayList<>();
                     opsM.add(0);
-                    opsM.add(1+((p.getCantidad()-1)*Math.Random()));
+                    opsM.add(1+random.nextInt(p.getCantidad()-1));
                     r = ctrlRespuesta.darRespuesta(usr, idPregunta, opsM);
                     break;
                 case "opcion_unica":
-                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, p.getCantidad()*Math.Random());
+                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, random.nextInt(p.getCantidad()));
                     break;
             }
         }
