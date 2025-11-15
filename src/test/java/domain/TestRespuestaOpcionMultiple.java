@@ -72,8 +72,9 @@ public class TestRespuestaOpcionMultiple {
         int[] init = new int[] {1};
         RespuestaOpcionMultiple r = new RespuestaOpcionMultiple(35, "ana", 45, init);
         r.modificar(new int[] {});
+        
     }
 
-    
+
 
 }
