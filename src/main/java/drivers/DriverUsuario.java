@@ -1,6 +1,5 @@
 package drivers;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.List;
@@ -11,8 +10,6 @@ import domaincontrollers.CtrlDominioRespuesta;
 import domaincontrollers.CtrlDominioEncuesta;
 import persistence.GestorPersistencia;
 import domain.Respuesta;
-import domain.Encuesta;
-import domain.Pregunta;
 import domain.Usuario;
 
 /**
@@ -107,6 +104,7 @@ public class DriverUsuario {
         String texto = "Soy user1";
         int idRespuesta = ctrlDominioRespuesta.darRespuesta(nomUsuario, idPreguntaLibre, 
                 texto);
+        System.out.println("Datos de prueba creados. ID respuesta: " + idRespuesta);
     }
     
     private static void mostrarMenu() {

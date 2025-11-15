@@ -1,6 +1,7 @@
 package drivers;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +11,8 @@ import domaincontrollers.CtrlDominioEncuesta;
 import domaincontrollers.CtrlDominioPregunta;
 import domaincontrollers.CtrlDominioRespuesta;
 import persistence.GestorPersistencia;
-//import domain.Encuesta;
 import domain.Pregunta;
+import domain.PreguntaNumerica;
 import domain.Respuesta;
 
 /**
@@ -380,8 +381,10 @@ public class DriverPregunta {
             switch(p.tipoPregunta()){
                 case "libre":
                     r = ctrlRespuesta.darRespuesta(usr, idPregunta, "Respuesta" + usr + " :)");
+                    break;
                 case "numerica":
-                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, pregunta.getRangoInf()+random.nextInt(pregunta.getRangoSup()-pregunta.getRangoInf()));
+                    PreguntaNumerica pn = (PreguntaNumerica) p;
+                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, pn.getRangoInf()+random.nextInt(pn.getRangoSup()-pn.getRangoInf()));
                     break;
                 case "opcion_multiple":
                     ArrayList<Integer> opsM = new ArrayList<>();

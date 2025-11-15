@@ -69,6 +69,9 @@ public class DriverEncuesta {
                     case "9": 
                         obtenerRespuestasEncuesta(); 
                         break;
+                    case "10":
+                        importarEncuesta();
+                        break;
                     case "0": 
                         salir = true; 
                         break;
@@ -333,8 +336,36 @@ public class DriverEncuesta {
         }
     }
 
-    //FALTA IMPLEMENTAR
     private static void importarEncuesta() {
         System.out.println("\n--- Importar encuesta ---");
+        System.out.print("Usuario activo (debe iniciar sesión): ");
+        String usuario = scanner.nextLine().trim();
+        
+        try {
+            // Iniciar sesión para establecer usuario activo
+            ctrlUsuario.iniciarSesion(usuario, "pass123");
+            
+            System.out.print("Ruta del archivo JSON: ");
+            String ruta = scanner.nextLine().trim();
+            java.io.File fichero = new java.io.File(ruta);
+            
+            if (!fichero.exists()) {
+                System.out.println("ERROR: El archivo no existe");
+                return;
+            }
+            
+            int idE = ctrlEncuesta.importarEncuesta(fichero);
+            System.out.println("Encuesta importada con ID: " + idE);
+            
+            // Mostrar información de la encuesta importada
+            Encuesta e = ctrlEncuesta.getEncuesta(idE);
+            System.out.println("Titulo: " + e.getTitulo());
+            System.out.println("Preguntas: " + e.getIdPreguntas().size());
+            
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
+        } finally {
+            ctrlUsuario.cerrarSesionActual();
+        }
     }
 }

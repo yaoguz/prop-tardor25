@@ -29,11 +29,13 @@ public class CtrlDominioPerfil {
 	/** Atributos **/
 
 	private static CtrlDominioPerfil singletonInstance;
+	@SuppressWarnings("unused")
 	private GestorPersistencia gestor;
 	
 	/** Controlador de encuestas (inyección de dependencia) */
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
 	private CtrlDominioUsuario ctrlDominioUsuario;
+	@SuppressWarnings("unused")
 	private CtrlDominioRespuesta ctrlDominioRespuesta;
 
 	/** Constructor **/

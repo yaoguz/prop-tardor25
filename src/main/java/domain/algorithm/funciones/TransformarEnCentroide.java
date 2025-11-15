@@ -1,8 +1,9 @@
-package domain.algorithm.estructuras;
+package domain.algorithm.funciones;
 
 import java.util.ArrayList;
 import java.util.List;
 import domain.*;
+import domain.algorithm.estructuras.*;
 
 /**
  * @author Alessandro Jin

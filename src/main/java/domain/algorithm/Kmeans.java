@@ -4,6 +4,7 @@ import domain.*;
 import java.util.*;
 import domain.algorithm.estructuras.*;
 import domain.algorithm.estructuras.Perfil;
+import domain.algorithm.funciones.TransformarEnCentroide;
 
 /**
  * @author Alessandro Jin
