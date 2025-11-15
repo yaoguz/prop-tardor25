@@ -1,4 +1,4 @@
-package domain.algoritmo.funciones;
+package domain.algorithm.funciones;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import domain.*;
-import domain.algoritmo.estructuras.*;
+import domain.algorithm.estructuras.*;
 
 /**
  * @author Alessandro Jin
@@ -34,14 +34,14 @@ import domain.algoritmo.estructuras.*;
             }
 
             else if (p instanceof PreguntaOpcionUnica) {
-                int N = p.getCantidad();
-                int indice = indiceUnicoFrecuente(columnaRespuestas, N);
+                int cantidadOpciones = p.getCantidad();
+                int indice = indiceUnicoFrecuente(columnaRespuestas, cantidadOpciones);
                 centro.add(new ComponenteUnico(indice));
             }
 
             else if (p instanceof PreguntaOpcionMultiple) {
-                int N = p.getCantidad();
-                List<Integer> l = indicesMultipleFrecuente(columnaRespuestas, N);
+                int cantidadOpciones = p.getCantidad();
+                List<Integer> l = indicesMultipleFrecuente(columnaRespuestas, cantidadOpciones);
                 centro.add(new ComponenteMultiple(l));
             }
 

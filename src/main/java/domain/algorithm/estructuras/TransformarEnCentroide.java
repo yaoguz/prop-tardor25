@@ -1,4 +1,4 @@
-package domain.algoritmo.estructuras;
+package domain.algorithm.estructuras;
 
 import java.util.ArrayList;
 import java.util.List;

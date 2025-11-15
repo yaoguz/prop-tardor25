@@ -1,4 +1,4 @@
-package domain.algoritmo.estructuras;
+package domain.algorithm.estructuras;
 
 /**
  * Componente numerico del centroide.

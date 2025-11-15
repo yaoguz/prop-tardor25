@@ -1,4 +1,4 @@
-package domain.algoritmo;
+package domain.algorithm.funciones;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import domain.*;
 /**
  * @author Alessandro Jin
  */
-public class calculoDistanciaGlobal {
+public class CalculoDistanciaGlobal {
     
     //p1 y p2 tiene misma longitud y mismas columnas (variables)
     //variables son las columnas
@@ -42,7 +42,7 @@ public class calculoDistanciaGlobal {
         }
 
         else if (r1 instanceof RespuestaLibre && r2 instanceof RespuestaLibre && variable instanceof PreguntaLibre) {
-            return distanciaLocalLibre((RespuestaLibre) r1, (RespuestaLibre) r2, (PreguntaLibre) variable);
+            return distanciaLocalLibre((RespuestaLibre) r1, (RespuestaLibre) r2);
         }
 
         //incompatibles
@@ -94,8 +94,14 @@ public class calculoDistanciaGlobal {
     }
 
     private static double distanciaLocalOpcionMultiple(RespuestaOpcionMultiple r1, RespuestaOpcionMultiple r2, PreguntaOpcionMultiple variable) {
-        List<Integer> indices1 = new ArrayList<>(r1.getRespuesta());
-        List<Integer> indices2 = new ArrayList<>(r2.getRespuesta());
+        int[] arr1 = r1.getRespuesta();
+        int[] arr2 = r2.getRespuesta();
+        
+        List<Integer> indices1 = new ArrayList<>();
+        for (int i : arr1) indices1.add(i);
+        
+        List<Integer> indices2 = new ArrayList<>();
+        for (int i : arr2) indices2.add(i);
 
         List<Integer> inter = new ArrayList<>(indices1);
         inter.retainAll(indices2);

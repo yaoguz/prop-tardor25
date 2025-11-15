@@ -1,4 +1,4 @@
-package domain.algoritmo.estructuras;
+package domain.algorithm.estructuras;
 
 /**
  * Superclase para todos los valores prototipo que componen el centroide.

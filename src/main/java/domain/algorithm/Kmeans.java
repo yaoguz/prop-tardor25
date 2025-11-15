@@ -1,9 +1,9 @@
-package domain.algoritmo;
+package domain.algorithm;
 
 import domain.*;
 import java.util.*;
-import domain.algoritmo.estructuras.*;
-import domain.algoritmo.funciones.*;
+import domain.algorithm.estructuras.*;
+import domain.algorithm.estructuras.Perfil;
 
 /**
  * @author Alessandro Jin

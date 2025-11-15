@@ -1,18 +1,13 @@
 package domaincontrollers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import domain.Respuesta;
 import domain.Usuario;
 import domain.Pregunta;
-import domain.clustering_ejemplo.Cluster;
-import domain.clustering_ejemplo.ClusterEvaluator;
-import domain.clustering_ejemplo.ClusteringAlgorithm;
-import domain.clustering_ejemplo.KMeans;
-import domain.clustering_ejemplo.KMeansPlusPlus;
+import domain.algorithm.*;
+import domain.algorithm.estructuras.Perfil;
 import persistence.GestorPersistencia;
 
 /**
@@ -38,6 +33,8 @@ public class CtrlDominioPerfil {
 	
 	/** Controlador de encuestas (inyección de dependencia) */
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
+	private CtrlDominioUsuario ctrlDominioUsuario;
+	private CtrlDominioRespuesta ctrlDominioRespuesta;
 
 	/** Constructor **/
 
@@ -46,9 +43,10 @@ public class CtrlDominioPerfil {
 	 * 
 	 * @param gestor Gestor de persistencia del sistema
 	 */
-	private CtrlDominioPerfil(GestorPersistencia gestor, CtrlDominioRespuesta ctrlDominioRespuesta, CtrlDominioEncuesta ctrlDominioEncuesta) {
+	private CtrlDominioPerfil(GestorPersistencia gestor, CtrlDominioUsuario ctrlDominioUsuario, CtrlDominioRespuesta ctrlDominioRespuesta, CtrlDominioEncuesta ctrlDominioEncuesta) {
 		this.gestor = gestor;
-	
+		this.ctrlDominioUsuario = ctrlDominioUsuario;
+		this.ctrlDominioRespuesta = ctrlDominioRespuesta;
 		this.ctrlDominioEncuesta = ctrlDominioEncuesta;
 	}
 
@@ -58,9 +56,20 @@ public class CtrlDominioPerfil {
 	 * @param gestor Gestor de persistencia
 	 * @return Instancia única de CtrlDominioPerfil
 	 */
-	public static CtrlDominioPerfil getInstance(GestorPersistencia gestor) {
+	public static CtrlDominioPerfil getInstance(GestorPersistencia gestor, CtrlDominioUsuario ctrlDominioUsuario, CtrlDominioRespuesta ctrlDominioRespuesta, CtrlDominioEncuesta ctrlDominioEncuesta) {
 		if (singletonInstance == null) {
-			singletonInstance = new CtrlDominioPerfil(gestor);
+			singletonInstance = new CtrlDominioPerfil(gestor, ctrlDominioUsuario, ctrlDominioRespuesta, ctrlDominioEncuesta);
+		} else {
+			// Actualizar referencias circulares si ya existe la instancia
+			if (ctrlDominioUsuario != null) {
+				singletonInstance.ctrlDominioUsuario = ctrlDominioUsuario;
+			}
+			if (ctrlDominioRespuesta != null) {
+				singletonInstance.ctrlDominioRespuesta = ctrlDominioRespuesta;
+			}
+			if (ctrlDominioEncuesta != null) {
+				singletonInstance.ctrlDominioEncuesta = ctrlDominioEncuesta;
+			}
 		}
 		return singletonInstance;
 	}
@@ -94,7 +103,7 @@ public class CtrlDominioPerfil {
         // 1. Obtener todas las respuestas de la encuesta agrupadas por usuario
         List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
 
-		List<Pregunta> variables = ctrlDominioEncuesta.getPreguntaEncuesta(idEncuesta);
+		List<Pregunta> variables = ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
         
         // 3. Seleccionar algoritmo
         ClusteringAlgorithm alg = seleccionarAlgoritmo(algoritmo);
@@ -119,10 +128,10 @@ public class CtrlDominioPerfil {
     private ClusteringAlgorithm seleccionarAlgoritmo(String nombre) {
         switch (nombre.toLowerCase()) {
             case "kmeans++":
-                return new KMeansPlusPlus();
+                return new KmeansPlusPlus();
             case "kmeans":
             default:
-                return new KMeans();
+                return new Kmeans();
         }
     }
 
