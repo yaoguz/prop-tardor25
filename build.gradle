@@ -3,20 +3,16 @@ plugins {
     id 'application'
 }
 
-group = 'edu.upc.prop.clusterxx'
+group = 'prop'
 version = '1.0-SNAPSHOT'
 
-ext {
-    javaMainClass = 'edu.upc.prop.clusterxx.Main'
-}
-
 application {
-    mainClassName = javaMainClass
+    mainClass = 'Main'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': javaMainClass
+        attributes 'Main-Class': 'Main'
     }
 }
 
@@ -27,13 +23,55 @@ java {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+            exclude 'src/test_old/**'
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+task runDriverEncuesta(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'drivers.DriverEncuesta'
+    standardInput = System.in
+}
+
+task runDriverPregunta(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'drivers.DriverPregunta'
+    standardInput = System.in
+}
+
+task runDriverRespuesta(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'drivers.DriverRespuesta'
+    standardInput = System.in
+}
+
+task runDriverUsuario(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'drivers.DriverUsuario'
+    standardInput = System.in
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    // this is just an example of importing an external library, you do not need to use it in your project
     implementation 'com.google.code.gson:gson:2.8.9'
     
     // Testing dependencies - JUnit 4 y Mockito

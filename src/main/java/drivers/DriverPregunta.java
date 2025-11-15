@@ -57,16 +57,14 @@ public class DriverPregunta {
         int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:");
         int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "Respuesta Libre");
         int idPN = ctrlPregunta.crearPreguntaNumerica(idE,  "Enunciado numérico:", 2, 8);
-        int idRN = ctrlRespuesta.darRespuesta(nomU, idPN, 3);
+        int idRN = ctrlRespuesta.darRespuesta(nomU, idPN, 3.0);
         ArrayList<String> ops = new ArrayList<>();
         ops.add("op1");
         ops.add("op2");
         ops.add("op3");
         int idPOM = ctrlPregunta.crearPreguntaOpcionMultiple(idE,  "Enunciado opción múltiple:", ops, 2);
-        ArrayList<Integer> idxs = new ArrayList<>();
-        idxs.add(0);
-        idxs.add(2);
-        int idROM = ctrlRespuesta.darRespuesta(nomU, idPOM, idxs);
+        int[] idxsArray = {0, 2};
+        int idROM = ctrlRespuesta.darRespuesta(nomU, idPOM, idxsArray);
         int idPOUN = ctrlPregunta.crearPreguntaOpcionUnica(idE,  "Enunciado opción única no ordenada:", ops, false);
         int idROUN = ctrlRespuesta.darRespuesta(nomU, idPOUN, 1);
         int idPOUO = ctrlPregunta.crearPreguntaOpcionUnica(idE,  "Enunciado opción única ordenada:", ops, false);
@@ -375,6 +373,7 @@ public class DriverPregunta {
         System.out.print("Introduzca el id de la pregunta a responder: ");
         int idPregunta = scanner.nextInt();
         ctrlUsuario.registrarUsuario(usr, "12345", "12345");
+        @SuppressWarnings("unused")
         int r = 0;
         Random random = new Random();
         try{ Pregunta p = ctrlPregunta.getPregunta(idPregunta);
