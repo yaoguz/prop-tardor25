@@ -127,6 +127,20 @@ public class CtrlDominioEncuesta {
 
 	
 	/**
+	 * Obtiene todas las encuestas del sistema.
+	 * 
+	 * @return HashMap con todas las encuestas (clave: id encuesta)
+	 */
+	public HashMap<Integer, Encuesta> getAllEncuestas() {
+		HashMap<Integer, Encuesta> map = new HashMap<>();
+		ArrayList<Encuesta> lista = gestor.getEncuestas();
+		for (Encuesta e : lista) {
+			map.put(e.getIdEncuesta(), e);
+		}
+		return map;
+	}
+
+	/**
 	 * Obtiene los IDs de las preguntas de una encuesta.
 	 * 
 	 * @param idEncuesta ID de la encuesta
@@ -361,18 +375,6 @@ public class CtrlDominioEncuesta {
 		
 		return matriz;
 	}
-	
-	// /**
-	//  * Obtiene todas las encuestas almacenadas en memoria.
-	//  * 
-	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
-	//  * para exportar todos los datos a persistencia al cerrar la aplicación.
-	//  * 
-	//  * @return TreeMap con todas las encuestas (clave: idEncuesta)
-	//  */
-	// public TreeMap<Integer, Encuesta> getAllEncuestas() {
-	// 	return new TreeMap<>(encuestas); // devolver copia para evitar modificaciones externas
-	// }
 	
 	// /**
 	//  * Importa encuestas desde persistencia al iniciar aplicación.

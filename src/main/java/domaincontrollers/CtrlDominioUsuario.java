@@ -1,6 +1,7 @@
 package domaincontrollers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -243,6 +244,20 @@ public class CtrlDominioUsuario {
 	}
 
 	/**
+	 * Obtiene todos los usuarios del sistema.
+	 * 
+	 * @return HashMap con todos los usuarios (clave: nombre usuario)
+	 */
+	public HashMap<String, Usuario> getAllUsuarios() {
+		HashMap<String, Usuario> map = new HashMap<>();
+		ArrayList<Usuario> lista = gestor.getUsuarios();
+		for (Usuario u : lista) {
+			map.put(u.getNomUsuario(), u);
+		}
+		return map;
+	}
+
+	/**
 	 * Obtiene las respuestas que ha respondido el usuario nomUsuario en la encuesta idEncuesta
 	 * 
 	 * @param nomUsuario Nombre del usuario
@@ -266,18 +281,6 @@ public class CtrlDominioUsuario {
 
 		return respuestas;
 	}
-
-	// /**
-	//  * Obtiene todos los usuarios almacenados en memoria.
-	//  * 
-	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
-	//  * para exportar todos los datos a persistencia al cerrar la aplicación.
-	//  * 
-	//  * @return TreeMap con todos los usuarios (clave: nomUsuario)
-	//  */
-	// public TreeMap<String, Usuario> getAllUsuarios() {
-	// 	return new TreeMap<>(usuarios); // devolver copia para evitar modificaciones externas
-	// }
 	
 	// /**
 	//  * Importa usuarios desde persistencia al iniciar aplicación.

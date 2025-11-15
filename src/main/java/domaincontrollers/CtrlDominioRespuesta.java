@@ -1,6 +1,8 @@
 package domaincontrollers;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import domain.Pregunta;
@@ -114,6 +116,20 @@ public class CtrlDominioRespuesta {
 	// 	}
 	// 	return r;
 	// }
+
+	/**
+	 * Obtiene todas las respuestas del sistema.
+	 * 
+	 * @return HashMap con todas las respuestas (clave: id respuesta)
+	 */
+	public HashMap<Integer, Respuesta> getAllRespuestas() {
+		HashMap<Integer, Respuesta> map = new HashMap<>();
+		ArrayList<Respuesta> lista = gestor.getRespuestas();
+		for (Respuesta r : lista) {
+			map.put(r.getId(), r);
+		}
+		return map;
+	}
 
 	/**
 	 * Crea una nueva respuesta para una pregunta específica.
@@ -241,18 +257,6 @@ public class CtrlDominioRespuesta {
 		// Esta es una firma de método para mantener la arquitectura limpia
 		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
 	}
-	
-	// /**
-	//  * Obtiene todas las respuestas almacenadas en memoria.
-	//  * 
-	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
-	//  * para exportar todos los datos a persistencia al final de la sesión.
-	//  * 
-	//  * @return TreeMap con todas las respuestas (clave: idRespuesta)
-	//  */
-	// public TreeMap<Integer, Respuesta> getAllRespuestas() {
-	// 	return new TreeMap<>(respuestas); // devolver copia para evitar modificaciones externas
-	// }
 	
 	// /**
 	//  * Importa respuestas desde persistencia al iniciar sesión.

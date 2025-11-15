@@ -1,8 +1,9 @@
 package domaincontrollers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 import domain.Encuesta;
 import domain.Pregunta;
@@ -390,6 +391,20 @@ public class CtrlDominioPregunta {
 	}
 	
 	/**
+	 * Obtiene todas las preguntas del sistema.
+	 * 
+	 * @return HashMap con todas las preguntas (clave: id pregunta)
+	 */
+	public HashMap<Integer, Pregunta> getAllPreguntas() {
+		HashMap<Integer, Pregunta> map = new HashMap<>();
+		ArrayList<Pregunta> lista = gestor.getPreguntas();
+		for (Pregunta p : lista) {
+			map.put(p.getIdPregunta(), p);
+		}
+		return map;
+	}
+
+	/**
 	 * Obtiene todas las respuestas de una pregunta específica.
 	 * 
 	 * Esta operación pertenece a CtrlDominioPregunta porque el aggregate root es Pregunta.
@@ -410,18 +425,6 @@ public class CtrlDominioPregunta {
 		
 		return respuestas;
 	}
-	
-	// /**
-	//  * Obtiene todas las preguntas almacenadas en memoria.
-	//  * 
-	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.cerrarSesion()
-	//  * para exportar todos los datos a persistencia al cerrar la aplicación.
-	//  * 
-	//  * @return TreeMap con todas las preguntas (clave: idPregunta)
-	//  */
-	// public TreeMap<Integer, Pregunta> getAllPreguntas() {
-	// 	return new TreeMap<>(preguntas); // devolver copia para evitar modificaciones externas
-	// }
 	
 	// /**
 	//  * Importa preguntas desde persistencia al iniciar aplicación.

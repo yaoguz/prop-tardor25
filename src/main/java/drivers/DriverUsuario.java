@@ -1,14 +1,15 @@
 package drivers;
 
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.List;
-import java.util.TreeMap;
 
 import domaincontrollers.CtrlDominioUsuario;
 import domaincontrollers.CtrlDominioPregunta;
 import domaincontrollers.CtrlDominioRespuesta;
-import domain.Usuario;
+import persistence.GestorPersistencia;
 import domain.Respuesta;
+import domain.Usuario;
 
 /**
  * Driver interactivo para probar CtrlDominioUsuario.
@@ -16,8 +17,7 @@ import domain.Respuesta;
  * Este es un programa MANUAL con menú para el 1er lliurament.
  * El profesor lo ejecuta y prueba casos de uso por consola.
  * 
- * @author Equipo PROP
- * @version 1.0
+ * @author Xiangjun Yepan
  */
 public class DriverUsuario {
     private static CtrlDominioUsuario ctrlDominioUsuario;
@@ -28,9 +28,12 @@ public class DriverUsuario {
     
     public static void main(String[] args) {
         // Inicializar dependencias (capa real, no mocks)
-        CtrlDominioRespuesta ctrlDominioRespuesta = new CtrlDominioRespuesta();
-        CtrlDominioPregunta ctrlDominioPregunta = new CtrlDominioPregunta();
-        ctrlDominioUsuario = new CtrlDominioUsuario();
+        GestorPersistencia gestor = GestorPersistencia.getInstance();
+        
+        ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
+        ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlDominioRespuesta, null);
+        ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlDominioRespuesta, ctrlDominioPregunta);
+        
         scanner = new Scanner(System.in);
         
         boolean salir = false;
@@ -177,15 +180,9 @@ public class DriverUsuario {
         String contrasena = scanner.nextLine();
         
         try {
-            int estado = ctrlDominioUsuario.iniciarSesion(nomUsuario, contrasena);
-            if (estado == 0) {
-                usuarioActual = nomUsuario;
-                System.out.println("\nSesión iniciada correctamente. Bienvenido, " + nomUsuario + "!");
-            } else if (estado == 1) {
-                System.out.println("\nYa hay un usuario activo.");
-            } else if (estado == 2) {
-                System.out.println("\nCredenciales incorrectas. Inicio de sesión fallido.");
-            }
+            ctrlDominioUsuario.iniciarSesion(nomUsuario, contrasena);
+            usuarioActual = nomUsuario;
+            System.out.println("\nSesión iniciada correctamente. Bienvenido, " + nomUsuario + "!");
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
@@ -265,7 +262,7 @@ public class DriverUsuario {
         }
         
         try {
-            List<Integer> encuestas = ctrlDominioUsuario.getEncuestasRespondidas(ctrlDominioRespuesta, ctrlDominioPregunta);
+            List<Integer> encuestas = ctrlDominioUsuario.getEncuestasRespondidas();
             System.out.println("\nEncuestas respondidas por " + usuarioActual + ": " + encuestas);
         } catch (Exception e) {
             System.out.println("\nError inesperado: " + e.getMessage());
@@ -282,7 +279,7 @@ public class DriverUsuario {
         int idEncuesta = leerEntero();
         
         try {
-            List<Respuesta> respuestas = ctrlDominioUsuario.getRespuestasEncuesta(nomUsuario, idEncuesta, ctrlDominioRespuesta, ctrlDominioPregunta);
+            List<Respuesta> respuestas = ctrlDominioUsuario.getRespuestasEncuesta(nomUsuario, idEncuesta);
             System.out.println("\nRespuestas de la encuesta " + idEncuesta + " del usuario " + nomUsuario + ": " );
             for (Respuesta r : respuestas) {
                 System.out.println("ID Respuesta: " + r.getId() + ", ID Pregunta: " + r.getIdPregunta());
@@ -295,9 +292,9 @@ public class DriverUsuario {
     
     private static void testGetAllUsuarios() {
         System.out.println("TEST: GET ALL USUARIOS");
-        
         try {
-            TreeMap<String, Usuario> usuarios = ctrlDominioUsuario.getAllUsuarios();
+            HashMap<String, Usuario> usuarios = ctrlDominioUsuario.getAllUsuarios();
+            System.out.println("Total de usuarios: " + usuarios.size());
             for (String nomU : usuarios.keySet()) {
                 System.out.println("Usuario: " + nomU);
             }
@@ -307,6 +304,11 @@ public class DriverUsuario {
         }
     }
 
+    /* 
+    Esta funcionalidad ya no es necesaria.");
+    Los datos ya están cargados en memoria en GestorPersistencia
+    Los usuarios ya están cargados en memoria desde el inicio
+    
     private static void testCargarUsuarios() {
         System.out.println("TEST: CARGAR USUARIOS");
         
@@ -334,6 +336,7 @@ public class DriverUsuario {
             e.printStackTrace();
         }
     }
+        */
 
     private static int leerEntero() {
         while (true) {
