@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 /**
- * Tests unitarios para la clase Encuesta (SIN MOCKS) - JUnit 4.
+ * Tests unitarios para la clase Encuesta - JUnit 4.
  * 
  * Las clases de dominio puras no necesitan mocks porque no tienen dependencias externas.
  * Solo prueban lógica interna.
