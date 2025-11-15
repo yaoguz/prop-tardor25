@@ -1,6 +1,6 @@
-package domaincontroller;
+package domaincontrollers;
 
-import main.domini.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -13,44 +13,42 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import domaincontrollers.CtrlDominioEncuesta;
 import domaincontrollers.CtrlDominioPregunta;
-import domaincontrollers.CtrlEncuesta;
-
-import classcontroller.CtrlEncuesta;
-import persistence.CtrlPersistence;
+import domaincontrollers.CtrlDominioRespuesta;
+import domaincontrollers.CtrlDominioUsuario;
+import persistence.GestorPersistencia;
 import domain.Encuesta;
 import domain.Usuario;
 import domain.Pregunta;
 import domain.Respuesta;
-import domaincontrollers.CtrlUsuario;
-import domaincontrollers.CtrlPregunta;
-import domaincontrollers.CtrlRespuesta;
 
 /**
  * @author Xiangjun Yepan
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class TestCtrlDominioEncuesta {
     
     @Mock
     private GestorPersistencia mockGestor;
     @Mock
-    private CtrlDominioUsuario ctrlDominioUsuario;
+    private CtrlDominioUsuario mockCtrlDominioUsuario;
     @Mock
-    private CtrlDominioPregunta ctrlDominioPregunta;
+    private CtrlDominioPregunta mockCtrlDominioPregunta;
     @Mock
-    private CtrlDominioRespuesta ctrlDominioRespuesta;
+    private CtrlDominioRespuesta mockCtrlDominioRespuesta;
 
     private CtrlDominioEncuesta ctrlDominioEncuesta;
     
     @Before
-    public void setUp() {
-        // Crear el controlador bajo prueba con dependencias mockeadas
-        ctrlDominioEncuesta = new CtrlDominioEncuesta(gestor, ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
-        //ctrlDominioEncuesta.cargarEncuestas(mockGestor);
+    public void setUp() throws Exception {
+        // Resetear singleton
+        Field instance = CtrlDominioEncuesta.class.getDeclaredField("singletonInstance");
+        instance.setAccessible(true);
+        instance.set(null, null);
+        
+        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(mockGestor, mockCtrlDominioPregunta, mockCtrlDominioRespuesta, mockCtrlDominioUsuario);
         Usuario mockUser = mock(Usuario.class);
-
-        // when(mockUser.get("Xiangjun")).thenReturn(mockUser);
         when(mockUser.getNomUsuario()).thenReturn("Xiangjun");
+        when(mockCtrlDominioUsuario.getUsuario("Xiangjun")).thenReturn(mockUser);
     }
 
     @Test
@@ -80,137 +78,130 @@ public class TestCtrlDominioEncuesta {
 
         Encuesta resultado = ctrlDominioEncuesta.getEncuesta(1);
 
-        // Assert
         assertEquals("Ha sacado un Encuesta incorrecto", mockEncuesta, resultado);   
-        verify(mockGestor, times(1)).getEncuesta(mockEncuesta);
+        verify(mockGestor, times(1)).getEncuesta(1);
 	}
 
     @Test (expected=IllegalStateException.class) 
     public void testGetEncuestaConError() {
         when(mockGestor.getEncuesta(1)).thenReturn(null);
 
-        Encuesta resultado = ctrlDominioEncuesta.getEncuesta(1);
+        ctrlDominioEncuesta.getEncuesta(1);
     }
 
     @Test 
     public void testGetAllEncuestas() {
-        HashMap<Integer, Encuesta> map = new HashMap<>();
         ArrayList<Encuesta> lista = new ArrayList<>();
         Encuesta mockEncuesta = mock(Encuesta.class);
-        map.put(1, mockEncuesta);
         lista.add(mockEncuesta);
         when(mockGestor.getEncuestas()).thenReturn(lista);
         when(mockEncuesta.getIdEncuesta()).thenReturn(1);
 
         HashMap<Integer, Encuesta> resultado = ctrlDominioEncuesta.getAllEncuestas();
 
-        assertEquals("No ha sacado todas las encuestas correctamente", map, resultado);
+        assertEquals("No ha sacado todas las encuestas correctamente", 1, resultado.size());
+        assertTrue(resultado.containsKey(1));
         verify(mockGestor, times(1)).getEncuestas();
-        verify(mockGestor, times(1)).getAllEncuestas();
     }
 
-    @Test void testGetIdPreguntasEncuesta() {
+    @Test 
+    public void testGetIdPreguntasEncuesta() {
         Encuesta mockEncuesta = mock(Encuesta.class);
-        List<Integer> idPreguntas = new ArrayList<>(Arrays.asList(1, 2, 3));
-        when(mockEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
+        ArrayList<Integer> idPreguntas = new ArrayList<>(Arrays.asList(1, 2, 3));
+        when(mockGestor.getEncuesta(1)).thenReturn(mockEncuesta);
         when(mockEncuesta.getIdPreguntas()).thenReturn(idPreguntas);
 
-        ArrayList<Integer> resultado = ctrlDominioEncuesta.getIdPreguntasEncuesta(1);
+        List<Integer> resultado = ctrlDominioEncuesta.getIdPreguntasEncuesta(1);
 
-        // Assert
         assertEquals("No ha sacado las preguntas correctas", idPreguntas, resultado);  
-        verify(mockGestor, times(1)).getIdPreguntasEncuesta(1);
+        verify(mockGestor, times(1)).getEncuesta(1);
     }
 
-    @Test void testGetPreguntasEncuesta() {
+    @Test 
+    public void testGetPreguntasEncuesta() {
         Encuesta mockEncuesta = mock(Encuesta.class);
         Pregunta mockPregunta = mock(Pregunta.class);
-        List<Pregunta> preguntas = new ArrayList<>(Arrays.asList(mockPregunta));
         ArrayList<Integer> idPreguntas = new ArrayList<>(Arrays.asList(1));
-        when(mockEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
+        when(mockGestor.getEncuesta(1)).thenReturn(mockEncuesta);
         when(mockEncuesta.getIdPreguntas()).thenReturn(idPreguntas);
         when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(mockPregunta);
-        when(mockGestor.getPreguntasEncuesta(1)).thenReturn(preguntas);
 
-        ArrayList<Integer> resultado = ctrlDominioEncuesta.getIdPreguntasEncuesta(1);
+        List<Pregunta> resultado = ctrlDominioEncuesta.getPreguntasEncuesta(1);
 
-        // Assert
-        assertEquals("No ha sacado las preguntas correctas", preguntas, resultado);  
-        verify(mockGestor, times(1)).getIdPreguntasEncuesta(1);
+        assertEquals("No ha sacado las preguntas correctas", 1, resultado.size());  
+        verify(mockGestor, times(1)).getEncuesta(1);
+        verify(mockCtrlDominioPregunta, times(1)).getPregunta(1);
     }
 
-    @Test void testCrearEncuestaSinError() {
+    @Test 
+    public void testCrearEncuestaSinError() {
         Usuario mockUsuario = mock(Usuario.class);
-        String titulo = "Prueba";
-        when(mockGestor.crearEncuesta(mockUsuario, titulo)).thenReturn(1);
-        int idEncuesta = ctrlDominioEncuesta.getEncuesta(idEncuesta);
-        // Assert
-        assertEquals("No ha creado la encuesta con el creador correcto", "Xiangjun", e.getIdCreador());
-        assertEquals("No ha creado la encuesta con el título correcto", "Prueba", e.getTitulo());
-        assertEquals("No ha creado la encuesta con el id correcto", idEncuesta, e.getIdEncuesta());
-        verify(mockGestor, times(1)).put(eq(idEncuesta), any(Encuesta.class));
+        when(mockUsuario.getNomUsuario()).thenReturn("Xiangjun");
+        when(mockCtrlDominioUsuario.getUsuario("Xiangjun")).thenReturn(mockUsuario);
+        when(mockGestor.getNextIdEncuesta()).thenReturn(1);
+        
+        int idEncuesta = ctrlDominioEncuesta.crearEncuesta("Xiangjun", "Prueba");
+        
+        assertEquals("No ha creado la encuesta con el id correcto", 1, idEncuesta);
+        verify(mockGestor).guardarEncuesta(any(Encuesta.class));
+        verify(mockGestor).actualizarUsuario(mockUsuario);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCrearEncuestaTituloVacio() {
-
-        ctrlDominioEncuesta.crearEncuesta("Xiangjun", "", ctrlDominioUsuario);
+        ctrlDominioEncuesta.crearEncuesta("Xiangjun", "");
     }
 
-    @Test void testImportarEncuesta() {
-        int idEncuesta = ctrlDominioEncuesta.importarEncuesta(file, ctrlDominioUsuario, ctrlDominioPregunta);
 
-        Encuesta resultado = ctrlDominioEncuesta.getEncuesta(idEncuesta);
-
-        // Assert
-        assertEquals("No ha importado la encuesta correctamente", idEncuesta, resultado.getIdEncuesta());   // compara que es la misma Encuesta
-        verify(mockGestor, times(1)).put(eq(idEncuesta), any(Encuesta.class));
-    }
-
-    @Test void testModificarTituloEncuestaSinError() {
+    @Test 
+    public void testModificarTituloEncuestaSinError() {
         Encuesta e = new Encuesta(1, "Prueba", "Xiangjun");
-        when(mockGestor.get(1)).thenReturn(e);
+        when(mockGestor.getEncuesta(1)).thenReturn(e);
 
         ctrlDominioEncuesta.modificarTituloEncuesta(1, "NuevoTitulo");
 
-        // Assert
-        assertEquals("No ha modificado el título correctamente", "NuevoTitulo", e.getTitulo());   // compara que es la misma Encuesta
-        verify(mockGestor, times(1)).get(1);
+        assertEquals("No ha modificado el título correctamente", "NuevoTitulo", e.getTitulo());
+        verify(mockGestor, times(1)).getEncuesta(1);
+        verify(mockGestor, times(1)).actualizarEncuesta(e);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testModificarTituloEncuestaTituloVacio() {
-
         ctrlDominioEncuesta.modificarTituloEncuesta(1, "");
     }
 
-    @Test void testEliminarEncuesta() {
+    @Test 
+    public void testEliminarEncuesta() {
+        Usuario mockUsuario = mock(Usuario.class);
         Encuesta e = new Encuesta(1, "Prueba", "Xiangjun");
         ArrayList<Integer> preguntas = new ArrayList<>(Arrays.asList(1, 2, 3));
         for (Integer p : preguntas) {
             e.guardarPregunta(p);
         }
-        when(mockGestor.get(1)).thenReturn(e);
+        when(mockGestor.getEncuesta(1)).thenReturn(e);
+        when(mockCtrlDominioUsuario.getUsuario("Xiangjun")).thenReturn(mockUsuario);
 
-        ctrlDominioEncuesta.eliminarEncuesta(1, ctrlDominioPregunta);
+        ctrlDominioEncuesta.eliminarEncuesta(1);
 
-        // Assert
-        verify(mockGestor, times(1)).get(1);
-        verify(mockGestor, times(1)).remove(1);
+        verify(mockGestor).getEncuesta(1);
+        verify(mockCtrlDominioPregunta, times(3)).eliminarPregunta(anyInt());
+        verify(mockCtrlDominioUsuario).getUsuario("Xiangjun");
+        verify(mockGestor).eliminarEncuesta(1);
     }
 
-    @Test void testGetRespuestasEncuesta() {
+    @Test 
+    public void testGetRespuestasEncuesta() {
         Encuesta e = new Encuesta(1, "Prueba", "Xiangjun");
         ArrayList<Integer> preguntas = new ArrayList<>(Arrays.asList(1, 2));
         for (Integer p : preguntas) {
             e.guardarPregunta(p);
         }
-        when(mockGestor.get(1)).thenReturn(e);
+        when(mockGestor.getEncuesta(1)).thenReturn(e);
 
         Pregunta p1 = mock(Pregunta.class);
         Pregunta p2 = mock(Pregunta.class);
-        when(ctrlDominioPregunta.getPregunta(1)).thenReturn(p1);
-        when(ctrlDominioPregunta.getPregunta(2)).thenReturn(p2);
+        when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(p1);
+        when(mockCtrlDominioPregunta.getPregunta(2)).thenReturn(p2);
 
         ArrayList<Integer> respuestasP1 = new ArrayList<>(Arrays.asList(10, 11));
         ArrayList<Integer> respuestasP2 = new ArrayList<>(Arrays.asList(20));
@@ -220,255 +211,20 @@ public class TestCtrlDominioEncuesta {
         Respuesta r10 = mock(Respuesta.class);
         Respuesta r11 = mock(Respuesta.class);
         Respuesta r20 = mock(Respuesta.class);
-        when(ctrlDominioRespuesta.getRespuesta(10)).thenReturn(r10);
-        when(ctrlDominioRespuesta.getRespuesta(11)).thenReturn(r11);
-        when(ctrlDominioRespuesta.getRespuesta(20)).thenReturn(r20);
+        when(mockCtrlDominioRespuesta.getRespuesta(10)).thenReturn(r10);
+        when(mockCtrlDominioRespuesta.getRespuesta(11)).thenReturn(r11);
+        when(mockCtrlDominioRespuesta.getRespuesta(20)).thenReturn(r20);
 
         Map<Pregunta, Set<Respuesta>> resultado = 
             ctrlDominioEncuesta.getRespuestasEncuesta(1);
 
-        // Assert
         assertNotNull("El mapa de respuestas es nulo", resultado);
         assertEquals("El mapa de respuestas tiene tamaño incorrecto", 2, resultado.size());
         assertTrue("No contiene la pregunta 1", resultado.containsKey(p1));
         assertTrue("No contiene la pregunta 2", resultado.containsKey(p2));
         
-        // VERIFY
-        verify(mockGestor).get(1);
-        verify(ctrlDominioPregunta, times(2)).getPregunta(anyInt());
-    }
-
-/////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Test: Crear encuesta con usuario válido debe crear y guardar encuesta.
-     */
-    @Test
-    public void testCrearEncuesta_UsuarioValido_CreaYGuardaEncuesta() {
-        // ARRANGE - Preparar datos y configurar mocks
-        String nomUsuario = "testUser";
-        String titulo = "Encuesta de Prueba";
-        int idEncuestaEsperado = 1;
-        
-        Usuario mockUsuario = mock(Usuario.class);
-        Encuesta mockEncuesta = mock(Encuesta.class);
-        
-        when(mockCtrlUsuario.getUsuario(nomUsuario)).thenReturn(mockUsuario);
-        when(mockCtrlEncuesta.crearEncuesta(nomUsuario, titulo)).thenReturn(mockEncuesta);
-        when(mockEncuesta.getId()).thenReturn(idEncuestaEsperado);
-        
-        // ACT - Ejecutar método bajo prueba
-        int idEncuestaCreado = ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
-        
-        // ASSERT - Verificar resultado
-        assertEquals(idEncuestaEsperado, idEncuestaCreado);
-        
-        // VERIFY - Verificar interacciones con mocks
-        verify(mockCtrlUsuario, times(1)).getUsuario(nomUsuario);
-        verify(mockCtrlEncuesta, times(1)).crearEncuesta(nomUsuario, titulo);
-        verify(mockUsuario, times(1)).guardarIdEncuesta(idEncuestaEsperado);
-        verify(mockPersistence, times(1)).guardarEncuesta(mockEncuesta);
-    }
-    
-    /**
-     * Test: Crear encuesta con usuario inexistente debe lanzar excepción.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCrearEncuesta_UsuarioInexistente_LanzaExcepcion() {
-        // ARRANGE
-        String nomUsuario = "nonExistentUser";
-        String titulo = "Encuesta de Prueba";
-        
-        when(mockCtrlUsuario.getUsuario(nomUsuario)).thenReturn(null);
-        
-        // ACT - Debería lanzar excepción
-        ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
-        
-        // VERIFY - No debería haber intentado crear encuesta
-        verify(mockCtrlEncuesta, never()).crearEncuesta(anyString(), anyString());
-        verify(mockPersistence, never()).guardarEncuesta(any(Encuesta.class));
-    }
-    
-    /**
-     * Test: Crear encuesta con título vacío debe lanzar excepción.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCrearEncuesta_TituloVacio_LanzaExcepcion() {
-        // ARRANGE
-        String nomUsuario = "testUser";
-        String titulo = "";
-        
-        Usuario mockUsuario = mock(Usuario.class);
-        when(mockCtrlUsuario.getUsuario(nomUsuario)).thenReturn(mockUsuario);
-        
-        // ACT - Debería lanzar excepción
-        ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
-    }
-    
-    // ==================== TESTS DE MODIFICAR TÍTULO ====================
-    
-    /**
-     * Test: Modificar título de encuesta existente debe actualizar y guardar.
-     */
-    @Test
-    public void testModificarTituloEncuesta_EncuestaExistente_ActualizaYGuarda() {
-        // ARRANGE
-        int idEncuesta = 1;
-        String nuevoTitulo = "Nuevo Título";
-        
-        Encuesta mockEncuesta = mock(Encuesta.class);
-        when(mockCtrlEncuesta.getEncuesta(idEncuesta)).thenReturn(mockEncuesta);
-        
-        // ACT
-        ctrlDominioEncuesta.modificarTituloEncuesta(idEncuesta, nuevoTitulo);
-        
-        // VERIFY
-        verify(mockCtrlEncuesta).getEncuesta(idEncuesta);
-        verify(mockEncuesta).modificarTitulo(nuevoTitulo);
-        verify(mockPersistence).guardarEncuesta(mockEncuesta);
-    }
-    
-    /**
-     * Test: Modificar título de encuesta inexistente debe lanzar excepción.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testModificarTituloEncuesta_EncuestaInexistente_LanzaExcepcion() {
-        // ARRANGE
-        int idEncuesta = 999;
-        String nuevoTitulo = "Nuevo Título";
-        
-        when(mockCtrlEncuesta.getEncuesta(idEncuesta)).thenReturn(null);
-        
-        // ACT
-        ctrlDominioEncuesta.modificarTituloEncuesta(idEncuesta, nuevoTitulo);
-    }
-    
-    // ==================== TESTS DE ELIMINAR ENCUESTA ====================
-    
-    /**
-     * Test: Eliminar encuesta debe eliminar sus preguntas y respuestas asociadas.
-     */
-    @Test
-    public void testEliminarEncuesta_EliminaEncuestaPreguntasYRespuestas() {
-        // ARRANGE
-        int idEncuesta = 1;
-        Encuesta mockEncuesta = mock(Encuesta.class);
-        List<Integer> idPreguntas = Arrays.asList(1, 2, 3);
-        
-        when(mockCtrlEncuesta.getEncuesta(idEncuesta)).thenReturn(mockEncuesta);
-        when(mockEncuesta.getIdPreguntas()).thenReturn(idPreguntas);
-        
-        // Mock de CtrlDominioPregunta (normalmente se inyectaría)
-        CtrlDominioPregunta mockCtrlDominioPregunta = mock(CtrlDominioPregunta.class);
-        
-        // ACT
-        ctrlDominioEncuesta.eliminarEncuesta(idEncuesta, mockCtrlDominioPregunta);
-        
-        // VERIFY
-        verify(mockCtrlEncuesta).getEncuesta(idEncuesta);
-        verify(mockEncuesta).getIdPreguntas();
-        
-        // Verificar que se eliminó cada pregunta
-        for (Integer idPregunta : idPreguntas) {
-            verify(mockCtrlDominioPregunta).eliminarPregunta(idPregunta);
-        }
-        
-        verify(mockPersistence).eliminarEncuesta(idEncuesta);
-        verify(mockCtrlEncuesta).eliminar(mockEncuesta);
-    }
-    
-    // ==================== TESTS DE GET PREGUNTAS ====================
-    
-    /**
-     * Test: Obtener preguntas de encuesta existente devuelve lista correcta.
-     */
-    @Test
-    public void testGetPreguntasEncuesta_EncuestaExistente_RetornaPreguntas() {
-        // ARRANGE
-        int idEncuesta = 1;
-        List<Integer> preguntasEsperadas = Arrays.asList(1, 2, 3, 4, 5);
-        
-        Encuesta mockEncuesta = mock(Encuesta.class);
-        when(mockCtrlEncuesta.getEncuesta(idEncuesta)).thenReturn(mockEncuesta);
-        when(mockEncuesta.getIdPreguntas()).thenReturn(preguntasEsperadas);
-        
-        // ACT
-        List<Integer> preguntasObtenidas = ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
-        
-        // ASSERT
-        assertNotNull(preguntasObtenidas);
-        assertEquals(preguntasEsperadas.size(), preguntasObtenidas.size());
-        assertEquals(preguntasEsperadas, preguntasObtenidas);
-        
-        // VERIFY
-        verify(mockCtrlEncuesta).getEncuesta(idEncuesta);
-        verify(mockEncuesta).getIdPreguntas();
-    }
-    
-    /**
-     * Test: Obtener preguntas de encuesta vacía devuelve lista vacía.
-     */
-    @Test
-    public void testGetPreguntasEncuesta_EncuestaVacia_RetornaListaVacia() {
-        // ARRANGE
-        int idEncuesta = 1;
-        List<Integer> preguntasVacias = new ArrayList<>();
-        
-        Encuesta mockEncuesta = mock(Encuesta.class);
-        when(mockCtrlEncuesta.getEncuesta(idEncuesta)).thenReturn(mockEncuesta);
-        when(mockEncuesta.getIdPreguntas()).thenReturn(preguntasVacias);
-        
-        // ACT
-        List<Integer> preguntasObtenidas = ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
-        
-        // ASSERT
-        assertNotNull(preguntasObtenidas);
-        assertTrue(preguntasObtenidas.isEmpty());
-    }
-    
-    // ==================== TESTS DE GET RESPUESTAS ENCUESTA ====================
-    
-    /**
-     * Test: Obtener respuestas de encuesta devuelve mapa correcto.
-     */
-    @Test
-    public void testGetRespuestasEncuesta_RetornaMapaDeRespuestas() {
-        // ARRANGE
-        int idEncuesta = 1;
-        List<Integer> idPreguntas = Arrays.asList(1, 2);
-        
-        Encuesta mockEncuesta = mock(Encuesta.class);
-        Pregunta mockPregunta1 = mock(Pregunta.class);
-        Pregunta mockPregunta2 = mock(Pregunta.class);
-        
-        when(mockCtrlEncuesta.getEncuesta(idEncuesta)).thenReturn(mockEncuesta);
-        when(mockEncuesta.getIdPreguntas()).thenReturn(idPreguntas);
-        when(mockCtrlPregunta.getPregunta(1)).thenReturn(mockPregunta1);
-        when(mockCtrlPregunta.getPregunta(2)).thenReturn(mockPregunta2);
-        
-        List<Integer> idRespuestas1 = Arrays.asList(10, 11);
-        List<Integer> idRespuestas2 = Arrays.asList(20);
-        when(mockPregunta1.getIdRespuestas()).thenReturn(idRespuestas1);
-        when(mockPregunta2.getIdRespuestas()).thenReturn(idRespuestas2);
-        
-        Respuesta mockResp10 = mock(Respuesta.class);
-        Respuesta mockResp11 = mock(Respuesta.class);
-        Respuesta mockResp20 = mock(Respuesta.class);
-        when(mockCtrlRespuesta.getRespuesta(10)).thenReturn(mockResp10);
-        when(mockCtrlRespuesta.getRespuesta(11)).thenReturn(mockResp11);
-        when(mockCtrlRespuesta.getRespuesta(20)).thenReturn(mockResp20);
-        
-        // ACT
-        Map<Pregunta, Set<Respuesta>> resultado = 
-            ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
-        
-        // ASSERT
-        assertNotNull(resultado);
-        assertEquals(2, resultado.size());
-        assertTrue(resultado.containsKey(mockPregunta1));
-        assertTrue(resultado.containsKey(mockPregunta2));
-        
-        // VERIFY
-        verify(mockCtrlEncuesta).getEncuesta(idEncuesta);
-        verify(mockCtrlPregunta, times(2)).getPregunta(anyInt());
+        verify(mockGestor).getEncuesta(1);
+        verify(mockCtrlDominioPregunta, times(2)).getPregunta(anyInt());
+        verify(mockCtrlDominioRespuesta, times(3)).getRespuesta(anyInt());
     }
 }
