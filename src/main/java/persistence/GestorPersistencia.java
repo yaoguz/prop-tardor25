@@ -143,7 +143,7 @@ public class GestorPersistencia {
      * @param u Usuario a actualizar
      */
     public void actualizarUsuario(Usuario u) {
-        usuarios.put(u.getNomUsuario(), u);
+        usuarios.put(u.getNomUsuario(), u); //sobre escribe
     }
 
     /**

@@ -22,60 +22,58 @@ import domain.Usuario;
 @RunWith(MockitoJUnitRunner.class)
 public class TestCtrlDominioUsuario {
     @Mock
-    private GestorPersistencia gestor;
+    private GestorPersistencia mockGestor;
 
     @Mock
-    private CtrlDominioRespuesta ctrlDominioRespuesta;
+    private CtrlDominioRespuesta mockCtrlDominioRespuesta;
 
     @Mock 
-    private CtrlDominioPregunta ctrlDominioPregunta;
+    private CtrlDominioPregunta mockCtrlDominioPregunta;
     
     private CtrlDominioUsuario ctrlDominioUsuario;   
 
     @Before
     public void setUp() {
    
-        ctrlDominioUsuario = new CtrlDominioUsuario(gestor, ctrlDominioRespuesta, ctrlDominioPregunta);
+        ctrlDominioUsuario = new CtrlDominioUsuario(mockGestor, ctrlDominioRespuesta, ctrlDominioPregunta);
     }
 
     @Test
     public void testExisteUsuarioTrue() {
-        when(gestor.existeUsuario("Alessadro")).thenReturn(true);
+        when(mockGestor.existeUsuario("Alessadro")).thenReturn(true);
 
         boolean resultado = ctrlDominioUsuario.existeUsuario("Alessandro");
 
         assertTrue("No muestra un usuario existente", resultado);
-        verify(gestor, times(1)).existeUsuario("Alessandro"); // verificar interacción
+        verify(mockGestor, times(1)).existeUsuario("Alessandro"); // verificar interacción
 	}
 
     @Test 
     public void testExisteUsuarioFalse() {
-        when(gestor.existeUsuario("Alessadro")).thenReturn(false);
+        when(mockGestor.existeUsuario("Alessadro")).thenReturn(false);
 
         boolean resultado = ctrlDominioUsuario.existeUsuario("Yaoyao");
 
         assertFalse("Muestra un usuario No existente", resultado);
-        verify(gestor, times(1)).existeUsuario("Yaoyao"); // verificar interacción
+        verify(mockGestor, times(1)).existeUsuario("Yaoyao"); // verificar interacción
     }
 
     @Test
     public void testGetUsuarioSinError() {
         
-        Usuario u = new Usuario("Alessandro", "123456");
-        when(gestor.getUsuario("Alessandro")).thenReturn(u);
-
+        Usuario mockUser = mock(Usuario.class);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         
         Usuario resultado = ctrlDominioUsuario.getUsuario("Alessandro");
 
-        assertEquals("Ha sacado un usuario incorrecto", u, resultado);   // compara que es el mismo usuario
-        verify(gestor, times(1)).getUsuario("Alessandro");
+        assertEquals("Ha sacado un usuario incorrecto", mockUser, resultado);   // compara que es el mismo usuario
+        verify(mockGestor, times(1)).getUsuario("Alessandro");
 	}
 
     @Test (expected=IllegalArgumentException.class) 
     public void testGetUsuarioConError() {
             
-
-        when(gestor.getUsuario("Alessandro")).thenReturn(null);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(null);
 
         Usuario resultado = ctrlDominioUsuario.getUsuario("Alessandro");
     }
@@ -88,7 +86,7 @@ public class TestCtrlDominioUsuario {
         assertEquals("Guarda nombre incorrecto", "Alessandro", nom);
         assertTrue(ctrlDominioUsuario.existeUsuario("Alessandro"));
 
-        verify(gestor, times(1)).getUsuario("Alessandro");
+        verify(mockGestor, times(1)).getUsuario("Alessandro");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -129,13 +127,10 @@ public class TestCtrlDominioUsuario {
     @Test(expected = IllegalStateException.class)
     public void testRegistrarUsuarioUsuarioDuplicado() {
 
-        TreeMap<String, Usuario> users = new TreeMap<>();
-        ctrlDominioUsuario.cargarUsuarios(users);
-
+        when(mockGestor.existeUsuario("Alessadro")).thenReturn(true);
       
         ctrlDominioUsuario.registrarUsuario("Alessandro", "123456", "123456");
        
-        ctrlDominioUsuario.registrarUsuario("Alessandro", "123456", "123456");
     }
 
 
@@ -143,7 +138,7 @@ public class TestCtrlDominioUsuario {
     public void testIniciarSesionBueno() {
         
         Usuario mockUser = mock(Usuario.class);
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.comprobarContrasena("123456")).thenReturn(true);
         when(mockUser.getNomUsuario()).thenReturn("Alessandro");
 
@@ -152,7 +147,7 @@ public class TestCtrlDominioUsuario {
       
         assertEquals("No se activo el usuario", "Alessandro", ctrlDominioUsuario.getUsuarioActivo());
 
-        verify(mockUsuarios, times(1)).get("Alessandro");
+        verify(mockGestor, times(1)).get("Alessandro");
         verify(mockUser, times(1)).comprobarContrasena("123456");
     }
 
@@ -160,7 +155,7 @@ public class TestCtrlDominioUsuario {
     public void testIniciarSesionYaHayUsuarioActivo() {
 
         Usuario mockUser = mock(Usuario.class);
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.comprobarContrasena("123456")).thenReturn(true);
         when(mockUser.getNomUsuario()).thenReturn("Alessandro");
 
@@ -177,7 +172,7 @@ public class TestCtrlDominioUsuario {
     public void testIniciarSesionContrasenaIncorrecta() {
         
         Usuario mockUser = mock(Usuario.class);
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.comprobarContrasena("654321")).thenReturn(false);
 
      
@@ -189,7 +184,7 @@ public class TestCtrlDominioUsuario {
     @Test(expected = IllegalArgumentException.class)
     public void testIniciarSesionUsuarioNoExiste() {
         // usar mockUsuarios -> devuelve null por defecto para get()
-        when(mockUsuarios.get("Alessandro")).thenReturn(null);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(null);
         ctrlDominioUsuario.iniciarSesion("Alessandro", "123456");
     }
 
@@ -204,7 +199,7 @@ public class TestCtrlDominioUsuario {
     public void testGetUsuarioActivoConSesion() {
 
         Usuario mockUser = mock(Usuario.class);  
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.comprobarContrasena("123456")).thenReturn(true);
         when(mockUser.getNomUsuario()).thenReturn("Alessandro");
 
@@ -212,13 +207,15 @@ public class TestCtrlDominioUsuario {
 
         String activo = ctrlDominioUsuario.getUsuarioActivo();
         assertEquals("Debe devolver el usuario activo", "Alessandro", activo);
+
+        
     }
 
     @Test
     public void testCerrarSesionActual() {
         
         Usuario mockUser = mock(Usuario.class);
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.comprobarContrasena("123456")).thenReturn(true);
         when(mockUser.getNomUsuario()).thenReturn("Alessandro");
 
@@ -234,7 +231,7 @@ public class TestCtrlDominioUsuario {
     public void testModificarContrasenaValida() {
 
         Usuario mockUser = mock(Usuario.class);
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.comprobarContrasena("123456")).thenReturn(true);
         when(mockUser.getNomUsuario()).thenReturn("Alessandro");
 
@@ -242,6 +239,7 @@ public class TestCtrlDominioUsuario {
         ctrlDominioUsuario.modificarContrasena("654321");
 
         verify(mockUser, times(1)).newContrasena("654321");
+        verify(mockGestor, times(1)).actualizarUsuario(mockUser);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -263,24 +261,21 @@ public class TestCtrlDominioUsuario {
     public void testModificarContrasenaIgualActual() {
         
         Usuario mockUser = mock(Usuario.class);
-        when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
         when(mockUser.comprobarContrasena("123456")).thenReturn(true);
         when(mockUser.getNomUsuario()).thenReturn("Alessandro");
 
         ctrlDominioUsuario.iniciarSesion("Alessandro", "123456");
 
-        doThrow(new IllegalStateException("La nueva contraseña es igual a la actual"))
-            .when(mockUser).newContrasena("123456");
+        doThrow(new IllegalStateException("La nueva contraseña es igual a la actual")).when(mockUser).newContrasena("123456");
 
         ctrlDominioUsuario.modificarContrasena("123456");
     }
 
 
     @Test
-    public void testGetEncuestasRespondidas_OK() {
+    public void testGetEncuestasRespondidas() {
         // Mocks 
-        CtrlDominioRespuesta mockCtrlResp = mock(CtrlDominioRespuesta.class);
-        CtrlDominioPregunta mockCtrlPreg = mock(CtrlDominioPregunta.class);
         Usuario mockUser = mock(Usuario.class);
         Respuesta mockR1 = mock(Respuesta.class);
         Respuesta mockR2 = mock(Respuesta.class);
@@ -297,17 +292,17 @@ public class TestCtrlDominioUsuario {
         when(mockUser.getIdRespuestas()).thenReturn(new ArrayList<>(Arrays.asList(1, 2)));
 
         // Simular las respuestas y preguntas
-        when(mockCtrlResp.getRespuesta(1)).thenReturn(mockR1);
-        when(mockCtrlResp.getRespuesta(2)).thenReturn(mockR2);
+        when(mockCtrlDominioRespuesta.getRespuesta(1)).thenReturn(mockR1);
+        when(mockCtrlDominioRespuesta.getRespuesta(2)).thenReturn(mockR2);
         when(mockR1.getIdPregunta()).thenReturn(10);
         when(mockR2.getIdPregunta()).thenReturn(20);
-        when(mockCtrlPreg.getPregunta(10)).thenReturn(mockP1);
-        when(mockCtrlPreg.getPregunta(20)).thenReturn(mockP2);
+        when(mockCtrlDominioPregunta.getPregunta(10)).thenReturn(mockP1);
+        when(mockCtrlDominioPregunta.getPregunta(20)).thenReturn(mockP2);
         when(mockP1.getIdEncuesta()).thenReturn(100);
         when(mockP2.getIdEncuesta()).thenReturn(200);
 
       
-        List<Integer> resultado = ctrlDominioUsuario.getEncuestasRespondidas(mockCtrlResp, mockCtrlPreg);
+        List<Integer> resultado = ctrlDominioUsuario.getEncuestasRespondidas(mockCtrlDominioRespuesta, mockCtrlDominioPregunta);
 
         
         assertEquals("Size no coincide", 2, resultado.size());
@@ -316,15 +311,14 @@ public class TestCtrlDominioUsuario {
 
         // Verificaciones opcionales
         verify(mockUser).getIdRespuestas(); //times 1
-        verify(mockCtrlResp, times(2)).getRespuesta(anyInt());
-        verify(mockCtrlPreg, times(2)).getPregunta(anyInt());
+        verify(mockCtrlDominioRespuesta, times(2)).getRespuesta(anyInt());
+        verify(mockCtrlDominioPregunta, times(2)).getPregunta(anyInt());
     }
 
 
     @Test
     public void testGetRespuestasEncuesta() {
-        CtrlDominioRespuesta mockCtrlResp = mock(CtrlDominioRespuesta.class);
-        CtrlDominioPregunta mockCtrlPreg = mock(CtrlDominioPregunta.class);
+     
         Usuario mockUser = mock(Usuario.class);
         Respuesta mockR1 = mock(Respuesta.class);
         Respuesta mockR2 = mock(Respuesta.class);
@@ -336,56 +330,41 @@ public class TestCtrlDominioUsuario {
         when(mockUsuarios.get("Alessandro")).thenReturn(mockUser);
         when(mockUser.getIdRespuestas()).thenReturn(new ArrayList<>(Arrays.asList(1, 2, 3)));
 
-        when(mockCtrlResp.getRespuesta(1)).thenReturn(mockR1);
-        when(mockCtrlResp.getRespuesta(2)).thenReturn(mockR2);
-        when(mockCtrlResp.getRespuesta(3)).thenReturn(mockR3);
+        when(mockCtrlDominioRespuesta.getRespuesta(1)).thenReturn(mockR1);
+        when(mockCtrlDominioRespuesta.getRespuesta(2)).thenReturn(mockR2);
+        when(mockCtrlDominioRespuesta.getRespuesta(3)).thenReturn(mockR3);
 
         when(mockR1.getIdPregunta()).thenReturn(10);
         when(mockR2.getIdPregunta()).thenReturn(20);
         when(mockR3.getIdPregunta()).thenReturn(30);
 
-        when(mockCtrlPreg.getPregunta(10)).thenReturn(mockP1);
-        when(mockCtrlPreg.getPregunta(20)).thenReturn(mockP2);
-        when(mockCtrlPreg.getPregunta(30)).thenReturn(mockP3);
+        when(mockCtrlDominioPregunta.getPregunta(10)).thenReturn(mockP1);
+        when(mockCtrlDominioPregunta.getPregunta(20)).thenReturn(mockP2);
+        when(mockCtrlDominioPregunta.getPregunta(30)).thenReturn(mockP3);
 
         when(mockP1.getIdEncuesta()).thenReturn(100);
         when(mockP2.getIdEncuesta()).thenReturn(200);
         when(mockP3.getIdEncuesta()).thenReturn(100);
 
-        List<Respuesta> resultado = ctrlDominioUsuario.getRespuestasEncuesta("Alessandro", 100, mockCtrlResp, mockCtrlPreg);
+        List<Respuesta> resultado = ctrlDominioUsuario.getRespuestasEncuesta("Alessandro", 100, mockCtrlDominioRespuesta, mockCtrlDominioPregunta);
 
         assertEquals("Size no coincide", 2, resultado.size());
         assertEquals("no devuelve en el lugar", mockR1, resultado.get(0));
         assertEquals("no devuelve en el lugar", mockR3, resultado.get(1));
 
         verify(mockUser).getIdRespuestas();
-        verify(mockCtrlResp, times(3)).getRespuesta(anyInt());
-        verify(mockCtrlPreg, times(3)).getPregunta(anyInt());
+        verify(mockCtrlDominioRespuesta, times(3)).getRespuesta(anyInt());
+        verify(mockCtrlDominioPregunta, times(3)).getPregunta(anyInt());
     }
 
     @Test
     public void testGetAllUsuariosDevuelveCopia() {
-        TreeMap<String, Usuario> users = new TreeMap<>();
-        users.put("Alessandro", new Usuario("Alessandro", "123456"));
-        users.put("Denis", new Usuario("Denis", "654321"));
+        Usuario mockUser1 = mock(Usuario.class);
+        Usuario mockUser2 = mock(Usuario.class);
+        ArrayList<Usuario> users = new ArrayList<>(Arrays.asList(mockUser1, mockUser2));
+        when(gestor.getUsuarios()).thenReturn(users);
 
-        ctrlDominioUsuario.cargarUsuarios(users);
-
-        TreeMap<String, Usuario> copia = ctrlDominioUsuario.getAllUsuarios();
-
-        assertEquals("Size no coinciden", 2, copia.size());
-        assertNotSame("No son iguales", users, copia);
-    }
-
-    @Test
-    public void testCargarUsuarios() {
-        TreeMap<String, Usuario> users = new TreeMap<>();
-        users.put("Alessandro", new Usuario("Alessandro", "123456"));
-        users.put("Denis", new Usuario("Denis", "654321"));
-
-        ctrlDominioUsuario.cargarUsuarios(users);
-
-        TreeMap<String, Usuario> copia = ctrlDominioUsuario.getAllUsuarios();
+        HashMap<String, Usuario> copia = ctrlDominioUsuario.getAllUsuarios();
 
         assertEquals("Size no coinciden", 2, copia.size());
         assertNotSame("No son iguales", users, copia);

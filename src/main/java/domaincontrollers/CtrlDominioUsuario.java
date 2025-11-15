@@ -255,7 +255,7 @@ public class CtrlDominioUsuario {
 	 * 
 	 * @return HashMap con todos los usuarios (clave: nombre usuario)
 	 */
-	public HashMap<String, Usuario> getAllUsuarios() {
+	public Map<String, Usuario> getAllUsuarios() {
 		HashMap<String, Usuario> map = new HashMap<>();
 		ArrayList<Usuario> lista = gestor.getUsuarios();
 		for (Usuario u : lista) {
