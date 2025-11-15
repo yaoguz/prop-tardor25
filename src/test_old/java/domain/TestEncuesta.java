@@ -81,10 +81,11 @@ public class TestEncuesta {
         ArrayList<Integer> lista = encuesta.getIdPreguntas();
         assertEquals(1, lista.size());
         assertTrue(lista.contains(Integer.valueOf(5)));
+        assertFalse(lista.contains(Integer.valueOf(999)));
     }
     
     @Test
-    public void testCambiarTitulo_ModificaElTitulo() {
+    public void testCambiarTitulo() {
         String nuevo = "Nuevo título";
         encuesta.cambiarTitulo(nuevo);
         assertEquals(nuevo, encuesta.getTitulo());

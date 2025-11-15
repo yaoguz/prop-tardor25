@@ -33,7 +33,6 @@ public class TestRespuestaOpcionUnica {
         assertEquals(2, r.getRespuesta());
     }
 
-    
     @Test(expected = IllegalArgumentException.class)
     public void modificarTipoIncorrecto() {
         RespuestaOpcionUnica r = new RespuestaOpcionUnica(23, "ana", 33, 0);

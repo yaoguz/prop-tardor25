@@ -49,7 +49,7 @@ public class TestUsuario {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testNewContrasena_SamePassword_Throws() {
+    public void testNewContrasena_SamePassword() {
         usuario.newContrasena(contrasena); // misma que la actual 
     }
 
@@ -69,9 +69,12 @@ public class TestUsuario {
         respuestas = usuario.getIdRespuestas();
         assertEquals(2, respuestas.size());
         assertFalse(respuestas.contains(Integer.valueOf(2)));
+        assertTrue(respuestas.contains(Integer.valueOf(1)));
+        assertTrue(respuestas.contains(Integer.valueOf(3)));
 
         
         usuario.eliminarIdRespuesta(999); // eliminar idRespuesta no existente
+        respuestas = usuario.getIdRespuestas();
         assertEquals(2, usuario.getIdRespuestas().size());
     }
 
@@ -90,5 +93,9 @@ public class TestUsuario {
         assertEquals(1, encuestas.size());
         assertTrue(encuestas.contains(Integer.valueOf(10)));
         assertFalse(encuestas.contains(Integer.valueOf(20)));
+
+        usuario.eliminarIdEncuestaCreada(999);// eliminar idEncuesta no existente
+        encuestas = usuario.getIdEncuestasCreadas();
+        assertEquals(1, encuestas.size());
     }
 }
