@@ -73,11 +73,11 @@ public class PreguntaOpcionMultiple extends Pregunta {
 
 	/**
 	 * Devuelve el tipo de pregunta.
-	 * @return el string "OpcionMultiple".
+	 * @return el string "opcion_multiple".
 	 */
 	@Override 
 	public String tipoPregunta() {
-		return "OpcionMultiple";
+		return "opcion_multiple";
 	}
 	
 	/**

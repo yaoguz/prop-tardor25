@@ -25,7 +25,7 @@ incloure ctrl's: patró del·legació (ctrl domini a ctrl de classes) -> ctrlDom
 
 controladors: singleton!!
 
-***persistence controller (stub a la capa de persistencia): el ctrlDomini no es modificara, no sap on estan les dades, la capa de persistencia sí
+***persistence controller (stub a la capa de persistencia): el ctrlDomini no es modificarà quan es implementi la capa de persistencia, no sap on estan les dades, la capa de persistencia sí
 
 
 
@@ -130,3 +130,10 @@ CtrlDominio:
     public void cerrar() {
         gestorPersistencia.guardar();  // Al salir
     }
+
+
+en EXE:
+
+cada driver (amb un main) -> .jar 
+
+

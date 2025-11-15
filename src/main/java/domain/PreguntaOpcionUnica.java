@@ -73,12 +73,11 @@ public class PreguntaOpcionUnica extends Pregunta {
 
 	/**
 	 * Devuelve el tipo de pregunta.
-	 * @return el string "OpcionUnica".
+	 * @return el string "opcion_unica".
 	 */
 	@Override 
 	public String tipoPregunta() {
-		if(ordenada) return "OpcionUnicaOrdenada";
-		else return "OpcionUnicaNoOrdenada";
+		return "opcion_unica";
 	}
 	
 	/**

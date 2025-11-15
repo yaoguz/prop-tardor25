@@ -1,15 +1,15 @@
 package drivers;
 
+import java.util.HashMap;
 import java.util.Scanner;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map; 
-import java.util.Set; 
-import java.util.TreeMap;
+import java.util.Set;
 
 
 import domaincontrollers.*;
 import domain.*;
+import persistence.GestorPersistencia;
 
 /**
  * Driver interactivo para probar CtrlDominioEncuesta.
@@ -18,7 +18,6 @@ import domain.*;
  * El profesor lo ejecuta y prueba casos de uso por consola.
  * 
  * @author Peiyu Wang
- * @version 2.0
  */
 
 /*Clase que testea la clase Encuesta */
@@ -27,6 +26,7 @@ public class DriverEncuesta {
     private static CtrlDominioUsuario ctrlUsuario; 
     private static CtrlDominioPregunta ctrlPregunta;
     private static CtrlDominioRespuesta ctrlRespuesta;
+    private static GestorPersistencia gestor;
     private static Scanner scanner;
 
     /*
@@ -36,16 +36,22 @@ public class DriverEncuesta {
 
     public static void main (String[] args) {
         // Inicializar dependencias (capa real, no mocks)
-        ctrlUsuario = new CtrlDominioUsuario();
-        ctrlPregunta = new CtrlDominioPregunta();
-        ctrlRespuesta = new CtrlDominioRespuesta();
-
-        ctrlDominioEncuesta = new CtrlDominioEncuesta();
+        gestor = GestorPersistencia.getInstance();
+        
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
+        ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);
+        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlRespuesta, ctrlUsuario);
+        
+        // Actualizar referencias circulares
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlUsuario, ctrlDominioEncuesta, ctrlPregunta);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, ctrlDominioEncuesta);
+        
         scanner = new Scanner(System.in);
 
     // la contraseña debe tener al menos 6 caracteres (requisito en CtrlDominioUsuario)
-        String prueba = ctrlUsuario.registrarUsuario("prueba",  "123456", "123456");
-        int idE = ctrlDominioEncuesta.crearEncuesta("prueba", "E1",ctrlUsuario);
+        ctrlUsuario.registrarUsuario("prueba",  "123456", "123456");
+        int idE = ctrlDominioEncuesta.crearEncuesta("prueba", "E1");
 
 
         boolean salir = false;
@@ -155,7 +161,7 @@ public class DriverEncuesta {
         String titulo = scanner.nextLine();
 
         try {
-            int idE = ctrlDominioEncuesta.crearEncuesta(username,titulo,ctrlUsuario);
+            int idE = ctrlDominioEncuesta.crearEncuesta(username,titulo);
             System.out.println("Se ha creado una encuesta con id: " +idE);
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
@@ -207,7 +213,7 @@ public class DriverEncuesta {
         scanner.nextLine();
 
         try {
-            ctrlDominioEncuesta.eliminarEncuesta(idEncuesta,ctrlPregunta, ctrlRespuesta, ctrlUsuario);
+            ctrlDominioEncuesta.eliminarEncuesta(idEncuesta);
             System.out.println("Se ha eliminado la encuesta correctamente");
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
@@ -222,7 +228,7 @@ public class DriverEncuesta {
         scanner.nextLine();
 
         try {
-            Map<Pregunta, Set<Respuesta>> result = ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta,ctrlRespuesta, ctrlPregunta);
+            Map<Pregunta, Set<Respuesta>> result = ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
             for (Map.Entry<Pregunta, Set<Respuesta>> entry : result.entrySet()) {
                 System.out.println("Pregunta: " + entry.getKey());
                 
@@ -291,7 +297,8 @@ public class DriverEncuesta {
 
     private static void testObtenerAllEncuestas() {
         System.out.println("\nTEST: OBTENER INFO ALL ENCUESTAS");
-        TreeMap<Integer, Encuesta> encuestas = ctrlDominioEncuesta.getAllEncuestas();
+        HashMap<Integer, Encuesta> encuestas = ctrlDominioEncuesta.getAllEncuestas();
+        System.out.println("Total de encuestas: " + encuestas.size());
         System.out.println("No se mostraran los ids de las preguntas.");
         for(Encuesta e : encuestas.values())
         {

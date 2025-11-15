@@ -1,7 +1,7 @@
 package drivers;
 
+import java.util.HashMap;
 import java.util.Scanner;
-import java.util.TreeMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +9,7 @@ import domaincontrollers.CtrlDominioUsuario;
 import domaincontrollers.CtrlDominioEncuesta;
 import domaincontrollers.CtrlDominioPregunta;
 import domaincontrollers.CtrlDominioRespuesta;
+import persistence.GestorPersistencia;
 //import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
@@ -20,7 +21,6 @@ import domain.Respuesta;
  * El profesor lo ejecuta y prueba casos de uso por consola.
  * 
  * @author Denis Roca
- * @version 1.0
  */
 
 /*Clase que testea la clase CtrlDominioPregunta */
@@ -40,31 +40,38 @@ public class DriverPregunta {
 
     public static void main (String[] args) {
         // Inicializar dependencias (capa real, no mocks)
-        ctrlUsuario = new CtrlDominioUsuario();
-        ctrlEncuesta = new CtrlDominioEncuesta();
-        ctrlRespuesta = new CtrlDominioRespuesta();
-        ctrlPregunta = new CtrlDominioPregunta();
+        GestorPersistencia gestor = GestorPersistencia.getInstance();
+        
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
+        ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);
+        ctrlEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlRespuesta, ctrlUsuario);
+        
+        // Actualizar referencias circulares
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlUsuario, ctrlEncuesta, ctrlPregunta);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, ctrlEncuesta);
+        
         scanner = new Scanner(System.in);
 
         nomU = ctrlUsuario.registrarUsuario("Test", "1234", "1234");
-        idE = ctrlEncuesta.crearEncuesta(nomU, "Título", ctrlUsuario);
-        int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:", ctrlEncuesta);
-        int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "Respuesta Libre", ctrlUsuario, ctrlPregunta);
-        int idPN = ctrlPregunta.crearPreguntaNumerica(idE,  "Enunciado numérico:", 2, 8, ctrlEncuesta);
-        int idRN = ctrlRespuesta.darRespuesta(nomU, idPN, 3, ctrlUsuario, ctrlPregunta);
+        idE = ctrlEncuesta.crearEncuesta(nomU, "Título");
+        int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:");
+        int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "Respuesta Libre");
+        int idPN = ctrlPregunta.crearPreguntaNumerica(idE,  "Enunciado numérico:", 2, 8);
+        int idRN = ctrlRespuesta.darRespuesta(nomU, idPN, 3);
         ArrayList<String> ops = new ArrayList<>();
         ops.add("op1");
         ops.add("op2");
         ops.add("op3");
-        int idPOM = ctrlPregunta.crearPreguntaOpcionMultiple(idE,  "Enunciado opción múltiple:", ops, 2, ctrlEncuesta);
+        int idPOM = ctrlPregunta.crearPreguntaOpcionMultiple(idE,  "Enunciado opción múltiple:", ops, 2);
         ArrayList<Integer> idxs = new ArrayList<>();
         idxs.add(0);
         idxs.add(2);
-        int idROM = ctrlRespuesta.darRespuesta(nomU, idPOM, idxs, ctrlUsuario, ctrlPregunta);
-        int idPOUN = ctrlPregunta.crearPreguntaOpcionUnica(idE,  "Enunciado opción única no ordenada:", ops, false, ctrlEncuesta);
-        int idROUN = ctrlRespuesta.darRespuesta(nomU, idPOUN, 1, ctrlUsuario, ctrlPregunta);
-        int idPOUO = ctrlPregunta.crearPreguntaOpcionUnica(idE,  "Enunciado opción única ordenada:", ops, false, ctrlEncuesta);
-        int idROUO = ctrlRespuesta.darRespuesta(nomU, idPOUO, 1, ctrlUsuario, ctrlPregunta);
+        int idROM = ctrlRespuesta.darRespuesta(nomU, idPOM, idxs);
+        int idPOUN = ctrlPregunta.crearPreguntaOpcionUnica(idE,  "Enunciado opción única no ordenada:", ops, false);
+        int idROUN = ctrlRespuesta.darRespuesta(nomU, idPOUN, 1);
+        int idPOUO = ctrlPregunta.crearPreguntaOpcionUnica(idE,  "Enunciado opción única ordenada:", ops, false);
+        int idROUO = ctrlRespuesta.darRespuesta(nomU, idPOUO, 1);
 
 
         boolean salir = false;
@@ -146,7 +153,7 @@ public class DriverPregunta {
         int idPregunta = scanner.nextInt();
 
         try {
-            List<Respuesta> respuestas = ctrlPregunta.getRespuestasPregunta(idPregunta, ctrlRespuesta);
+            List<Respuesta> respuestas = ctrlPregunta.getRespuestasPregunta(idPregunta);
             System.out.println("Respuestas de la pregunta " +idPregunta +":");
             for(Respuesta r : respuestas){
                 System.out.println("Id: " +r.getId() +". Usuario: " +r.getNomUsuario() +". Respuesta: " +r.getRespuesta().toString());
@@ -175,14 +182,14 @@ public class DriverPregunta {
             int idPregunta = 0;
             switch(tipo){
                 case 0: //libre
-                    idPregunta = ctrlPregunta.crearPreguntaLibre(idE, enunciado, ctrlEncuesta);
+                    idPregunta = ctrlPregunta.crearPreguntaLibre(idE, enunciado);
                     break;
                 case 1: //numérica
                     System.out.print("Introduzca el número mínimo(incluido) del rango en el que puede estar la respuesta a la pregunta: ");
                     int min = scanner.nextInt();
                     System.out.print("Introduzca el número máximo(incluido) del rango en el que puede estar la respuesta a la pregunta: ");
                     int max = scanner.nextInt();
-                    idPregunta = ctrlPregunta.crearPreguntaNumerica(idE, enunciado, min, max, ctrlEncuesta);
+                    idPregunta = ctrlPregunta.crearPreguntaNumerica(idE, enunciado, min, max);
                     break;
                 case 2: //múltiple
                     ArrayList<String> opsM = new ArrayList<>();
@@ -194,7 +201,7 @@ public class DriverPregunta {
                     }
                     System.out.print("Introduzca el número máximo(incluido) de opciones seleccionables para la pregunta: ");
                     int maxOpc = scanner.nextInt();
-                    idPregunta = ctrlPregunta.crearPreguntaOpcionMultiple(idE, enunciado, opsM, maxOpc, ctrlEncuesta);
+                    idPregunta = ctrlPregunta.crearPreguntaOpcionMultiple(idE, enunciado, opsM, maxOpc);
                     break;
                 case 3: //única
                     ArrayList<String> opsU = new ArrayList<>();
@@ -206,7 +213,7 @@ public class DriverPregunta {
                     }
                     System.out.print("Introduzca 1 si las opciones siguen un orden o 0 si no lo siguen: ");
                     int ord = scanner.nextInt();
-                    idPregunta = ctrlPregunta.crearPreguntaOpcionUnica(idE, enunciado, opsU, (ord==1), ctrlEncuesta);
+                    idPregunta = ctrlPregunta.crearPreguntaOpcionUnica(idE, enunciado, opsU, (ord==1));
                     break;
             }
             System.out.println("Pregunta creada con id: " +idPregunta);
@@ -232,8 +239,8 @@ public class DriverPregunta {
         //por acabar
 
         try {
-            int idNuevaRespuesta = ctrlPregunta.modificarPregunta(idPregunta, info, ctrlRespuesta, ctrlEncuesta, ctrlUsuario)
-            System.out.println("Pregunta modificada. Ahora tiene el id: " +idPregunta);
+            int idNuevaPregunta = ctrlPregunta.modificarPregunta(idPregunta, info);
+            System.out.println("Pregunta modificada. Ahora tiene el id: " +idNuevaPregunta);
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
         } catch (Exception e) {
@@ -248,7 +255,7 @@ public class DriverPregunta {
         int idPregunta = scanner.nextInt();
 
         try {
-            ctrlPregunta.eliminarPregunta(idPregunta, ctrlRespuesta, ctrlEncuesta, ctrlUsuario)
+            ctrlPregunta.eliminarPregunta(idPregunta);
             System.out.println("Eliminada la pregunta con id: " +idPregunta);
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
@@ -281,7 +288,8 @@ public class DriverPregunta {
         System.out.println("\nTEST: OBTENER TODAS LAS PREGUNTAS");
 
         try {
-            TreeMap<Integer, Pregunta> preguntas = ctrlPregunta.getAllPreguntas();
+            HashMap<Integer, Pregunta> preguntas = ctrlPregunta.getAllPreguntas();
+            System.out.println("Total de preguntas: " + preguntas.size());
             System.out.println("Preguntas:");
             for(Pregunta p : preguntas.values()){
                 System.out.println("Id: " +p.getIdPregunta());

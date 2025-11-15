@@ -53,11 +53,11 @@ public class PreguntaNumerica extends Pregunta {
 
 	/**
 	 * Devuelve el tipo de pregunta.
-	 * @return el string "Numerica".
+	 * @return el string "numerica".
 	 */
 	@Override 
 	public String tipoPregunta() {
-		return "Numerica";
+		return "numerica";
 	}
 	
 	/**

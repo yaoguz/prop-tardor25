@@ -1,12 +1,13 @@
 package drivers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.TreeMap;
 
 import domain.*;
 import domaincontrollers.*;
+import persistence.GestorPersistencia;
 
 /**
  * Driver interactivo para probar CtrlDominioRespuesta.
@@ -103,10 +104,16 @@ public class DriverRespuesta {
      * Inicializa los controladores.
      */
     private static void inicializarControladores() {
-        ctrlRespuesta = new CtrlDominioRespuesta();
-        ctrlUsuario = new CtrlDominioUsuario();
-        ctrlPregunta = new CtrlDominioPregunta();
-        ctrlEncuesta = new CtrlDominioEncuesta();
+        GestorPersistencia gestor = GestorPersistencia.getInstance();
+        
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
+        ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);
+        ctrlEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlRespuesta, ctrlUsuario);
+        
+        // Actualizar referencias circulares
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlUsuario, ctrlEncuesta, ctrlPregunta);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, ctrlEncuesta);
     }
     
     /**
@@ -119,7 +126,7 @@ public class DriverRespuesta {
         ctrlUsuario.registrarUsuario("joan", "pass123", "pass123");
         
         // Crear encuesta
-        idEncuesta = ctrlEncuesta.crearEncuesta("ana", "Encuesta Habitos Deportivos", ctrlUsuario);
+        idEncuesta = ctrlEncuesta.crearEncuesta("ana", "Encuesta Hábitos Deportivos");
         
         // pregunta numerica
         // Map<String, Object> atributosEspecificos = new HashMap<>();
@@ -134,7 +141,7 @@ public class DriverRespuesta {
         // Crear pregunta numerica
         idPreguntaNumerica = ctrlPregunta.crearPreguntaNumerica(idEncuesta, 
             "Cuántas horas a la semana haces deporte?", 
-            0, 40, ctrlEncuesta);
+            0, 40);
         
         // pregunta opcion unica
         List<String> opcionesNivel = new ArrayList<>();
@@ -143,7 +150,7 @@ public class DriverRespuesta {
         opcionesNivel.add("Alto");
         idPreguntaOpcionUnica = ctrlPregunta.crearPreguntaOpcionUnica(idEncuesta, 
             "Cuál es tu nivel de actividad física?",
-            opcionesNivel, true, ctrlEncuesta);
+            opcionesNivel, true);
         
         // pregunta opcion multiple
         List<String> opcionesDeportes = new ArrayList<>();
@@ -154,11 +161,11 @@ public class DriverRespuesta {
         opcionesDeportes.add("Ciclismo");
         idPreguntaOpcionMultiple = ctrlPregunta.crearPreguntaOpcionMultiple(
             idEncuesta, "Qué deportes practicas? (seleccion multiple)",
-            opcionesDeportes, 5, ctrlEncuesta);
+            opcionesDeportes, 5);
         
         // pregunta libre
         idPreguntaLibre = ctrlPregunta.crearPreguntaLibre(idEncuesta,
-            "Describe tu rutina de ejercicio favorita", ctrlEncuesta);
+            "Describe tu rutina de ejercicio favorita");
     }
     
     /**
@@ -197,7 +204,7 @@ public class DriverRespuesta {
             double valor = Double.parseDouble(scanner.nextLine().trim());
             
             int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaNumerica, 
-                valor, ctrlUsuario, ctrlPregunta);
+                valor);
             
             System.out.println("\nRespuesta creada con ID: " + idRespuesta);
         } catch (NumberFormatException e) {
@@ -227,7 +234,7 @@ public class DriverRespuesta {
             int indice = Integer.parseInt(scanner.nextLine().trim());
             
             int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaOpcionUnica, 
-                indice, ctrlUsuario, ctrlPregunta);
+                indice);
             
             System.out.println("\nRespuesta creada con ID: " + idRespuesta);
         } catch (NumberFormatException e) {
@@ -264,7 +271,7 @@ public class DriverRespuesta {
             }
             
             int idRespuesta = ctrlRespuesta.darRespuesta(usuario, 
-                idPreguntaOpcionMultiple, indices, ctrlUsuario, ctrlPregunta);
+                idPreguntaOpcionMultiple, indices);
             
             System.out.println("\nRespuesta creada con ID: " + idRespuesta);
         } catch (NumberFormatException e) {
@@ -290,7 +297,7 @@ public class DriverRespuesta {
             String texto = scanner.nextLine();
             
             int idRespuesta = ctrlRespuesta.darRespuesta(usuario, idPreguntaLibre, 
-                texto, ctrlUsuario, ctrlPregunta);
+                texto);
             
             System.out.println("\nRespuesta creada con ID: " + idRespuesta);
         } catch (IllegalArgumentException e) {
@@ -372,7 +379,7 @@ public class DriverRespuesta {
             System.out.print("Confirmar: ");
             String confirmacion = scanner.nextLine().trim().toLowerCase();
             if (confirmacion.equals("s") || confirmacion.equals("si")) {
-                ctrlRespuesta.eliminarRespuesta(idRespuesta, ctrlUsuario, ctrlPregunta);
+                ctrlRespuesta.eliminarRespuesta(idRespuesta);
                 System.out.println("\nRespuesta eliminada.");
             } 
             else System.out.println("Eliminacion cancelada.");
@@ -405,7 +412,7 @@ public class DriverRespuesta {
      */
     private static void listarTodasRespuestas() {
         System.out.println("\n--- Todas las respuestas ---");
-        TreeMap<Integer, Respuesta> todas = ctrlRespuesta.getAllRespuestas();
+        HashMap<Integer, Respuesta> todas = ctrlRespuesta.getAllRespuestas();
         
         if (todas.isEmpty()) {
             System.out.println("No hay respuestas.");

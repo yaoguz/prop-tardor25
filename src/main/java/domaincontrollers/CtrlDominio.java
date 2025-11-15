@@ -18,46 +18,67 @@ import persistence.GestorPersistencia;
  *     ↓
  * CAPA DE DOMINIO:
  *   - CtrlDominio (Facade MINIMALISTA - punto de entrada, solo delega)
- *   - CtrlDominioUsuario (gestiona TreeMap<String, Usuario> + lógica de usuarios)
- *   - CtrlDominioEncuesta (gestiona TreeMap<Integer, Encuesta> + lógica de encuestas)
- *   - CtrlDominioPregunta (gestiona TreeMap<Integer, Pregunta> + lógica de preguntas)
- *   - CtrlDominioRespuesta (gestiona TreeMap<Integer, Respuesta> + lógica de respuestas)
+ *   - CtrlDominioUsuario (lógica de usuarios)
+ *   - CtrlDominioEncuesta (lógica de encuestas)
+ *   - CtrlDominioPregunta (lógica de preguntas)
+ *   - CtrlDominioRespuesta (lógica de respuestas)
  *   - CtrlDominioPerfil (lógica de clustering, no gestiona datos propios)
  *     ↓
  * CAPA DE PERSISTENCIA:
- *   - GestorPersistencia (STUB - import/export en apertura/cierre de sesión)
+ *   - GestorPersistencia (STUB - almacenamiento en HashMap, simula BD)
+ * 
+ * CAMBIO ARQUITECTÓNICO IMPORTANTE:
+ * Los datos (HashMap<K,V>) ya NO están en CtrlDominioXXX, sino en GestorPersistencia.
+ * Los controladores de dominio solo contienen LÓGICA DE NEGOCIO.
  * 
  * RESPONSABILIDAD DE CtrlDominio (Facade):
  * - Punto de entrada único para la capa de presentación
  * - Delegación pura a controladores especializados
  * - Coordinación de operaciones que cruzan múltiples controladores
  * - NO contiene lógica de negocio compleja
- * - NO gestiona datos (TreeMaps están en CtrlDominioXXX)
+ * - NO gestiona datos (HashMap están en GestorPersistencia)
+ * 
+ * PATRÓN SINGLETON:
+ * Todos los controladores (CtrlDominio, CtrlDominioUsuario, etc.) son singleton
+ * para garantizar una única instancia y estado consistente del sistema.
  * 
  * VENTAJAS:
  * 1. **Facade Pattern**: Interfaz simplificada para presentación
  * 2. **Single Responsibility**: Cada CtrlDominioXXX gestiona una entidad
  * 3. **Low Coupling**: Presentación solo conoce CtrlDominio
  * 4. **High Cohesion**: Lógica de negocio encapsulada en controladores especializados
+ * 5. **Persistencia independiente**: Los datos están centralizados en un solo lugar
  * 
  * PATRÓN DE DISEÑO APLICADO:
  * - Facade Pattern: CtrlDominio oculta la complejidad de los controladores internos
  * - Dependency Injection: CtrlDominio inyecta dependencias entre controladores
+ * - Singleton Pattern: Garantiza única instancia de cada controlador
  * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominio {
 
-	/** Atributos - Capa de Datos **/
+	/** Atributos **/
 
-	private GestorPersistencia gestorPersistencia;
-
-	/** Atributos - Controladores de dominio especializados **/
+	/** Instancia única del controlador (patrón singleton) */
+	private static CtrlDominio singletonInstance;
 	
+	/** Gestor de persistencia del sistema */
+	private GestorPersistencia gestorPersistencia;
+	
+	/** Controlador de usuarios */
 	private CtrlDominioUsuario ctrlDominioUsuario;
+	
+	/** Controlador de encuestas */
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
+	
+	/** Controlador de preguntas */
 	private CtrlDominioPregunta ctrlDominioPregunta;
+	
+	/** Controlador de respuestas */
 	private CtrlDominioRespuesta ctrlDominioRespuesta;
+	
+	/** Controlador de perfiles y clustering */
 	private CtrlDominioPerfil ctrlDominioPerfil;
 
 	/** Constructor y métodos de inicialización **/
@@ -65,37 +86,34 @@ public class CtrlDominio {
 	/**
 	 * Constructora por defecto. Inicializa todos los controladores.
 	 */
-	public CtrlDominio() {
-		inicializarCtrlDominio();
+	private CtrlDominio() {
+		gestorPersistencia = GestorPersistencia.getInstance();
+		ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestorPersistencia,
+															ctrlDominioRespuesta,
+															ctrlDominioPregunta);
+		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia,
+															ctrlDominioPregunta, 
+															ctrlDominioRespuesta, 
+															ctrlDominioUsuario);
+		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, 
+															ctrlDominioRespuesta,
+															ctrlDominioEncuesta);
+		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia,
+															ctrlDominioUsuario, 
+															ctrlDominioEncuesta, 
+															ctrlDominioPregunta);
+		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(gestorPersistencia);
 	}
 
-	/**
-	 * Inicializa y carga todos los datos del sistema.
-	 * 
-	 * IMPORTANTE: Este método se llama al iniciar la aplicación.
-	 * Carga todos los datos desde persistencia a memoria.
+    /**
+	 * Implementación patrón singleton
+	 * @return instancia del CtrlDominio
 	 */
-	public void inicializarCtrlDominio() {
-		// inicializar gestor de persistencia
-		gestorPersistencia = GestorPersistencia.getInstance();
-		
-		// inicializar controladores de dominio especializados (sin dependencias)
-		ctrlDominioUsuario = new CtrlDominioUsuario();
-		ctrlDominioEncuesta = new CtrlDominioEncuesta();
-		ctrlDominioPregunta = new CtrlDominioPregunta();
-		ctrlDominioRespuesta = new CtrlDominioRespuesta();
-		ctrlDominioPerfil = new CtrlDominioPerfil();
-		
-		// cargar datos desde persistencia
-		try {
-			ctrlDominioUsuario.cargarUsuarios(gestorPersistencia.cargarTodosUsuarios());
-			ctrlDominioEncuesta.cargarEncuestas(gestorPersistencia.cargarTodasEncuestas());
-			ctrlDominioPregunta.cargarPreguntas(gestorPersistencia.cargarTodasPreguntas());
-			ctrlDominioRespuesta.cargarRespuestas(gestorPersistencia.cargarTodasRespuestas());
-		} catch (Exception e) {
-			// Si es la primera vez que se ejecuta la app, no hay datos que cargar
-			System.out.println("Iniciando aplicación sin datos previos (primera ejecución)");
+	public static CtrlDominio getInstance() {
+		if (singletonInstance == null) {
+			singletonInstance = new CtrlDominio();
 		}
+		return singletonInstance;
 	}
 
 	// ==================== GESTIÓN DE USUARIOS ====================
@@ -146,36 +164,13 @@ public class CtrlDominio {
 	 * @return Lista de IDs de encuestas respondidas
 	 */
 	public List<Integer> getEncuestasRespondidas() {
-		return ctrlDominioUsuario.getEncuestasRespondidas(ctrlDominioRespuesta, 
-		                                                  ctrlDominioPregunta);
+		return ctrlDominioUsuario.getEncuestasRespondidas();
 	}
 
 	/**
-	 * Cierra la sesión del usuario actual y guarda todos los datos en persistencia.
-	 * 
-	 * ARQUITECTURA: Este es el ÚNICO momento en que se llama a persistencia para guardar.
-	 * Durante toda la sesión, los datos viven en memoria (TreeMaps en cada CtrlDominioXXX).
-	 * 
-	 * Pasos:
-	 * 1. Exportar todos los datos a persistencia (GestorPersistencia)
-	 * 2. Cerrar sesión del usuario actual
-	 * 
-	 * @throws IllegalStateException si hay errores al guardar en persistencia
+	 * Cierra la sesión del usuario actual (todos los datos ya estarán en persistencia.
 	 */
 	public void cerrarSesion() {
-		// 1. GUARDAR TODO EN PERSISTENCIA (solo aquí, no durante operaciones CRUD)
-		try {
-			// Cada CtrlDominioXXX debe implementar un método getAllXXX() que devuelva su TreeMap
-			gestorPersistencia.guardarTodosUsuarios(ctrlDominioUsuario.getAllUsuarios());
-			gestorPersistencia.guardarTodasEncuestas(ctrlDominioEncuesta.getAllEncuestas());
-			gestorPersistencia.guardarTodasPreguntas(ctrlDominioPregunta.getAllPreguntas());
-			gestorPersistencia.guardarTodasRespuestas(ctrlDominioRespuesta.getAllRespuestas());
-			// ctrlDominioPerfil no tiene datos propios, solo calcula sobre usuarios
-		} catch (Exception e) {
-			throw new IllegalStateException("Error al guardar datos en persistencia: " + e.getMessage());
-		}
-		
-		// 2. Cerrar sesión del usuario
 		ctrlDominioUsuario.cerrarSesionActual();
 	}
 
@@ -192,8 +187,7 @@ public class CtrlDominio {
 	 * @return ID de la respuesta creada
 	 */
 	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
-		return ctrlDominioRespuesta.darRespuesta(nomUsuario, idPregunta, respuesta,
-		                                          ctrlDominioUsuario, ctrlDominioPregunta);
+		return ctrlDominioRespuesta.darRespuesta(nomUsuario, idPregunta, respuesta);
 	}
 	
 	/**
@@ -214,7 +208,7 @@ public class CtrlDominio {
 	 * @param idRespuesta ID de la respuesta a eliminar
 	 */
 	public void eliminarRespuesta(int idRespuesta) {
-		ctrlDominioRespuesta.eliminarRespuesta(idRespuesta, ctrlDominioUsuario, ctrlDominioPregunta);
+		ctrlDominioRespuesta.eliminarRespuesta(idRespuesta);
 	}
 	
 	/**
@@ -227,8 +221,7 @@ public class CtrlDominio {
 	 * @throws IllegalStateException si los IDs no existen en el sistema
 	 */
 	public void importarRespuestas(File fichero) {
-		ctrlDominioRespuesta.importarRespuestas(fichero, ctrlDominioUsuario, 
-		                                         ctrlDominioEncuesta, ctrlDominioPregunta);
+		ctrlDominioRespuesta.importarRespuestas(fichero);
 	}
 
 	// ==================== GESTIÓN DE ENCUESTAS ====================
@@ -253,7 +246,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el título está vacío
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
-		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo, ctrlDominioUsuario);
+		return ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
 	}
 	
 	/**
@@ -266,7 +259,7 @@ public class CtrlDominio {
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	public int importarEncuesta(File fichero) {
-		return ctrlDominioEncuesta.importarEncuesta(fichero, ctrlDominioUsuario, ctrlDominioPregunta);
+		return ctrlDominioEncuesta.importarEncuesta(fichero);
 	}
 	
 	/**
@@ -286,8 +279,7 @@ public class CtrlDominio {
 	 * @param idEncuesta ID de la encuesta a eliminar
 	 */
 	public void eliminarEncuesta(int idEncuesta) {
-		ctrlDominioEncuesta.eliminarEncuesta(idEncuesta, ctrlDominioPregunta, 
-									ctrlDominioRespuesta, ctrlDominioUsuario);
+		ctrlDominioEncuesta.eliminarEncuesta(idEncuesta);
 	}
 	
 	/**
@@ -299,8 +291,7 @@ public class CtrlDominio {
 	 * @return Mapa de Pregunta -> Set de Respuestas
 	 */
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
-		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta, ctrlDominioRespuesta, 
-		                                                   ctrlDominioPregunta);
+		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
 	}
 
 	/**
@@ -312,8 +303,7 @@ public class CtrlDominio {
 	 * @return Matriz M x N (M usuarios, N preguntas)
 	 */
 	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta) {
-		return ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta, ctrlDominioRespuesta, 
-		                                                         ctrlDominioPregunta);
+		return ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
 	}
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================
@@ -327,7 +317,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaLibre(int idEncuesta, String enunciado) {
-		return ctrlDominioPregunta.crearPreguntaLibre(idEncuesta, enunciado, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaLibre(idEncuesta, enunciado);
 	}
 	
 	/**
@@ -340,7 +330,7 @@ public class CtrlDominio {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaNumerica(int idEncuesta, String enunciado, double min, double max) {
-		return ctrlDominioPregunta.crearPreguntaNumerica(idEncuesta, enunciado, (int)min, (int)max, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaNumerica(idEncuesta, enunciado, (int)min, (int)max);
 	}
 	
 	/**
@@ -351,8 +341,8 @@ public class CtrlDominio {
 	 * @param opciones Lista de opciones disponibles
 	 * @return ID de la pregunta creada
 	 */
-	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones) {
-		return ctrlDominioPregunta.crearPreguntaOpcionUnica(idEncuesta, enunciado, opciones, false, ctrlDominioEncuesta);
+	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones, boolean ordenada) {
+		return ctrlDominioPregunta.crearPreguntaOpcionUnica(idEncuesta, enunciado, opciones, ordenada);
 	}
 	
 	/**
@@ -366,21 +356,18 @@ public class CtrlDominio {
 	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones) {
 		// usar numMaxOpc = tamano de opciones como valor por defecto
 		int numMaxOpc = (opciones != null) ? opciones.size() : 10;
-		return ctrlDominioPregunta.crearPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMaxOpc, ctrlDominioEncuesta);
+		return ctrlDominioPregunta.crearPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMaxOpc);
 	}
 	
 	/**
 	 * Modifica una pregunta existente (elimina la antigua y crea una nueva).
 	 * 
-	 * NOTA: Este enfoque mantiene la integridad referencial pero pierde el historial.
-	 * (Alternativa: implementar modificación in-situ si se requiere mantener respuestas.)
-	 * 
 	 * @param idPregunta ID de la pregunta a modificar
-	 * @param infoP Nueva información de la pregunta
+	 * @param infoP Nueva información de la pregunta (el tipo da igual, se sobreescribe con el de la pregunta a modificar)
 	 * @return ID de la nueva pregunta
 	 */
 	public int modificarPregunta(int idPregunta, CtrlDominioPregunta.PreguntaImportData infoP) {
-		return ctrlDominioPregunta.modificarPregunta(idPregunta, infoP, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
+		return ctrlDominioPregunta.modificarPregunta(idPregunta, infoP);
 	}
 	
 	/**
@@ -389,7 +376,7 @@ public class CtrlDominio {
 	 * @param idPregunta ID de la pregunta a eliminar
 	 */
 	public void eliminarPregunta(int idPregunta) {
-		ctrlDominioPregunta.eliminarPregunta(idPregunta, ctrlDominioRespuesta, ctrlDominioEncuesta, ctrlDominioUsuario);
+		ctrlDominioPregunta.eliminarPregunta(idPregunta);
 	}
 
 	// ==================== GESTIÓN DE PERFILES ====================
