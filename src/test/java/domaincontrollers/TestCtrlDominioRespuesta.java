@@ -14,9 +14,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import persistence.GestorPersistencia;
 
 /**
- * @author ?
+ * @author Peiyu Wang
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TestCtrlDominioRespuesta {
 
     @Mock

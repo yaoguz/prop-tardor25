@@ -16,7 +16,7 @@ public class TestRespuestaOpcionMultiple {
         assertEquals(30, r.getId());
         assertEquals("ana", r.getNomUsuario());
         assertEquals(40, r.getIdPregunta());
-        assertEquals("opcion multiple", r.getTipo());
+        assertEquals("opcion_multiple", r.getTipo());
         assertEquals(3, r.getNumeroOpcionesSeleccionadas());
         int[] resp = r.getRespuesta();
         // se ordenan internamente
