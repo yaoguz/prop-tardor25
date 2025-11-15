@@ -1,6 +1,7 @@
 package drivers;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.List;
 
@@ -310,7 +311,7 @@ public class DriverUsuario {
     private static void testGetAllUsuarios() {
         System.out.println("TEST: GET ALL USUARIOS");
         try {
-            HashMap<String, Usuario> usuarios = ctrlDominioUsuario.getAllUsuarios();
+            Map<String, Usuario> usuarios = ctrlDominioUsuario.getAllUsuarios();
             System.out.println("Total de usuarios: " + usuarios.size());
             for (String nomU : usuarios.keySet()) {
                 System.out.println("Usuario: " + nomU);

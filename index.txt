@@ -1,0 +1,43 @@
+PROYECTO PROP - SUBGRUP 11.5
+=============================
+
+DESCRIPCION DEL PROYECTO:
+Sistema de gestion de encuestas con analisis de clustering para agrupar usuarios
+segun sus respuestas. Implementa algoritmos K-means y K-means++ para identificar
+perfiles de usuarios.
+
+CONTENIDO DEL DIRECTORIO RAIZ:
+- equipos.txt: Informacion del equipo (nombres y emails)
+- index.txt: Este fichero (descripcion del directorio raiz)
+- GUIA_PRIMERA_ENTREGA.md: Guia completa sobre Gradle, estructura y checklist
+- build.gradle: Configuracion de Gradle (dependencias, compilacion)
+- settings.gradle: Nombre del proyecto Gradle
+- gradlew, gradlew.bat: Scripts de Gradle wrapper (Linux/Windows)
+- gradle/: Directorio con el wrapper de Gradle
+
+DIRECTORIOS PRINCIPALES:
+- DOCS/: Documentacion para la entrega (diagramas UML, descripciones)
+- FONTS/: Codigo fuente del proyecto (src/main/java, src/test/java)
+- EXE/: Ejecutables y jocs de proves para demostrar funcionalidades
+- src/: Codigo fuente organizado en packages (domain, domaincontrollers, etc.)
+- build/: Directorio generado por Gradle (NO ENTREGAR)
+
+COMO COMPILAR:
+./gradlew build
+
+COMO EJECUTAR TESTS:
+./gradlew test
+
+COMO EJECUTAR UN DRIVER:
+./gradlew run --args="NombreDriver"
+
+TECNOLOGIAS:
+- Java 11+
+- Gradle 7.x (gestion de dependencias y compilacion)
+- JUnit 5 (tests unitarios)
+- Gson (parsing JSON)
+
+NOTAS:
+- No usar javac directamente, siempre usar Gradle
+- No incluir directorio build/ en la entrega
+- Consultar GUIA_PRIMERA_ENTREGA.md para mas detalles
