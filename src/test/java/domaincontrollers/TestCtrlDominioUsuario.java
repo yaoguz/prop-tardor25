@@ -22,71 +22,73 @@ import domain.Usuario;
 @RunWith(MockitoJUnitRunner.class)
 public class TestCtrlDominioUsuario {
     @Mock
-    private TreeMap<String, Usuario> mockUsuarios;
+    private GestorPersistencia gestor;
+
+    @Mock
+    private CtrlDominioRespuesta ctrlDominioRespuesta;
+
+    @Mock 
+    private CtrlDominioPregunta ctrlDominioPregunta;
     
     private CtrlDominioUsuario ctrlDominioUsuario;   
 
     @Before
     public void setUp() {
    
-        ctrlDominioUsuario = new CtrlDominioUsuario();
-        ctrlDominioUsuario.cargarUsuarios(mockUsuarios);
+        ctrlDominioUsuario = new CtrlDominioUsuario(gestor, ctrlDominioRespuesta, ctrlDominioPregunta);
     }
 
     @Test
     public void testExisteUsuarioTrue() {
-        when(mockUsuarios.containsKey("Alessandro")).thenReturn(true);
+        when(gestor.existeUsuario("Alessadro")).thenReturn(true);
 
         boolean resultado = ctrlDominioUsuario.existeUsuario("Alessandro");
 
         assertTrue("No muestra un usuario existente", resultado);
-        verify(mockUsuarios, times(1)).containsKey("Alessandro"); // verificar interacción
+        verify(gestor, times(1)).existeUsuario("Alessandro"); // verificar interacción
 	}
 
     @Test 
     public void testExisteUsuarioFalse() {
-        when(mockUsuarios.containsKey("Yaoyao")).thenReturn(false);
+        when(gestor.existeUsuario("Alessadro")).thenReturn(false);
 
         boolean resultado = ctrlDominioUsuario.existeUsuario("Yaoyao");
 
         assertFalse("Muestra un usuario No existente", resultado);
-        verify(mockUsuarios, times(1)).containsKey("Yaoyao"); // verificar interacción
+        verify(gestor, times(1)).existeUsuario("Yaoyao"); // verificar interacción
     }
 
     @Test
     public void testGetUsuarioSinError() {
         
         Usuario u = new Usuario("Alessandro", "123456");
-        when(mockUsuarios.get("Alessandro")).thenReturn(u);
+        when(gestor.getUsuario("Alessandro")).thenReturn(u);
 
         
         Usuario resultado = ctrlDominioUsuario.getUsuario("Alessandro");
 
-        // Assert
         assertEquals("Ha sacado un usuario incorrecto", u, resultado);   // compara que es el mismo usuario
-        verify(mockUsuarios, times(1)).get("Alessandro");
+        verify(gestor, times(1)).getUsuario("Alessandro");
 	}
 
     @Test (expected=IllegalArgumentException.class) 
     public void testGetUsuarioConError() {
             
 
-        when(mockUsuarios.get("Alessandro")).thenReturn(null);
+        when(gestor.getUsuario("Alessandro")).thenReturn(null);
 
         Usuario resultado = ctrlDominioUsuario.getUsuario("Alessandro");
     }
 
     @Test
     public void testRegistrarUsuarioBueno() {
-    
-            
-        TreeMap<String, Usuario> users = new TreeMap<>();
-        ctrlDominioUsuario.cargarUsuarios(users);
-
+        
         String nom = ctrlDominioUsuario.registrarUsuario("Alessandro", "123456", "123456");
 
         assertEquals("Guarda nombre incorrecto", "Alessandro", nom);
         assertTrue(ctrlDominioUsuario.existeUsuario("Alessandro"));
+
+        verify(gestor, times(1)).getUsuario("Alessandro");
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -5,6 +5,9 @@ import java.util.List;
 import domain.*;
 
 /**
+ * @author Alessandro Jin
+ */
+/**
  * Transforma un perfil de respuestas en un Centroide.
  */
 public class TransformarEnCentroide {

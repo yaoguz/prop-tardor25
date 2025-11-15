@@ -1,6 +1,9 @@
 package domain.algoritmo.estructuras;
 
 /**
+ * @author Alessandro Jin
+ */
+/**
  * Componente de texto libre del centroide.
  */
 public class ComponenteLibre extends ComponenteCentroide {

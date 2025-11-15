@@ -3,6 +3,9 @@ package domain.algoritmo.estructuras;
 import java.util.List;
 
 /**
+ * @author Alessandro Jin
+ */
+/**
  * Componente de opcion multiple del centroide.
  */
 public class ComponenteMultiple extends ComponenteCentroide {

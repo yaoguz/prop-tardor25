@@ -6,10 +6,11 @@ import java.util.Map;
 import domain.Respuesta;
 import domain.algoritmo.estructuras.Centroide;
 
+
 /**
- * Interfaz para algoritmos de clustering.
- * Permite añadir nuevos algoritmos sin modificar código existente (Open/Closed).
+ * @author Alessandro Jin
  */
+
 public class Kalgorithm implements ClusteringAlgorithm  {
     /**
      * Ejecuta el algoritmo de clustering.

@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import domain.*;
 
+/**
+ * @author Alessandro Jin
+ */
 
 public class Perfil {
     private final String representante;

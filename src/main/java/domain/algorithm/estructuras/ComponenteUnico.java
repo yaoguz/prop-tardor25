@@ -1,6 +1,9 @@
 package domain.algoritmo.estructuras;
 
 /**
+ * @author Alessandro Jin
+ */
+/**
  * Componente de opcion unica del centroide.
  */
 public class ComponenteUnico extends ComponenteCentroide {

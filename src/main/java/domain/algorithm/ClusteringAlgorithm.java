@@ -6,6 +6,10 @@ import java.util.Map;
 import domain.Respuesta;
 import domain.algoritmo.estructuras.Centroide;
 
+
+/**
+ * @author Alessandro Jin
+ */
 /**
  * Interfaz para algoritmos de clustering.
  * Permite añadir nuevos algoritmos sin modificar código existente (Open/Closed).
