@@ -1,5 +1,6 @@
 package domaincontrollers;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 import static org.junit.Assert.*;
@@ -226,5 +227,107 @@ public class TestCtrlDominioEncuesta {
         verify(mockGestor).getEncuesta(1);
         verify(mockCtrlDominioPregunta, times(2)).getPregunta(anyInt());
         verify(mockCtrlDominioRespuesta, times(3)).getRespuesta(anyInt());
+    }
+
+    @Test
+    public void testGetEncuestaPorTituloYAutor() {
+        Usuario mockUsuario = mock(Usuario.class);
+        Encuesta e = new Encuesta(1, "Prueba", "Xiangjun");
+        ArrayList<Integer> idEncuestas = new ArrayList<>(Arrays.asList(1));
+        when(mockCtrlDominioUsuario.getUsuario("Xiangjun")).thenReturn(mockUsuario);
+        when(mockUsuario.getIdEncuestasCreadas()).thenReturn(idEncuestas);
+        when(mockGestor.getEncuesta(1)).thenReturn(e);
+
+        Encuesta resultado = ctrlDominioEncuesta.getEncuesta("Prueba", "Xiangjun");
+
+        assertEquals("No ha sacado la encuesta correcta", e, resultado);
+        verify(mockCtrlDominioUsuario).getUsuario("Xiangjun");
+        verify(mockGestor).getEncuesta(1);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetEncuestaPorTituloYAutorNoExiste() {
+        Usuario mockUsuario = mock(Usuario.class);
+        ArrayList<Integer> idEncuestas = new ArrayList<>(Arrays.asList(1));
+        Encuesta e = new Encuesta(1, "Otra", "Xiangjun");
+        when(mockCtrlDominioUsuario.getUsuario("Xiangjun")).thenReturn(mockUsuario);
+        when(mockUsuario.getIdEncuestasCreadas()).thenReturn(idEncuestas);
+        when(mockGestor.getEncuesta(1)).thenReturn(e);
+
+        ctrlDominioEncuesta.getEncuesta("NoExiste", "Xiangjun");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCrearEncuestaTituloDuplicado() {
+        Usuario mockUsuario = mock(Usuario.class);
+        ArrayList<Integer> idEncuestas = new ArrayList<>(Arrays.asList(1));
+        Encuesta e = new Encuesta(1, "Prueba", "Xiangjun");
+        when(mockCtrlDominioUsuario.getUsuario("Xiangjun")).thenReturn(mockUsuario);
+        when(mockUsuario.getIdEncuestasCreadas()).thenReturn(idEncuestas);
+        when(mockGestor.getEncuesta(1)).thenReturn(e);
+
+        ctrlDominioEncuesta.crearEncuesta("Xiangjun", "Prueba");
+    }
+
+    @Test
+    public void testAnadirPregunta() {
+        Encuesta e = new Encuesta(1, "Prueba", "Xiangjun");
+        when(mockGestor.getEncuesta(1)).thenReturn(e);
+        when(mockCtrlDominioPregunta.crearPregunta(eq(1), anyString(), anyString(), anyMap())).thenReturn(10);
+
+        CtrlDominioEncuesta.PreguntaImportData infoP = new CtrlDominioEncuesta.PreguntaImportData();
+        infoP.enunciado = "¿Pregunta?";
+        infoP.tipo = "libre";
+        infoP.atributosEspecificos = new HashMap<>();
+
+        int idP = ctrlDominioEncuesta.anadirPregunta(1, infoP);
+
+        assertEquals("No ha retornado el id correcto", 10, idP);
+        verify(mockCtrlDominioPregunta).crearPregunta(1, "¿Pregunta?", "libre", infoP.atributosEspecificos);
+        verify(mockGestor).actualizarEncuesta(e);
+    }
+
+    @Test
+    public void testGetRespuestasParaClustering() {
+        Encuesta e = new Encuesta(1, "Prueba", "Xiangjun");
+        e.guardarPregunta(1);
+        e.guardarPregunta(2);
+        when(mockGestor.getEncuesta(1)).thenReturn(e);
+
+        Pregunta p1 = mock(Pregunta.class);
+        Pregunta p2 = mock(Pregunta.class);
+        when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(p1);
+        when(mockCtrlDominioPregunta.getPregunta(2)).thenReturn(p2);
+
+        ArrayList<Integer> respuestasP1 = new ArrayList<>(Arrays.asList(10, 11));
+        ArrayList<Integer> respuestasP2 = new ArrayList<>(Arrays.asList(20));
+        when(p1.getIdRespuestas()).thenReturn(respuestasP1);
+        when(p2.getIdRespuestas()).thenReturn(respuestasP2);
+
+        Respuesta r10 = mock(Respuesta.class);
+        Respuesta r11 = mock(Respuesta.class);
+        Respuesta r20 = mock(Respuesta.class);
+        when(r10.getNomUsuario()).thenReturn("user1");
+        when(r11.getNomUsuario()).thenReturn("user2");
+        when(r20.getNomUsuario()).thenReturn("user1");
+        when(mockCtrlDominioRespuesta.getRespuesta(10)).thenReturn(r10);
+        when(mockCtrlDominioRespuesta.getRespuesta(11)).thenReturn(r11);
+        when(mockCtrlDominioRespuesta.getRespuesta(20)).thenReturn(r20);
+
+        List<List<Respuesta>> resultado = ctrlDominioEncuesta.getRespuestasParaClustering(1);
+
+        assertNotNull("La matriz es nula", resultado);
+        assertEquals("La matriz tiene tamaño incorrecto", 2, resultado.size());
+        verify(mockGestor).getEncuesta(1);
+        verify(mockCtrlDominioPregunta, times(2)).getPregunta(anyInt());
+        verify(mockCtrlDominioRespuesta, times(3)).getRespuesta(anyInt());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testImportarEncuestaSinUsuarioActivo() {
+        when(mockCtrlDominioUsuario.getUsuarioActivo()).thenReturn(null);
+        File mockFile = mock(File.class);
+
+        ctrlDominioEncuesta.importarEncuesta(mockFile);
     }
 }
