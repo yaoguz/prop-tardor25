@@ -85,23 +85,22 @@ public class CtrlDominio {
 
 	/**
 	 * Constructora por defecto. Inicializa todos los controladores.
+	 * Primero crea las instancias con referencias parciales (null),
+	 * luego actualiza las referencias circulares.
 	 */
 	private CtrlDominio() {
 		gestorPersistencia = GestorPersistencia.getInstance();
-		ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestorPersistencia,
-															ctrlDominioRespuesta,
-															ctrlDominioPregunta);
-		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia,
-															ctrlDominioPregunta, 
-															ctrlDominioRespuesta, 
-															ctrlDominioUsuario);
-		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, 
-															ctrlDominioRespuesta,
-															ctrlDominioEncuesta);
-		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia,
-															ctrlDominioUsuario, 
-															ctrlDominioEncuesta, 
-															ctrlDominioPregunta);
+		
+		// Primera inicialización con referencias parciales (null donde hay dependencias circulares)
+		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia, null, null, null);
+		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, ctrlDominioRespuesta, null);
+		ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestorPersistencia, ctrlDominioRespuesta, ctrlDominioPregunta);
+		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia, ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
+		
+		// Actualizar referencias circulares ahora que todos los controladores existen
+		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia, ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);
+		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, ctrlDominioRespuesta, ctrlDominioEncuesta);
+		
 		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(gestorPersistencia);
 	}
 

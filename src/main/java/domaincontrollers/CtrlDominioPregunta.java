@@ -55,6 +55,7 @@ public class CtrlDominioPregunta {
 
 	/**
 	 * Obtiene la instancia única del controlador (patrón singleton).
+	 * Permite actualizar las referencias circulares después de la creación inicial.
 	 * 
 	 * @param gestor Gestor de persistencia
 	 * @param ctrlDominioRespuesta Controlador de respuestas
@@ -68,6 +69,14 @@ public class CtrlDominioPregunta {
             singletonInstance = new CtrlDominioPregunta(gestor, 
 	                              ctrlDominioRespuesta,
 	                              ctrlDominioEncuesta);
+        } else {
+            // Actualizar referencias circulares si ya existe la instancia
+            if (ctrlDominioRespuesta != null) {
+                singletonInstance.ctrlDominioRespuesta = ctrlDominioRespuesta;
+            }
+            if (ctrlDominioEncuesta != null) {
+                singletonInstance.ctrlDominioEncuesta = ctrlDominioEncuesta;
+            }
         }
         return singletonInstance;
     }

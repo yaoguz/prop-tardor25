@@ -106,6 +106,7 @@ public class DriverRespuesta {
     private static void inicializarControladores() {
         GestorPersistencia gestor = GestorPersistencia.getInstance();
         
+        // Primera inicializacion con referencias parciales
         ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
         ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
         ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);

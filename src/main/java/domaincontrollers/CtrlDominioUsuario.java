@@ -62,6 +62,7 @@ public class CtrlDominioUsuario {
 
 	/**
 	 * Obtiene la instancia única del controlador (patrón singleton).
+	 * Permite actualizar las referencias circulares después de la creación inicial.
 	 * 
 	 * @param gestor Gestor de persistencia
 	 * @param ctrlDominioRespuesta Controlador de respuestas
@@ -69,17 +70,23 @@ public class CtrlDominioUsuario {
 	 * @return Instancia única de CtrlDominioUsuario
 	 */
 	public static CtrlDominioUsuario getInstance(GestorPersistencia gestor, 
-											CtrlDominioRespuesta ctrlDominioRespuesta,
-											CtrlDominioPregunta ctrlDominioPregunta) {
+									CtrlDominioRespuesta ctrlDominioRespuesta,
+									CtrlDominioPregunta ctrlDominioPregunta) {
 		if (singletonInstance == null) {
 			singletonInstance = new CtrlDominioUsuario(gestor,
-												ctrlDominioRespuesta,
-												ctrlDominioPregunta);
+										ctrlDominioRespuesta,
+										ctrlDominioPregunta);
+		} else {
+			// Actualizar referencias circulares si ya existe la instancia
+			if (ctrlDominioRespuesta != null) {
+				singletonInstance.ctrlDominioRespuesta = ctrlDominioRespuesta;
+			}
+			if (ctrlDominioPregunta != null) {
+				singletonInstance.ctrlDominioPregunta = ctrlDominioPregunta;
+			}
 		}
 		return singletonInstance;
-	}
-
-	
+	}	
 	/**
 	 * Verifica si existe un usuario con el nombre dado.
 	 * 
@@ -265,13 +272,14 @@ public class CtrlDominioUsuario {
 	 * @param ctrlDominioRespuesta Controlador de respuestas
 	 * @param ctrlDominioPregunta Controlador de preguntas
 	 * @return Lista de las respuestas respondidas por el usuario en esta encuesta
+	 * @throws IllegalArgumentException si el usuario no ha respondido la encuesta
 	 */
 	public List<Respuesta> getRespuestasEncuesta(String nomUsuario, int idEncuesta) {
 		Usuario u = getUsuario(nomUsuario);
 		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
 		
 		ArrayList<Respuesta> respuestas = new ArrayList<>();
-										
+												
 		// por cada respuesta, mirar si coincide el idEncuesta
 		for (Integer idR : idRespuestas) {
 			Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
@@ -279,10 +287,12 @@ public class CtrlDominioUsuario {
 			if (p.getIdEncuesta() == idEncuesta) respuestas.add(r);
 		}
 
+		if (respuestas.isEmpty()) {
+			throw new IllegalArgumentException("El usuario " + nomUsuario + " no ha respondido la encuesta con ID " + idEncuesta);
+		}
+
 		return respuestas;
-	}
-	
-	// /**
+	}	// /**
 	//  * Importa usuarios desde persistencia al iniciar aplicación.
 	//  * 
 	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
