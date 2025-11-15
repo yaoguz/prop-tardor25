@@ -94,7 +94,7 @@ public class CtrlDominioPerfil {
         // 1. Obtener todas las respuestas de la encuesta agrupadas por usuario
         List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
 
-		List<Pregunta> variables = 
+		List<Pregunta> variables = ctrlDominioEncuesta.getPreguntaEncuesta(idEncuesta);
         
         // 3. Seleccionar algoritmo
         ClusteringAlgorithm alg = seleccionarAlgoritmo(algoritmo);
