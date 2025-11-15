@@ -48,6 +48,14 @@ public class TestCtrlDominioEncuesta {
     private CtrlUsuario mockCtrlUsuario;
     @Mock
     private CtrlDominioUsuario ctrlDominioUsuario;
+    @Mock 
+    private CtrlPregunta mockCtrlPregunta;
+    @Mock
+    private CtrlDominioPregunta ctrlDominioPregunta;
+    @Mock 
+    private CtrlRespuesta mockCtrlRespuesta;
+    @Mock
+    private CtrlDominioRespuesta ctrlDominioRespuesta;
     @Mock
     private CtrlPersistence mockPersistence;
 
@@ -59,7 +67,7 @@ public class TestCtrlDominioEncuesta {
         MockitoAnnotations.initMocks(this);
         
         // Crear el controlador bajo prueba con dependencias mockeadas
-        ctrlDominioEncuesta = new CtrlDominioEncuesta();
+        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, mockCtrlDominioPregunta, mockCtrlDominioRespuesta, mockCtrlDominioUsuario);
         ctrlDominioEncuesta.cargarEncuestas(mockEncuestas);
         mockUser = mock(Usuario.class);
 
