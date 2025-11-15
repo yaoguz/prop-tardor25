@@ -367,6 +367,19 @@ public class CtrlDominio {
 		int numMaxOpc = (opciones != null) ? opciones.size() : 10;
 		return ctrlDominioPregunta.crearPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMaxOpc);
 	}
+
+	/**
+	 * Añade una pregunta de opción múltiple (con numMaxOpc) a una encuesta.
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @param enunciado Enunciado de la pregunta
+	 * @param opciones Lista de opciones disponibles
+	 * @param numMaxOpc número máximo de opciones que se pueden seleccionar
+	 * @return ID de la pregunta creada
+	 */
+	public int anadirPreguntaOpcionMultiple(int idEncuesta, String enunciado, List<String> opciones, int numMaxOpc) {
+		return ctrlDominioPregunta.crearPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMaxOpc);
+	}
 	
 	/**
 	 * Modifica una pregunta existente (elimina la antigua y crea una nueva).

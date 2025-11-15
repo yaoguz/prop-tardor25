@@ -42,7 +42,7 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	 * @param opcion el texto de la opción a añadir.
 	 * @throws IllegalArgumentException si la opción es vacía o es null.
 	 */
-	public void addOpcion(String opcion) throws IllegalArgumentException {
+	@override public void addOpcion(String opcion) throws IllegalArgumentException {
 		if(opcion == null || opcion == "") throw new IllegalArgumentException("opción no válida");
 		this.opciones.add(opcion);
 	}
@@ -69,6 +69,15 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	@Override public void setNumMaxOpc(int numMaxOpc) throws IllegalArgumentException {
 		if(numMaxOpc < 2 || numMaxOpc > opciones.size()) throw new IllegalArgumentException("número máximo de opciones menor a 2 o mayor que el número de opciones");
 		this.numMaxOpc = numMaxOpc;
+	}
+
+	/**
+	 * Devuelve el número de opciones de la pregunta.
+	 * @return entero indicando el número de opciones que tiene la pregunta
+	 */
+	@Override 
+	public int getCantidad() {
+		return opciones.size();
 	}
 
 	/**
