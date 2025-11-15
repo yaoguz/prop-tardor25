@@ -17,8 +17,6 @@ import domain.Respuesta;
 /**
  * Driver interactivo para probar CtrlDominioPregunta.
  * 
- * Este es un programa MANUAL con menú para el 1er lliurament.
- * El profesor lo ejecuta y prueba casos de uso por consola.
  * 
  * @author Denis Roca
  */
@@ -32,7 +30,6 @@ public class DriverPregunta {
     private static Scanner scanner;
     private static String nomU;
     private static int idE;
-    private int intU = 1;
 
     /*
     Al principio tendrá una encuesta con 5 preguntas por defecto para que pueda
@@ -54,7 +51,7 @@ public class DriverPregunta {
         
         scanner = new Scanner(System.in);
 
-        nomU = ctrlUsuario.registrarUsuario("Test", "123456", "123456");
+        nomU = ctrlUsuario.registrarUsuario("Test5", "123456", "123456");
         idE = ctrlEncuesta.crearEncuesta(nomU, "Título");
         int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:");
         int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "Respuesta Libre");
@@ -92,6 +89,7 @@ public class DriverPregunta {
         System.out.println("- Una pregunta de opción única ordenada con id: " +idPOUO);
         System.out.println("  que el mismo usuario ha respuesto con la respuesta con id: " +idROUO);
         System.out.println("Todas las acciones se realizan sobre la encuesta "  +idE);
+        System.out.println("Al crear la respuesta se le asignarán unos datos aleatorios válidos para la pregunta.");
 
         while (!salir) {
             mostrarMenu();
@@ -117,7 +115,6 @@ public class DriverPregunta {
                     testExistePregunta();
                 case 8:
                     testAnadirRespuesta();
-                    ++intU;
                 case 0:
                     salir = true;
                     System.out.println("\nSaliendo del driver...\n");
@@ -138,7 +135,7 @@ public class DriverPregunta {
         System.out.println("5. Obtener pregunta");
         System.out.println("6. Obtener todas las preguntas");
         System.out.println("7. Comprobar existencia de una pregunta");
-        System.out.println("8. Añadir respuesta a una pregunta [por implementar]");
+        System.out.println("8. Añadir respuesta a una pregunta");
         System.out.println("0. Salir");
         
     }
@@ -373,46 +370,30 @@ public class DriverPregunta {
     
     private static void testAnadirRespuesta() {
         System.out.println("\n--{ AÑADIR UNA RESPUESTA A UNA PREGUNTA }--");
-        
+
+        System.out.print("Introduzca el nombre del usuario que responderá: ");
+        String usr = scanner.nextLine();
+
         System.out.print("Introduzca el id de la pregunta a responder: ");
         int idPregunta = scanner.nextInt();
-        ctrlUsuario.registrarUsuario("Test" + intU, "12345", "12345");
+        ctrlUsuario.registrarUsuario(usr, "12345", "12345");
         int r = 0;
         try{ Pregunta p = ctrlPregunta.getPregunta(idPregunta);
             switch(p.tipoPregunta()){
                 case "libre":
-                    r = ctrlRespuesta.darRespuesta("Test" + intU, idPregunta, "Respuesta" + intU);
+                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, "Respuesta" + usr + " :)");
                 case "numerica":
-                    r = ctrlRespuesta.darRespuesta("Test" + intU, idPregunta, pregunta.getRangoInf()+Math.random());
+                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, pregunta.getRangoInf()+Math.random());
                     break;
-            /*    case "opcion_multiple":
+                case "opcion_multiple":
                     ArrayList<int> opsM = new ArrayList<>();
                     opsM.add(0);
-                    opsM.add((p.getCantidad())Math.Random())
-                    r = ctrlRespuesta.darRespuesta("Test" + intU, idPregunta)
-                    ArrayList<String> opsM = new ArrayList<>();
-                    String opm = null;
-                    while(opm != "_fin"){
-                        System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                        opm = scanner.nextLine();
-                        if(opm != "_fin") opsM.add(opm);
-                    }
-                    info.atributosEspecificos.put("opciones", opsM);
-                    System.out.print("Introduzca el número máximo(incluido) de opciones seleccionables para la pregunta: ");
-                    info.atributosEspecificos.put("numMaxOpc", scanner.nextInt());
+                    opsM.add(1+((p.getCantidad()-1)*Math.Random()))
+                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, opsM)
                     break;
                 case "opcion_unica":
-                    ArrayList<String> opsU = new ArrayList<>();
-                    String opu = null;
-                    while(opu != "_fin"){
-                        System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                        opu = scanner.nextLine();
-                        if(opu != "_fin") opsU.add(opu);
-                    }
-                    info.atributosEspecificos.put("opciones", opsU);
-                    System.out.print("Introduzca 1 si las opciones siguen un orden o 0 si no lo siguen: ");
-                    info.atributosEspecificos.put("ordenada", scanner.nextInt() == 1);
-                    break;*/
+                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, p.getCantidad()*Math.Random());
+                    break;
             }
         }
         catch (IllegalArgumentException e) {
