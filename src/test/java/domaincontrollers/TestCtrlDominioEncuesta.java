@@ -346,14 +346,8 @@ public class TestCtrlDominioEncuesta {
 
     @Test
     public void testAnadirPregunta() {
-<<<<<<< HEAD
-||||||| parent of efa75df (testCtrlDominioEncuesta)
-        Encuesta e = new Encuesta(1, "Prueba", "Xiangjun");
-        when(mockGestor.getEncuesta(1)).thenReturn(e);
-=======
         Encuesta mockEncuesta = mock(Encuesta.class);
         when(mockGestor.getEncuesta(1)).thenReturn(mockEncuesta);
->>>>>>> efa75df (testCtrlDominioEncuesta)
         when(mockCtrlDominioPregunta.crearPregunta(eq(1), anyString(), anyString(), anyMap())).thenReturn(10);
 
         CtrlDominioEncuesta.PreguntaImportData infoP = new CtrlDominioEncuesta.PreguntaImportData();
@@ -365,13 +359,8 @@ public class TestCtrlDominioEncuesta {
 
         assertEquals("No ha retornado el id correcto", 10, idP);
         verify(mockCtrlDominioPregunta).crearPregunta(1, "¿Pregunta?", "libre", infoP.atributosEspecificos);
-<<<<<<< HEAD
-||||||| parent of efa75df (testCtrlDominioEncuesta)
-        verify(mockGestor).actualizarEncuesta(e);
-=======
         verify(mockEncuesta).guardarPregunta(10);
         verify(mockGestor).actualizarEncuesta(mockEncuesta);
->>>>>>> efa75df (testCtrlDominioEncuesta)
     }
 
     @Test
