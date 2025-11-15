@@ -12,7 +12,7 @@ import domain.algorithm.funciones.*;
  * @author Alessandro Jin
  */
 
-public class Kalgorithm implements ClusteringAlgorithm  {
+public abstract class Kalgorithm implements ClusteringAlgorithm  {
     /**
      * Las subclases deben implementar este método para especificar
      * cómo inicializar los clusters.

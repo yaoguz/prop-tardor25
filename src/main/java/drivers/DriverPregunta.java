@@ -388,8 +388,8 @@ public class DriverPregunta {
                 case "opcion_multiple":
                     ArrayList<int> opsM = new ArrayList<>();
                     opsM.add(0);
-                    opsM.add(1+((p.getCantidad()-1)*Math.Random()))
-                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, opsM)
+                    opsM.add(1+((p.getCantidad()-1)*Math.Random()));
+                    r = ctrlRespuesta.darRespuesta(usr, idPregunta, opsM);
                     break;
                 case "opcion_unica":
                     r = ctrlRespuesta.darRespuesta(usr, idPregunta, p.getCantidad()*Math.Random());
