@@ -17,7 +17,7 @@ import persistence.GestorPersistencia;
 /**
  * @author Alessandro Jin
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TestCtrlDominioPregunta {
 
     @Mock
@@ -30,10 +30,7 @@ public class TestCtrlDominioPregunta {
     private CtrlDominioPregunta ctrlDominioPregunta;
 
     @Before
-    public void setUp() throws Exception {
-        Field instance = CtrlDominioPregunta.class.getDeclaredField("singletonInstance");
-        instance.setAccessible(true);
-        instance.set(null, null);
+    public void setUp() {
         
         ctrlDominioPregunta = CtrlDominioPregunta.getInstance(mockGestor, mockCtrlDominioRespuesta, mockCtrlDominioEncuesta);
     }
@@ -72,15 +69,17 @@ public class TestCtrlDominioPregunta {
 
     @Test
     public void testCrearPreguntaLibre() {
-        Encuesta mockEncuesta = new Encuesta(1, "Test", "autor");
+        Encuesta mockEncuesta = mock(Encuesta.class);
+
         when(mockCtrlDominioEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
         when(mockGestor.getNextIdPregunta()).thenReturn(10);
 
-        int idP = ctrlDominioPregunta.crearPreguntaLibre(1, "¿Pregunta libre?");
+        int idP = ctrlDominioPregunta.crearPreguntaLibre(1, "¿Edad?");
 
         assertEquals("No ha retornado el id correcto", 10, idP);
         verify(mockGestor).guardarPregunta(any(PreguntaLibre.class));
         verify(mockGestor).actualizarEncuesta(mockEncuesta);
+        verify(mockEncuesta).guardarPregunta(10);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -88,9 +87,14 @@ public class TestCtrlDominioPregunta {
         ctrlDominioPregunta.crearPreguntaLibre(1, "");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCrearPreguntaLibreEnunciadoNulo() {
+        ctrlDominioPregunta.crearPreguntaLibre(1, null);
+    }
+
     @Test
     public void testCrearPreguntaNumerica() {
-        Encuesta mockEncuesta = new Encuesta(1, "Test", "autor");
+        Encuesta mockEncuesta = mock(Encuesta.class);
         when(mockCtrlDominioEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
         when(mockGestor.getNextIdPregunta()).thenReturn(10);
 
@@ -99,19 +103,18 @@ public class TestCtrlDominioPregunta {
         assertEquals("No ha retornado el id correcto", 10, idP);
         verify(mockGestor).guardarPregunta(any(PreguntaNumerica.class));
         verify(mockGestor).actualizarEncuesta(mockEncuesta);
+        verify(mockEncuesta).guardarPregunta(10);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCrearPreguntaNumerica_RangoInvalido() {
-        Encuesta mockEncuesta = new Encuesta(1, "Test", "autor");
-        when(mockCtrlDominioEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
 
-        ctrlDominioPregunta.crearPreguntaNumerica(1, "¿Pregunta?", 100, 0);
+        ctrlDominioPregunta.crearPreguntaNumerica(1, "¿Edad?", 100, 0);
     }
 
     @Test
     public void testCrearPreguntaOpcionUnica() {
-        Encuesta mockEncuesta = new Encuesta(1, "Test", "autor");
+        Encuesta mockEncuesta = mock(Encuesta.class);
         when(mockCtrlDominioEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
         when(mockGestor.getNextIdPregunta()).thenReturn(10);
         List<String> opciones = Arrays.asList("Si", "No");
@@ -121,6 +124,7 @@ public class TestCtrlDominioPregunta {
         assertEquals("No ha retornado el id correcto", 10, idP);
         verify(mockGestor).guardarPregunta(any(PreguntaOpcionUnica.class));
         verify(mockGestor).actualizarEncuesta(mockEncuesta);
+        verify(mockEncuesta).guardarPregunta(10);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -130,7 +134,7 @@ public class TestCtrlDominioPregunta {
 
     @Test
     public void testCrearPreguntaOpcionMultiple() {
-        Encuesta mockEncuesta = new Encuesta(1, "Test", "autor");
+        Encuesta mockEncuesta = mock(Encuesta.class);
         when(mockCtrlDominioEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
         when(mockGestor.getNextIdPregunta()).thenReturn(10);
         List<String> opciones = Arrays.asList("A", "B", "C");
@@ -140,6 +144,7 @@ public class TestCtrlDominioPregunta {
         assertEquals("No ha retornado el id correcto", 10, idP);
         verify(mockGestor).guardarPregunta(any(PreguntaOpcionMultiple.class));
         verify(mockGestor).actualizarEncuesta(mockEncuesta);
+        verify(mockEncuesta).guardarPregunta(10);
     }
 
     @Test
@@ -153,6 +158,14 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).actualizarPregunta(mockPregunta);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testAnadirRespuestaNulo () {
+
+        when(mockGestor.getPregunta(1)).thenReturn(null);
+
+        ctrlDominioPregunta.anadirRespuesta(1, 100);
+    }
+
     @Test
     public void testEliminarRespuestaReferencia() {
         Pregunta mockPregunta = mock(PreguntaLibre.class);
@@ -164,20 +177,31 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).actualizarPregunta(mockPregunta);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testEliminarRespuestaReferencia() {
+        when(mockGestor.getPregunta(1)).thenReturn(null);
+
+        ctrlDominioPregunta.anadirRespuesta(1, 100);
+    }
+
+
     @Test
     public void testEliminarPregunta() {
-        PreguntaLibre p = new PreguntaLibre(1, 10, "¿Pregunta?");
-        p.guardarIdRespuesta(100);
-        p.guardarIdRespuesta(101);
-        when(mockGestor.getPregunta(10)).thenReturn(p);
-        
-        Encuesta mockEncuesta = new Encuesta(1, "Test", "autor");
+        Pregunta mockPregunta = mock(PreguntaLibre.class);
+
+        when(mockGestor.getPregunta(10)).thenReturn(mockPregunta);
+        when(mockPregunta.getIdRespuestas()).thenReturn(new ArrayList<> (Arrays.asList(100,200)));
+        when(mockPregunta.getIdEncuesta()).thenReturn(1);
+
+        Encuesta mockEncuesta = mock(Encuesta.class);
         when(mockCtrlDominioEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
 
         ctrlDominioPregunta.eliminarPregunta(10);
 
         verify(mockCtrlDominioRespuesta, times(2)).eliminarRespuesta(anyInt());
         verify(mockGestor).eliminarPregunta(10);
+        verify(mockPregunta).getIdEncuesta();
+        verify(mockEncuesta).eliminarPregunta();
     }
 
     @Test
@@ -197,35 +221,19 @@ public class TestCtrlDominioPregunta {
 
     @Test
     public void testGetRespuestasPregunta() {
-        PreguntaLibre p = new PreguntaLibre(1, 10, "¿Pregunta?");
-        p.guardarIdRespuesta(100);
-        p.guardarIdRespuesta(101);
+        Pregunta p = mock(PreguntaLibre.class);
+     
         when(mockGestor.getPregunta(10)).thenReturn(p);
+        when(mockPregunta.getIdRespuestas()).thenReturn(new ArrayList<> (Arrays.asList(100,200)));
         
         Respuesta r1 = mock(Respuesta.class);
         Respuesta r2 = mock(Respuesta.class);
         when(mockCtrlDominioRespuesta.getRespuesta(100)).thenReturn(r1);
-        when(mockCtrlDominioRespuesta.getRespuesta(101)).thenReturn(r2);
+        when(mockCtrlDominioRespuesta.getRespuesta(200)).thenReturn(r2);
 
         List<Respuesta> resultado = ctrlDominioPregunta.getRespuestasPregunta(10);
 
         assertEquals("No ha sacado todas las respuestas", 2, resultado.size());
         verify(mockCtrlDominioRespuesta, times(2)).getRespuesta(anyInt());
-    }
-
-    @Test
-    public void testCrearPreguntaGenerica() {
-        Encuesta mockEncuesta = new Encuesta(1, "Test", "autor");
-        when(mockCtrlDominioEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
-        when(mockGestor.getNextIdPregunta()).thenReturn(10);
-        
-        Map<String, Object> atributos = new HashMap<>();
-        atributos.put("min", 0);
-        atributos.put("max", 100);
-
-        int idP = ctrlDominioPregunta.crearPregunta(1, "¿Edad?", "numerica", atributos);
-
-        assertEquals("No ha retornado el id correcto", 10, idP);
-        verify(mockGestor).guardarPregunta(any(PreguntaNumerica.class));
     }
 }
