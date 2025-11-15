@@ -42,7 +42,7 @@ public class PreguntaOpcionMultiple extends Pregunta {
 	 * @param opcion el texto de la opción a añadir.
 	 * @throws IllegalArgumentException si la opción es vacía o es null.
 	 */
-	public void addOpcion(String opcion) throws IllegalArgumentException {
+	@override public void addOpcion(String opcion) throws IllegalArgumentException {
 		if(opcion == null || opcion == "") throw new IllegalArgumentException("opción no válida");
 		this.opciones.add(opcion);
 	}

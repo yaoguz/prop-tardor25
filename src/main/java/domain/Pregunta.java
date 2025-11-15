@@ -115,6 +115,11 @@ public abstract class Pregunta {
 	
 	/** Operaciones de las subclases **/
 	
+	/**
+	 * No hace nada si no es del tipo de subclase correspondiente.
+	 */
+	public void addOpcion(String opcion) {}
+	
 	//opciones (de opcionMuliple y opcionUnica)
 	/**
 	 * Devuelve una lista de Strings vacía si no es del tipo de subclase correspondiente.
