@@ -31,44 +31,22 @@ import domaincontrollers.CtrlRespuesta;
 @RunWith(MockitoJUnitRunner.class)
 public class TestCtrlDominioEncuesta {
     
-    // @Mock
-    // private CtrlUsuario mockCtrlUsuario;
-    
-    // @Mock
-    // private CtrlEncuesta mockCtrlEncuesta;
-    
-    // @Mock
-    // private CtrlPregunta mockCtrlPregunta;
-    
-    // @Mock
-    // private CtrlRespuesta mockCtrlRespuesta;
     @Mock
-    private CtrlEncuesta mockCtrlEncuesta;
-    @Mock 
-    private CtrlUsuario mockCtrlUsuario;
+    private GestorPersistencia gestor;
     @Mock
     private CtrlDominioUsuario ctrlDominioUsuario;
-    @Mock 
-    private CtrlPregunta mockCtrlPregunta;
     @Mock
     private CtrlDominioPregunta ctrlDominioPregunta;
-    @Mock 
-    private CtrlRespuesta mockCtrlRespuesta;
     @Mock
     private CtrlDominioRespuesta ctrlDominioRespuesta;
-    @Mock
-    private CtrlPersistence mockPersistence;
 
     private CtrlDominioEncuesta ctrlDominioEncuesta;
     
     @Before
     public void setUp() {
-        // Inicializar mocks de Mockito
-        MockitoAnnotations.initMocks(this);
-        
         // Crear el controlador bajo prueba con dependencias mockeadas
-        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, mockCtrlDominioPregunta, mockCtrlDominioRespuesta, mockCtrlDominioUsuario);
-        ctrlDominioEncuesta.cargarEncuestas(mockEncuestas);
+        ctrlDominioEncuesta = new CtrlDominioEncuesta(gestor, ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
+        //ctrlDominioEncuesta.cargarEncuestas(mockEncuestas);
         mockUser = mock(Usuario.class);
 
         when(mockUser.get("Xiangjun")).thenReturn(mockUser);
