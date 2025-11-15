@@ -34,10 +34,14 @@ public class DriverUsuario {
         // Inicializar dependencias (capa real, no mocks)
         GestorPersistencia gestor = GestorPersistencia.getInstance();
         
+        ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestor, null, null);
+        ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlDominioUsuario, null, null);
+        ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlDominioRespuesta, null);
+        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
+
         ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlDominioRespuesta, ctrlDominioPregunta);
         ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);
         ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlDominioRespuesta, ctrlDominioEncuesta);
-        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
 
         crearDatosDePrueba();
 
