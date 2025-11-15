@@ -158,12 +158,12 @@ public class CtrlDominioRespuesta {
 	 */
 	public <T> int darRespuesta(String nomUsuario, int idPregunta, T respuesta) {
 		Pregunta p = ctrlDominioPregunta.getPregunta(idPregunta);
+		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
 		
 		int idR = gestor.getNextIdRespuesta();
 		Respuesta nuevaRespuesta = p.crearRespuesta(idR, nomUsuario, respuesta);
 		gestor.guardarRespuesta(nuevaRespuesta); // persistencia: respuestas.put(Integer.valueOf(idR), nuevaRespuesta);
 		
-		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
 		u.guardarIdRespuesta(idR);
 		gestor.actualizarUsuario(u);
 

@@ -1,10 +1,12 @@
 package domaincontrollers;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
 import persistence.GestorPersistencia;
@@ -232,7 +234,17 @@ public class CtrlDominio {
 	 * @param idEncuesta ID de la encuesta
 	 * @return Lista de IDs de preguntas
 	 */
-	public List<Integer> getPreguntasEncuesta(int idEncuesta) {
+	public List<Integer> getIdPreguntasEncuesta(int idEncuesta) {
+		return ctrlDominioEncuesta.getIdPreguntasEncuesta(idEncuesta);
+	}
+
+	/**
+	 * Obtiene las preguntas de una encuesta.
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @return Lista de preguntas
+	 */
+	public List<Pregunta> getPreguntasEncuesta(int idEncuesta) {
 		return ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
 	}
 	

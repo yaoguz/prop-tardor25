@@ -292,7 +292,9 @@ public class CtrlDominioUsuario {
 		}
 
 		return respuestas;
-	}	// /**
+	}	
+	
+	// /**
 	//  * Importa usuarios desde persistencia al iniciar aplicación.
 	//  * 
 	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()

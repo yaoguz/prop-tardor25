@@ -158,9 +158,24 @@ public class CtrlDominioEncuesta {
 	 * @param idEncuesta ID de la encuesta
 	 * @return Lista de IDs de preguntas
 	 */
-	public List<Integer> getPreguntasEncuesta(int idEncuesta) {
+	public List<Integer> getIdPreguntasEncuesta(int idEncuesta) {
 		Encuesta e = getEncuesta(idEncuesta);
 		return e.getIdPreguntas();
+	}
+
+	/**
+	 * Obtiene las preguntas de una encuesta.
+	 * 
+	 * @param idEncuesta ID de la encuesta
+	 * @return Lista de preguntas
+	 */
+	public List<Pregunta> getPreguntasEncuesta(int idEncuesta) {
+		Encuesta e = getEncuesta(idEncuesta);
+		List<Pregunta> preguntas = new ArrayList<>();
+		for (int idP : e.getIdPreguntas()) {
+			preguntas.add(ctrlDominioPregunta.getPregunta(idP));
+		}
+		return preguntas;
 	}
 	
 	/**
@@ -184,6 +199,7 @@ public class CtrlDominioEncuesta {
 		gestor.guardarEncuesta(e); // en persistencia: encuestas.put(idE, e); nextId++;
 
 		u.guardarIdEncuesta(idE);
+		gestor.actualizarUsuario(u);
 		return idE;
 	}
 	

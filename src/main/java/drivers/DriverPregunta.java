@@ -53,7 +53,7 @@ public class DriverPregunta {
         
         scanner = new Scanner(System.in);
 
-        nomU = ctrlUsuario.registrarUsuario("Test", "1234", "1234");
+        nomU = ctrlUsuario.registrarUsuario("Test", "123456", "123456");
         idE = ctrlEncuesta.crearEncuesta(nomU, "Título");
         int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:");
         int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "Respuesta Libre");

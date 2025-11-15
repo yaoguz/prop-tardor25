@@ -146,12 +146,14 @@ public class CtrlDominioPregunta {
             throw new IllegalArgumentException("El enunciado no puede estar vacío");
         }
 
+		// comprobar que la encuesta existe
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+
         int idP = gestor.getNextIdPregunta();
 		Pregunta p = new PreguntaLibre(idEncuesta, idP, enunciado);
         gestor.guardarPregunta(p); // persistencia: preguntas.put(idPregunta, p);
 		
 		// actualizar encuesta
-		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
 		e.guardarPregunta(idP);
 		gestor.actualizarEncuesta(e);
 
@@ -177,12 +179,14 @@ public class CtrlDominioPregunta {
             throw new IllegalArgumentException("El rango [" + min + ", " + max + "] no es válido");
         }
 
+		// comprobar que la encuesta existe
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+
 		int idP = gestor.getNextIdPregunta();
 		Pregunta p = new PreguntaNumerica(idEncuesta, idP, enunciado, min, max);
         gestor.guardarPregunta(p);
 		
 		// actualizar encuesta
-		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
 		e.guardarPregunta(idP);
 		gestor.actualizarEncuesta(e);
 
@@ -209,6 +213,9 @@ public class CtrlDominioPregunta {
             throw new IllegalArgumentException("Se requieren al menos 2 opciones");
         }
 
+		// comprobar que la encuesta existe
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+
 		int idP = gestor.getNextIdPregunta();
 		PreguntaOpcionMultiple p = new PreguntaOpcionMultiple(idEncuesta, idP, enunciado);
 
@@ -220,7 +227,6 @@ public class CtrlDominioPregunta {
 
         gestor.guardarPregunta(p);
 		
-		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
 		e.guardarPregunta(idP);
 		gestor.actualizarEncuesta(e);
 
@@ -247,6 +253,9 @@ public class CtrlDominioPregunta {
             throw new IllegalArgumentException("Se requieren al menos 2 opciones");
         }
 
+		// comprobar que la encuesta existe
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+
 		int idP = gestor.getNextIdPregunta();
 		PreguntaOpcionUnica p = new PreguntaOpcionUnica(idEncuesta, idP, enunciado, ordenada);
 
@@ -257,7 +266,6 @@ public class CtrlDominioPregunta {
 
         gestor.guardarPregunta(p);
 		
-		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
 		e.guardarPregunta(idP);
 		gestor.actualizarEncuesta(e);
 
