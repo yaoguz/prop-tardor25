@@ -43,7 +43,7 @@ public class TestRespuestaNumerica {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void modificarNaN() {
+    public void modificarString() {
         RespuestaNumerica r = new RespuestaNumerica(13, "ana", 23, 0.0);
         r.modificar("hola");
     }
