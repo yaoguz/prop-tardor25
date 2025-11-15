@@ -1,0 +1,13 @@
+** EQUIPO PROP 11.5 **
+
+MIEMBROS (Apellidos, Nombre):
+Guo Zhang, Yaoyao
+Miembro 2
+Miembro 3
+Miembro 4
+
+EMAILS (mismo orden):
+yaoyao.guo@estudiantat.upc.edu
+miembro2@estudiantat.upc.edu
+miembro3@estudiantat.upc.edu
+miembro4@estudiantat.upc.edu
