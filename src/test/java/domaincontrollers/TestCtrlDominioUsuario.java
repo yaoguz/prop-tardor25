@@ -2,6 +2,7 @@ package domaincontrollers;
 
 import domain.*;
 import persistence.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -31,14 +32,18 @@ public class TestCtrlDominioUsuario {
     private CtrlDominioUsuario ctrlDominioUsuario;   
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        // Resetear singleton
+        Field instance = CtrlDominioUsuario.class.getDeclaredField("singletonInstance");
+        instance.setAccessible(true);
+        instance.set(null, null);
    
         ctrlDominioUsuario = CtrlDominioUsuario.getInstance(mockGestor, mockCtrlDominioRespuesta, mockCtrlDominioPregunta);
     }
 
     @Test
     public void testExisteUsuarioTrue() {
-        when(mockGestor.existeUsuario("Alessadro")).thenReturn(true);
+        when(mockGestor.existeUsuario("Alessandro")).thenReturn(true);
 
         boolean resultado = ctrlDominioUsuario.existeUsuario("Alessandro");
 
@@ -48,7 +53,7 @@ public class TestCtrlDominioUsuario {
 
     @Test 
     public void testExisteUsuarioFalse() {
-        when(mockGestor.existeUsuario("Alessadro")).thenReturn(false);
+        when(mockGestor.existeUsuario("Yaoyao")).thenReturn(false);
 
         boolean resultado = ctrlDominioUsuario.existeUsuario("Yaoyao");
 
@@ -78,13 +83,13 @@ public class TestCtrlDominioUsuario {
 
     @Test
     public void testRegistrarUsuarioBueno() {
+        when(mockGestor.existeUsuario("Alessandro")).thenReturn(false);
         
         String nom = ctrlDominioUsuario.registrarUsuario("Alessandro", "123456", "123456");
 
         assertEquals("Guarda nombre incorrecto", "Alessandro", nom);
-        assertTrue(ctrlDominioUsuario.existeUsuario("Alessandro"));
-
-        verify(mockGestor, times(1)).getUsuario("Alessandro");
+        verify(mockGestor).existeUsuario("Alessandro");
+        verify(mockGestor, times(1)).guardarUsuario(any(Usuario.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -125,7 +130,7 @@ public class TestCtrlDominioUsuario {
     @Test(expected = IllegalStateException.class)
     public void testRegistrarUsuarioUsuarioDuplicado() {
 
-        when(mockGestor.existeUsuario("Alessadro")).thenReturn(true);
+        when(mockGestor.existeUsuario("Alessandro")).thenReturn(true);
       
         ctrlDominioUsuario.registrarUsuario("Alessandro", "123456", "123456");
        
@@ -242,16 +247,34 @@ public class TestCtrlDominioUsuario {
 
     @Test(expected = IllegalArgumentException.class)
     public void testModificarContrasena_nula() {
+        Usuario mockUser = mock(Usuario.class);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
+        when(mockUser.comprobarContrasena("123456")).thenReturn(true);
+        when(mockUser.getNomUsuario()).thenReturn("Alessandro");
+        ctrlDominioUsuario.iniciarSesion("Alessandro", "123456");
+        
         ctrlDominioUsuario.modificarContrasena(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testModificarContrasena_vacia() {
+        Usuario mockUser = mock(Usuario.class);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
+        when(mockUser.comprobarContrasena("123456")).thenReturn(true);
+        when(mockUser.getNomUsuario()).thenReturn("Alessandro");
+        ctrlDominioUsuario.iniciarSesion("Alessandro", "123456");
+        
         ctrlDominioUsuario.modificarContrasena("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testModificarContrasena_corta() {
+        Usuario mockUser = mock(Usuario.class);
+        when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
+        when(mockUser.comprobarContrasena("123456")).thenReturn(true);
+        when(mockUser.getNomUsuario()).thenReturn("Alessandro");
+        ctrlDominioUsuario.iniciarSesion("Alessandro", "123456");
+        
         ctrlDominioUsuario.modificarContrasena("123");
     }
 
@@ -359,6 +382,8 @@ public class TestCtrlDominioUsuario {
     public void testGetAllUsuariosDevuelveCopia() {
         Usuario mockUser1 = mock(Usuario.class);
         Usuario mockUser2 = mock(Usuario.class);
+        when(mockUser1.getNomUsuario()).thenReturn("user1");
+        when(mockUser2.getNomUsuario()).thenReturn("user2");
         ArrayList<Usuario> users = new ArrayList<>(Arrays.asList(mockUser1, mockUser2));
         when(mockGestor.getUsuarios()).thenReturn(users);
 

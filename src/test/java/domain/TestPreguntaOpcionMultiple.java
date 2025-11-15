@@ -23,6 +23,9 @@ public class TestPreguntaOpcionMultiple {
     @Before
     public void setUp() {
         pregunta = new PreguntaOpcionMultiple(idEncuesta, idPregunta, enunciado);
+        pregunta.guardarIdRespuesta(1);
+        pregunta.guardarIdRespuesta(2);
+        pregunta.guardarIdRespuesta(3);
     }
 
 
@@ -31,7 +34,7 @@ public class TestPreguntaOpcionMultiple {
 	  	assertEquals("No se guardo idEncuesta bien", idEncuesta, pregunta.getIdEncuesta());
         assertEquals("No se guardo idPregunt bien", idPregunta, pregunta.getIdPregunta());
         assertEquals("No se guardo enunciado correcto", enunciado, pregunta.getEnunciado());
-        assertEquals("No se creo bien idRespuesta", 0, pregunta.getIdRespuestas().size());
+        assertEquals("No se creo bien idRespuesta", 3, pregunta.getIdRespuestas().size());
 		assertEquals("EL numMaxopc no esta bien", 2, pregunta.getNumMaxOpc());
 	}
 
@@ -76,6 +79,9 @@ public class TestPreguntaOpcionMultiple {
 
 	@Test
 	public void testSetNumMaxOpc() {
+		pregunta.addOpcion("A");
+		pregunta.addOpcion("B");
+		pregunta.addOpcion("C");
 		pregunta.setNumMaxOpc(numMaxOpc);
 		assertEquals("No se setea numMaxOpc", numMaxOpc, pregunta.getNumMaxOpc());
 	}
@@ -150,6 +156,6 @@ public class TestPreguntaOpcionMultiple {
 		pregunta.addOpcion("adios");
 		pregunta.addOpcion("hasta luego");
 
-		assertEquals("No devuelve cantidad bien", 3, pregunta.getRangoSup());
+		assertEquals("No devuelve cantidad bien", 3, pregunta.getCantidad());
 	}
 }

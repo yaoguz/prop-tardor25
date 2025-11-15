@@ -24,6 +24,9 @@ public class TestPreguntaLibre {
     @Before
     public void setUp() {
         pregunta = new PreguntaLibre(idEncuesta, idPregunta, enunciado);
+        pregunta.guardarIdRespuesta(1);
+        pregunta.guardarIdRespuesta(2);
+        pregunta.guardarIdRespuesta(3);
     }
 
 
@@ -32,7 +35,7 @@ public class TestPreguntaLibre {
 	  	assertEquals("No se guardo idEncuesta bien", idEncuesta, pregunta.getIdEncuesta());
         assertEquals("No se guardo idPregunt bien", idPregunta, pregunta.getIdPregunta());
         assertEquals("No se guardo enunciado correcto", enunciado, pregunta.getEnunciado());
-        assertEquals("No se creo bien idRespuesta", 0, pregunta.getIdRespuestas().size());
+        assertEquals("No se creo bien idRespuesta", 3, pregunta.getIdRespuestas().size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

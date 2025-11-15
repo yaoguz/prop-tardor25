@@ -25,6 +25,9 @@ public class TestPreguntaOpcionUnica {
     public void setUp() {
         pregunta = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, false);
         preguntaOrdenada = new PreguntaOpcionUnica(idEncuesta, idPregunta, enunciado, true);
+        pregunta.guardarIdRespuesta(1);
+        pregunta.guardarIdRespuesta(2);
+        pregunta.guardarIdRespuesta(3);
     }
 
 
@@ -33,7 +36,7 @@ public class TestPreguntaOpcionUnica {
 	  	assertEquals("No se guardo idEncuesta bien", idEncuesta, pregunta.getIdEncuesta());
         assertEquals("No se guardo idPregunt bien", idPregunta, pregunta.getIdPregunta());
         assertEquals("No se guardo enunciado correcto", enunciado, pregunta.getEnunciado());
-        assertEquals("No se creo bien idRespuesta", 0, pregunta.getIdRespuestas().size());
+        assertEquals("No se creo bien idRespuesta", 3, pregunta.getIdRespuestas().size());
         assertFalse("No es No ordenada", pregunta.esOrdenada());
         assertTrue("Deberia ser ordenada", preguntaOrdenada.esOrdenada());
 	}
@@ -118,6 +121,6 @@ public class TestPreguntaOpcionUnica {
 		pregunta.addOpcion("adios");
 		pregunta.addOpcion("hasta luego");
 
-		assertEquals("No devuelve cantidad bien", 3, pregunta.getRangoSup());
+		assertEquals("No devuelve cantidad bien", 3, pregunta.getCantidad());
 	}
 }

@@ -105,7 +105,7 @@ public class CtrlDominioEncuesta {
 	 * @param titulo Título de la encuesta
 	 * @return true si ya existe, false en caso contrario
 	 */
-	private boolean existeEncuesta(String nomAutor, String titulo) {
+	public boolean existeEncuesta(String nomAutor, String titulo) {
 		Usuario u = ctrlDominioUsuario.getUsuario(nomAutor);
 		ArrayList<Integer> idEncuestas = u.getIdEncuestasCreadas();
 		

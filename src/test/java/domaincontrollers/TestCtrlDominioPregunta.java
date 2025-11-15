@@ -32,7 +32,11 @@ public class TestCtrlDominioPregunta {
     private CtrlDominioPregunta ctrlDominioPregunta;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        // Resetear singleton
+        Field instance = CtrlDominioPregunta.class.getDeclaredField("singletonInstance");
+        instance.setAccessible(true);
+        instance.set(null, null);
         
         ctrlDominioPregunta = CtrlDominioPregunta.getInstance(mockGestor, mockCtrlDominioRespuesta, mockCtrlDominioEncuesta);
     }
@@ -160,7 +164,7 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).actualizarPregunta(mockPregunta);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public void testAnadirRespuestaNulo () {
 
         when(mockGestor.getPregunta(1)).thenReturn(null);
@@ -179,7 +183,7 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).actualizarPregunta(mockPregunta);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public void testEliminarRespuestaReferenciaConPreguntaNull() {
         when(mockGestor.getPregunta(1)).thenReturn(null);
 

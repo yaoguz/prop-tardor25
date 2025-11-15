@@ -24,6 +24,9 @@ public class TestPreguntaNumerica {
     @Before
     public void setUp() {
         pregunta = new PreguntaNumerica(idEncuesta, idPregunta, enunciado, rangoInf, rangoSup);
+        pregunta.guardarIdRespuesta(1);
+        pregunta.guardarIdRespuesta(2);
+        pregunta.guardarIdRespuesta(3);
     }
 
 
@@ -32,7 +35,7 @@ public class TestPreguntaNumerica {
 	  	assertEquals("No se guardo idEncuesta bien", idEncuesta, pregunta.getIdEncuesta());
 	  	assertEquals("No se guardo idPregunt bien", idPregunta, pregunta.getIdPregunta());
 	  	assertEquals("No se guardo enunciado correcto", enunciado, pregunta.getEnunciado());
-		assertEquals("No se creo bien idRespuesta",0, pregunta.getIdRespuestas().size());
+		assertEquals("No se creo bien idRespuesta",3, pregunta.getIdRespuestas().size());
 		assertEquals("No se guardo rangoInf bien",rangoInf, pregunta.getRangoInf());
 		assertEquals("No se guardo rangoSup bien",rangoSup, pregunta.getRangoSup());
 	}
@@ -59,17 +62,17 @@ public class TestPreguntaNumerica {
 
 	@Test
 	public void testTipo() {
-		assertEquals("No devuelve numerica", "Numerica", pregunta.tipoPregunta());
+		assertEquals("No devuelve numerica", "numerica", pregunta.tipoPregunta());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCrearRespuestaRangoInf() {
-		pregunta.crearRespuesta(2, "Alessandro", 1);
+		pregunta.crearRespuesta(2, "Alessandro", 1.0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCrearRespuestaRangoSup() {
-		pregunta.crearRespuesta(2, "Alessadro", 100);
+		pregunta.crearRespuesta(2, "Alessadro", 100.0);
 	}
 
 	@Test 
