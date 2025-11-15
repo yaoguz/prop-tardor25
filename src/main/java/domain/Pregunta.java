@@ -1,10 +1,17 @@
 package domain;
-
 import java.util.ArrayList;
 
 /**
- * Clase Pregunta
+ * Clase abstracta que representa una pregunta de una encuesta.
+ * 
+ * RESPONSABILIDADES:
+ * - Almacenar los datos generales de una pregunta
+ * - Permitir modificación con validación de tipo
+ * - Proporcionar la encuesta y las preguntas asociadas a la pregunta
+ * 
+ * @author Denis Roca
  */
+
 
 public abstract class Pregunta {
 	

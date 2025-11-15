@@ -11,6 +11,7 @@ import domaincontrollers.CtrlDominioEncuesta;
 import domaincontrollers.CtrlDominioPregunta;
 import domaincontrollers.CtrlDominioRespuesta;
 import persistence.GestorPersistencia;
+//import domain.Encuesta;
 import domain.Pregunta;
 import domain.PreguntaNumerica;
 import domain.Respuesta;
@@ -18,18 +19,46 @@ import domain.Respuesta;
 /**
  * Driver interactivo para probar CtrlDominioPregunta.
  * 
- * 
  * @author Denis Roca
  */
 
-/*Clase que testea la clase CtrlDominioPregunta */
 public class DriverPregunta {
+
+    /** Atributos **/
+
+	/**
+	 * Controlador de Pregunta (Clase a probar).
+	 */
     private static CtrlDominioPregunta ctrlPregunta;
+    
+	/**
+	 * Controlador de Usuario.
+	 */
     private static CtrlDominioUsuario ctrlUsuario;
+    
+	/**
+	 * Controlador de Encuesta.
+	 */
     private static CtrlDominioEncuesta ctrlEncuesta;
+    
+	/**
+	 * Controlador de Respuesta.
+	 */
     private static CtrlDominioRespuesta ctrlRespuesta;
+    
+	/**
+	 * Lector para las entradas.
+	 */
     private static Scanner scanner;
+    
+	/**
+	 * Nombre del Usuario que tendrá la encuesta de prueba.
+	 */
     private static String nomU;
+    
+	/**
+	 * Identificador de la encuesta sobre la que se harán las pruebas.
+	 */
     private static int idE;
 
     /*
@@ -52,6 +81,7 @@ public class DriverPregunta {
         
         scanner = new Scanner(System.in);
 
+        // Inicializar datos de prueba
         nomU = ctrlUsuario.registrarUsuario("Test5", "123456", "123456");
         idE = ctrlEncuesta.crearEncuesta(nomU, "Título");
         int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:");
@@ -73,6 +103,7 @@ public class DriverPregunta {
 
         boolean salir = false;
 
+        // Información de inicio
         System.out.println("DRIVER INTERACTIVO - CONTROLADOR DE PREGUNTA");
         System.out.println("Dispone de un usuario con nombre: " +nomU);
         System.out.println("que tiene una encuesta creada con id: " +idE);
@@ -90,6 +121,7 @@ public class DriverPregunta {
         System.out.println("Todas las acciones se realizan sobre la encuesta "  +idE);
         System.out.println("Al crear la respuesta se le asignarán unos datos aleatorios válidos para la pregunta.");
 
+        //Bucle
         while (!salir) {
             mostrarMenu();
 
@@ -125,6 +157,11 @@ public class DriverPregunta {
         scanner.close();
     }
 
+	/**
+     * 
+	 * Imprime por el terminal las opciones que se pueden realizar en el driver.
+	 * 
+	 */
     private static void mostrarMenu() {
         System.out.println("\nMENÚ DRIVER PREGUNTA");
         System.out.println("1. Obtener respuestas de una pregunta");
@@ -139,6 +176,12 @@ public class DriverPregunta {
         
     }
 
+	/**
+	 * Devuelve un entero leído del terminal.
+	 * 
+     * @throws NumberFormatException si la entrada no era un número.
+	 * @return entero leído del terminal.
+	 */
     private static int leerEntero() {
         while (true) {
             try {
@@ -150,6 +193,25 @@ public class DriverPregunta {
         }
     }
 
+
+	/**
+	 * Prueba el caso de uso de obtener las respuestas de una pregunta.
+	 * 
+     * Primero pregunta al testeador el identificador de la pregunta cuyas respuestas quiere obtener.
+     * Luego obtiene las respuestas de dicha pregunta y las muestra con el estilo:
+     * 
+     * Respuestas de la pregunta 7:
+     * Id: 4. Usuario: Test2. Respuesta: Amarillo.
+     * Id: 5. Usuario: Test3. Respuesta: Verde.
+     * Id: 9. Usuario: Test5. Respuesta: Amarillo.
+     * 
+     * En caso de error se indicará si alguno de los parámetros no es válido por alguna razón. Por ejemplo:
+     * 
+     * Error: No existe pregunta con id 27
+     * 
+     * Si el error es uno no definido en las funciones que se llamen, se indicará con "Error inesperado" en vez de "Error".
+	 * 
+	 */
     private static void testObtenerRespuestas() {
         System.out.println("\n--{ OBTENER RESPUESTAS DE UNA PREGUNTA }--");
         
@@ -160,7 +222,7 @@ public class DriverPregunta {
             List<Respuesta> respuestas = ctrlPregunta.getRespuestasPregunta(idPregunta);
             System.out.println("Respuestas de la pregunta " +idPregunta +":");
             for(Respuesta r : respuestas){
-                System.out.println("Id: " +r.getId() +". Usuario: " +r.getNomUsuario() +". Respuesta: " +r.getRespuesta().toString());
+                System.out.println("Id: " +r.getId() +". Usuario: " +r.getNomUsuario() +". Respuesta: " +r.getRespuesta().toString() + ".");
             }
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
@@ -170,7 +232,32 @@ public class DriverPregunta {
     }
 
 
-    // 0/1
+	/**
+	 * Prueba el caso de uso de crear una pregunta en una encuesta.
+	 * 
+     * Primero pregunta al testeador el enuunciado de la pregunta que quiere crear.
+     * Luego pide el tipo de la pregunta a partir de una selección numérica:
+     *   0 -> Se creará una pregunta con respuesta libre.
+     *   1 -> Se creará una pregunta con respuesta de valor numérico.
+     *   2 -> Se creará una pregunta con opciones de múltiples respuestas.
+     *   3 -> Se creará una pregunta con opciones de una única respuesta.
+     * Cuya selección no acaba aunque se introduzca un número no válido, en tal caso
+     * se pide que se indique un número válido hasta que se introduzca.
+     * 
+     * Dependiendo del tipo de pregunta se pedirán los datos correspondientes y se creará la pregunta del tipo correspondiente. Los datos son:
+     *   Libre ------------> No necesita más datos.
+     *   Numérica ---------> Número mínimo y máximo del rango en el que podrá estar la respuesta de la pregunta.
+     *   Opción múltiple --> Todas las opciones de la pregunta de una en una y luego el número máximo de opciones que se podrán escoger.
+     *   Opción única -----> Todas las opciones de la pregunta de una en una y luego si las opciones tienen un orden, que se indica con un 1
+     *                       si está ordenada o 0 si no (el código sólo comprueba si es 1, así que cualquier otro número será no ordenada).
+     * 
+     * En caso de error se indicará si alguno de los parámetros no es válido por alguna razón. Por ejemplo:
+     * 
+     * Error: El enunciado no puede ser vacío.
+     * 
+     * Si el error es uno no definido en las funciones que se llamen, se indicará con "Error inesperado" en vez de "Error".
+	 * 
+	 */
     private static void testCrearPregunta(){
         System.out.println("\n--{ CREAR UNA PREGUNTA }--");
         

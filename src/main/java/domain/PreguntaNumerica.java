@@ -1,7 +1,14 @@
 package domain;
 
 /**
- * Clase PreguntaNumerica
+ * Pregunta de tipo de respuesta de valor numérico.
+ * 
+ * RESPONSABILIDADES:
+ * - Indicar que una pregunta es de tipo de respuesta libre.
+ * - Almacenar los datos específicos para el tipo numérico respectivos a la pregunta.
+ * - Proporcionar respuestas de tipo numérica al controlador de respuesta.
+ * 
+ * @author Denis Roca
  */
 
 public class PreguntaNumerica extends Pregunta {

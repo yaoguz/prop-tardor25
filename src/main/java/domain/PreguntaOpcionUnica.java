@@ -1,10 +1,16 @@
 package domain;
+import java.util.ArrayList;
 
 /**
- * Clase PreguntaOpcionMultiple
+ * Pregunta de tipo de respuesta de escoger entre varias opciones.
+ * 
+ * RESPONSABILIDADES:
+ * - Indicar que una pregunta es de tipo de opción única.
+ * - Almacenar los datos específicos para el tipo de opción única respectivos a la pregunta.
+ * - Proporcionar respuestas de tipo opción única al controlador de respuesta.
+ * 
+ * @author Denis Roca
  */
-
-import java.util.ArrayList;
 
 public class PreguntaOpcionUnica extends Pregunta {
 	

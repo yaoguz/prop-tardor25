@@ -1,7 +1,13 @@
 package domain;
 
 /**
- * Clase PreguntaLibre
+ * Pregunta de tipo de respuesta libre.
+ * 
+ * RESPONSABILIDADES:
+ * - Indicar que una pregunta es de tipo de respuesta libre.
+ * - Proporcionar respuestas de tipo libre al controlador de respuesta.
+ * 
+ * @author Denis Roca
  */
 
 public class PreguntaLibre extends Pregunta {

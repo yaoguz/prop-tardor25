@@ -1,10 +1,16 @@
 package domain;
+import java.util.ArrayList;
 
 /**
- * Clase PreguntaOpcionMultiple
+ * Pregunta de tipo de respuesta con opcionalidad múltiple (se puede escoger más de una opción).
+ * 
+ * RESPONSABILIDADES:
+ * - Indicar que una pregunta es de tipo de opción múltiple.
+ * - Almacenar los datos específicos para el tipo de opción múltiple respectivos a la pregunta.
+ * - Proporcionar respuestas de tipo opción múltiple al controlador de respuesta.
+ * 
+ * @author Denis Roca
  */
-
-import java.util.ArrayList;
 
 public class PreguntaOpcionMultiple extends Pregunta {
 	
