@@ -4,6 +4,8 @@ import domain.*;
 import java.lang.reflect.Field;
 import java.util.*;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
@@ -212,7 +214,7 @@ public class TestCtrlDominioPregunta {
         lista.add(p);
         when(mockGestor.getPreguntas()).thenReturn(lista);
 
-        HashMap<Integer, Pregunta> resultado = ctrlDominioPregunta.getAllPreguntas();
+        HashMap<Integer, Pregunta> resultado = new HashMap<>(ctrlDominioPregunta.getAllPreguntas());
 
         assertEquals("No ha sacado todas las preguntas", 1, resultado.size());
         assertTrue(resultado.containsKey(1));

@@ -106,7 +106,7 @@ public class TestEncuesta {
         }
         
         // Deberian quedar solo las impares
-        List<Integer> preguntas = encuesta.getIdPreguntas();
+        ArrayList<Integer> preguntas = encuesta.getIdPreguntas();
         assertEquals(5, preguntas.size());
         assertTrue(preguntas.contains(1));
         assertTrue(preguntas.contains(3));

@@ -1,8 +1,10 @@
 package domain;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
-import domain.Pregunta;
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 
  /**
  * @author Alessandro Jin

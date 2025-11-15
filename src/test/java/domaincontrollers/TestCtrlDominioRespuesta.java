@@ -14,7 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import persistence.GestorPersistencia;
 
 /**
- * @author Alessandro Jin
+ * @author ?
  */
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class TestCtrlDominioRespuesta {
