@@ -252,7 +252,6 @@ public class CtrlDominioEncuesta {
 			anadirPregunta(idE, infoP);
 		}
 
-		gestor.actualizarEncuesta(getEncuesta(idE));
 		return idE;
 	}
 	
@@ -421,14 +420,10 @@ public class CtrlDominioEncuesta {
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPregunta(int idEncuesta, PreguntaImportData infoP) {
-		Encuesta e = getEncuesta(idEncuesta);
-		
 		// Crear pregunta polimórfica según tipo
+		// NOTA: crearPregunta ya añade la pregunta a la encuesta internamente
 		int idP = ctrlDominioPregunta.crearPregunta(idEncuesta, infoP.enunciado,
                   infoP.tipo, infoP.atributosEspecificos);
-
-		e.guardarPregunta(idP);
-		gestor.actualizarEncuesta(e);
 		return idP;
 	}
 
