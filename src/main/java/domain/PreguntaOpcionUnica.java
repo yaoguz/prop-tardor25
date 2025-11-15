@@ -41,7 +41,8 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 * Añade una opción al conjunto de opciones ded la pregunta.
 	 * @param opcion el texto de la opción a añadir.
 	 */
-	@override public void addOpcion(String opcion) throws IllegalArgumentException {
+	@Override 
+	public void addOpcion(String opcion) throws IllegalArgumentException {
 		if(opcion == null || opcion == "") throw new IllegalArgumentException("opción no válida");
 		this.opciones.add(opcion);
 	}

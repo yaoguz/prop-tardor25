@@ -21,7 +21,7 @@ import domain.algorithm.funciones.*;
  *    - Seleccionar nuevo centroide con probabilidad proporcional a distancia²
  * 3. Ejecutar K-means estándar con estos centroides
  * 
- * @author Yaoyao Guo
+ * @author 
  */
 public class KmeansPlusPlus extends Kalgorithm {
 

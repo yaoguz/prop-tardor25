@@ -9,13 +9,10 @@ import domain.algorithm.funciones.*;
 
 
 /**
- * Clase base abstracta para algoritmos de clustering basados en K.
- * Implementa la lógica común de asignación y recálculo de centroides.
- * 
  * @author Alessandro Jin
  */
+
 public abstract class Kalgorithm implements ClusteringAlgorithm  {
-    
     /**
      * Las subclases deben implementar este método para especificar
      * cómo inicializar los clusters.

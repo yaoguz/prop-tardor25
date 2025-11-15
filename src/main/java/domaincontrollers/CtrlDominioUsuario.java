@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import domain.Pregunta;
@@ -293,16 +294,4 @@ public class CtrlDominioUsuario {
 
 		return respuestas;
 	}	
-	
-	// /**
-	//  * Importa usuarios desde persistencia al iniciar aplicación.
-	//  * 
-	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
-	//  * para cargar los datos guardados de la sesión anterior.
-	//  * 
-	//  * @param usuariosImportados TreeMap con los usuarios a cargar
-	//  */
-	// public void cargarUsuarios(TreeMap<String, Usuario> usuariosImportados) {
-	// 	this.usuarios = usuariosImportados;
-	// }
 }

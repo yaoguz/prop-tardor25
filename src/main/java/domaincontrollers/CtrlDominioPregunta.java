@@ -80,31 +80,6 @@ public class CtrlDominioPregunta {
         }
         return singletonInstance;
     }
-	
-	// /**
-	//  * Se verifica si existe una pregunta con el ID especificado.
-	//  * 
-	//  * @param idP ID de la pregunta
-	//  * @return true si existe, false en caso contrario
-	//  */
-	// public boolean existePregunta(int idP) {
-	// 	return preguntas.containsKey(idP);
-	// }
-	
-	// /**
-	//  * Se obtiene la instancia de Pregunta con el id pasasdo por parámetro.
-	//  * 
-	//  * @param idPregunta ID de la pregunta a obtener.
-	//  * @return la Pregunta cuyo identificador se ha pasado por parámetro.
-	//  * @throws IllegalArgumentException si no existe una instancia de Pregunta con identificador idPregunta.
-	//  */
-	// public Pregunta getPregunta(int idPregunta) {
-	// 	Pregunta p = preguntas.get(idPregunta);
-	// 	if (p == null) {
-	// 		throw new IllegalArgumentException("No existe la pregunta");
-	// 	}
-	// 	return p;
-	// }
 
 	/**
 	 * Se verifica si existe una pregunta con id idP.
@@ -442,21 +417,4 @@ public class CtrlDominioPregunta {
 		
 		return respuestas;
 	}
-	
-	// /**
-	//  * Importa preguntas desde persistencia al iniciar aplicación.
-	//  * 
-	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
-	//  * para cargar los datos guardados de la sesión anterior.
-	//  * 
-	//  * @param preguntasImportadas TreeMap con las preguntas a cargar
-	//  */
-	// public void cargarPreguntas(TreeMap<Integer, Pregunta> preguntasImportadas) {
-	// 	this.preguntas = preguntasImportadas;
-		
-	// 	// Actualizar nextId para que sea mayor que el ID más alto
-	// 	if (!preguntas.isEmpty()) {
-	// 		this.nextId = preguntas.lastKey() + 1;
-	// 	}
-	// }
 }

@@ -488,15 +488,10 @@ public class CtrlDominioEncuesta {
 	
 	// /**
 	//  * Importa encuestas desde persistencia al iniciar aplicación.
-	//  * 
-	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio.inicializarCtrlDominio()
-	//  * para cargar los datos guardados de la sesión anterior.
-	//  * 
 	//  * @param encuestasImportadas TreeMap con las encuestas a cargar
 	//  */
 	// public void cargarEncuestas(TreeMap<Integer, Encuesta> encuestasImportadas) {
 	// 	this.encuestas = encuestasImportadas;
-		
 	// 	// Actualizar nextId para que sea mayor que el ID más alto
 	// 	if (!encuestas.isEmpty()) {
 	// 		this.nextId = encuestas.lastKey() + 1;

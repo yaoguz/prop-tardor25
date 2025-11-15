@@ -360,20 +360,4 @@ public class CtrlDominioRespuesta {
 				throw new IllegalArgumentException("Tipo de pregunta desconocido: " + tipoPregunta);
 		}
 	}
-	
-	// /**
-	//  * Importa respuestas desde persistencia al iniciar sesión.
-	//  * 
-	//  * IMPORTANTE: Este método solo debe ser llamado por CtrlDominio al iniciar
-	//  * para cargar los datos guardados de la sesión anterior.
-	//  * 
-	//  * @param respuestasImportadas TreeMap con las respuestas a cargar
-	//  */
-	// public void cargarRespuestas(TreeMap<Integer, Respuesta> respuestasImportadas) {
-	// 	this.respuestas = respuestasImportadas;
-	// 	// Actualizar nextId para que sea mayor que el ID más alto
-	// 	if (!respuestas.isEmpty()) {
-	// 		this.nextId = respuestas.lastKey() + 1;
-	// 	}
-	// }
 }
