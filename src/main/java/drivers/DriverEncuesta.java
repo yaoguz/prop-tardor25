@@ -338,8 +338,14 @@ public class DriverEncuesta {
 
     private static void importarEncuesta() {
         System.out.println("\n--- Importar encuesta ---");
-        System.out.print("Usuario activo (debe iniciar sesión): ");
+        mostrarUsuariosDisponibles();
+        System.out.print("Nombre usuario: ");
         String usuario = scanner.nextLine().trim();
+
+        if (!ctrlUsuario.existeUsuario(usuario)) {
+            System.out.println("ERROR: Usa uno de los usuarios mostrados.");
+            return;
+        }
         
         try {
             // Iniciar sesión para establecer usuario activo

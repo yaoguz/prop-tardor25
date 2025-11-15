@@ -387,7 +387,7 @@ public class CtrlDominioPregunta {
 	 * 
 	 * @return HashMap con todas las preguntas (clave: id pregunta)
 	 */
-	public HashMap<Integer, Pregunta> getAllPreguntas() {
+	public Map<Integer, Pregunta> getAllPreguntas() {
 		HashMap<Integer, Pregunta> map = new HashMap<>();
 		ArrayList<Pregunta> lista = gestor.getPreguntas();
 		for (Pregunta p : lista) {
@@ -410,7 +410,7 @@ public class CtrlDominioPregunta {
 		Pregunta p = getPregunta(idPregunta);
 		List<Integer> idRespuestas = p.getIdRespuestas();
 		
-		List<Respuesta> respuestas = new java.util.ArrayList<>();
+		List<Respuesta> respuestas = new ArrayList<>();
 		for (Integer idR : idRespuestas) {
 			respuestas.add(ctrlDominioRespuesta.getRespuesta(idR));
 		}

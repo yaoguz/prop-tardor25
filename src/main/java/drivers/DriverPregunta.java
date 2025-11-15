@@ -420,7 +420,7 @@ public class DriverPregunta {
         System.out.println("\n--{ OBTENER TODAS LAS PREGUNTAS }--");
 
         try {
-            HashMap<Integer, Pregunta> preguntas = ctrlPregunta.getAllPreguntas();
+            HashMap<Integer, Pregunta> preguntas = new HashMap<>(ctrlPregunta.getAllPreguntas());
             System.out.println("Total de preguntas: " + preguntas.size());
             System.out.println("Preguntas:");
             for(Pregunta p : preguntas.values()){

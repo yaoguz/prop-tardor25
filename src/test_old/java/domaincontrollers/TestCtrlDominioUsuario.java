@@ -35,7 +35,7 @@ public class TestCtrlDominioUsuario {
     @Before
     public void setUp() {
    
-        ctrlDominioUsuario = new CtrlDominioUsuario(mockGestor, ctrlDominioRespuesta, ctrlDominioPregunta);
+        ctrlDominioUsuario = CtrlDominioUsuario.getInstance(mockGestor, ctrlDominioRespuesta, ctrlDominioPregunta);
     }
 
     @Test
