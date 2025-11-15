@@ -4,7 +4,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import java.util.Set;
 
-/** Tests unitarios para RespuestaOpcionMultiple (JUnit4) */
+/** Tests unitarios para RespuestaOpcionMultiple 
+ * @author Peiyu Wang
+*/
 public class TestRespuestaOpcionMultiple {
 
     @Test
@@ -62,19 +64,33 @@ public class TestRespuestaOpcionMultiple {
 
     @Test(expected = IllegalArgumentException.class)
     public void modificarTipoIncorrecto() {
-        int[] init = new int[] {1};
+        int[] init = new int[] {1,2};
         RespuestaOpcionMultiple r = new RespuestaOpcionMultiple(35, "ana", 45, init);
         r.modificar("hola");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void modificarVacio() {
-        int[] init = new int[] {1};
+        int[] init = new int[] {1,2};
         RespuestaOpcionMultiple r = new RespuestaOpcionMultiple(35, "ana", 45, init);
         r.modificar(new int[] {});
         
-        
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void modificarNegativo() {
+        int[] init = new int[] {1,2};
+        RespuestaOpcionMultiple r = new RespuestaOpcionMultiple(35, "ana", 45, init);
+        r.modificar(new int[] {-1,-2});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void modificarDuplicado() {
+        int[] init = new int[] {1,2};
+        RespuestaOpcionMultiple r = new RespuestaOpcionMultiple(35, "ana", 45, init);
+        r.modificar(new int[] {1,1});
+    }
+
 
 
 
