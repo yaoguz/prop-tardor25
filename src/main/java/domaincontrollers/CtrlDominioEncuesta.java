@@ -1,12 +1,19 @@
 package domaincontrollers;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import domain.Usuario;
 import persistence.GestorPersistencia;
@@ -80,22 +87,6 @@ public class CtrlDominioEncuesta {
 		return singletonInstance;
 	}
 
-	// /** Mapa de encuestas (clave: idEncuesta, valor: Encuesta) */
-	// private TreeMap<Integer, Encuesta> encuestas;
-	
-	// /** ID para la próxima encuesta a crear */
-	// private int nextId;
-
-	// /**
-	//  * Verifica si existe una encuesta con el ID especificado.
-	//  * 
-	//  * @param idE ID de la encuesta
-	//  * @return true si existe, false en caso contrario
-	//  */
-	// public boolean existeEncuesta(int idE) {
-	// 	return encuestas.containsKey(idE);
-	// }
-
 	/**
 	 * Verifica si existe una encuesta con el ID especificado.
 	 * 
@@ -106,21 +97,47 @@ public class CtrlDominioEncuesta {
 		return gestor.existeEncuesta(idE);
 	}
 
-	
-	// /**
-	//  * Obtiene una instancia de Encuesta con el id idEncuesta.
-	//  * 
-	//  * @param idEncuesta ID de la encuesta
-	//  * @return Instancia de Encuesta
-	//  * @throws IllegalStateException si no existe una encuesta con ese ID
-	//  */
-	// public Encuesta getEncuesta(int idEncuesta) {
-	// 	Encuesta e = encuestas.get(idEncuesta);
-	// 	if (e == null) {
-	// 		throw new IllegalStateException("No existe encuesta con id " + idEncuesta);
-	// 	}
-	// 	return e;
-	// }
+	/**
+	 * Verifica si un autor ya tiene una encuesta con el título especificado.
+	 * RT: un mismo autor no puede tener dos encuestas con el mismo título.
+	 * 
+	 * @param nomAutor Nombre del autor
+	 * @param titulo Título de la encuesta
+	 * @return true si ya existe, false en caso contrario
+	 */
+	private boolean existeEncuesta(String nomAutor, String titulo) {
+		Usuario u = ctrlDominioUsuario.getUsuario(nomAutor);
+		ArrayList<Integer> idEncuestas = u.getIdEncuestasCreadas();
+		
+		for (Integer idE : idEncuestas) {
+			Encuesta e = gestor.getEncuesta(idE);
+			if (e != null && e.getTitulo().equals(titulo)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Obtiene una encuesta por título y autor.
+	 * 
+	 * @param titulo Título de la encuesta
+	 * @param nomAutor Nombre del autor
+	 * @return Encuesta encontrada
+	 * @throws IllegalStateException si no existe la encuesta
+	 */
+	public Encuesta getEncuesta(String titulo, String nomAutor) {
+		Usuario u = ctrlDominioUsuario.getUsuario(nomAutor);
+		ArrayList<Integer> idEncuestas = u.getIdEncuestasCreadas();
+		
+		for (Integer idE : idEncuestas) {
+			Encuesta e = gestor.getEncuesta(idE);
+			if (e != null && e.getTitulo().equals(titulo)) {
+				return e;
+			}
+		}
+		throw new IllegalStateException("No existe encuesta '" + titulo + "' del autor '" + nomAutor + "'");
+	}
 
 	/**
 	 * Obtiene una instancia de Encuesta con el id "idEncuesta".
@@ -184,11 +201,14 @@ public class CtrlDominioEncuesta {
 	 * @param nomUsuario Nombre del usuario creador
 	 * @param titulo Título de la encuesta
 	 * @return ID de la encuesta creada
-	 * @throws IllegalArgumentException si el título está vacío
+	 * @throws IllegalArgumentException si el título está vacío o ya existe para este autor
 	 */
 	public int crearEncuesta(String nomUsuario, String titulo) {
 		if (titulo == null || titulo.trim().isEmpty()) {
 			throw new IllegalArgumentException("El título de la encuesta no puede estar vacío");
+		}
+		if (existeEncuesta(nomUsuario, titulo)) {
+			throw new IllegalArgumentException("El autor '" + nomUsuario + "' ya tiene una encuesta con título '" + titulo + "'");
 		}
 
 		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
@@ -205,19 +225,27 @@ public class CtrlDominioEncuesta {
 	
 	/**
 	 * Importa una encuesta desde un fichero externo.
+	 * La encuesta se crea para el usuario activo actual.
 	 * 
-	 * Formato esperado: {titulo, [{enunciado, [info según tipo]}], idAutor}
+	 * Formato esperado: {titulo, preguntas: [{tipo, enunciado, ...}]}
 	 * 
 	 * @param fichero Archivo con los datos de la encuesta
 	 * @return ID de la encuesta creada
 	 * @throws IllegalArgumentException si el formato es incorrecto
+	 * @throws IllegalStateException si no hay usuario activo
 	 */
 	public int importarEncuesta(File fichero) {
+		// Validar que hay usuario activo
+		String usuarioActivo = ctrlDominioUsuario.getUsuarioActivo();
+		if (usuarioActivo == null) {
+			throw new IllegalStateException("No hay usuario activo. Debe iniciar sesión antes de importar una encuesta.");
+		}
+		
 		// parser del fichero
 		EncuestaImportData datos = parsearFicheroEncuesta(fichero);
 		
-		// crear encuesta
-		int idE = crearEncuesta(datos.nomAutor, datos.titulo);
+		// crear encuesta para el usuario activo
+		int idE = crearEncuesta(usuarioActivo, datos.titulo);
 		
 		// anadir preguntas a la encuesta
 		for (PreguntaImportData infoP : datos.preguntas) {
@@ -233,7 +261,6 @@ public class CtrlDominioEncuesta {
 	 */
 	public static class EncuestaImportData {
 		String titulo;
-		String nomAutor;
 		List<PreguntaImportData> preguntas;
 	}
 	
@@ -247,15 +274,70 @@ public class CtrlDominioEncuesta {
 	}
 	
 	/**
-	 * Parsea un fichero de encuesta.
+	 * Parsea un fichero JSON de encuesta.
+	 * Formato: {"titulo": "...", "preguntas": [{"tipo": "...", ...}]}
 	 * 
-	 * @param fichero Archivo a parsear
+	 * @param fichero Archivo JSON a parsear
 	 * @return Datos de la encuesta
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 */
 	private EncuestaImportData parsearFicheroEncuesta(File fichero) {
-		// TO DO: Implementar según formato específico ************
-		throw new UnsupportedOperationException("Implementación pendiente según formato de fichero");
+		try (BufferedReader reader = new BufferedReader(new FileReader(fichero))) {
+			Gson gson = new Gson();
+			JsonObject json = gson.fromJson(reader, JsonObject.class);
+			
+			EncuestaImportData data = new EncuestaImportData();
+			data.titulo = json.get("titulo").getAsString();
+			data.preguntas = new ArrayList<>();
+			
+			JsonArray preguntasArray = json.getAsJsonArray("preguntas");
+			for (int i = 0; i < preguntasArray.size(); i++) {
+				JsonObject pregJson = preguntasArray.get(i).getAsJsonObject();
+				PreguntaImportData pregunta = new PreguntaImportData();
+				pregunta.tipo = pregJson.get("tipo").getAsString();
+				pregunta.enunciado = pregJson.get("enunciado").getAsString();
+				pregunta.atributosEspecificos = new HashMap<>();
+				
+				// Parsear atributos según tipo
+				switch (pregunta.tipo) {
+					case "numerica":
+						pregunta.atributosEspecificos.put("min", pregJson.get("min").getAsInt());
+						pregunta.atributosEspecificos.put("max", pregJson.get("max").getAsInt());
+						break;
+					case "opcion_unica":
+						List<String> opcionesUnica = new ArrayList<>();
+						JsonArray opcsUnica = pregJson.getAsJsonArray("opciones");
+						for (int j = 0; j < opcsUnica.size(); j++) {
+							opcionesUnica.add(opcsUnica.get(j).getAsString());
+						}
+						pregunta.atributosEspecificos.put("opciones", opcionesUnica);
+						pregunta.atributosEspecificos.put("ordenada", pregJson.get("ordenada").getAsBoolean());
+						break;
+					case "opcion_multiple":
+						List<String> opcionesMultiple = new ArrayList<>();
+						JsonArray opcsMultiple = pregJson.getAsJsonArray("opciones");
+						for (int j = 0; j < opcsMultiple.size(); j++) {
+							opcionesMultiple.add(opcsMultiple.get(j).getAsString());
+						}
+						pregunta.atributosEspecificos.put("opciones", opcionesMultiple);
+						pregunta.atributosEspecificos.put("numMaxOpc", pregJson.get("numMaxOpc").getAsInt());
+						break;
+					case "libre":
+						// Sin atributos adicionales
+						break;
+					default:
+						throw new IllegalArgumentException("Tipo de pregunta desconocido: " + pregunta.tipo);
+				}
+				
+				data.preguntas.add(pregunta);
+			}
+			
+			return data;
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Error al leer el fichero: " + e.getMessage());
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Formato JSON incorrecto: " + e.getMessage());
+		}
 	}
 	
 	/**

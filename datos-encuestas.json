@@ -1,0 +1,82 @@
+{
+  "titulo": "Encuesta Informaciones Personales",
+  "preguntas": [
+    {
+      "tipo": "opcion_unica",
+      "enunciado": "Gender?",
+      "ordenada": false,
+      "opciones": ["Male", "Female"]
+    },
+    {
+      "tipo": "opcion_unica",
+      "enunciado": "Married?",
+      "ordenada": false,
+      "opciones": ["Yes", "No"]
+    },
+    {
+      "tipo": "opcion_unica",
+      "enunciado": "Number of dependents?",
+      "ordenada": true,
+      "opciones": ["0", "1", "3+"]
+    },
+    {
+      "tipo": "opcion_unica",
+      "enunciado": "Education?",
+      "ordenada": false,
+      "opciones": ["Graduate", "Not Graduate"]
+    },
+    {
+      "tipo": "opcion_unica",
+      "enunciado": "Self-employed?",
+      "ordenada": false,
+      "opciones": ["Yes", "No"]
+    },
+    {
+      "tipo": "numerica",
+      "enunciado": "Applicant income?",
+      "min": 0,
+      "max": 100000
+    },
+    {
+      "tipo": "numerica",
+      "enunciado": "Coapplicant income?",
+      "min": 0,
+      "max": 100000
+    },
+    {
+      "tipo": "numerica",
+      "enunciado": "Loan amount?",
+      "min": 0,
+      "max": 500
+    },
+    {
+      "tipo": "numerica",
+      "enunciado": "Loan amount term?",
+      "min": 0,
+      "max": 500
+    },
+    {
+      "tipo": "opcion_unica",
+      "enunciado": "Credit history?",
+      "ordenada": false,
+      "opciones": ["0", "1"]
+    },
+    
+    {
+      "tipo": "opcion_unica",
+      "enunciado": "Property area?",
+      "ordenada": true,
+      "opciones": ["Urban", "Semiurban", "Rural"]
+    },
+    {
+      "tipo": "opcion_multiple",
+      "enunciado": "Finalidad del préstamo?",
+      "opciones": ["Comprar vivienda habitual", "Segunda residencia", "Reforma del hogar", "Inversión inmobiliaria"],
+      "numMaxOpc": 2
+    },
+    {
+      "tipo": "libre",
+      "enunciado": "Describe brevemente tu situación laboral y financiera."
+    }
+  ]
+}

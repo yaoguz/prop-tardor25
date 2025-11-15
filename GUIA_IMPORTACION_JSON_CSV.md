@@ -48,7 +48,7 @@ public void importarEncuestaJSON(String rutaJSON, String nomUsuario) {
     
     // Crear encuesta
     String titulo = json.get("titulo").getAsString();
-    int idEncuesta = ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo, ctrlUsuario);
+    int idEncuesta = ctrlDominioEncuesta.crearEncuesta(nomUsuario, titulo);
     
     // Crear preguntas
     JsonArray preguntas = json.getAsJsonArray("preguntas");
@@ -62,7 +62,7 @@ public void importarEncuestaJSON(String rutaJSON, String nomUsuario) {
                 int min = p.get("min").getAsInt();
                 int max = p.get("max").getAsInt();
                 ctrlDominioPregunta.crearPreguntaNumerica(idEncuesta, enunciado, 
-                    min, max, ctrlEncuesta);
+                    min, max);
                 break;
                 
             case "opcion_unica":
@@ -73,7 +73,7 @@ public void importarEncuestaJSON(String rutaJSON, String nomUsuario) {
                     opcionesOU.add(opcs.get(j).getAsString());
                 }
                 ctrlDominioPregunta.crearPreguntaOpcionUnica(idEncuesta, enunciado, 
-                    opcionesOU, ordenada, ctrlEncuesta);
+                    opcionesOU, ordenada);
                 break;
                 
             case "opcion_multiple":
@@ -84,11 +84,11 @@ public void importarEncuestaJSON(String rutaJSON, String nomUsuario) {
                 }
                 int numMaxOpc = p.get("numMaxOpc").getAsInt();
                 ctrlDominioPregunta.crearPreguntaOpcionMultiple(idEncuesta, enunciado, 
-                    opcionesOM, numMaxOpc, ctrlEncuesta);
+                    opcionesOM, numMaxOpc);
                 break;
                 
             case "libre":
-                ctrlDominioPregunta.crearPreguntaLibre(idEncuesta, enunciado, ctrlEncuesta);
+                ctrlDominioPregunta.crearPreguntaLibre(idEncuesta, enunciado);
                 break;
         }
     }
