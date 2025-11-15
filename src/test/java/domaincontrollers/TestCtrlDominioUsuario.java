@@ -362,7 +362,7 @@ public class TestCtrlDominioUsuario {
         Usuario mockUser1 = mock(Usuario.class);
         Usuario mockUser2 = mock(Usuario.class);
         ArrayList<Usuario> users = new ArrayList<>(Arrays.asList(mockUser1, mockUser2));
-        when(gestor.getUsuarios()).thenReturn(users);
+        when(mockGestor.getUsuarios()).thenReturn(users);
 
         HashMap<String, Usuario> copia = ctrlDominioUsuario.getAllUsuarios();
 
