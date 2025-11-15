@@ -18,7 +18,7 @@ public interface ClusteringAlgorithm {
      * @param k Número de clusters deseados
      * @return Lista de clusters obtenidos
      */
-    Map<Centroide,List<String>> ejecutarClustering(List<List<Respuesta>> respuestas, int k);
+    List<Perfil> ejecutarClustering(List<List<Respuesta>> respuestas, int k);
     
     /**
      * Nombre del algoritmo (para logging/reporting).

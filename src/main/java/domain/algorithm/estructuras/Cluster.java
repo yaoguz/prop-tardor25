@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class Cluster {
     private Centroide centroide;
-
     private List<Integer> miembros;
 
 
@@ -31,6 +30,7 @@ public class Cluster {
         this.miembros = miembros;
     }
 
+
     public void addMiembro(Integer i) {
         miembros.add(i);
     }
@@ -42,6 +42,7 @@ public class Cluster {
     public List<Integer> getMiembros() {
         return miembros;
     }
+
 
     public void borrarMiembros() {
         this.miembros.clear();

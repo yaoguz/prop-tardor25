@@ -35,6 +35,12 @@ public class CtrlDominioPerfil {
 	private static CtrlDominioPerfil singletonInstance;
 	private GestorPersistencia gestor;
 
+	/** Controlador de respuestas (inyección de dependencia) */
+	private CtrlDominioRespuesta ctrlDominioRespuesta;
+	
+	/** Controlador de encuestas (inyección de dependencia) */
+	private CtrlDominioEncuesta ctrlDominioEncuesta;
+
 	/** Constructor **/
 
 	/**
@@ -42,8 +48,10 @@ public class CtrlDominioPerfil {
 	 * 
 	 * @param gestor Gestor de persistencia del sistema
 	 */
-	private CtrlDominioPerfil(GestorPersistencia gestor) {
+	private CtrlDominioPerfil(GestorPersistencia gestor, CtrlDominioRespuesta ctrlDominioRespuesta, CtrlDominioEncuesta ctrlDominioEncuesta) {
 		this.gestor = gestor;
+		this.ctrlDominioRespuesta = ctrlDominioRespuesta;
+		this.ctrlDominioEncuesta = ctrlDominioEncuesta;
 	}
 
 	/**
@@ -68,7 +76,7 @@ public class CtrlDominioPerfil {
 	 * @param ctrlDominioUsuario Controlador de usuarios (inyección)
 	 * @return Lista de IDs de perfiles del usuario
 	 */
-	public List<Integer> getPerfilesUsuario(String nomUsuario, CtrlDominioUsuario ctrlDominioUsuario) {
+	public List<Integer> getPerfilesUsuario(String nomUsuario) {
 		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
 		return new ArrayList<>(u.getIdPerfiles());
 	}
@@ -83,22 +91,19 @@ public class CtrlDominioPerfil {
      * @param ctrlDominioRespuesta Controlador de respuestas (inyección)
      * @return Lista de clusters obtenidos
      */
-    public List<Cluster> ejecutarClustering(int idEncuesta, int k, String algoritmo,
-                                              CtrlDominioUsuario ctrlDominioUsuario,
-                                              CtrlDominioRespuesta ctrlDominioRespuesta) {
+    public Map<Centroide,List<String>> ejecutarClustering(int idEncuesta, int k, String algoritmo) {
+
         // 1. Obtener todas las respuestas de la encuesta agrupadas por usuario
-        Map<String, List<Respuesta>> respuestasPorUsuario = 
-            obtenerRespuestasPorUsuario(idEncuesta, ctrlDominioRespuesta);
+        List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
         
         // 2. Seleccionar algoritmo
         ClusteringAlgorithm alg = seleccionarAlgoritmo(algoritmo);
         
         // 3. Ejecutar clustering
-        List<Cluster> clusters = alg.ejecutarClustering(respuestasPorUsuario, k);
+        Map<Centroide,List<String>> clusters = alg.ejecutarClustering(respuestasPorUsuario, k);
         
         // 4. Evaluar calidad
         double silueta = ClusterEvaluator.calcularCoeficienteSilueta(clusters, respuestasPorUsuario);
-        System.out.println("Coeficiente de Silueta: " + silueta);
         
         return clusters;
     }
@@ -120,18 +125,5 @@ public class CtrlDominioPerfil {
                 return new KMeans();
         }
     }
-    
-	/**
-	 * Obtiene todas las respuestas de una encuesta agrupadas por usuario.
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @param ctrlDominioRespuesta Controlador de respuestas
-	 * @return Mapa usuario -> lista de respuestas
-	 */
-    private Map<String, List<Respuesta>> obtenerRespuestasPorUsuario(
-            int idEncuesta, CtrlDominioRespuesta ctrlDominioRespuesta) {
-        // TODO: Obtener todas las respuestas de la encuesta
-        // y agruparlas por usuario
-        return new HashMap<>();
-    }
+
 }
