@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import domain.Pregunta;
 
-/**
- * Clase testeadora de PreguntaOpcionMultiple
+ /**
+ * @author Alessandro Jin
  */
  
 public class TestPreguntaOpcionMultiple {
@@ -21,17 +21,17 @@ public class TestPreguntaOpcionMultiple {
      */
     @Before
     public void setUp() {
-        pregunta = new PreguntaNumerica(idEncuesta, idPregunta, enunciado);
+        pregunta = new PreguntaOpcionMultiple(idEncuesta, idPregunta, enunciado);
     }
 
 
 	@Test
-	public void testConstructoraOk() {
-	  	assertEquals(3, pregunta.getIdEncuesta());
-	  	assertEquals(10, pregunta.getIdPregunta());
-	  	assertEquals("test", pregunta.getEnunciado());
-		assertEquals(0, pregunta.getIdRespuestas().size());
-		assertEquals(2, pregunta.getNumMaxOpc());
+	public void testConstructora() {
+	  	assertEquals("No se guardo idEncuesta bien", idEncuesta, pregunta.getIdEncuesta());
+        assertEquals("No se guardo idPregunt bien", idPregunta, pregunta.getIdPregunta());
+        assertEquals("No se guardo enunciado correcto", enunciado, pregunta.getEnunciado());
+        assertEquals("No se creo bien idRespuesta", 0, pregunta.getIdRespuestas().size());
+		assertEquals("EL numMaxopc no esta bien", 2, pregunta.getNumMaxOpc());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -45,6 +45,30 @@ public class TestPreguntaOpcionMultiple {
 	}
 
 	@Test
+	public void testGetOpciones() {
+		pregunta.addOpcion("Hola");
+		pregunta.addOpcion("Adios");
+		assertEquals("Deberia estar vacio", 2, pregunta.getOpciones().size());
+	}
+
+	@Test
+	public void testAddOpcion() {
+		pregunta.addOpcion("Hola");
+		pregunta.addOpcion("Adios");
+		assertEquals("No es igual", Arrays.asList("Hola", "Adios"), pregunta.getOpciones());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddOpcionNulo() {
+		pregunta.addOpcion(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddOpcionVacio() {
+		pregunta.addOpcion("");
+	}
+
+	@Test
 	public void testGetNumMaxOpc() {
 		assertEquals(2, pregunta.getNumMaxOpc());
 	}
@@ -52,25 +76,79 @@ public class TestPreguntaOpcionMultiple {
 	@Test
 	public void testSetNumMaxOpc() {
 		pregunta.setNumMaxOpc(numMaxOpc);
-		assertEquals(numMaxOpc, pregunta.setNumMaxOpc());
+		assertEquals("No se setea numMaxOpc", numMaxOpc, pregunta.setNumMaxOpc());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetNumMaxOpcMenor() {
+		pregunta.setNumMaxOpc(1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetNumMaxOpcMayor() {
+		pregunta.addOpcion("hola");
+		pregunta.addOpcion("adios");
+		pregunta.addOpcion("hasta luego");
+		pregunta.addOpcion("hasta manana");
+		pregunta.addOpcion("monkey");
+		pregunta.setNumMaxOpc(6);
 	}
 
 	@Test
-	public void testGetOpciones() {
-		assertEquals(0, pregunta.getOpciones().size());
-	}
-
-	@Test
-	public void testAgregarOpcione() {
-		pregunta.addOpcion("opcion1");
-		pregunta.addOpcion("opcion2");
-		ArrayList<String> l = pregunta.getOpciones();
-		assertTrue(l.contains("opcion1"));
-		assertTrue(l.contains("opcion2"));
+	public void testSetNumMaxOpcAdd() {
+		pregunta.addOpcion("hola");
+		pregunta.addOpcion("adios");
+		pregunta.addOpcion("hasta luego");
+		pregunta.addOpcion("hasta manana");
+		pregunta.addOpcion("monkey");
+		pregunta.setNumMaxOpc(4);
+		assertEquals("No se setea numMaxOpc", 4, pregunta.setNumMaxOpc());
 	}
 
 	@Test
 	public void testTipo() {
-		assertEquals("OpcionMultiple", pregunta.tipoPregunta());
+		assertEquals("Deberia ser opcion multiple", "opcion_multiple", pregunta.tipoPregunta());
+	}
+
+	@Test 
+    public void TestGuardarIdRespuesta() {
+        pregunta.guardarIdRespuesta(4);
+		
+        assertEquals("No se guardo correcto", Arrays.asList(1,2,3,4), pregunta.getIdRespuestas());
+    }
+
+    @Test 
+    public void testEliminarIdRespuestaBueno() {
+        pregunta.eliminarIdRespuesta(1);
+
+        ArrayList<Integer> res = pregunta.getIdRespuestas();
+
+        assertEquals("No se elimino el correcto", res, Arrays.aslist(2,3));
+    }
+
+    @Test(expected = IllegalArgumentException.class) 
+    public void testEliminarIdRespuestaExcepcion() {
+        pregunta.eliminarIdRespuesta(4);
+    }
+
+		@Test
+	public void testGetRangoInf () {
+
+		assertEquals("No devuelve -1", -1, pregunta.getRangoInf());
+	}
+
+	@Test
+	public void testGetRangoSup () {
+
+		assertEquals("No devuelve -1", -1, pregunta.getRangoSup());
+	}
+
+	@Test 
+	public void testGetCantidad() {
+		pregunta.addOpcion("hola");
+		pregunta.addOpcion("adios");
+		pregunta.addOpcion("hasta luego");
+
+		assertEquals("No devuelve cantidad bien", 3, pregunta.getRangoSup());
 	}
 }

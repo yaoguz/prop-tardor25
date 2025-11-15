@@ -9,20 +9,10 @@ import domain.algorithm.funciones.*;
 
 
 /**
-<<<<<<< HEAD:src/main/java/domain/algorithm/kAlgorithm.java
  * @author Alessandro Jin
  */
 
 public class Kalgorithm implements ClusteringAlgorithm  {
-=======
- * Clase base abstracta para algoritmos de clustering basados en K.
- * Implementa la lógica común de asignación y recálculo de centroides.
- * 
- * @author Alessandro Jin
- */
-public abstract class Kalgorithm implements ClusteringAlgorithm  {
-    
->>>>>>> eab6dee8406447f30561d82028742e68bec9a3c5:src/main/java/domain/algorithm/Kalgorithm.java
     /**
      * Las subclases deben implementar este método para especificar
      * cómo inicializar los clusters.
