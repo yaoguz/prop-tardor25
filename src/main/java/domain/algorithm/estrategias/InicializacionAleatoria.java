@@ -7,6 +7,17 @@ import java.util.*;
 
 /**
  * Inicialización aleatoria de centroides (K-means básico).
+ * 
+ * Selecciona k usuarios aleatorios del dataset como centroides iniciales.
+ * Es la estrategia más simple pero puede caer en óptimos locales.
+ * 
+ * Algoritmo:
+ * 1. Generar k índices aleatorios únicos en [0, n-1]
+ * 2. Convertir cada usuario seleccionado en centroide
+ * 3. Crear cluster con ese centroide
+ * 
+ * Complejidad: O(k × m) donde m = número de preguntas
+ * 
  * @author Alessandro Jin
  */
 public class InicializacionAleatoria implements EstrategiaInicializacion {

@@ -10,6 +10,18 @@ import domain.algorithm.estrategias.*;
 
 
 /**
+ * Clase abstracta base para algoritmos de clustering tipo K.
+ * Implementa el patrón Template Method con dos estrategias:
+ * - EstrategiaInicializacion: cómo seleccionar centroides iniciales
+ * - EstrategiaRecalculo: cómo recalcular centroides tras reasignación
+ * 
+ * Algoritmo general:
+ * 1. Inicializar k clusters con centroides según estrategia
+ * 2. Asignar cada usuario al cluster más cercano
+ * 3. Recalcular centroides según estrategia
+ * 4. Repetir 2-3 hasta convergencia o MAX_ITERACIONES
+ * 5. Evaluar calidad con coeficiente de silueta
+ * 
  * @author Alessandro Jin
  */
 
@@ -17,7 +29,17 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
     
     private static final int MAX_ITERACIONES = 150;
     
+    /**
+     * Estrategia para inicializar centroides.
+     * @return Estrategia de inicialización (aleatoria, K-means++, etc.)
+     */
     protected abstract EstrategiaInicializacion getEstrategiaInicializacion();
+    
+    /**
+     * Estrategia para recalcular centroides.
+     * @return Estrategia de recálculo (media para K-means, medoide para K-medoids)
+     */
+    protected abstract EstrategiaRecalculo getEstrategiaRecalculo();
     
     @Override
     public abstract String getNombre();
@@ -35,7 +57,7 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
             // Asignar cada usuario al cluster más cercano
             cambios = asignarUsuariosAClusters(clusters, respuestas, variables, cambiados);
             
-            // Recalcular centroides
+            // Recalcular centroides según estrategia
             recalcularCentroides(clusters, respuestas, variables, cambiados);
            
             iteracion++;
@@ -48,7 +70,15 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
         return res;
     }
 
-    
+    /**
+     * Asigna cada usuario al cluster más cercano.
+     * 
+     * @param clusters Lista de clusters actuales
+     * @param respuestas Matriz de respuestas de usuarios
+     * @param variables Preguntas de la encuesta
+     * @param cambiados Array de flags indicando qué clusters cambiaron
+     * @return true si hubo cambios, false si convergió
+     */
     private static Boolean asignarUsuariosAClusters(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables, Boolean [] cambiados) {
         int N = respuestas.size();
         int M = clusters.size();
@@ -85,6 +115,14 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
         return cambiosClusters(miembrosAntiguos, clusters, cambiados);
     }
 
+    /**
+     * Detecta si hubo cambios en la asignación de usuarios a clusters.
+     * 
+     * @param antiguos Listas de miembros antes de reasignar
+     * @param clusters Clusters después de reasignar
+     * @param cambiados Array de salida con flags de cambio por cluster
+     * @return true si algún cluster cambió
+     */
     private static Boolean cambiosClusters(List<List<Integer>> antiguos, List<Cluster> clusters, Boolean[] cambiados) {
         Boolean cambio = false;
 
@@ -103,8 +141,17 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
         return cambio;
     }
 
-    private static void recalcularCentroides(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables,  Boolean [] cambiados) {
+    /**
+     * Recalcula centroides de clusters que cambiaron usando estrategia específica.
+     * 
+     * @param clusters Lista de clusters
+     * @param respuestas Matriz de respuestas
+     * @param variables Preguntas de la encuesta
+     * @param cambiados Array indicando qué clusters cambiaron
+     */
+    private void recalcularCentroides(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables, Boolean[] cambiados) {
         int N = clusters.size();
+        EstrategiaRecalculo estrategia = getEstrategiaRecalculo();
 
         for (int i = 0; i < N; ++i) {
             if (cambiados[i]) {
@@ -120,14 +167,29 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
         }
     }
 
-    private static List<List<Respuesta>> sacarMiembros(List<Integer> miembros, List<List<Respuesta>> respuestas ) {
+    /**
+     * Extrae respuestas de usuarios específicos por sus índices.
+     * 
+     * @param miembros Índices de usuarios
+     * @param respuestas Matriz completa de respuestas
+     * @return Lista de respuestas de los miembros
+     */
+    private static List<List<Respuesta>> sacarMiembros(List<Integer> miembros, List<List<Respuesta>> respuestas) {
         List<List<Respuesta>> cluster = new ArrayList<> ();
 
         for (Integer i: miembros) cluster.add(respuestas.get(i));
         return cluster;
     }
 
-    private static List<domain.algorithm.estructuras.Perfil> listaPerfil(List<Cluster> clusters,List<List<Respuesta>> respuestas, List<Pregunta> variables) {
+    /**
+     * Convierte clusters en perfiles con nombres de usuarios.
+     * 
+     * @param clusters Lista de clusters con índices
+     * @param respuestas Matriz de respuestas
+     * @param variables Preguntas de la encuesta
+     * @return Lista de perfiles con nombres de usuarios
+     */
+    private static List<domain.algorithm.estructuras.Perfil> listaPerfil(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
         List<domain.algorithm.estructuras.Perfil> perfiles = new ArrayList<>();
 
         for (Cluster cluster: clusters) {
@@ -153,7 +215,15 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
         return perfiles;
     }
 
-    private static String representanteCluster (Cluster cluster, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
+    /**
+     * Encuentra el usuario más representativo (más cercano al centroide).
+     * 
+     * @param cluster Cluster del que obtener representante
+     * @param respuestas Matriz de respuestas
+     * @param variables Preguntas de la encuesta
+     * @return Nombre del usuario representante
+     */
+    private static String representanteCluster(Cluster cluster, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
         Centroide c = cluster.getCentroide();
         List<Integer> miembros = cluster.getMiembros();
         List<List<Respuesta>> respuestasGente = sacarMiembros (miembros, respuestas);

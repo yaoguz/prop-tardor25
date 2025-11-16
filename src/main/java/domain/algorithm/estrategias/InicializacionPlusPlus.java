@@ -8,17 +8,35 @@ import java.util.*;
 /**
  * Inicialización K-means++: selecciona centroides bien separados.
  * 
+ * Mejora la inicialización aleatoria seleccionando centroides que estén
+ * bien distribuidos en el espacio, evitando óptimos locales.
+ * 
+ * Algoritmo:
+ * 1. Seleccionar primer centroide aleatoriamente
+ * 2. Para cada siguiente centroide (k-1 veces):
+ *    a. Calcular D(x) = distancia de cada punto al centroide más cercano
+ *    b. Asignar probabilidad proporcional a D(x)²
+ *    c. Seleccionar siguiente centroide según probabilidades
+ * 
+ * Ventajas sobre inicialización aleatoria:
+ * - Evita centroides agrupados en misma zona
+ * - Reduce probabilidad de óptimos locales
+ * - Converge más rápido (menos iteraciones)
+ * - Mejor calidad de clustering (mayor silueta)
+ * 
+ * Complejidad: O(k × n × m) donde n = usuarios, m = preguntas
+ * 
  * @author Yaoyao Guo Zhang
  */
 public class InicializacionPlusPlus implements EstrategiaInicializacion {
     
     /**
-     * Inicialización K-means++: selecciona centroides bien separados.
+     * Inicializa k clusters con centroides bien separados.
      * 
      * @param k Número de clusters
-     * @param respuestas Todas las respuestas
+     * @param respuestas Todas las respuestas (matriz n × m)
      * @param variables Variables (preguntas) del cuestionario
-     * @return Lista de clusters inicializados
+     * @return Lista de clusters inicializados con centroides separados
      */
     @Override
     public List<Cluster> inicializarClusters(int k, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
@@ -64,7 +82,6 @@ public class InicializacionPlusPlus implements EstrategiaInicializacion {
             for (int j = 0; j < N; j++) {
                 if (centroidesSeleccionados.contains(j)) continue;
                 
-                // poner comentarios
                 acumulado += distanciasMinimas[j] * distanciasMinimas[j];
                 if (acumulado >= randomValue) { // randomValue esta dentro del intervalo asignado a la preg j
                     nuevoIndice = j;

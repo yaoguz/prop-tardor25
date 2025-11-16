@@ -3,17 +3,28 @@ package domain.algorithm;
 import domain.algorithm.estrategias.*;
 
 /**
- * Implementación de K-means++ con una buena inicialización de centroides.
+ * K-means++ con inicialización inteligente de centroides.
  * 
- * K-means++ selecciona centroides iniciales que estén bien separados entre sí
- * -> convergencia más rápida y mejor calidad de clusters.
+ * Mejora sobre K-means básico con mejor selección de centroides iniciales.
+ * Los centroides se seleccionan para estar bien separados entre sí,
+ * evitando óptimos locales y mejorando convergencia.
  * 
  * Algoritmo:
  * 1. Seleccionar primer centroide aleatoriamente
- * 2. Para cada centroide siguiente:
- *    - Calcular distancia de cada punto al centroide más cercano
- *    - Seleccionar nuevo centroide con probabilidad proporcional a distancia^2
+ * 2. Para cada centroide siguiente (k-1 veces):
+ *    - Calcular D(x) = distancia de cada punto al centroide más cercano
+ *    - Seleccionar nuevo centroide con probabilidad proporcional a D(x)²
  * 3. Ejecutar K-means normal con estos centroides
+ * 
+ * Ventajas:
+ * - Mejor calidad de clustering (mayor silueta)
+ * - Convergencia más rápida (menos iteraciones)
+ * - Evita clusters vacíos
+ * 
+ * Características:
+ * - Inicialización: K-means++ (inteligente)
+ * - Recálculo: Media aritmética (igual que K-means)
+ * - Complejidad init: O(k × n × m)
  * 
  * @author Yaoyao Guo
  */
@@ -27,5 +38,10 @@ public class KmeansPlusPlus extends Kalgorithm {
     @Override
     protected EstrategiaInicializacion getEstrategiaInicializacion() {
         return new InicializacionPlusPlus();
+    }
+    
+    @Override
+    protected EstrategiaRecalculo getEstrategiaRecalculo() {
+        return new RecalculoMedia();
     }
 }

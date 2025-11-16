@@ -207,7 +207,7 @@ subgrup-prop11.5/
   - [ ] TestEncuesta
   - [ ] TestPreguntaNumerica, TestPreguntaOpcionUnica, etc.
   - [ ] TestRespuestaNumerica, TestRespuestaOpcionUnica, etc.
-  - [ ] TestKmeans, TestKmeansPlusPlus
+  - [ ] TestKmeans, TestKmeansPlusPlus, TestCtrlDominioPerfil
   - [ ] TestCalculoCentroide, TestCalculoDistancia
   - [ ] (Usar stubs/mocks si es necesario)
 - [ ] **Cobertura alta**: casos convencionales + casos extremos
