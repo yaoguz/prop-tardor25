@@ -7,6 +7,8 @@ import java.util.*;
 /**
  * Estrategia de inicialización de clusters.
  * Define cómo seleccionar los centroides iniciales.
+ * 
+ * @author Yaoyao Guo
  */
 public interface EstrategiaInicializacion {
     List<Cluster> inicializarClusters(int k, List<List<Respuesta>> respuestas, List<Pregunta> variables);

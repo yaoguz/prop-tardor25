@@ -12,10 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import domaincontrollers.CtrlDominioEncuesta;
-import domaincontrollers.CtrlDominioPregunta;
-import domaincontrollers.CtrlDominioRespuesta;
-import domaincontrollers.CtrlDominioUsuario;
 import persistence.GestorPersistencia;
 import domain.Encuesta;
 import domain.Usuario;
@@ -163,6 +159,7 @@ public class TestCtrlDominioEncuesta {
         when(mockEncuesta.getTitulo()).thenReturn(titulo);
 
         Encuesta resultado = ctrlDominioEncuesta.getEncuesta("NoExiste", nomAutor);
+        // falta verificar?
     }
 
     @Test 
@@ -215,7 +212,6 @@ public class TestCtrlDominioEncuesta {
     @Test 
     public void testCrearEncuestaSinError() {
         Usuario mockUsuario = mock(Usuario.class);
-        Encuesta mockEncuesta = mock(Encuesta.class);
         when(mockCtrlDominioUsuario.getUsuario("user1")).thenReturn(mockUsuario);
         when(mockGestor.getNextIdEncuesta()).thenReturn(1);
         

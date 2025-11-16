@@ -28,35 +28,29 @@ public class InicializacionPlusPlus implements EstrategiaInicializacion {
         
         Set<Integer> centroidesSeleccionados = new HashSet<>();
         
-        // 1. Seleccionar primer centroide aleatoriamente
+        // seleccionar el primer centroide aleatoriamente
         int primerIndice = random.nextInt(N);
         centroidesSeleccionados.add(primerIndice);
         Centroide primerCentroide = TransformarEnCentroide.transformarEnCentroide(respuestas.get(primerIndice));
         clusters.add(new Cluster(primerCentroide));
         
-        // 2. Seleccionar k-1 centroides restantes con probabilidad proporcional a distancia²
+        // seleccionar k-1 centroides restantes con probabilidad proporcional a distancia^2
         for (int i = 1; i < k; i++) {
             double[] distanciasMinimas = new double[N];
             double sumDistanciasCuadradas = 0.0;
             
-            for (int j = 0; j < N; j++) {
+            for (int j = 0; j < N; j++) { // recorrer respuestas
                 if (centroidesSeleccionados.contains(j)) {
                     distanciasMinimas[j] = 0.0;
                     continue;
                 }
                 
-                double minDistancia = Double.MAX_VALUE;
+                double minDistancia = Double.MAX_VALUE; // de esta respuesta con el centroide mas cercano
                 for (Cluster cluster : clusters) {
                     double distancia = CalculoDistanciaCentroide.calcularDistanciaCentroide(
-                        respuestas.get(j), 
-                        cluster.getCentroide(), 
-                        variables
-                    );
-                    if (distancia < minDistancia) {
-                        minDistancia = distancia;
-                    }
-                }
-                
+                                       respuestas.get(j), cluster.getCentroide(), variables);
+                    if (distancia < minDistancia) minDistancia = distancia;
+                }                
                 distanciasMinimas[j] = minDistancia;
                 sumDistanciasCuadradas += minDistancia * minDistancia;
             }
@@ -68,6 +62,7 @@ public class InicializacionPlusPlus implements EstrategiaInicializacion {
             for (int j = 0; j < N; j++) {
                 if (centroidesSeleccionados.contains(j)) continue;
                 
+                // poner comentarios
                 acumulado += distanciasMinimas[j] * distanciasMinimas[j];
                 if (acumulado >= randomValue) {
                     nuevoIndice = j;
@@ -75,6 +70,7 @@ public class InicializacionPlusPlus implements EstrategiaInicializacion {
                 }
             }
             
+            // anadir el nuevo centroide
             centroidesSeleccionados.add(nuevoIndice);
             Centroide nuevoCentroide = TransformarEnCentroide.transformarEnCentroide(respuestas.get(nuevoIndice));
             clusters.add(new Cluster(nuevoCentroide));
