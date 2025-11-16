@@ -171,6 +171,7 @@ public class CtrlDominioRespuesta {
 	 * @param <T> Tipo de la respuesta (String, Integer, List<String>, etc.)
 	 * @param idRespuesta ID de la respuesta a modificar
 	 * @param newResp Nueva respuesta
+	 * @throws IllegalArgumentException si el tipo de respuesta no coincide con el tipo de pregunta
 	 */
 	public <T> void modificarRespuesta(int idRespuesta, T newResp) {
 		Respuesta r = getRespuesta(idRespuesta);

@@ -164,6 +164,10 @@ public class DriverPregunta {
                 default:
                     System.out.println("\nOpción no válida. Intenta de nuevo.\n");
             }
+
+            System.out.println("Presione enter para continuar.");
+            scanner.nextLine();
+            
         }
         scanner.close();
         System.out.println("\nSaliendo del driver...\n");
@@ -275,7 +279,7 @@ public class DriverPregunta {
         System.out.println("\n--{ CREAR UNA PREGUNTA }--");
         
         System.out.print("Introduzca el enunciado de la pregunta a crear: ");
-        String enunciado = scanner.nextLine();
+        String enunciado = scanner.nextLine().trim();
 
         System.out.println("Indique el tipo de pregunta que quiere crear:");
         System.out.println("[ 0 -> Libre | 1 -> Numérica | 2 -> Opción múltiple | 3 -> Opción única ]");
@@ -302,7 +306,7 @@ public class DriverPregunta {
                     String sm = null;
                     while(sm != "_fin"){
                         System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                        sm = scanner.nextLine();
+                        sm = scanner.nextLine().trim();
                         if(sm != "_fin") opsM.add(sm);
                     }
                     System.out.print("Introduzca el número máximo(incluido) de opciones seleccionables para la pregunta: ");
@@ -314,7 +318,7 @@ public class DriverPregunta {
                     String su = null;
                     while(su != "_fin"){
                         System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                        su = scanner.nextLine();
+                        su = scanner.nextLine().trim();
                         if(su != "_fin") opsU.add(su);
                     }
                     System.out.print("Introduzca 1 si las opciones siguen un orden o 0 si no lo siguen: ");
@@ -367,7 +371,7 @@ public class DriverPregunta {
         CtrlDominioPregunta.PreguntaImportData info = new CtrlDominioPregunta.PreguntaImportData();
         
         System.out.print("Introduzca el enunciado modificado (escriba _igual para mantener el enunciado antiguo): ");
-        String s = scanner.nextLine();
+        String s = scanner.nextLine().trim();
         if(s == "_igual") info.enunciado = p.getEnunciado();
         else info.enunciado = s;
 
@@ -383,7 +387,7 @@ public class DriverPregunta {
                 String opm = null;
                 while(opm != "_fin"){
                     System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                    opm = scanner.nextLine();
+                    opm = scanner.nextLine().trim();
                     if(opm != "_fin") opsM.add(opm);
                 }
                 info.atributosEspecificos.put("opciones", opsM);
@@ -395,7 +399,7 @@ public class DriverPregunta {
                 String opu = null;
                 while(opu != "_fin"){
                     System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                    opu = scanner.nextLine();
+                    opu = scanner.nextLine().trim();
                     if(opu != "_fin") opsU.add(opu);
                 }
                 info.atributosEspecificos.put("opciones", opsU);
@@ -557,7 +561,7 @@ public class DriverPregunta {
         System.out.println("\n--{ AÑADIR UNA RESPUESTA A UNA PREGUNTA }--");
 
         System.out.print("Introduzca el nombre del usuario que responderá: ");
-        String usr = scanner.nextLine();
+        String usr = scanner.nextLine().trim();
 
         System.out.print("Introduzca el id de la pregunta a responder: ");
         int idPregunta = scanner.nextInt();

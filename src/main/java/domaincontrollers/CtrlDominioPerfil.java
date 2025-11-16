@@ -8,7 +8,7 @@ import domain.Usuario;
 import domain.Pregunta;
 import domain.algorithm.*;
 import domain.algorithm.estructuras.Perfil;
-import domain.algorithm.funciones.ClusterEvaluator;
+import domain.algorithm.estructuras.ResultadoClustering;
 import persistence.GestorPersistencia;
 
 /**
@@ -80,41 +80,33 @@ public class CtrlDominioPerfil {
 	/** Métodos públicos **/
 	
 
-	/**
+    /**
      * Ejecuta análisis de clustering sobre una encuesta.
      * 
      * @param idEncuesta ID de la encuesta a analizar
      * @param k Número de clusters (perfiles) deseados
      * @param algoritmo "kmeans" o "kmeans++"
-     * @param ctrlDominioUsuario Controlador de usuarios (inyección)
-     * @param ctrlDominioRespuesta Controlador de respuestas (inyección)
-     * @return Lista de clusters obtenidos
+     * @return ResultadoClustering con perfiles y calidad
      */
     public ResultadoClustering ejecutarClustering(int idEncuesta, int k, String algoritmo) {
-
         // 1. Obtener todas las respuestas de la encuesta agrupadas por usuario
         List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
 
 		List<Pregunta> variables = ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
         
-        // 3. Seleccionar algoritmo
+        // 2. Seleccionar algoritmo
         ClusteringAlgorithm alg = seleccionarAlgoritmo(algoritmo);
         
-        // 4. Ejecutar clustering
-        ResultadoClustering res = alg.ejecutarClustering(variables, respuestasPorUsuario, k);
-        
-        return res;
-    }
-
-
-	/**
+        // 3. Ejecutar clustering
+        return alg.ejecutarClustering(variables, respuestasPorUsuario, k);
+    }	/**
 	 * Obtiene todos los miembros de un perfil específico.
 	 * 
 	 * @param perfil Perfil del que obtener miembros
 	 * @return Lista de nombres de usuarios en el perfil
 	 */
 	public List<String> obtenerMiembrosPerfil(Perfil perfil) {
-		return new ArrayList<>(perfil.miembros());
+		return new ArrayList<>(perfil.getMiembros());
 	}
 
 	/**

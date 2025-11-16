@@ -1,0 +1,81 @@
+titulo,Encuesta Hábitos Deportivos y Lifestyle,autor,ana,,,,,,,,
+U001,5+ días,Muy intenso,Gimnasio,Solo,7,28,150,2,1;2,0;1,Entreno 6 días a la semana con rutina estructurada de fuerza
+U002,5+ días,Intenso,Running,Solo,8,32,80,1,2;3,0;1;2,Corredor de maratones con 5 entrenamientos semanales
+U003,5+ días,Muy intenso,Gimnasio,Solo,7,25,200,3,1;2,0;1,Competidor amateur de powerlifting
+U004,5+ días,Intenso,Gimnasio,En grupo,7,29,120,2,1;2;3,0;1,CrossFit 5 veces por semana
+U005,5+ días,Intenso,Running,Solo,8,35,100,1,2;3,0;1;2,Ultra trail runner dedicado
+U006,3-4 días,Moderado,Deportes de equipo,En grupo,7,26,50,3,2;4,0;1,Juego fútbol y baloncesto regularmente
+U007,3-4 días,Moderado,Natación,Solo,7,30,60,2,2;3,0;1,Nado 3 veces por semana para mantenerme en forma
+U008,3-4 días,Moderado,Ciclismo,En grupo,8,33,90,2,2;3,0;1,Salidas en bici los fines de semana
+U009,3-4 días,Moderado,Gimnasio,Indiferente,7,27,70,4,2;3,0;1,Gym después del trabajo para desconectar
+U010,3-4 días,Moderado,Running,Solo,7,31,40,3,2;3;4,0;1;2,Corro 4 días combinado con estiramientos
+U011,3-4 días,Moderado,Deportes de equipo,En grupo,6,28,45,5,2;4,0;3,Paddle y tenis varias veces por semana
+U012,3-4 días,Moderado,Natación,Solo,8,29,55,2,2;3,0;1;2,Natación como ejercicio cardiovascular principal
+U013,1-2 días,Ligero,Yoga/Pilates,En grupo,7,34,80,4,3;4,2;3,Yoga dos veces por semana para relajarme
+U014,1-2 días,Ligero,Yoga/Pilates,En grupo,8,40,70,3,3;4,2;3,Pilates y meditación los fines de semana
+U015,1-2 días,Ligero,Running,Solo,6,36,20,6,3,1;2,Camino rápido ocasionalmente
+U016,1-2 días,Ligero,Gimnasio,Solo,7,38,30,5,0;3,1,Gym muy esporádico por falta de tiempo
+U017,1-2 días,Ligero,Ciclismo,Solo,6,42,25,7,3,1,Paseos en bici los domingos
+U018,1-2 días,Moderado,Natación,Solo,7,35,40,4,2;3,0;1,Nado una vez por semana cuando puedo
+U019,Nunca,Ligero,Yoga/Pilates,Indiferente,6,45,15,8,3;4,2,Vida sedentaria por trabajo de oficina
+U020,Nunca,Ligero,Running,Solo,5,48,0,10,0,3,No tengo tiempo para hacer deporte regularmente
+U021,Nunca,Ligero,Gimnasio,Solo,6,50,10,9,3,1,Completamente sedentario últimos años
+U022,Nunca,Ligero,Yoga/Pilates,Indiferente,6,43,0,11,3;4,2,Trabajo desde casa sin actividad física
+U023,Nunca,Ligero,Running,Solo,5,52,0,12,0,3,Problemas de salud que limitan ejercicio
+U024,5+ días,Muy intenso,Running,Solo,7,24,180,1,1;2;3,0;1,Atleta profesional en activo
+U025,5+ días,Muy intenso,Gimnasio,En grupo,8,26,220,2,1;2,0;1,Entrenador personal con vocación fitness
+U026,5+ días,Intenso,Ciclismo,En grupo,7,30,150,1,2;3,0;1;2,Ciclista competitivo con entrenamientos diarios
+U027,3-4 días,Moderado,Deportes de equipo,En grupo,7,29,65,3,2;4,0;1,Aficionado al deporte en equipo
+U028,3-4 días,Moderado,Gimnasio,Solo,7,32,75,3,2;3,0;1,Rutina regular de mantenimiento
+U029,1-2 días,Ligero,Yoga/Pilates,En grupo,7,37,60,5,3;4,2;3,Busco equilibrio mental más que físico
+U030,Nunca,Ligero,Running,Solo,5,55,0,13,0,3,Sedentarismo por edad y falta de motivación
+U031,5+ días,Intenso,Natación,Solo,8,27,140,2,2;3,0;1;2,Nadador de competición amateur
+U032,5+ días,Muy intenso,Gimnasio,Solo,7,23,190,2,1;2,0;1,Culturista amateur muy dedicado
+U033,3-4 días,Moderado,Running,Solo,7,34,50,3,2;3,0;1,Corro para mantener la forma física
+U034,3-4 días,Moderado,Ciclismo,Indiferente,7,31,85,2,2;3,0;1,Ciclo al trabajo y salidas recreativas
+U035,1-2 días,Ligero,Yoga/Pilates,En grupo,7,39,75,4,3;4,2;3,Yoga para flexibilidad y desconexión
+U036,Nunca,Ligero,Gimnasio,Solo,6,47,5,10,0,3,Sin tiempo ni energía para ejercicio
+U037,5+ días,Intenso,Deportes de equipo,En grupo,7,28,110,2,1;2;4,0;1,Jugador semiprofesional de baloncesto
+U038,3-4 días,Moderado,Natación,Solo,8,30,70,2,2;3,0;1;2,Triatleta ocasional en formación
+U039,1-2 días,Ligero,Running,Solo,6,41,20,7,3,1;2,Paseos ligeros por salud cardiovascular
+U040,Nunca,Ligero,Yoga/Pilates,Indiferente,6,49,0,11,3;4,2,Vida completamente sedentaria
+U041,5+ días,Muy intenso,Running,Solo,7,25,170,1,1;2;3,0;1;2,Corredor de ultra distancia profesional
+U042,5+ días,Intenso,Gimnasio,En grupo,8,27,130,2,1;2,0;1,Instructor de fitness con pasión por el deporte
+U043,3-4 días,Moderado,Deportes de equipo,En grupo,7,33,55,4,2;4,0;1,Deporte en equipo como hobby principal
+U044,3-4 días,Moderado,Ciclismo,Solo,7,35,95,2,2;3,0;1,Ciclismo de montaña los fines de semana
+U045,1-2 días,Ligero,Yoga/Pilates,En grupo,8,36,65,4,3;4,2;3,Clases de yoga para reducir estrés laboral
+U046,1-2 días,Moderado,Gimnasio,Solo,6,38,35,6,2;3,1,Gym ocasional sin constancia
+U047,Nunca,Ligero,Running,Solo,5,51,0,12,0,3,Completamente inactivo por estilo de vida
+U048,5+ días,Muy intenso,Gimnasio,Solo,7,26,210,2,1;2,0;1,Atleta de fuerza con objetivos competitivos
+U049,3-4 días,Moderado,Running,Indiferente,7,32,60,3,2;3,0;1,Runner amateur con rutina establecida
+U050,1-2 días,Ligero,Natación,Solo,7,40,30,5,3,1;2,Nado ocasional para mantener movilidad
+U051,5+ días,Intenso,Ciclismo,En grupo,7,29,160,1,2;3,0;1;2,Ciclista de ruta con grupo local
+U052,3-4 días,Moderado,Deportes de equipo,En grupo,7,30,50,3,2;4,0;1,Voleibol y fútbol sala regularmente
+U053,1-2 días,Ligero,Yoga/Pilates,En grupo,7,42,70,5,3;4,2;3,Pilates terapéutico por recomendación médica
+U054,Nunca,Ligero,Gimnasio,Solo,6,46,0,9,0,3,Trabajo sedentario sin motivación para cambiar
+U055,5+ días,Muy intenso,Running,Solo,8,24,175,1,1;2;3,0;1;2,Maratonista de élite en entrenamiento constante
+U056,3-4 días,Moderado,Gimnasio,Solo,7,31,80,3,2;3,0;1,Fitness general para salud y bienestar
+U057,1-2 días,Ligero,Ciclismo,Solo,6,44,25,8,3,1,Paseos cortos en bici por el barrio
+U058,Nunca,Ligero,Running,Solo,5,53,0,13,0,3,Sin actividad física regular hace años
+U059,5+ días,Intenso,Natación,Solo,8,28,145,2,2;3,0;1;2,Nadador máster con entrenamientos estructurados
+U060,3-4 días,Moderado,Running,Solo,7,33,45,3,2;3,0;1,Trote regular para mantenimiento cardiovascular
+U061,5+ días,Muy intenso,Gimnasio,Solo,7,27,205,2,1;2,0;1,Powerlifter competitivo con dieta estricta
+U062,1-2 días,Ligero,Yoga/Pilates,En grupo,7,38,55,5,3;4,2;3,Yoga suave para flexibilidad
+U063,Nunca,Ligero,Gimnasio,Solo,6,48,0,10,0,3,Vida sedentaria sin planes de cambio
+U064,3-4 días,Moderado,Deportes de equipo,En grupo,7,28,60,4,2;4,0;1,Deportes colectivos como actividad social
+U065,5+ días,Intenso,Ciclismo,Solo,7,31,155,1,2;3,0;1;2,Ciclismo de carretera como estilo de vida
+U066,1-2 días,Moderado,Natación,Solo,7,36,40,5,2;3,1;2,Natación esporádica cuando hay tiempo
+U067,Nunca,Ligero,Running,Solo,5,50,0,12,0,3,Completamente sedentario por elección
+U068,5+ días,Muy intenso,Running,Solo,8,25,185,1,1;2;3,0;1;2,Ultra runner dedicado a competiciones
+U069,3-4 días,Moderado,Gimnasio,Indiferente,7,34,70,3,2;3,0;1,Entrenamiento regular sin grandes objetivos
+U070,1-2 días,Ligero,Yoga/Pilates,En grupo,7,41,60,6,3;4,2;3,Yoga por recomendación para estrés
+U071,5+ días,Intenso,Gimnasio,En grupo,7,26,135,2,1;2,0;1,CrossFit como comunidad y deporte
+U072,Nunca,Ligero,Running,Solo,6,54,0,11,0,3,Estilo de vida sedentario sin cambios previstos
+U073,3-4 días,Moderado,Ciclismo,En grupo,7,32,90,2,2;3,0;1,Salidas grupales de ciclismo recreativo
+U074,1-2 días,Ligero,Gimnasio,Solo,6,37,30,7,3,1,Gym muy ocasional sin rutina fija
+U075,5+ días,Muy intenso,Natación,Solo,8,29,195,1,1;2;3,0;1;2,Nadador de aguas abiertas profesional
+U076,3-4 días,Moderado,Running,Solo,7,35,55,3,2;3,0;1,Running como hobby y desconexión
+U077,Nunca,Ligero,Yoga/Pilates,Indiferente,6,45,10,9,3;4,2,Sedentarismo por problemas de movilidad
+U078,5+ días,Intenso,Deportes de equipo,En grupo,7,27,125,2,1;2;4,0;1,Jugador de rugby amateur comprometido
+U079,1-2 días,Ligero,Running,Solo,6,43,20,8,3,1;2,Caminatas ligeras ocasionales
+U080,Nunca,Ligero,Gimnasio,Solo,5,52,0,14,0,3,Sin ninguna actividad física regular

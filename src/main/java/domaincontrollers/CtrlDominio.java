@@ -148,7 +148,6 @@ public class CtrlDominio {
 	/**
 	 * Modifica la contraseña del usuario actualmente en sesión.
 	 * 
-	 * @param nomUsuario Nombre del usuario cuya contraseña se modificará
 	 * @param newContrasena Nueva contraseña
 	 * @throws IllegalStateException si la nueva contraseña es igual a la actual
 	 * @throws IllegalArgumentException si la nueva contraseña no cumple requisitos
@@ -178,6 +177,7 @@ public class CtrlDominio {
 	
 	/**
 	 * Crea una nueva respuesta para una pregunta específica.
+	 * El nomUsuario será del usuario actualmente en sesión (se le dará desde la capa de presentación)
 	 * 
 	 * @param <T> Tipo de la respuesta
 	 * @param nomUsuario Nombre del usuario que responde
@@ -274,6 +274,8 @@ public class CtrlDominio {
 	/**
 	 * Modifica el título de una encuesta.
 	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
+	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param titulo Nuevo título
 	 * @throws IllegalArgumentException si el título está vacío
@@ -285,6 +287,8 @@ public class CtrlDominio {
 	/**
 	 * Elimina una encuesta y todas sus preguntas y respuestas asociadas.
 	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
+	 * 
 	 * @param idEncuesta ID de la encuesta a eliminar
 	 */
 	public void eliminarEncuesta(int idEncuesta) {
@@ -294,7 +298,7 @@ public class CtrlDominio {
 	/**
 	 * Obtiene las respuestas de todos los usuarios que han respondido una encuesta.
 	 * 
-	 * NOTA: Solo el autor de la encuesta debería tener acceso (validación en capa de presentación).
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @return Mapa de Pregunta -> Set de Respuestas
@@ -303,23 +307,25 @@ public class CtrlDominio {
 		return ctrlDominioEncuesta.getRespuestasEncuesta(idEncuesta);
 	}
 
-	/**
-	 * Obtiene las respuestas de una encuesta en formato matriz para clustering.
-	 * Formato: List<List<Respuesta>> donde cada sublista es un usuario con sus respuestas ordenadas.
-	 * Las respuestas no contestadas se representan con null.
-	 * 
-	 * @param idEncuesta ID de la encuesta
-	 * @return Matriz M x N (M usuarios, N preguntas)
-	 */
-	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta) {
-		return ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
-	}
+	// /**
+	//  * Obtiene las respuestas de una encuesta en formato matriz para clustering.
+	//  * Formato: List<List<Respuesta>> donde cada sublista es un usuario con sus respuestas ordenadas.
+	//  * Las respuestas no contestadas se representan con null.
+	//  * 
+	//  * @param idEncuesta ID de la encuesta
+	//  * @return Matriz M x N (M usuarios, N preguntas)
+	//  */
+	// public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta) {
+	// 	return ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
+	// }
 
 	// ==================== GESTIÓN DE PREGUNTAS ====================
 	// Delega en CtrlDominioPregunta
 	
 	/**
 	 * Añade una pregunta libre a una encuesta.
+	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
@@ -331,6 +337,8 @@ public class CtrlDominio {
 	
 	/**
 	 * Añade una pregunta numérica a una encuesta.
+	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
@@ -345,6 +353,8 @@ public class CtrlDominio {
 	/**
 	 * Añade una pregunta de opción única a una encuesta.
 	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
+	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
 	 * @param opciones Lista de opciones disponibles
@@ -355,7 +365,9 @@ public class CtrlDominio {
 	}
 	
 	/**
-	 * Añade una pregunta de opción múltiple a una encuesta.
+	 * Añade una pregunta de opción múltiple (sin limite de numMaxOpc) a una encuesta.
+	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
@@ -371,6 +383,8 @@ public class CtrlDominio {
 	/**
 	 * Añade una pregunta de opción múltiple (con numMaxOpc) a una encuesta.
 	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
+	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
 	 * @param opciones Lista de opciones disponibles
@@ -384,6 +398,8 @@ public class CtrlDominio {
 	/**
 	 * Modifica una pregunta existente (elimina la antigua y crea una nueva).
 	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
+	 * 
 	 * @param idPregunta ID de la pregunta a modificar
 	 * @param infoP Nueva información de la pregunta (el tipo da igual, se sobreescribe con el de la pregunta a modificar)
 	 * @return ID de la nueva pregunta
@@ -394,6 +410,8 @@ public class CtrlDominio {
 	
 	/**
 	 * Elimina una pregunta y todas sus respuestas asociadas.
+	 * 
+	 * NOTA: Solo el autor de la encuesta puede tener acceso (validación en capa de presentación).
 	 * 
 	 * @param idPregunta ID de la pregunta a eliminar
 	 */
@@ -422,20 +440,9 @@ public class CtrlDominio {
      * @param algoritmo "kmeans" o "kmeans++"
      * @return Lista de perfiles obtenidos
      */
-    public List<domain.algorithm.estructuras.Perfil> ejecutarClustering(int idEncuesta, int k, String algoritmo) {
+    public domain.algorithm.estructuras.ResultadoClustering ejecutarClustering(int idEncuesta, int k, String algoritmo) {
         return ctrlDominioPerfil.ejecutarClustering(idEncuesta, k, algoritmo);
     }
-
-	/**
-	 * Evalúa la calidad de un clustering mediante el coeficiente de silueta.
-	 * 
-	 * @param perfiles Lista de perfiles a evaluar
-	 * @param idEncuesta ID de la encuesta analizada
-	 * @return Coeficiente de silueta ([-1, 1], valores altos = mejor)
-	 */
-	public double evaluarCalidadClustering(List<domain.algorithm.estructuras.Perfil> perfiles, int idEncuesta) {
-		return ctrlDominioPerfil.evaluarCalidadClustering(perfiles, idEncuesta);
-	}
 
 	/**
 	 * Obtiene los miembros de un perfil.

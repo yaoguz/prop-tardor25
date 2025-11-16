@@ -7,13 +7,12 @@ public class Usuario {
     private String nomUsuario;
     private String contrasena;
 
-    protected ArrayList<Integer> idPerfiles;
     protected ArrayList<Integer> idEncuestasCreadas;
     protected ArrayList<Integer> idRespuestas;
 
     /** Constructora **/
     /**
-     * Se crea un nuevo Usuario con un nombre y una contrasena. Se inicializan las ArraysLists de idPerfiles,
+     * Se crea un nuevo Usuario con un nombre y una contrasena. Se inicializan las ArraysLists de
      * idEncuestasCreadas e idRespuestas con ArrayList vacios.
      * @param nomUsuario nombre del Usuario
      * @param contrasena contrasena del Usuario
@@ -21,7 +20,6 @@ public class Usuario {
     public Usuario(String nomUsuario, String contrasena) {
         this.nomUsuario = nomUsuario;
         this.contrasena = contrasena;
-        this.idPerfiles = new ArrayList<>();
         this.idEncuestasCreadas = new ArrayList<>();
         this.idRespuestas = new ArrayList<>();
     }
@@ -102,14 +100,6 @@ public class Usuario {
      */
     public void eliminarIdEncuestaCreada(int idE) {
         this.idEncuestasCreadas.remove(Integer.valueOf(idE));
-    }
-
-    /**
-     * Se obtiene un ArrayList con todas los idPerfiles del Usuario.
-     * @return {ArrayList<Integer>} idPerfiles de los Perfiles del Usuario.
-     */
-    public ArrayList<Integer> getIdPerfiles() {
-        return idPerfiles;
     }
 
     // public Set<Integer> getIdEncuestasRespondidas() {

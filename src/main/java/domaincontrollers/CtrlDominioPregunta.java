@@ -108,7 +108,7 @@ public class CtrlDominioPregunta {
 
 
 	/**
-	 * Crea una nueva pregunta de tipo libre con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * Crea una nueva pregunta de tipo libre, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
 	 * 
 	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
 	 * @param enunciado el enunciado de la pregunta
@@ -136,7 +136,7 @@ public class CtrlDominioPregunta {
 	}
 
 	/**
-	 * Se crea una nueva pregunta de tipo numérica con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * Se crea una nueva pregunta de tipo numérica, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
 	 *
 	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
 	 * @param enunciado el enunciado de la pregunta
@@ -169,7 +169,7 @@ public class CtrlDominioPregunta {
 	}
 
 	/**
-	 * Se crea una nueva pregunta de tipo opción múltiple con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * Se crea una nueva pregunta de tipo opción múltiple, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
 	 * 
 	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
 	 * @param enunciado el enunciado de la pregunta
@@ -209,7 +209,7 @@ public class CtrlDominioPregunta {
 	}
 
 	/**
-	 * Se crea una nueva pregunta de tipo opción única con el nextId como idPregunta, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
+	 * Se crea una nueva pregunta de tipo opción única, se añade al mapa de preguntas y se devuelve el idPregunta asignado.
 	 * 
 	 * @param idEncuesta identificador de la encuesta a la cual pertenece la pregunta
 	 * @param enunciado el enunciado de la pregunta

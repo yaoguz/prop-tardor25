@@ -1,4 +1,4 @@
-package domain.algorithm;
+package domain.algorithm.funciones;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -7,8 +7,6 @@ import java.util.HashMap;
 
 import domain.*;
 import domain.algorithm.estructuras.*;
-import domain.algorithm.funciones.*;
-import domain.algorithm.estrategias.*;
 
 public class EvaluarCluster {
         public static double calcularCalidadCluster(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
@@ -50,7 +48,7 @@ public class EvaluarCluster {
                     if (k == i) continue; //con su cluster no se hace
                     List<List<Respuesta>> other = clustersAnswers.get(k);
 
-                    if (other.size() == 1) continue; //Es solo uno, no representan un grupo bueno
+                    // if (other.size() == 1) continue; //Es solo uno, no representan un grupo bueno
                     
                     double siluetaOtro = calcularSiluetaPersonaCluster(persona, other , variables, -1);
 
@@ -95,5 +93,25 @@ public class EvaluarCluster {
         }
 
         return (elMismo >= 0) ? sumaDistancias/ (n-1)  : sumaDistancias/n;
+    }
+
+    /**
+     * Interpreta el valor del coeficiente de silueta.
+     * 
+     * @param silueta Coeficiente de silueta calculado
+     * @return Descripción textual de la calidad del clustering
+     */
+    public static String interpretarSilueta(double silueta) {
+        if (silueta >= 0.7) {
+            return "EXCELENTE: Estructura de clusters muy fuerte";
+        } else if (silueta >= 0.5) {
+            return "BUENO: Estructura de clusters razonable";
+        } else if (silueta >= 0.25) {
+            return "ACEPTABLE: Estructura de clusters débil";
+        } else if (silueta >= 0) {
+            return "POBRE: Estructura de clusters muy débil o artificial";
+        } else {
+            return "MALO: Muchos objetos asignados a clusters incorrectos";
+        }
     }
 }
