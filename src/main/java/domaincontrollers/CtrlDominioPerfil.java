@@ -79,17 +79,6 @@ public class CtrlDominioPerfil {
 
 	/** Métodos públicos **/
 	
-	/**
-	 * Obtiene los perfiles de un usuario.
-	 * 
-	 * @param nomUsuario Nombre del usuario
-	 * @param ctrlDominioUsuario Controlador de usuarios (inyección)
-	 * @return Lista de IDs de perfiles del usuario
-	 */
-	public List<Integer> getPerfilesUsuario(String nomUsuario) {
-		Usuario u = ctrlDominioUsuario.getUsuario(nomUsuario);
-		return new ArrayList<>(u.getIdPerfiles());
-	}
 
 	/**
      * Ejecuta análisis de clustering sobre una encuesta.
