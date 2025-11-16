@@ -164,6 +164,10 @@ public class DriverPregunta {
                 default:
                     System.out.println("\nOpción no válida. Intenta de nuevo.\n");
             }
+
+            System.out.println("Presione enter para continuar.");
+            scanner.nextLine();
+            
         }
         scanner.close();
         System.out.println("\nSaliendo del driver...\n");

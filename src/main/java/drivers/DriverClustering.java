@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.HashMap;
 
 import domain.*;
 import domain.algorithm.estructuras.Perfil;
@@ -82,6 +82,8 @@ public class DriverClustering {
         System.out.println("| #      #      #   #      #    #    #      # #      #    #  ##  #   # |");
         System.out.println("|  ####  #####   ###   ####     #    #####  #  #   #####  #   #   ###  |");
         System.out.println("+----------------------------------------------------------------------+");
+        System.out.println("Cuando se importe una encuesta e introduzca un nombre de usuario, se creará");
+        System.out.println("para asignarle esa encuesta (si no existía ya).");
         // System.out.println("Dispone de un usuario con sesión iniciada con nombre: " +nomU);
         // System.out.println("que tiene una encuesta creada con id: " +ultimoIdEncuesta);
         // System.out.println("sacada del archivo: " +fE);
@@ -109,22 +111,10 @@ public class DriverClustering {
                     obtenerPerfiles();
                     break;
                 case 5:
-                    obtenerRepresentantes();
-                    break;
-                //case 6:
-                //    listarIndividuosPerfil();
-                //    break;
-                case 6:
-                    compararAlgoritmos();
-                    break;
-                case 7:
                     mostrarEstadoSistema();
                     break;
-                case 8:
+                case 6:
                     verRespuestasEncuesta();
-                    break;
-                case 9:
-                    verMatrizRespuestas();
                     break;
                 case 0:
                     salir = true;
@@ -132,6 +122,10 @@ public class DriverClustering {
                 default:
                     System.out.println("\nOpción no válida. Intenta de nuevo.\n");
             }
+
+            System.out.println("Presione enter para continuar.");
+            scanner.nextLine();
+
         }
         
         scanner.close();
@@ -143,13 +137,9 @@ public class DriverClustering {
         System.out.println("1. Importar encuesta desde archivo JSON");
         System.out.println("2. Importar respuestas desde archivo CSV");
         System.out.println("3. Ejecutar clustering");
-        System.out.println("4. Obtener perfiles del último clustering");
-        System.out.println("5. Obtener representantes de los perfiles del último clustering");
-        //System.out.println("6. Listar individuos de cada perfil");
-        System.out.println("6. Comparar algoritmos (K-Means vs K-Means++)");
-        System.out.println("7. Mostrar estado del sistema");
-        System.out.println("8. Ver respuestas de una encuesta");
-        System.out.println("9. Ver matriz de respuestas (clustering format)");
+        System.out.println("4. Obtener información de los perfiles del último clustering ejecutado");
+        System.out.println("5. Mostrar información de los datos actuales");
+        System.out.println("6. Ver respuestas de una encuesta");
         System.out.println("0. Salir");
         System.out.println("\nIntroduzca el número correspondiente a la acción a ejecutar: ");
     }
@@ -174,15 +164,9 @@ public class DriverClustering {
     private static void importarEncuesta() {
         System.out.println("\n--{ IMPORTAR UNA ENCUESTA DE UN FICHERO }--");
         
-        // Mostrar usuarios disponibles
         System.out.println("Introduzca el usuario propietario de la encuesta: ");
-        String usr = scanner.nextLine();
-        ctrlUsuario.registrarUsuario(usr, "123456", "123456");
-
-
-        // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-        // ||||||||||||||||||| -- REVISADO HASTA AQUÍ -- |||||||||||||||||||
-        // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        String usr = scanner.nextLine().trim();
+        if(!ctrlUsuario.existeUsuario(usr)) ctrlUsuario.registrarUsuario(usr, "123456", "123456");
 
 
         System.out.print("Introduzca la ruta del archivo JSON de la encuesta: ");
@@ -215,86 +199,88 @@ public class DriverClustering {
     }
 
     private static void importarRespuestas() {
-        System.out.println("\n═══ IMPORTAR RESPUESTAS ═══");
+        System.out.println("\n--{ IMPORTAR RESPUESTAS DE UN FICHERO }--");
         
-        System.out.print("📁 Ruta del archivo JSON de respuestas: ");
+        System.out.print("Introduzca la ruta del archivo CSV de respuestas: ");
         String ruta = scanner.nextLine().trim();
         File fichero = new File(ruta);
 
         if (!fichero.exists()) {
-            System.out.println("❌ El archivo no existe: " + ruta);
+            System.out.println("El archivo especificado no existe: " + ruta);
             return;
         }
 
         try {
             ctrlRespuesta.importarRespuestas(fichero);
-            System.out.println("✓ Respuestas importadas exitosamente!");
+            System.out.println("Se han importado las respuestas exitosamente.");
         } catch (Exception e) {
-            System.out.println("❌ Error al importar: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
     private static void ejecutarClustering() {
-        System.out.println("\n═══ EJECUTAR CLUSTERING ═══");
+        System.out.println("\n--{ EJECUTAR ALGORITMO DE CLUSTERING }--");
         
-        // Mostrar encuestas disponibles
-        var encuestas = ctrlEncuesta.getAllEncuestas();
+        HashMap<Integer, Encuesta> encuestas = ctrlEncuesta.getAllEncuestas();
         if (encuestas.isEmpty()) {
-            System.out.println("❌ No hay encuestas. Importa una encuesta primero (opción 1).");
+            System.out.println("No hay encuestas. Importe primero una encuesta.");
             return;
         }
 
-        System.out.println("\n📋 Encuestas disponibles:");
+        System.out.println("Encuestas disponibles:");
         for (Encuesta e : encuestas.values()) {
-            System.out.println("   ID " + e.getIdEncuesta() + ": " + e.getTitulo() + 
-                             " (" + e.getIdPreguntas().size() + " preguntas)");
+            System.out.println("Id: " + e.getIdEncuesta() + " - " + e.getTitulo() + " (" + e.getIdPreguntas().size() + " preguntas)");
         }
-
-        System.out.print("\n🔢 ID de la encuesta a analizar: ");
+        System.out.println("Indique el identificador de la encuesta a analizar: ");
         int idEncuesta = Integer.parseInt(scanner.nextLine().trim());
 
         if (!ctrlEncuesta.existeEncuesta(idEncuesta)) {
-            System.out.println("❌ La encuesta no existe.");
+            System.out.println("La encuesta indicada no existe.");
             return;
         }
 
         // Verificar que hay respuestas
         var respuestas = ctrlEncuesta.getRespuestasParaClustering(idEncuesta);
         if (respuestas.isEmpty()) {
-            System.out.println("❌ La encuesta no tiene respuestas. Importa respuestas primero (opción 2).");
+            System.out.println("La encuesta indicada no tiene respuestas. Importe respuestas primero.");
             return;
         }
-
-		System.out.println("   ✓ Respuestas disponibles: " + respuestas.size() + " usuarios");
-
+		System.out.println("La encuesta tiene respuestas de " + respuestas.size() + " usuarios.");
 		if (respuestas.size() < 2) {
-			System.out.println("❌ No se puede ejecutar clustering. Se necesitan al menos 2 usuarios con respuestas.");
-			System.out.println("   Actualmente solo hay " + respuestas.size() + " usuario(s).");
+			System.out.println("No son suficientes usuarios para ejecutar el clustering. Se necesitan al menos 2 usuarios con respuestas.");
 			return;
 		}
 
-		System.out.print("\n🔢 Número de clusters (k): ");
+		System.out.print("Introduzca el número de clústers que se quieren generar (entre 2 y " + respuestas.size() + "): ");
 		int k = Integer.parseInt(scanner.nextLine().trim());
 
 		if (k < 2 || k > respuestas.size()) {
-			System.out.println("❌ k debe estar entre 2 y " + respuestas.size());
+			System.out.println("El número de clústers ha de estar entre 2 y " + respuestas.size() + "(ambos incluidos).");
 			return;
-		}        System.out.println("\n🤖 Algoritmos disponibles:");
-        System.out.println("   1. K-Means (estándar)");
-        System.out.println("   2. K-Means++ (mejor inicialización)");
-        System.out.print("Selecciona algoritmo (1/2): ");
-        String opcionAlg = scanner.nextLine().trim();
+		}
+        System.out.println("Indique el algoritmo a usar [ 1: K-Means | 2: K-Means++ | 3: K-Medoids ]: ");
+        int opcionAlg = scanner.nextInt();
+        
+        String algoritmo = null;
+        switch(opcionAlg){
+            case 1:
+                algoritmo = "kmeans";
+                break;
+            case 2:
+                algoritmo = "kmeans++";
+            case 3:
+                algoritmo = "kmedoids";
+            default:
+                System.out.println("Número no válido.");
+        }
 
-        String algoritmo = opcionAlg.equals("2") ? "kmeans++" : "kmeans";
-        String nombreAlg = algoritmo.equals("kmeans++") ? "K-Means++" : "K-Means";
-
-        System.out.println("\n⏳ Ejecutando " + nombreAlg + " con k=" + k + "...");
+        System.out.println("Ejecutando...");
         long inicio = System.currentTimeMillis();
 
         ResultadoClustering resultado = ctrlPerfil.ejecutarClustering(idEncuesta, k, algoritmo);
         
         long fin = System.currentTimeMillis();
-        System.out.println("✓ Clustering completado en " + (fin - inicio) + " ms");
+        System.out.println("Clustering completado en " + (fin - inicio) + " milisegundos.");
 
         // Guardar para futuras operaciones
         ultimoIdEncuesta = idEncuesta;
@@ -302,222 +288,83 @@ public class DriverClustering {
 
         // Mostrar resumen
         List<Perfil> perfiles = resultado.getPerfiles();
-        System.out.println("\n📊 RESUMEN DE PERFILES:");
+        System.out.println("Información del clustering:");
         for (int i = 0; i < perfiles.size(); i++) {
             Perfil p = perfiles.get(i);
-            System.out.println("   Perfil " + (i + 1) + ": " + p.getMiembros().size() + " miembros");
-            System.out.println("      Representante: " + p.getRepresentante());
+            System.out.println("El perfil " + (i + 1) + " tiene " + p.getMiembros().size() + " miembros. Su representante es: " + p.getRepresentante() + ".");
         }
 
-        // Mostrar calidad automáticamente
+        // Mostrar calidad
         double silueta = resultado.getCalidad();
-        System.out.println("\n📈 Calidad del clustering:");
-        System.out.println("   Coeficiente de silueta: " + String.format("%.4f", silueta));
-        System.out.println("   Interpretación: " + EvaluarCluster.interpretarSilueta(silueta));
+        System.out.println("El coeficiente de silueta del clustering es: " + String.format("%.4f", silueta));
+        System.out.println(EvaluarCluster.interpretarSilueta(silueta));
     }
 
     private static void obtenerPerfiles() {
-        System.out.println("\n═══ OBTENER PERFILES ═══");
+        System.out.println("\n--{ OBTENER PERFILES DEL ÚLTIMO CLUSTERING }--");
         
         if (ultimoResultado == null) {
-            System.out.println("❌ No hay clustering ejecutado. Ejecuta primero (opción 3).");
+            System.out.println("No se ha ejecutado ningún clustering.");
             return;
         }
 
         List<Perfil> perfiles = ultimoResultado.getPerfiles();
-        System.out.println("\n📊 DIFERENTES COMPORTAMIENTOS/PERFILES DETECTADOS:");
-        System.out.println("   Total de perfiles: " + perfiles.size());
-        System.out.println();
+        System.out.println("La última ejecución del algoritmo generó los siguientes " + perfiles.size() + " perfiles:");
 
         for (int i = 0; i < perfiles.size(); i++) {
             Perfil p = perfiles.get(i);
-            System.out.println("┌─ PERFIL " + (i + 1) + " ─────────────────────────────");
-            System.out.println("│ Tamaño: " + p.getMiembros().size() + " usuarios");
-            System.out.println("│ Representante: " + p.getRepresentante());
-            System.out.println("│ Miembros: " + String.join(", ", p.getMiembros()));
-            System.out.println("└────────────────────────────────────────────────");
+            System.out.println("Perfil " + (i + 1) + ":");
+            System.out.println("-Tamaño: " + p.getMiembros().size() + " usuarios.");
+            System.out.println("-Representante: " + p.getRepresentante() + ".");
+            System.out.println("-Miembros: " + String.join(", ", p.getMiembros()) + ".");
         }
-    }
-
-    private static void obtenerRepresentantes() {
-        System.out.println("\n═══ REPRESENTANTES DE GRUPOS ═══");
-        
-        if (ultimoResultado == null) {
-            System.out.println("❌ No hay clustering ejecutado. Ejecuta primero (opción 3).");
-            return;
-        }
-
-        List<Perfil> perfiles = ultimoResultado.getPerfiles();
-        System.out.println("\n👥 REPRESENTANTES DE CADA PERFIL:");
-        for (int i = 0; i < perfiles.size(); i++) {
-            Perfil p = perfiles.get(i);
-            String representante = ctrlPerfil.obtenerRepresentantePerfil(p);
-            System.out.println("   Perfil " + (i + 1) + ": " + representante + 
-                             " (representa a " + p.getMiembros().size() + " usuarios)");
-        }
-    }
-/*
-    private static void listarIndividuosPerfil() {
-        System.out.println("\n═══ LISTAR INDIVIDUOS POR PERFIL ═══");
-        
-        if (ultimosPerfiles == null) {
-            System.out.println("❌ No hay clustering ejecutado. Ejecuta primero (opción 3).");
-            return;
-        }
-
-        System.out.print("\n🔢 Número de perfil (1-" + ultimosPerfiles.size() + "): ");
-        int numPerfil = Integer.parseInt(scanner.nextLine().trim());
-
-        if (numPerfil < 1 || numPerfil > ultimosPerfiles.size()) {
-            System.out.println("❌ Perfil no válido.");
-            return;
-        }
-
-        Perfil perfil = ultimosPerfiles.get(numPerfil - 1);
-        List<String> miembros = ctrlPerfil.obtenerMiembrosPerfil(perfil);
-
-        System.out.println("\n👥 MIEMBROS DEL PERFIL " + numPerfil + ":");
-        System.out.println("   Representante: ★ " + perfil.getRepresentante());
-        System.out.println("   Total: " + miembros.size() + " individuos");
-        System.out.println();
-        for (int i = 0; i < miembros.size(); i++) {
-            System.out.println("   " + (i + 1) + ". " + miembros.get(i));
-        }
-    }
-*/
-
-    private static void compararAlgoritmos() {
-        System.out.println("\n═══ COMPARAR ALGORITMOS ═══");
-        
-        // Mostrar encuestas disponibles
-        var encuestas = ctrlEncuesta.getAllEncuestas();
-        if (encuestas.isEmpty()) {
-            System.out.println("❌ No hay encuestas. Importa una encuesta primero (opción 1).");
-            return;
-        }
-
-        System.out.println("\n📋 Encuestas disponibles:");
-        for (Encuesta e : encuestas.values()) {
-            System.out.println("   ID " + e.getIdEncuesta() + ": " + e.getTitulo());
-        }
-
-        System.out.print("\n🔢 ID de la encuesta: ");
-        int idEncuesta = Integer.parseInt(scanner.nextLine().trim());
-
-        if (!ctrlEncuesta.existeEncuesta(idEncuesta)) {
-            System.out.println("❌ La encuesta no existe.");
-            return;
-        }
-
-        var respuestas = ctrlEncuesta.getRespuestasParaClustering(idEncuesta);
-        if (respuestas.isEmpty()) {
-            System.out.println("❌ La encuesta no tiene respuestas.");
-            return;
-        }
-
-        System.out.print("\n🔢 Número de clusters (k): ");
-        int k = Integer.parseInt(scanner.nextLine().trim());
-
-        if (k < 2 || k > respuestas.size()) {
-            System.out.println("❌ k debe estar entre 2 y " + respuestas.size());
-            return;
-        }
-
-        System.out.println("\n⏳ Ejecutando comparación...\n");
-
-        // Ejecutar K-Means
-        System.out.println("🤖 K-Means estándar:");
-        long inicio1 = System.currentTimeMillis();
-        ResultadoClustering resultadoKmeans = ctrlPerfil.ejecutarClustering(idEncuesta, k, "kmeans");
-        long fin1 = System.currentTimeMillis();
-        double siluetaKmeans = resultadoKmeans.getCalidad();
-        System.out.println("   Tiempo: " + (fin1 - inicio1) + " ms");
-        System.out.println("   Silueta: " + String.format("%.4f", siluetaKmeans));
-
-        // Ejecutar K-Means++
-        System.out.println("\n🤖 K-Means++:");
-        long inicio2 = System.currentTimeMillis();
-        ResultadoClustering resultadoKmeansPP = ctrlPerfil.ejecutarClustering(idEncuesta, k, "kmeans++");
-        long fin2 = System.currentTimeMillis();
-        double siluetaKmeansPP = resultadoKmeansPP.getCalidad();
-        System.out.println("   Tiempo: " + (fin2 - inicio2) + " ms");
-        System.out.println("   Silueta: " + String.format("%.4f", siluetaKmeansPP));
-
-        // Comparación
-        System.out.println("\n📊 COMPARACIÓN:");
-        System.out.println("   ┌──────────────┬──────────┬──────────┐");
-        System.out.println("   │ Algoritmo    │  Tiempo  │ Silueta  │");
-        System.out.println("   ├──────────────┼──────────┼──────────┤");
-        System.out.printf("   │ K-Means      │ %6d ms│  %.4f  │\n", (fin1 - inicio1), siluetaKmeans);
-        System.out.printf("   │ K-Means++    │ %6d ms│  %.4f  │\n", (fin2 - inicio2), siluetaKmeansPP);
-        System.out.println("   └──────────────┴──────────┴──────────┘");
-
-        if (siluetaKmeansPP > siluetaKmeans) {
-            System.out.println("\n   ✓ K-Means++ produce mejor clustering");
-        } else if (siluetaKmeans > siluetaKmeansPP) {
-            System.out.println("\n   ✓ K-Means produce mejor clustering");
-        } else {
-            System.out.println("\n   ⚖ Ambos algoritmos producen clustering similar");
-        }
-
-        // Guardar el mejor resultado
-        if (siluetaKmeansPP >= siluetaKmeans) {
-            ultimoResultado = resultadoKmeansPP;
-        } else {
-            ultimoResultado = resultadoKmeans;
-        }
-        ultimoIdEncuesta = idEncuesta;
     }
 
     private static void mostrarEstadoSistema() {
-        System.out.println("\n═══ ESTADO DEL SISTEMA ═══");
+        System.out.println("\n--{ INFORMACIÓN ACTUAL DE LOS DATOS DEL SISTEMA }--");
         
-        var usuarios = ctrlUsuario.getAllUsuarios();
-        var encuestas = ctrlEncuesta.getAllEncuestas();
+        Map<String,Usuario> usuarios = ctrlUsuario.getAllUsuarios();
+        Map<Integer, Encuesta> encuestas = ctrlEncuesta.getAllEncuestas();
         
-        System.out.println("\n📊 Estadísticas:");
-        System.out.println("   • Usuarios registrados: " + usuarios.size());
-        System.out.println("   • Encuestas importadas: " + encuestas.size());
+        System.out.println("Usuarios registrados: " + usuarios.size());
+        System.out.println("Encuestas registradas: " + encuestas.size());
         
         if (!encuestas.isEmpty()) {
-            System.out.println("\n📋 Detalle de encuestas:");
+            System.out.println("Información de las encuestas:");
             for (Encuesta e : encuestas.values()) {
                 var respuestas = ctrlEncuesta.getRespuestasParaClustering(e.getIdEncuesta());
-                System.out.println("   • ID " + e.getIdEncuesta() + ": " + e.getTitulo());
-                System.out.println("     - Preguntas: " + e.getIdPreguntas().size());
-                System.out.println("     - Respuestas: " + respuestas.size() + " usuarios");
+                System.out.println("\nId: " + e.getIdEncuesta() + " - " + e.getTitulo());
+                System.out.println("-Preguntas: " + e.getIdPreguntas().size());
+                System.out.println("-Usuarios que han respondido: " + respuestas.size());
             }
         }
         
         if (ultimoResultado != null) {
-            System.out.println("\n🎯 Último clustering ejecutado:");
-            System.out.println("   • Encuesta ID: " + ultimoIdEncuesta);
-            System.out.println("   • Perfiles generados: " + ultimoResultado.getPerfiles().size());
-            System.out.println("   • Calidad (silueta): " + String.format("%.4f", ultimoResultado.getCalidad()));
-        } else {
-            System.out.println("\n⚠ No se ha ejecutado ningún clustering todavía.");
+            System.out.println("\nÚltimo clustering ejecutado:");
+            System.out.println("Encuesta con id: " + ultimoIdEncuesta);
+            System.out.println("Perfiles generados: " + ultimoResultado.getPerfiles().size());
+            System.out.println("Calidad (coeficiente de silueta): " + String.format("%.4f", ultimoResultado.getCalidad()));
         }
     }
 
     private static void verRespuestasEncuesta() {
-        System.out.println("\n═══ VER RESPUESTAS DE ENCUESTA ===");
+        System.out.println("\n--{ VISUALIZAR RESPUESTAS DE UNA ENCUESTA }--");
         
-        var encuestas = ctrlEncuesta.getAllEncuestas();
+        HashMap<Integer, Encuesta> encuestas = ctrlEncuesta.getAllEncuestas();
         if (encuestas.isEmpty()) {
-            System.out.println("❌ No hay encuestas. Importa una encuesta primero (opción 1).");
+            System.out.println("No hay encuestas. Importe primero una encuesta.");
             return;
         }
 
-        System.out.println("\n📋 Encuestas disponibles:");
+        System.out.println("Encuestas disponibles:");
         for (Encuesta e : encuestas.values()) {
-            System.out.println("   ID " + e.getIdEncuesta() + ": " + e.getTitulo());
+            System.out.println("Id: " + e.getIdEncuesta() + " - " + e.getTitulo() + " (" + e.getIdPreguntas().size() + " preguntas)");
         }
-
-        System.out.print("\n🔢 ID de la encuesta: ");
+        System.out.println("Indique el identificador de la encuesta a analizar: ");
         int idEncuesta = Integer.parseInt(scanner.nextLine().trim());
 
         if (!ctrlEncuesta.existeEncuesta(idEncuesta)) {
-            System.out.println("❌ La encuesta no existe.");
+            System.out.println("La encuesta indicada no existe.");
             return;
         }
 
@@ -525,157 +372,28 @@ public class DriverClustering {
             Map<Pregunta, Set<Respuesta>> mapa = ctrlEncuesta.getRespuestasEncuesta(idEncuesta);
             
             if (mapa.isEmpty()) {
-                System.out.println("\n⚠ La encuesta no tiene respuestas todavía.");
+                System.out.println("La encuesta indicada no tiene respuestas.");
                 return;
             }
             
-            System.out.println("\n📝 RESPUESTAS DE LA ENCUESTA:");
+            System.out.println("Respuestas de la encuesta " + idEncuesta + ":");
             for (Map.Entry<Pregunta, Set<Respuesta>> entry : mapa.entrySet()) {
                 Pregunta p = entry.getKey();
-                System.out.println("\n┌─ Pregunta ID " + p.getIdPregunta() + " ───────────────────");
-                System.out.println("│ " + p.getEnunciado());
-                System.out.println("│ Tipo: " + p.tipoPregunta());
-                System.out.println("├─ Respuestas:");
+                System.out.println("\nId de pregunta: " + p.getIdPregunta());
+                System.out.println("Enunciado: " + p.getEnunciado());
+                System.out.println("Tipo: " + p.tipoPregunta());
                 
                 if (entry.getValue().isEmpty()) {
-                    System.out.println("│   (sin respuestas)");
+                    System.out.println("No tiene respuestas.");
                 } else {
+                    System.out.println("Respuestas:");
                     for (Respuesta r : entry.getValue()) {
-                        System.out.println("│   • Usuario: " + r.getNomUsuario() + 
-                                         " | ID: " + r.getId() + 
-                                         " | Tipo: " + r.getTipo());
+                        System.out.println("-Id de la respuesta: " + r.getId() + ". Usuario: " + r.getNomUsuario());
                     }
                 }
-                System.out.println("└────────────────────────────────────────");
             }
-            
-            // Mostrar resumen de usuarios únicos
-            Set<String> usuariosUnicos = new HashSet<>();
-            for (Set<Respuesta> respuestas : mapa.values()) {
-                for (Respuesta r : respuestas) {
-                    usuariosUnicos.add(r.getNomUsuario());
-                }
-            }
-            
-            System.out.println("\n📊 RESUMEN:");
-            System.out.println("   Total de preguntas: " + mapa.size());
-            System.out.println("   Usuarios que respondieron: " + usuariosUnicos.size());
-            System.out.println("   Usuarios: " + String.join(", ", usuariosUnicos));
-            
         } catch (Exception e) {
-            System.out.println("❌ Error al obtener respuestas: " + e.getMessage());
-        }
-    }
-
-    private static void verMatrizRespuestas() {
-        System.out.println("\n═══ VER MATRIZ DE RESPUESTAS (FORMATO CLUSTERING) ===");
-        
-        var encuestas = ctrlEncuesta.getAllEncuestas();
-        if (encuestas.isEmpty()) {
-            System.out.println("❌ No hay encuestas. Importa una encuesta primero (opción 1).");
-            return;
-        }
-
-        System.out.println("\n📋 Encuestas disponibles:");
-        for (Encuesta e : encuestas.values()) {
-            System.out.println("   ID " + e.getIdEncuesta() + ": " + e.getTitulo());
-        }
-
-        System.out.print("\n🔢 ID de la encuesta: ");
-        int idEncuesta = Integer.parseInt(scanner.nextLine().trim());
-
-        if (!ctrlEncuesta.existeEncuesta(idEncuesta)) {
-            System.out.println("❌ La encuesta no existe.");
-            return;
-        }
-
-        try {
-            // Obtener preguntas de la encuesta
-            List<Pregunta> preguntas = ctrlEncuesta.getPreguntasEncuesta(idEncuesta);
-            System.out.println("\n📋 PREGUNTAS DE LA ENCUESTA:");
-            for (int i = 0; i < preguntas.size(); i++) {
-                Pregunta p = preguntas.get(i);
-                System.out.println("   P" + p.getIdPregunta() + ": " + p.getEnunciado() + " (" + p.tipoPregunta() + ")");
-            }
-            
-            // Obtener matriz de respuestas para clustering
-            List<List<Respuesta>> matriz = ctrlEncuesta.getRespuestasParaClustering(idEncuesta);
-            
-            if (matriz.isEmpty()) {
-                System.out.println("\n⚠ La encuesta no tiene respuestas todavía.");
-                return;
-            }
-            
-            System.out.println("\n📊 MATRIZ DE RESPUESTAS (Formato para clustering):");
-            System.out.println("   Total usuarios: " + matriz.size());
-            System.out.println("   Mostrando primeros 20 usuarios...");
-            System.out.println();
-            
-            // Encabezado con IDs de preguntas
-            System.out.print("   Usuario          ");
-            for (Pregunta p : preguntas) {
-                System.out.print(String.format("  P%-4d", p.getIdPregunta()));
-            }
-            System.out.println();
-            System.out.print("   ────────────────");
-            for (int i = 0; i < preguntas.size(); i++) {
-                System.out.print("───────");
-            }
-            System.out.println();
-            
-            // Filas de usuarios (máximo 20)
-            int maxUsuarios = Math.min(20, matriz.size());
-            for (int u = 0; u < maxUsuarios; u++) {
-                List<Respuesta> respuestasUsuario = matriz.get(u);
-                
-                // Obtener nombre de usuario de la primera respuesta no nula
-                String nombreUsuario = "Usuario" + (u + 1);
-                for (Respuesta r : respuestasUsuario) {
-                    if (r != null) {
-                        nombreUsuario = r.getNomUsuario();
-                        break;
-                    }
-                }
-                
-                System.out.print(String.format("   %-16s", 
-                    nombreUsuario.length() > 16 ? nombreUsuario.substring(0, 16) : nombreUsuario));
-                
-                // Mostrar ID de respuesta o "null" si no respondió
-                for (Respuesta r : respuestasUsuario) {
-                    if (r == null) {
-                        System.out.print("  ----  ");
-                    } else {
-                        System.out.print(String.format("  R%-4d", r.getId()));
-                    }
-                }
-                System.out.println();
-            }
-            
-            if (matriz.size() > 20) {
-                System.out.println("\n   ... (" + (matriz.size() - 20) + " usuarios más no mostrados)");
-            }
-            
-            System.out.println("\n📈 ESTADÍSTICAS:");
-            System.out.println("   Total usuarios con respuestas: " + matriz.size());
-            System.out.println("   Total preguntas: " + preguntas.size());
-            
-            // Contar respuestas nulas
-            int totalRespuestas = 0;
-            int respuestasNulas = 0;
-            for (List<Respuesta> fila : matriz) {
-                for (Respuesta r : fila) {
-                    totalRespuestas++;
-                    if (r == null) respuestasNulas++;
-                }
-            }
-            System.out.println("   Respuestas totales: " + totalRespuestas);
-            System.out.println("   Respuestas válidas: " + (totalRespuestas - respuestasNulas));
-            System.out.println("   Respuestas faltantes: " + respuestasNulas + 
-                             " (" + String.format("%.1f%%", 100.0 * respuestasNulas / totalRespuestas) + ")");
-            
-        } catch (Exception e) {
-            System.out.println("❌ Error al obtener matriz: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Error: " + e.getMessage());
         }
     }
 }
