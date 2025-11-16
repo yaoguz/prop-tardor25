@@ -8,6 +8,9 @@ import java.util.HashMap;
 import domain.*;
 import domain.algorithm.estructuras.*;
 
+/**
+ * @author Xiangjun Yepan
+ */
 public class CalculoCentroideMedoids {
     public static Centride calculoCentroideMedoids(List<List<Respuesta>> cluster, List<Pregunta> variables) {
         double minDistanciaTotal = Double.MAX_VALUE;
