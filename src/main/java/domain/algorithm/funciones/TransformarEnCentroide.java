@@ -18,7 +18,7 @@ public class TransformarEnCentroide {
         for (Respuesta r: respuesta) {
             if (r == null) {
                 // para respuestas nulas, añadir componente con valor por defecto (pnd revisar)
-                centroide.add(new ComponenteNumerico(0.0));
+                centroide.add(null);
             }
             else if (r instanceof RespuestaNumerica) {
                 double valor = ((RespuestaNumerica) r).getRespuesta();
