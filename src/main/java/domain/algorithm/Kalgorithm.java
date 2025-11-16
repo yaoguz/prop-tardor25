@@ -171,7 +171,12 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
             }
         }
 
-        return respuestasGente.get(index).get(0).getNomUsuario();
+        for (Respuesta res : respuestasGente.get(index)) { // recorre hasta encontrar una respuesta no nula del usuario
+            if (res != null) {
+                return res.getNomUsuario(); // toda la fila es de un usuario
+            }
+        }
+        return "";
     }
 
 }

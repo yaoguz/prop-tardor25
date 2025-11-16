@@ -48,7 +48,7 @@ public class EvaluarCluster {
                     if (k == i) continue; //con su cluster no se hace
                     List<List<Respuesta>> other = clustersAnswers.get(k);
 
-                    if (other.size() == 1) continue; //Es solo uno, no representan un grupo bueno
+                    // if (other.size() == 1) continue; //Es solo uno, no representan un grupo bueno
                     
                     double siluetaOtro = calcularSiluetaPersonaCluster(persona, other , variables, -1);
 
