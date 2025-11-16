@@ -4,7 +4,7 @@ import java.util.List;
 
 import domain.Respuesta;
 import domain.Pregunta;
-import domain.algorithm.estructuras.Perfil;
+import domain.algorithm.estructuras.ResultadoClustering;
 
 
 /**

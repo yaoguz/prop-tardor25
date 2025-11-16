@@ -9,7 +9,8 @@ import java.util.HashSet;
 
 import domain.*;
 import domain.algorithm.estructuras.Perfil;
-import domain.algorithm.funciones.ClusterEvaluator;
+import domain.algorithm.estructuras.ResultadoClustering;
+import domain.algorithm.funciones.EvaluarCluster;
 import domaincontrollers.*;
 import persistence.GestorPersistencia;
 
@@ -31,7 +32,7 @@ public class DriverClustering {
 
     // Variables para mantener estado del último clustering ejecutado
     private static int ultimoIdEncuesta = -1;
-    private static List<Perfil> ultimosPerfiles = null;
+    private static ResultadoClustering ultimoResultado = null;
     private static String nomU;
 
     public static void main(String[] args) {
@@ -53,13 +54,13 @@ public class DriverClustering {
         boolean salir = false;
 
         
-        nomU = ctrlUsuario.registrarUsuario("Tester", "123456", "123456");
-        ctrlUsuario.iniciarSesion(nomU, "123456");
-        File fE = new File("./datos-encuestas.json");
-        ultimoIdEncuesta = ctrlEncuesta.importarEncuesta(fE);
-        File fR = new File("./loan-test.csv");
-        ctrlRespuesta.importarRespuestas(fR);
-        ctrlUsuario.cerrarSesionActual();
+        // nomU = ctrlUsuario.registrarUsuario("Tester", "123456", "123456");
+        // ctrlUsuario.iniciarSesion(nomU, "123456");
+        // ççFile fE = new File("./datos-encuestas.json");
+        // ultimoIdEncuesta = ctrlEncuesta.importarEncuesta(fE);
+        // File fR = new File("./loan-test.csv");
+        // ctrlRespuesta.importarRespuestas(fR);
+        //ctrlUsuario.cerrarSesionActual(); // ?
 
 
 
@@ -81,12 +82,12 @@ public class DriverClustering {
         System.out.println("| #      #      #   #      #    #    #      # #      #    #  ##  #   # |");
         System.out.println("|  ####  #####   ###   ####     #    #####  #  #   #####  #   #   ###  |");
         System.out.println("+----------------------------------------------------------------------+");
-        System.out.println("Dispone de un usuario con nombre: " +nomU);
-        System.out.println("que tiene una encuesta creada con id: " +ultimoIdEncuesta);
-        System.out.println("sacada del archivo: " +fE);
-        System.out.println("con las respuestas sacadas del archivo: " +fR);
-        System.out.println("(ejecutar acción 9 para comprobarlo, en teoría se puede ejecutar el"); // Quitar estos
-        System.out.println("clustering directamente sobre la encuesta " +ultimoIdEncuesta +")");   // comentarios.
+        // System.out.println("Dispone de un usuario con sesión iniciada con nombre: " +nomU);
+        // System.out.println("que tiene una encuesta creada con id: " +ultimoIdEncuesta);
+        // System.out.println("sacada del archivo: " +fE);
+        // System.out.println("con las respuestas sacadas del archivo: " +fR);
+        // System.out.println("(ejecutar acción 9 para comprobarlo, en teoría se puede ejecutar el"); // Quitar estos
+        // System.out.println("clustering directamente sobre la encuesta " +ultimoIdEncuesta +")");   // comentarios.
         
 
         while (!salir) {
@@ -113,19 +114,16 @@ public class DriverClustering {
                 //case 6:
                 //    listarIndividuosPerfil();
                 //    break;
-                case 7:
-                    evaluarCalidad();
-                    break;
-                case 8:
+                case 6:
                     compararAlgoritmos();
                     break;
-                case 9:
+                case 7:
                     mostrarEstadoSistema();
                     break;
-                case 10:
+                case 8:
                     verRespuestasEncuesta();
                     break;
-                case 11:
+                case 9:
                     verMatrizRespuestas();
                     break;
                 case 0:
@@ -148,11 +146,10 @@ public class DriverClustering {
         System.out.println("4. Obtener perfiles del último clustering");
         System.out.println("5. Obtener representantes de los perfiles del último clustering");
         //System.out.println("6. Listar individuos de cada perfil");
-        System.out.println("7. Evaluar calidad del último clustering");
-        System.out.println("8. Comparar algoritmos (K-Means vs K-Means++)");
-        System.out.println("9. Mostrar estado del sistema");
-        System.out.println("10. Ver respuestas de una encuesta");
-        System.out.println("11. Ver matriz de respuestas (clustering format)");
+        System.out.println("6. Comparar algoritmos (K-Means vs K-Means++)");
+        System.out.println("7. Mostrar estado del sistema");
+        System.out.println("8. Ver respuestas de una encuesta");
+        System.out.println("9. Ver matriz de respuestas (clustering format)");
         System.out.println("0. Salir");
         System.out.println("\nIntroduzca el número correspondiente a la acción a ejecutar: ");
     }
@@ -177,9 +174,16 @@ public class DriverClustering {
     private static void importarEncuesta() {
         System.out.println("\n--{ IMPORTAR UNA ENCUESTA DE UN FICHERO }--");
         
-        System.out.println("Introduzca el nombre del usuario propietario de la encuesta: ");
+        // Mostrar usuarios disponibles
+        System.out.println("Introduzca el usuario propietario de la encuesta: ");
         String usr = scanner.nextLine();
         ctrlUsuario.registrarUsuario(usr, "123456", "123456");
+
+
+        // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        // ||||||||||||||||||| -- REVISADO HASTA AQUÍ -- |||||||||||||||||||
+        // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
         System.out.print("Introduzca la ruta del archivo JSON de la encuesta: ");
         String ruta = scanner.nextLine().trim();
@@ -287,48 +291,50 @@ public class DriverClustering {
         System.out.println("\n⏳ Ejecutando " + nombreAlg + " con k=" + k + "...");
         long inicio = System.currentTimeMillis();
 
-        List<Perfil> perfiles = ctrlPerfil.ejecutarClustering(idEncuesta, k, algoritmo);
+        ResultadoClustering resultado = ctrlPerfil.ejecutarClustering(idEncuesta, k, algoritmo);
         
         long fin = System.currentTimeMillis();
         System.out.println("✓ Clustering completado en " + (fin - inicio) + " ms");
 
         // Guardar para futuras operaciones
         ultimoIdEncuesta = idEncuesta;
-        ultimosPerfiles = perfiles;
+        ultimoResultado = resultado;
 
         // Mostrar resumen
+        List<Perfil> perfiles = resultado.getPerfiles();
         System.out.println("\n📊 RESUMEN DE PERFILES:");
         for (int i = 0; i < perfiles.size(); i++) {
             Perfil p = perfiles.get(i);
-            System.out.println("   Perfil " + (i + 1) + ": " + p.miembros().size() + " miembros");
+            System.out.println("   Perfil " + (i + 1) + ": " + p.getMiembros().size() + " miembros");
             System.out.println("      Representante: " + p.getRepresentante());
         }
 
-        // // Evaluar calidad automáticamente
-        // double silueta = ctrlPerfil.evaluarCalidadClustering(perfiles, idEncuesta);
-        // System.out.println("\n📈 Calidad del clustering:");
-        // System.out.println("   Coeficiente de silueta: " + String.format("%.4f", silueta));
-        // System.out.println("   Interpretación: " + ClusterEvaluator.interpretarSilueta(silueta));
+        // Mostrar calidad automáticamente
+        double silueta = resultado.getCalidad();
+        System.out.println("\n📈 Calidad del clustering:");
+        System.out.println("   Coeficiente de silueta: " + String.format("%.4f", silueta));
+        System.out.println("   Interpretación: " + EvaluarCluster.interpretarSilueta(silueta));
     }
 
     private static void obtenerPerfiles() {
         System.out.println("\n═══ OBTENER PERFILES ═══");
         
-        if (ultimosPerfiles == null) {
+        if (ultimoResultado == null) {
             System.out.println("❌ No hay clustering ejecutado. Ejecuta primero (opción 3).");
             return;
         }
 
+        List<Perfil> perfiles = ultimoResultado.getPerfiles();
         System.out.println("\n📊 DIFERENTES COMPORTAMIENTOS/PERFILES DETECTADOS:");
-        System.out.println("   Total de perfiles: " + ultimosPerfiles.size());
+        System.out.println("   Total de perfiles: " + perfiles.size());
         System.out.println();
 
-        for (int i = 0; i < ultimosPerfiles.size(); i++) {
-            Perfil p = ultimosPerfiles.get(i);
+        for (int i = 0; i < perfiles.size(); i++) {
+            Perfil p = perfiles.get(i);
             System.out.println("┌─ PERFIL " + (i + 1) + " ─────────────────────────────");
-            System.out.println("│ Tamaño: " + p.miembros().size() + " usuarios");
+            System.out.println("│ Tamaño: " + p.getMiembros().size() + " usuarios");
             System.out.println("│ Representante: " + p.getRepresentante());
-            System.out.println("│ Miembros: " + String.join(", ", p.miembros()));
+            System.out.println("│ Miembros: " + String.join(", ", p.getMiembros()));
             System.out.println("└────────────────────────────────────────────────");
         }
     }
@@ -336,17 +342,18 @@ public class DriverClustering {
     private static void obtenerRepresentantes() {
         System.out.println("\n═══ REPRESENTANTES DE GRUPOS ═══");
         
-        if (ultimosPerfiles == null) {
+        if (ultimoResultado == null) {
             System.out.println("❌ No hay clustering ejecutado. Ejecuta primero (opción 3).");
             return;
         }
 
+        List<Perfil> perfiles = ultimoResultado.getPerfiles();
         System.out.println("\n👥 REPRESENTANTES DE CADA PERFIL:");
-        for (int i = 0; i < ultimosPerfiles.size(); i++) {
-            Perfil p = ultimosPerfiles.get(i);
+        for (int i = 0; i < perfiles.size(); i++) {
+            Perfil p = perfiles.get(i);
             String representante = ctrlPerfil.obtenerRepresentantePerfil(p);
             System.out.println("   Perfil " + (i + 1) + ": " + representante + 
-                             " (representa a " + p.miembros().size() + " usuarios)");
+                             " (representa a " + p.getMiembros().size() + " usuarios)");
         }
     }
 /*
@@ -378,29 +385,6 @@ public class DriverClustering {
         }
     }
 */
-    private static void evaluarCalidad() {
-        System.out.println("\n═══ EVALUAR CALIDAD DEL CLUSTERING ═══");
-        
-        if (ultimosPerfiles == null || ultimoIdEncuesta == -1) {
-            System.out.println("❌ No hay clustering ejecutado. Ejecuta primero (opción 3).");
-            return;
-        }
-
-        System.out.println("\n⏳ Calculando coeficiente de silueta...");
-        double silueta = ctrlPerfil.evaluarCalidadClustering(ultimosPerfiles, ultimoIdEncuesta);
-
-        System.out.println("\n📈 EVALUACIÓN DE CALIDAD:");
-        System.out.println("   ┌─────────────────────────────────────────┐");
-        System.out.println("   │ Coeficiente de silueta: " + String.format("%7.4f", silueta) + "       │");
-        System.out.println("   └─────────────────────────────────────────┘");
-        System.out.println("\n   Interpretación: " + ClusterEvaluator.interpretarSilueta(silueta));
-        System.out.println("\n   Escala de valores:");
-        System.out.println("   • 0.7 - 1.0: Excelente clustering");
-        System.out.println("   • 0.5 - 0.7: Buen clustering");
-        System.out.println("   • 0.25 - 0.5: Clustering aceptable");
-        System.out.println("   • 0.0 - 0.25: Clustering pobre");
-        System.out.println("   • < 0.0: Clustering malo (objetos mal asignados)");
-    }
 
     private static void compararAlgoritmos() {
         System.out.println("\n═══ COMPARAR ALGORITMOS ═══");
@@ -444,18 +428,18 @@ public class DriverClustering {
         // Ejecutar K-Means
         System.out.println("🤖 K-Means estándar:");
         long inicio1 = System.currentTimeMillis();
-        List<Perfil> perfilesKmeans = ctrlPerfil.ejecutarClustering(idEncuesta, k, "kmeans");
+        ResultadoClustering resultadoKmeans = ctrlPerfil.ejecutarClustering(idEncuesta, k, "kmeans");
         long fin1 = System.currentTimeMillis();
-        double siluetaKmeans = ctrlPerfil.evaluarCalidadClustering(perfilesKmeans, idEncuesta);
+        double siluetaKmeans = resultadoKmeans.getCalidad();
         System.out.println("   Tiempo: " + (fin1 - inicio1) + " ms");
         System.out.println("   Silueta: " + String.format("%.4f", siluetaKmeans));
 
         // Ejecutar K-Means++
         System.out.println("\n🤖 K-Means++:");
         long inicio2 = System.currentTimeMillis();
-        List<Perfil> perfilesKmeansPP = ctrlPerfil.ejecutarClustering(idEncuesta, k, "kmeans++");
+        ResultadoClustering resultadoKmeansPP = ctrlPerfil.ejecutarClustering(idEncuesta, k, "kmeans++");
         long fin2 = System.currentTimeMillis();
-        double siluetaKmeansPP = ctrlPerfil.evaluarCalidadClustering(perfilesKmeansPP, idEncuesta);
+        double siluetaKmeansPP = resultadoKmeansPP.getCalidad();
         System.out.println("   Tiempo: " + (fin2 - inicio2) + " ms");
         System.out.println("   Silueta: " + String.format("%.4f", siluetaKmeansPP));
 
@@ -478,9 +462,9 @@ public class DriverClustering {
 
         // Guardar el mejor resultado
         if (siluetaKmeansPP >= siluetaKmeans) {
-            ultimosPerfiles = perfilesKmeansPP;
+            ultimoResultado = resultadoKmeansPP;
         } else {
-            ultimosPerfiles = perfilesKmeans;
+            ultimoResultado = resultadoKmeans;
         }
         ultimoIdEncuesta = idEncuesta;
     }
@@ -505,10 +489,11 @@ public class DriverClustering {
             }
         }
         
-        if (ultimosPerfiles != null) {
+        if (ultimoResultado != null) {
             System.out.println("\n🎯 Último clustering ejecutado:");
             System.out.println("   • Encuesta ID: " + ultimoIdEncuesta);
-            System.out.println("   • Perfiles generados: " + ultimosPerfiles.size());
+            System.out.println("   • Perfiles generados: " + ultimoResultado.getPerfiles().size());
+            System.out.println("   • Calidad (silueta): " + String.format("%.4f", ultimoResultado.getCalidad()));
         } else {
             System.out.println("\n⚠ No se ha ejecutado ningún clustering todavía.");
         }

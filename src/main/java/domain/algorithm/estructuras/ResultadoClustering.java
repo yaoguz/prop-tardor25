@@ -1,9 +1,6 @@
 package domain.algorithm.estructuras;
 
 import java.util.List;
-import domain.algorithm.estructuras.*;
-import domain.algorithm.funciones.*;
-import domain.algorithm.estrategias.*;
 
 /**
  * @author Alessandro Jin
