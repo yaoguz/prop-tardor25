@@ -17,7 +17,7 @@
       "tipo": "opcion_unica",
       "enunciado": "Number of dependents?",
       "ordenada": true,
-      "opciones": ["0", "1", "3+"]
+      "opciones": ["0", "1", "2", "3+"]
     },
     {
       "tipo": "opcion_unica",
