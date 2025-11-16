@@ -104,7 +104,13 @@ public class DriverPregunta {
         boolean salir = false;
 
         // Información de inicio
-        System.out.println("DRIVER INTERACTIVO - CONTROLADOR DE PREGUNTA");
+        System.out.println("+--------- DRIVER INTERACTIVO - CONTROLADOR DE: ---------+");
+        System.out.println("| ####   ####   #####   ####  #   #  #   #  #####   ###  |");
+        System.out.println("| #   #  #   #  #      #      #   #  ##  #    #    #   # |");
+        System.out.println("| ####   ####   ####   # ###  #   #  # # #    #    ##### |");
+        System.out.println("| #      # #    #      #   #  #   #  #  ##    #    #   # |");
+        System.out.println("| #      #  #   #####   ###    ###   #   #    #    #   # |");
+        System.out.println("+--------------------------------------------------------+");
         System.out.println("Dispone de un usuario con nombre: " +nomU);
         System.out.println("que tiene una encuesta creada con id: " +idE);
         System.out.println("que tiene 5 preguntas:");
@@ -136,25 +142,31 @@ public class DriverPregunta {
                     break;
                 case 3:
                     testModificarPregunta();
+                    break;
                 case 4:
                     testEliminarPregunta();
+                    break;
                 case 5:
                     testGetPregunta();
+                    break;
                 case 6:
                     testGetAllPreguntas();
+                    break;
                 case 7:
                     testExistePregunta();
+                    break;
                 case 8:
                     testAnadirRespuesta();
+                    break;
                 case 0:
                     salir = true;
-                    System.out.println("\nSaliendo del driver...\n");
                     break;
                 default:
                     System.out.println("\nOpción no válida. Intenta de nuevo.\n");
             }
         }
         scanner.close();
+        System.out.println("\nSaliendo del driver...\n");
     }
 
 	/**
@@ -173,6 +185,7 @@ public class DriverPregunta {
         System.out.println("7. Comprobar existencia de una pregunta");
         System.out.println("8. Añadir respuesta a una pregunta");
         System.out.println("0. Salir");
+        System.out.println("\nIntroduzca el número correspondiente a la acción a ejecutar: ");
         
     }
 
@@ -548,7 +561,7 @@ public class DriverPregunta {
 
         System.out.print("Introduzca el id de la pregunta a responder: ");
         int idPregunta = scanner.nextInt();
-        ctrlUsuario.registrarUsuario(usr, "12345", "12345");
+        ctrlUsuario.registrarUsuario(usr, "123456", "123456");
         @SuppressWarnings("unused")
         int r = 0;
         Random random = new Random();

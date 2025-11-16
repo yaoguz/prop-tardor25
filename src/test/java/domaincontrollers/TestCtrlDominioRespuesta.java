@@ -1,6 +1,7 @@
 package domaincontrollers;
 
 import domain.*;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 import static org.junit.Assert.*;
@@ -126,15 +127,18 @@ public class TestCtrlDominioRespuesta {
     public void testImportarRespuestas() {
         File file = new File("src/test/resources/test_respuestas.csv");
         PreguntaLibre mockPregunta = mock(PreguntaLibre.class);
+        Encuesta mockEncuesta = mock(Encuesta.class);
         Usuario mockUsuario = mock(Usuario.class);
         Respuesta mockRespuesta = mock(Respuesta.class);
+        
+        when(mockCtrlDominioEncuesta.getEncuesta("Test Survey", "test")).thenReturn(mockEncuesta);
+        when(mockEncuesta.getIdEncuesta()).thenReturn(1);
+        when(mockCtrlDominioEncuesta.getIdPreguntasEncuesta(1)).thenReturn(List.of(1));
         when(mockCtrlDominioEncuesta.existeEncuesta(1)).thenReturn(true);
         when(mockCtrlDominioPregunta.existePregunta(1)).thenReturn(true);
         when(mockCtrlDominioUsuario.existeUsuario("user1")).thenReturn(true);
         when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(mockPregunta);
         when(mockPregunta.getIdEncuesta()).thenReturn(1);
-
-        //when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(mockPregunta);
         when(mockCtrlDominioUsuario.getUsuario("user1")).thenReturn(mockUsuario);
         when(mockGestor.getNextIdRespuesta()).thenReturn(10);
         when(mockPregunta.crearRespuesta(10, "user1", "Respuesta libre")).thenReturn(mockRespuesta);
@@ -151,40 +155,57 @@ public class TestCtrlDominioRespuesta {
     @Test(expected = IllegalArgumentException.class) 
     public void testImportarRespuestasEncuestaNoExiste() {
         File file = new File("src/test/resources/invalid_respuestas.csv");
-        when(mockCtrlDominioEncuesta.existeEncuesta(1)).thenReturn(false);
+        when(mockCtrlDominioEncuesta.getEncuesta("Invalid Survey", "test")).thenThrow(new IllegalArgumentException("Encuesta no encontrada"));
         ctrlDominioRespuesta.importarRespuestas(file);
     }
 
-    @Test(expected = IllegalArgumentException.class) 
+    @Test
     public void testImportarRespuestasPreguntaNoExiste() {
         File file = new File("src/test/resources/invalid_respuestas.csv");
+        Encuesta mockEncuesta = mock(Encuesta.class);
+        when(mockCtrlDominioEncuesta.getEncuesta("Invalid Survey", "test")).thenReturn(mockEncuesta);
+        when(mockEncuesta.getIdEncuesta()).thenReturn(1);
+        when(mockCtrlDominioEncuesta.getIdPreguntasEncuesta(1)).thenReturn(List.of(1));
+        when(mockCtrlDominioUsuario.existeUsuario("user1")).thenReturn(false);
+        when(mockCtrlDominioUsuario.registrarUsuario("user1", "123456", "123456")).thenReturn("user1");
+        
+        // Mock pregunta for parsing
+        PreguntaLibre mockPregunta = mock(PreguntaLibre.class);
+        when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(mockPregunta);
+        
+        // After parsing, the validation will fail
         when(mockCtrlDominioEncuesta.existeEncuesta(1)).thenReturn(true);
         when(mockCtrlDominioPregunta.existePregunta(1)).thenReturn(false);
-        ctrlDominioRespuesta.importarRespuestas(file);
+        
+        try {
+            ctrlDominioRespuesta.importarRespuestas(file);
+            fail("Se esperaba IllegalStateException");
+        } catch (IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Pregunta con ID 1 no existe"));
+        }
     }
 
-    @Test(expected = IllegalArgumentException.class) 
-    public void testImportarRespuestasUsuarioNoExiste() {
-        File file = new File("src/test/resources/invalid_respuestas.csv");
-        when(mockCtrlDominioEncuesta.existeEncuesta(1)).thenReturn(true);
-        when(mockCtrlDominioPregunta.existePregunta(1)).thenReturn(true);
-        when(mockCtrlDominioUsuario.existeUsuario("user1")).thenReturn(false);
-        ctrlDominioRespuesta.importarRespuestas(file);
-    }
-
-    @Test(expected = IllegalArgumentException.class) 
+    @Test
     public void testImportarRespuestasEncuestaNoTienePregunta() {
         File file = new File("src/test/resources/test_respuestas.csv");
         PreguntaLibre mockPregunta = mock(PreguntaLibre.class);
-        Usuario mockUsuario = mock(Usuario.class);
-        Respuesta mockRespuesta = mock(Respuesta.class);
+        Encuesta mockEncuesta = mock(Encuesta.class);
+        when(mockCtrlDominioEncuesta.getEncuesta("Test Survey", "test")).thenReturn(mockEncuesta);
+        when(mockEncuesta.getIdEncuesta()).thenReturn(1);
+        when(mockCtrlDominioEncuesta.getIdPreguntasEncuesta(1)).thenReturn(List.of(1));
         when(mockCtrlDominioEncuesta.existeEncuesta(1)).thenReturn(true);
         when(mockCtrlDominioPregunta.existePregunta(1)).thenReturn(true);
-        when(mockCtrlDominioUsuario.existeUsuario("user1")).thenReturn(true);
         when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(mockPregunta);
         when(mockPregunta.getIdEncuesta()).thenReturn(2);
+        when(mockCtrlDominioUsuario.existeUsuario("user1")).thenReturn(false);
+        when(mockCtrlDominioUsuario.registrarUsuario("user1", "123456", "123456")).thenReturn("user1");
         
-        ctrlDominioRespuesta.importarRespuestas(file);
+        try {
+            ctrlDominioRespuesta.importarRespuestas(file);
+            fail("Se esperaba IllegalStateException");
+        } catch (IllegalStateException e) {
+            assertTrue(e.getMessage().contains("no pertenece a la encuesta"));
+        }
     }
 
     @Test

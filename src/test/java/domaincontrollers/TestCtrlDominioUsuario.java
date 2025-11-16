@@ -79,6 +79,7 @@ public class TestCtrlDominioUsuario {
         when(mockGestor.getUsuario("Alessandro")).thenReturn(null);
 
         Usuario resultado = ctrlDominioUsuario.getUsuario("Alessandro");
+        // falta verificar?
     }
 
     @Test

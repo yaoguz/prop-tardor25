@@ -355,72 +355,71 @@ public class CtrlDominioRespuesta {
 	 */
 	private Object parsearValorRespuesta(int idPregunta, String valor) {
 		Pregunta p = ctrlDominioPregunta.getPregunta(idPregunta);
-		String tipoPregunta = p.getClass().getSimpleName();
 		
-		switch (tipoPregunta) {
-			case "PreguntaNumerica":
-				return Double.parseDouble(valor);
-			case "PreguntaOpcionUnica":
-				// intentar parsear como numero primero
+		// Usar instanceof en lugar de getClass().getSimpleName() para compatibilidad con mocks
+		if (p instanceof domain.PreguntaNumerica) {
+			return Double.parseDouble(valor);
+		} else if (p instanceof domain.PreguntaOpcionUnica) {
+			// intentar parsear como numero primero
+			try {
+				return Integer.parseInt(valor);
+			} catch (NumberFormatException e) {
+				// si no es numero, buscar el indice de la opcion por su texto
+				ArrayList<String> opciones = p.getOpciones();
+				for (int i = 0; i < opciones.size(); i++) {
+					if (opciones.get(i).equalsIgnoreCase(valor.trim())) {
+						return i;
+					}
+				}
+				throw new IllegalArgumentException("Opción '" + valor + "' no encontrada en pregunta " + idPregunta);
+			}
+		} else if (p instanceof domain.PreguntaOpcionMultiple) {
+			// formato: "0;1" o "0;2;3" o "Casa;Coche"
+			if (valor.contains(";")) {
+				String[] partes = valor.split(";");
+				int[] resultado = new int[partes.length];
+				ArrayList<String> opciones = p.getOpciones();
+				
+				for (int i = 0; i < partes.length; i++) {
+					String parte = partes[i].trim();
+					try {
+						// intentar parsear como número
+						resultado[i] = Integer.parseInt(parte);
+					} catch (NumberFormatException e) {
+						// si no es numero, buscar el índice por texto
+						boolean encontrado = false;
+						for (int j = 0; j < opciones.size(); j++) {
+							if (opciones.get(j).equalsIgnoreCase(parte)) {
+								resultado[i] = j;
+								encontrado = true;
+								break;
+							}
+						}
+						if (!encontrado) {
+							throw new IllegalArgumentException("Opción '" + parte + "' no encontrada en pregunta " + idPregunta);
+						}
+					}
+				}
+				return resultado;
+			} else {
+				// una sola opcion
 				try {
-					return Integer.parseInt(valor);
+					return new int[]{Integer.parseInt(valor)};
 				} catch (NumberFormatException e) {
-					// si no es numero, buscar el indice de la opcion por su texto
+					// buscar el índice por texto
 					ArrayList<String> opciones = p.getOpciones();
 					for (int i = 0; i < opciones.size(); i++) {
 						if (opciones.get(i).equalsIgnoreCase(valor.trim())) {
-							return i;
+							return new int[]{i};
 						}
 					}
 					throw new IllegalArgumentException("Opción '" + valor + "' no encontrada en pregunta " + idPregunta);
 				}
-			case "PreguntaOpcionMultiple":
-				// formato: "0;1" o "0;2;3" o "Casa;Coche"
-				if (valor.contains(";")) {
-					String[] partes = valor.split(";");
-					int[] resultado = new int[partes.length];
-					ArrayList<String> opciones = p.getOpciones();
-					
-					for (int i = 0; i < partes.length; i++) {
-						String parte = partes[i].trim();
-						try {
-							// intentar parsear como número
-							resultado[i] = Integer.parseInt(parte);
-						} catch (NumberFormatException e) {
-							// si no es numero, buscar el índice por texto
-							boolean encontrado = false;
-							for (int j = 0; j < opciones.size(); j++) {
-								if (opciones.get(j).equalsIgnoreCase(parte)) {
-									resultado[i] = j;
-									encontrado = true;
-									break;
-								}
-							}
-							if (!encontrado) {
-								throw new IllegalArgumentException("Opción '" + parte + "' no encontrada en pregunta " + idPregunta);
-							}
-						}
-					}
-					return resultado;
-				} else {
-					// una sola opcion
-					try {
-						return new int[]{Integer.parseInt(valor)};
-					} catch (NumberFormatException e) {
-						// buscar el índice por texto
-						ArrayList<String> opciones = p.getOpciones();
-						for (int i = 0; i < opciones.size(); i++) {
-							if (opciones.get(i).equalsIgnoreCase(valor.trim())) {
-								return new int[]{i};
-							}
-						}
-						throw new IllegalArgumentException("Opción '" + valor + "' no encontrada en pregunta " + idPregunta);
-					}
-				}
-			case "PreguntaLibre":
-				return valor;
-			default:
-				throw new IllegalArgumentException("Tipo de pregunta desconocido: " + tipoPregunta);
+			}
+		} else if (p instanceof domain.PreguntaLibre) {
+			return valor;
+		} else {
+			throw new IllegalArgumentException("Tipo de pregunta desconocido: " + p.getClass().getSimpleName());
 		}
 	}
 }

@@ -16,15 +16,7 @@ import persistence.GestorPersistencia;
 // pnd de revisar
 
 /**
- * Driver interactivo para probar funcionalidad de Clustering.
- * 
- * Permite:
- * - Importar encuestas y respuestas
- * - Ejecutar clustering (K-Means y K-Means++)
- * - Obtener perfiles de comportamiento
- * - Obtener representantes de grupos
- * - Listar individuos de cada perfil
- * - Evaluar calidad del clustering (coeficiente de silueta)
+ * Driver interactivo para probar la funcionalidad de Clustering.
  * 
  * @author Denis Roca
  */
@@ -35,139 +27,166 @@ public class DriverClustering {
     private static CtrlDominioUsuario ctrlUsuario;
     private static CtrlDominioRespuesta ctrlRespuesta;
     private static CtrlDominioPregunta ctrlPregunta;
+    private static CtrlDominioPerfil ctrlPerfil;
     private static Scanner scanner;
 
     // Variables para mantener estado del último clustering ejecutado
     private static int ultimoIdEncuesta = -1;
     private static List<Perfil> ultimosPerfiles = null;
+    private static String nomU;
 
     public static void main(String[] args) {
-        inicializarControladores();
-        scanner = new Scanner(System.in);
-        boolean salir = false;
-
-        System.out.println("╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║  DRIVER CLUSTERING - ANÁLISIS DE PERFILES DE USUARIO      ║");
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
-        System.out.println();
-
-        while (!salir) {
-            mostrarMenu();
-            String opcion = scanner.nextLine().trim();
-            
-            try {
-                switch (opcion) {
-                    case "1":
-                        importarEncuesta();
-                        break;
-                    case "2":
-                        importarRespuestas();
-                        break;
-                    case "3":
-                        ejecutarClustering();
-                        break;
-                    case "4":
-                        obtenerPerfiles();
-                        break;
-                    case "5":
-                        obtenerRepresentantes();
-                        break;
-                    case "6":
-                        listarIndividuosPerfil();
-                        break;
-                    case "7":
-                        evaluarCalidad();
-                        break;
-                    case "8":
-                        compararAlgoritmos();
-                        break;
-                    case "9":
-						mostrarEstadoSistema();
-						break;
-					case "10":
-						verRespuestasEncuesta();
-						break;
-					case "11":
-						verMatrizRespuestas();
-						break;
-					case "0":
-						salir = true;
-						break;
-                    default:
-                        System.out.println("❌ Opción no válida.");
-                }
-            } catch (Exception e) {
-                System.out.println("❌ ERROR: " + e.getMessage());
-                System.out.println("   Tipo: " + e.getClass().getSimpleName());
-                e.printStackTrace();
-            }
-
-            if (!salir) {
-                System.out.println("\n⏎ Pulsa ENTER para continuar...");
-                scanner.nextLine();
-            }
-        }
-        
-        scanner.close();
-        System.out.println("\n✓ Saliendo del driver. ¡Hasta pronto!");
-    }
-
-    private static void inicializarControladores() {
+        // Inicializar dependencias (capa real, no mocks)
         GestorPersistencia gestor = GestorPersistencia.getInstance();
-        ctrlDominio = CtrlDominio.getInstance();
         
-        // Obtener referencias individuales para operaciones específicas
         ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
         ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
         ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);
         ctrlEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlRespuesta, ctrlUsuario);
+        ctrlPerfil = CtrlDominioPerfil.getInstance(gestor, ctrlUsuario, ctrlRespuesta, ctrlEncuesta);
         
-        System.out.println("✓ Controladores inicializados correctamente.");
+        // Actualizar referencias circulares
+        ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlUsuario, ctrlEncuesta, ctrlPregunta);
+        ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, ctrlEncuesta);
+        
+        scanner = new Scanner(System.in);
+
+        boolean salir = false;
+
+        
+        nomU = ctrlUsuario.registrarUsuario("Tester", "123456", "123456");
+        ctrlUsuario.iniciarSesion(nomU, "123456");
+        File fE = new File("./datos-encuestas.json");
+        ultimoIdEncuesta = ctrlEncuesta.importarEncuesta(fE);
+        File fR = new File("./loan-test.csv");
+        ctrlRespuesta.importarRespuestas(fR);
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Información de inicio
+        System.out.println("+---------------- DRIVER INTERACTIVO - CONTROLADOR DE: ----------------+");
+        System.out.println("|  ####  #      #   #   ####  #####  #####  ####   #####  #   #   #### |");
+        System.out.println("| #      #      #   #  #        #    #      #   #    #    ##  #  #     |");
+        System.out.println("| #      #      #   #   ###     #    ####   ####     #    # # #  # ### |");
+        System.out.println("| #      #      #   #      #    #    #      # #      #    #  ##  #   # |");
+        System.out.println("|  ####  #####   ###   ####     #    #####  #  #   #####  #   #   ###  |");
+        System.out.println("+----------------------------------------------------------------------+");
+        System.out.println("Dispone de un usuario con sesión iniciada con nombre: " +nomU);
+        System.out.println("que tiene una encuesta creada con id: " +ultimoIdEncuesta);
+        System.out.println("sacada del archivo: " +fE);
+        System.out.println("con las respuestas sacadas del archivo: " +fR);
+        System.out.println("(ejecutar acción 9 para comprobarlo, en teoría se puede ejecutar el"); // Quitar estos
+        System.out.println("clustering directamente sobre la encuesta " +ultimoIdEncuesta +")");   // comentarios.
+        
+
+        while (!salir) {
+            mostrarMenu();
+            
+            int opcion = leerEntero();
+
+            switch (opcion) {
+                case 1:
+                    importarEncuesta();
+                    break;
+                case 2:
+                    importarRespuestas();
+                    break;
+                case 3:
+                    ejecutarClustering();
+                    break;
+                case 4:
+                    obtenerPerfiles();
+                    break;
+                case 5:
+                    obtenerRepresentantes();
+                    break;
+                //case 6:
+                //    listarIndividuosPerfil();
+                //    break;
+                case 7:
+                    evaluarCalidad();
+                    break;
+                case 8:
+                    compararAlgoritmos();
+                    break;
+                case 9:
+                    mostrarEstadoSistema();
+                    break;
+                case 10:
+                    verRespuestasEncuesta();
+                    break;
+                case 11:
+                    verMatrizRespuestas();
+                    break;
+                case 0:
+                    salir = true;
+                    break;
+                default:
+                    System.out.println("\nOpción no válida. Intenta de nuevo.\n");
+            }
+        }
+        
+        scanner.close();
+        System.out.println("\nSaliendo del driver...\n");
     }
 
     private static void mostrarMenu() {
-        System.out.println("\n┌─────────────────────────────────────────────────────────┐");
-        System.out.println("│                    MENÚ PRINCIPAL                       │");
-        System.out.println("├─────────────────────────────────────────────────────────┤");
-        System.out.println("│  1. Importar encuesta desde JSON                       │");
-        System.out.println("│  2. Importar respuestas desde JSON                     │");
-        System.out.println("│  3. Ejecutar clustering (K-Means / K-Means++)          │");
-        System.out.println("│  4. Obtener diferentes perfiles/comportamientos        │");
-        System.out.println("│  5. Obtener representantes de grupos                   │");
-        System.out.println("│  6. Listar individuos de cada perfil                   │");
-        System.out.println("│  7. Evaluar calidad del clustering (silueta)           │");
-        System.out.println("│  8. Comparar algoritmos (K-Means vs K-Means++)         │");
-        System.out.println("│  9. Mostrar estado del sistema                         │");
-        System.out.println("│ 10. Ver respuestas de una encuesta                     │");
-        System.out.println("│ 11. Ver matriz de respuestas (clustering format)       │");
-        System.out.println("│  0. Salir                                               │");
-        System.out.println("└─────────────────────────────────────────────────────────┘");
-        System.out.print("Selecciona opción: ");
+        System.out.println("\nMENÚ DRIVER CLUSTERING");
+        System.out.println("1. Importar encuesta desde archivo JSON");
+        System.out.println("2. Importar respuestas desde archivo CSV");
+        System.out.println("3. Ejecutar clustering");
+        System.out.println("4. Obtener perfiles del último clustering");
+        System.out.println("5. Obtener representantes de los perfiles del último clustering");
+        //System.out.println("6. Listar individuos de cada perfil");
+        System.out.println("7. Evaluar calidad del último clustering");
+        System.out.println("8. Comparar algoritmos (K-Means vs K-Means++)");
+        System.out.println("9. Mostrar estado del sistema");
+        System.out.println("10. Ver respuestas de una encuesta");
+        System.out.println("11. Ver matriz de respuestas (clustering format)");
+        System.out.println("0. Salir");
+        System.out.println("\nIntroduzca el número correspondiente a la acción a ejecutar: ");
+    }
+
+	/**
+	 * Devuelve un entero leído del terminal.
+	 * 
+     * @throws NumberFormatException si la entrada no era un número.
+	 * @return entero leído del terminal.
+	 */
+    private static int leerEntero() {
+        while (true) {
+            try {
+                String input = scanner.nextLine();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.print("Entrada inválida. Introduce un número: ");
+            }
+        }
     }
 
     private static void importarEncuesta() {
-        System.out.println("\n═══ IMPORTAR ENCUESTA ═══");
+        System.out.println("\n--{ IMPORTAR UNA ENCUESTA DE UN FICHERO }--");
         
         // Mostrar usuarios disponibles
-        System.out.println("\n📋 Usuarios disponibles:");
-        var usuarios = ctrlUsuario.getAllUsuarios();
-        if (usuarios.isEmpty()) {
-            System.out.println("   ⚠ No hay usuarios. Creando usuario de prueba...");
-            ctrlDominio.registrarUsuario("ana", "ana123", "ana123");
-            System.out.println("   ✓ Usuario 'ana' creado.");
-        } else {
-            for (String nombre : usuarios.keySet()) {
-                System.out.println("   • " + nombre);
-            }
-        }
+        System.out.println("Introduzca el usuario propietario de la encuesta: ");
+        String usr = scanner.nextLine();
+        ctrlUsuario.registrarUsuario(usr, "123456", "123456");
 
-        System.out.print("\n👤 Nombre usuario (para asignar como creador): ");
-        String usuario = scanner.nextLine().trim();
 
-        if (!ctrlUsuario.existeUsuario(usuario)) {
-            System.out.println("❌ El usuario no existe. Usa uno de los listados.");
-            return;
-        }
+        // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        // ||||||||||||||||||| -- REVISADO HASTA AQUÍ -- |||||||||||||||||||
+        // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
         System.out.print("📁 Ruta del archivo JSON de la encuesta: ");
         String ruta = scanner.nextLine().trim();
@@ -182,7 +201,7 @@ public class DriverClustering {
             // Iniciar sesión para establecer usuario activo
             ctrlUsuario.iniciarSesion(usuario, obtenerPasswordUsuario(usuario));
             
-            int idEncuesta = ctrlDominio.importarEncuesta(fichero);
+            int idEncuesta = ctrlEncuesta.importarEncuesta(fichero);
             System.out.println("✓ Encuesta importada exitosamente!");
             System.out.println("   ID asignado: " + idEncuesta);
             
@@ -212,7 +231,7 @@ public class DriverClustering {
         }
 
         try {
-            ctrlDominio.importarRespuestas(fichero);
+            ctrlRespuesta.importarRespuestas(fichero);
             System.out.println("✓ Respuestas importadas exitosamente!");
         } catch (Exception e) {
             System.out.println("❌ Error al importar: " + e.getMessage());
@@ -276,7 +295,7 @@ public class DriverClustering {
         System.out.println("\n⏳ Ejecutando " + nombreAlg + " con k=" + k + "...");
         long inicio = System.currentTimeMillis();
 
-        List<Perfil> perfiles = ctrlDominio.ejecutarClustering(idEncuesta, k, algoritmo);
+        List<Perfil> perfiles = ctrlPerfil.ejecutarClustering(idEncuesta, k, algoritmo);
         
         long fin = System.currentTimeMillis();
         System.out.println("✓ Clustering completado en " + (fin - inicio) + " ms");
@@ -294,7 +313,7 @@ public class DriverClustering {
         }
 
         // // Evaluar calidad automáticamente
-        // double silueta = ctrlDominio.evaluarCalidadClustering(perfiles, idEncuesta);
+        // double silueta = ctrlPerfil.evaluarCalidadClustering(perfiles, idEncuesta);
         // System.out.println("\n📈 Calidad del clustering:");
         // System.out.println("   Coeficiente de silueta: " + String.format("%.4f", silueta));
         // System.out.println("   Interpretación: " + ClusterEvaluator.interpretarSilueta(silueta));
@@ -333,12 +352,12 @@ public class DriverClustering {
         System.out.println("\n👥 REPRESENTANTES DE CADA PERFIL:");
         for (int i = 0; i < ultimosPerfiles.size(); i++) {
             Perfil p = ultimosPerfiles.get(i);
-            String representante = ctrlDominio.obtenerRepresentantePerfil(p);
+            String representante = ctrlPerfil.obtenerRepresentantePerfil(p);
             System.out.println("   Perfil " + (i + 1) + ": " + representante + 
                              " (representa a " + p.miembros().size() + " usuarios)");
         }
     }
-
+/*
     private static void listarIndividuosPerfil() {
         System.out.println("\n═══ LISTAR INDIVIDUOS POR PERFIL ═══");
         
@@ -356,7 +375,7 @@ public class DriverClustering {
         }
 
         Perfil perfil = ultimosPerfiles.get(numPerfil - 1);
-        List<String> miembros = ctrlDominio.obtenerMiembrosPerfil(perfil);
+        List<String> miembros = ctrlPerfil.obtenerMiembrosPerfil(perfil);
 
         System.out.println("\n👥 MIEMBROS DEL PERFIL " + numPerfil + ":");
         System.out.println("   Representante: ★ " + perfil.getRepresentante());
@@ -366,7 +385,7 @@ public class DriverClustering {
             System.out.println("   " + (i + 1) + ". " + miembros.get(i));
         }
     }
-
+*/
     private static void evaluarCalidad() {
         System.out.println("\n═══ EVALUAR CALIDAD DEL CLUSTERING ═══");
         
@@ -376,7 +395,7 @@ public class DriverClustering {
         }
 
         System.out.println("\n⏳ Calculando coeficiente de silueta...");
-        double silueta = ctrlDominio.evaluarCalidadClustering(ultimosPerfiles, ultimoIdEncuesta);
+        double silueta = ctrlPerfil.evaluarCalidadClustering(ultimosPerfiles, ultimoIdEncuesta);
 
         System.out.println("\n📈 EVALUACIÓN DE CALIDAD:");
         System.out.println("   ┌─────────────────────────────────────────┐");
@@ -433,18 +452,18 @@ public class DriverClustering {
         // Ejecutar K-Means
         System.out.println("🤖 K-Means estándar:");
         long inicio1 = System.currentTimeMillis();
-        List<Perfil> perfilesKmeans = ctrlDominio.ejecutarClustering(idEncuesta, k, "kmeans");
+        List<Perfil> perfilesKmeans = ctrlPerfil.ejecutarClustering(idEncuesta, k, "kmeans");
         long fin1 = System.currentTimeMillis();
-        double siluetaKmeans = ctrlDominio.evaluarCalidadClustering(perfilesKmeans, idEncuesta);
+        double siluetaKmeans = ctrlPerfil.evaluarCalidadClustering(perfilesKmeans, idEncuesta);
         System.out.println("   Tiempo: " + (fin1 - inicio1) + " ms");
         System.out.println("   Silueta: " + String.format("%.4f", siluetaKmeans));
 
         // Ejecutar K-Means++
         System.out.println("\n🤖 K-Means++:");
         long inicio2 = System.currentTimeMillis();
-        List<Perfil> perfilesKmeansPP = ctrlDominio.ejecutarClustering(idEncuesta, k, "kmeans++");
+        List<Perfil> perfilesKmeansPP = ctrlPerfil.ejecutarClustering(idEncuesta, k, "kmeans++");
         long fin2 = System.currentTimeMillis();
-        double siluetaKmeansPP = ctrlDominio.evaluarCalidadClustering(perfilesKmeansPP, idEncuesta);
+        double siluetaKmeansPP = ctrlPerfil.evaluarCalidadClustering(perfilesKmeansPP, idEncuesta);
         System.out.println("   Tiempo: " + (fin2 - inicio2) + " ms");
         System.out.println("   Silueta: " + String.format("%.4f", siluetaKmeansPP));
 
@@ -690,6 +709,6 @@ public class DriverClustering {
     private static String obtenerPasswordUsuario(String usuario) {
         // Para simplificar, usamos contraseñas por defecto
         if (usuario.equals("ana")) return "ana123";
-        return "pass123"; // Contraseña por defecto
+        return "123456"; // Contraseña por defecto
     }
 }
