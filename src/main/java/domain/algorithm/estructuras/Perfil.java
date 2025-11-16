@@ -26,7 +26,7 @@ public class Perfil {
         return centroide;
     }
 
-    public List<String> miembros () {
+    public List<String> getMiembros () {
         return miembros;
     }
 }

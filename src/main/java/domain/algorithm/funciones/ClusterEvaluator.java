@@ -3,13 +3,13 @@ package domain.algorithm.funciones;
 import java.util.List;
 import domain.Respuesta;
 import domain.Pregunta;
-import domain.algorithm.estructuras.Perfil;
+import domain.algorithm.*;
 
 /**
  * Evaluador de calidad de clustering.
  * Calcula métricas para determinar la calidad de los clusters obtenidos.
  * 
- * @author ?
+ * @author Alessandro Jin
  */
 public class ClusterEvaluator {
 
@@ -27,55 +27,33 @@ public class ClusterEvaluator {
      * @param variables Preguntas de la encuesta
      * @return Coeficiente de silueta global (promedio de todos los usuarios)
      */
-    public static double calcularCoeficienteSilueta(List<Perfil> perfiles, 
+    public static double calcularCoeficienteSilueta(List<Cluster> clusters, 
                                                     List<List<Respuesta>> respuestas, 
                                                     List<Pregunta> variables) {
-        if (perfiles == null || perfiles.isEmpty()) {
-            throw new IllegalArgumentException("La lista de perfiles no puede estar vacía");
-        }
         
-        if (perfiles.size() == 1) {
+        if (clusters.size() == 1) {
             // Si solo hay un cluster, la silueta no está definida
             return 0.0;
         }
 
-        double sumaSiluetas = 0.0;
-        int totalUsuarios = 0;
+        double sumaSiluetaTotal = 0.0;
 
-        // Para cada perfil (cluster)
-        for (Perfil perfil : perfiles) {
-            List<String> miembros = perfil.miembros();
-            
-            if (miembros.isEmpty()) continue;
+        // Para cada usuario del cluster
+        for (int ) {
+            ArrayList<Integer> miembros = cluster.getMiembros();
+
+            List<List<Respuesta>> cluster = sacarMiembros(miembros, respuestas);
 
             // Para cada miembro del cluster
-            for (String nombreUsuario : miembros) {
-                // Encontrar las respuestas de este usuario
-                List<Respuesta> respuestasUsuario = encontrarRespuestasUsuario(nombreUsuario, respuestas);
-                
-                if (respuestasUsuario == null) continue;
+            for (List<Respuesta> persona : cluster) {
+                double siluetaDelCluster = calcularSiluetaCluster(persona, cluster);
 
-                // a(i): Distancia promedio a los miembros de su propio cluster
-                double a_i = calcularDistanciaPromedioIntraCluster(respuestasUsuario, perfil, respuestas, variables, nombreUsuario);
-
-                // b(i): Distancia promedio al cluster más cercano
-                double b_i = calcularDistanciaMinInterCluster(respuestasUsuario, perfiles, perfil, respuestas, variables);
-
-                // s(i) = (b(i) - a(i)) / max(a(i), b(i))
-                double silueta_i;
-                if (miembros.size() == 1) {
-                    // Si el cluster tiene solo 1 elemento, s(i) = 0
-                    silueta_i = 0.0;
-                } else {
-                    silueta_i = (b_i - a_i) / Math.max(a_i, b_i);
-                }
-
-                sumaSiluetas += silueta_i;
-                totalUsuarios++;
+                double siluetaTodos = calcularSiluetaConTodos(persona, respuestas);
             }
         }
 
-        return totalUsuarios > 0 ? sumaSiluetas / totalUsuarios : 0.0;
+        int totalUsuarios = respuestas.size();
+        return totalUsuarios > 0 ? sumaSiluetaTotal / totalUsuarios : 0.0;
     }
 
     /**
@@ -95,7 +73,7 @@ public class ClusterEvaluator {
      * Calcula la distancia promedio de un usuario a todos los demás miembros de su cluster.
      */
     private static double calcularDistanciaPromedioIntraCluster(List<Respuesta> respuestasUsuario,
-                                                                 Perfil perfil,
+                                                                 Cluster perfil,
                                                                  List<List<Respuesta>> respuestas,
                                                                  List<Pregunta> variables,
                                                                  String nombreUsuario) {
@@ -128,16 +106,16 @@ public class ClusterEvaluator {
      * Calcula la distancia promedio mínima a los clusters vecinos (el más cercano).
      */
     private static double calcularDistanciaMinInterCluster(List<Respuesta> respuestasUsuario,
-                                                           List<Perfil> perfiles,
-                                                           Perfil perfilActual,
+                                                           List<Cluster> perfiles,
+                                                           Cluster perfilActual,
                                                            List<List<Respuesta>> respuestas,
                                                            List<Pregunta> variables) {
         double minDistanciaPromedio = Double.MAX_VALUE;
 
-        for (Perfil otroPerfil : perfiles) {
-            if (otroPerfil == perfilActual) continue;
+        for (Cluster otroCluster : perfiles) {
+            if (otroCluster == perfilActual) continue;
 
-            List<String> otrosMiembros = otroPerfil.miembros();
+            List<String> otrosMiembros = otroCluster.miembros();
             if (otrosMiembros.isEmpty()) continue;
 
             double sumaDistancias = 0.0;

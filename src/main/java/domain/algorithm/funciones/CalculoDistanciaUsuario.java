@@ -7,11 +7,11 @@ import domain.*;
 /**
  * @author Alessandro Jin
  */
-public class CalculoDistanciaGlobal {
+public class CalculoDistanciaUsuario {
     
     //p1 y p2 tiene misma longitud y mismas columnas (variables)
     //variables son las columnas
-    public static double calcularDistanciaGlobal(List<Respuesta> p1, List<Respuesta> p2, List<Pregunta> variables) {
+    public static double calcularDistanciaUsuario(List<Respuesta> p1, List<Respuesta> p2, List<Pregunta> variables) {
         
         if (p1.size() != p2.size()) throw new IllegalArgumentException("Tamaño vector no concuerdan");
 
@@ -19,12 +19,17 @@ public class CalculoDistanciaGlobal {
 
         double sumaDistanciaLocales = 0.0;
 
+        int contadorValidas = 0;
         //distancia local de cada variable
         for (int i = 0; i < N; ++i) {
-            sumaDistanciaLocales += calcularDistanciaLocal(p1.get(i), p2.get(i), variables.get(i));
+            Respuesta r1 = p1.get(i);
+            Respuesta r2 = p2.get(i);
+            if (r1 != null && r2 != null) {
+                sumaDistanciaLocales += calcularDistanciaLocal(p1.get(i), p2.get(i), variables.get(i));
+                contadorValidas ++;
+            }
         }
-
-        return sumaDistanciaLocales/N; //distancia global
+        return (contadorValidas > 0) ? sumaDistanciaLocales/contadorValidas : 0.0; // distancia global
 
     }
 
