@@ -101,7 +101,7 @@ public class CtrlDominioPerfil {
      * @param ctrlDominioRespuesta Controlador de respuestas (inyección)
      * @return Lista de clusters obtenidos
      */
-    public List<Perfil> ejecutarClustering(int idEncuesta, int k, String algoritmo) {
+    public ResultadoClustering ejecutarClustering(int idEncuesta, int k, String algoritmo) {
 
         // 1. Obtener todas las respuestas de la encuesta agrupadas por usuario
         List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
@@ -112,24 +112,11 @@ public class CtrlDominioPerfil {
         ClusteringAlgorithm alg = seleccionarAlgoritmo(algoritmo);
         
         // 4. Ejecutar clustering
-        List<Perfil> perfiles = alg.ejecutarClustering(variables, respuestasPorUsuario, k);
+        ResultadoClustering res = alg.ejecutarClustering(variables, respuestasPorUsuario, k);
         
-        return perfiles;
+        return res;
     }
 
-	/**
-	 * Evalúa la calidad del clustering mediante el coeficiente de silueta.
-	 * 
-	 * @param perfiles Lista de perfiles obtenidos del clustering
-	 * @param idEncuesta ID de la encuesta analizada
-	 * @return Coeficiente de silueta (rango [-1, 1], valores altos = mejor clustering)
-	 */
-	public double evaluarCalidadClustering(List<Perfil> perfiles, int idEncuesta) {
-		List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
-		List<Pregunta> variables = ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
-		
-		return ClusterEvaluator.calcularCoeficienteSilueta(perfiles, respuestasPorUsuario, variables);
-	}
 
 	/**
 	 * Obtiene todos los miembros de un perfil específico.

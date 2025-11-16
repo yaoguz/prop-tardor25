@@ -22,7 +22,7 @@ public interface ClusteringAlgorithm {
      * @param k Número de clusters deseados
      * @return Lista de clusters obtenidos
      */
-    List<Perfil> ejecutarClustering(List<Pregunta> variables,List<List<Respuesta>> respuestas, int k);
+    ResultadoClustering ejecutarClustering(List<Pregunta> variables,List<List<Respuesta>> respuestas, int k);
     
     /**
      * Nombre del algoritmo (para logging/reporting).

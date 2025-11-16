@@ -2,6 +2,8 @@ package domain.algorithm;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import domain.*;
 import domain.algorithm.estructuras.*;
@@ -23,7 +25,7 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
     public abstract String getNombre();
     
     @Override
-    public List<Perfil> ejecutarClustering(List<Pregunta> variables, List<List<Respuesta>> respuestas, int k) {
+    public ResultadoClustering ejecutarClustering(List<Pregunta> variables, List<List<Respuesta>> respuestas, int k) {
         List<Cluster> clusters = getEstrategiaInicializacion().inicializarClusters(k, respuestas, variables);
         
         // Iteración hasta convergencia
@@ -41,7 +43,11 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
             iteracion++;
         }
         
-        return listaPerfil(clusters, respuestas, variables);
+        List<Perfil> perfiles = listaPerfil(clusters, respuestas, variables);
+        double calidad = EvaluarCluster.calcularCalidadCluster(clusters, respuestas, variables);
+
+        ResultadoClustering res = new ResultadoClustering(perfiles, calidad);
+        return res;
     }
 
     
@@ -169,4 +175,5 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
 
         return respuestasGente.get(index).get(0).getNomUsuario();
     }
+
 }
