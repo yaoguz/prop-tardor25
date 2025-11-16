@@ -35,6 +35,7 @@ public class CtrlDominioPerfil {
 	
 	/** Controlador de encuestas (inyección de dependencia) */
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
+	@SuppressWarnings("unused")
 	private CtrlDominioUsuario ctrlDominioUsuario;
 	@SuppressWarnings("unused")
 	private CtrlDominioRespuesta ctrlDominioRespuesta;

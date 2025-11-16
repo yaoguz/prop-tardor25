@@ -1,9 +1,6 @@
 package domain.algorithm.funciones;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 import domain.*;
 import domain.algorithm.estructuras.*;
@@ -12,7 +9,7 @@ import domain.algorithm.estructuras.*;
  * @author Xiangjun Yepan
  */
 public class CalculoCentroideMedoids {
-    public static Centride calculoCentroideMedoids(List<List<Respuesta>> cluster, List<Pregunta> variables) {
+    public static Centroide calculoCentroideMedoids(List<List<Respuesta>> cluster, List<Pregunta> variables) {
         double minDistanciaTotal = Double.MAX_VALUE;
         int index = -1;
         for(int i = 0; i < cluster.size(); ++i) {

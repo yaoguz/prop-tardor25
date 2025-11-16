@@ -83,7 +83,7 @@ el mateix, pero per millorar la segona assignacio, assegurar que hi hagi una dis
 
 limitacio k-means: representant es el que esta més a prop del centroide
 
-k-meloids:
+k-medoids:
 la mateixa assignacio ini (random), pero en lloc d'agafar la mitjana, agafa 2 centroides (usuaris reals) amb dist minima entre els 2 
 
 

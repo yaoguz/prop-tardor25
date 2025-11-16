@@ -69,9 +69,6 @@ public class DriverEncuesta {
                     case "9": 
                         obtenerRespuestasEncuesta(); 
                         break;
-                    case "10":
-                        importarEncuesta();
-                        break;
                     case "0": 
                         salir = true; 
                         break;
@@ -147,7 +144,6 @@ public class DriverEncuesta {
         System.out.println("7. Obtener info de una encuesta");
         System.out.println("8. Listar todas las encuestas");
         System.out.println("9. Obtener respuestas de una encuesta");
-        System.out.println("10. Importar Encuesta");
         System.out.println("0. Salir");
         System.out.print("Escoge una opción: ");
     }
@@ -333,45 +329,6 @@ public class DriverEncuesta {
             }
         } catch (IllegalArgumentException | IllegalStateException e) {
             System.out.println("ERROR: " + e.getMessage());
-        }
-    }
-
-    private static void importarEncuesta() {
-        System.out.println("\n--- Importar encuesta ---");
-        mostrarUsuariosDisponibles();
-        System.out.print("Nombre usuario: ");
-        String usuario = scanner.nextLine().trim();
-
-        if (!ctrlUsuario.existeUsuario(usuario)) {
-            System.out.println("ERROR: Usa uno de los usuarios mostrados.");
-            return;
-        }
-        
-        try {
-            // Iniciar sesión para establecer usuario activo
-            ctrlUsuario.iniciarSesion(usuario, "pass123");
-            
-            System.out.print("Ruta del archivo JSON: ");
-            String ruta = scanner.nextLine().trim();
-            java.io.File fichero = new java.io.File(ruta);
-            
-            if (!fichero.exists()) {
-                System.out.println("ERROR: El archivo no existe");
-                return;
-            }
-            
-            int idE = ctrlEncuesta.importarEncuesta(fichero);
-            System.out.println("Encuesta importada con ID: " + idE);
-            
-            // Mostrar información de la encuesta importada
-            Encuesta e = ctrlEncuesta.getEncuesta(idE);
-            System.out.println("Titulo: " + e.getTitulo());
-            System.out.println("Preguntas: " + e.getIdPreguntas().size());
-            
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-        } finally {
-            ctrlUsuario.cerrarSesionActual();
         }
     }
 }

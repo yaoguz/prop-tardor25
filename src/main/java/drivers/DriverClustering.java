@@ -33,7 +33,6 @@ public class DriverClustering {
     // Variables para mantener estado del último clustering ejecutado
     private static int ultimoIdEncuesta = -1;
     private static ResultadoClustering ultimoResultado = null;
-    private static String nomU;
 
     public static void main(String[] args) {
         // Inicializar dependencias (capa real, no mocks)
@@ -53,27 +52,6 @@ public class DriverClustering {
 
         boolean salir = false;
 
-        
-        // nomU = ctrlUsuario.registrarUsuario("Tester", "123456", "123456");
-        // ctrlUsuario.iniciarSesion(nomU, "123456");
-        // ççFile fE = new File("./datos-encuestas.json");
-        // ultimoIdEncuesta = ctrlEncuesta.importarEncuesta(fE);
-        // File fR = new File("./loan-test.csv");
-        // ctrlRespuesta.importarRespuestas(fR);
-        //ctrlUsuario.cerrarSesionActual(); // ?
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Información de inicio
         System.out.println("+---------------- DRIVER INTERACTIVO - CONTROLADOR DE: ----------------+");
         System.out.println("|  ####  #      #   #   ####  #####  #####  ####   #####  #   #   #### |");
@@ -83,14 +61,7 @@ public class DriverClustering {
         System.out.println("|  ####  #####   ###   ####     #    #####  #  #   #####  #   #   ###  |");
         System.out.println("+----------------------------------------------------------------------+");
         System.out.println("Cuando se importe una encuesta e introduzca un nombre de usuario, se creará");
-        System.out.println("para asignarle esa encuesta (si no existía ya).");
-        // System.out.println("Dispone de un usuario con sesión iniciada con nombre: " +nomU);
-        // System.out.println("que tiene una encuesta creada con id: " +ultimoIdEncuesta);
-        // System.out.println("sacada del archivo: " +fE);
-        // System.out.println("con las respuestas sacadas del archivo: " +fR);
-        // System.out.println("(ejecutar acción 9 para comprobarlo, en teoría se puede ejecutar el"); // Quitar estos
-        // System.out.println("clustering directamente sobre la encuesta " +ultimoIdEncuesta +")");   // comentarios.
-        
+        System.out.println("para asignarle esa encuesta (si no existía ya).");        
 
         while (!salir) {
             mostrarMenu();
@@ -297,7 +268,7 @@ public class DriverClustering {
         // Mostrar calidad
         double silueta = resultado.getCalidad();
         System.out.println("El coeficiente de silueta del clustering es: " + String.format("%.4f", silueta));
-        System.out.println(EvaluarCluster.interpretarSilueta(silueta));
+        System.out.println("Calidad "+EvaluarCluster.interpretarSilueta(silueta));
     }
 
     private static void obtenerPerfiles() {

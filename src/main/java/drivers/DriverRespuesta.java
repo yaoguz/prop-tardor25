@@ -81,9 +81,6 @@ public class DriverRespuesta {
                     case "10":
                         listarRespuestasPregunta();
                         break;
-                    case "11":
-                        importarRespuestas();
-                        break;
                     case "0":
                         salir = true;
                         break;
@@ -187,7 +184,6 @@ public class DriverRespuesta {
         System.out.println("8. Listar todas las respuestas");
         System.out.println("9. Listar respuestas de un usuario");
         System.out.println("10. Listar respuestas de una pregunta");
-        System.out.println("11. Importar respuestas desde CSV");
         System.out.println("0. Salir");
         System.out.print("Escoge una opción: ");
     }
@@ -566,34 +562,5 @@ public class DriverRespuesta {
      */
     private static void mostrarUsuariosDisponibles() {
         System.out.println("Usuarios disponibles: ana, pol, joan");
-    }
-    
-    /**
-     * Importa respuestas desde un archivo CSV.
-     */
-    private static void importarRespuestas() {
-        System.out.println("\n--- Importar Respuestas desde CSV ---");
-        System.out.print("Ruta del archivo CSV: ");
-        String ruta = scanner.nextLine().trim();
-        
-        try {
-            java.io.File fichero = new java.io.File(ruta);
-            
-            if (!fichero.exists()) {
-                System.out.println("ERROR: El archivo no existe");
-                return;
-            }
-            
-            ctrlRespuesta.importarRespuestas(fichero);
-            System.out.println("Respuestas importadas correctamente");
-            
-            // Mostrar estadísticas
-            HashMap<Integer, Respuesta> todas = ctrlRespuesta.getAllRespuestas();
-            System.out.println("Total de respuestas en el sistema: " + todas.size());
-            
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }

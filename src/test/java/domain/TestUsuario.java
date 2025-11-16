@@ -31,9 +31,6 @@ public class TestUsuario {
 
         assertNotNull(usuario.getIdEncuestasCreadas());
         assertTrue(usuario.getIdEncuestasCreadas().isEmpty());
-
-        assertNotNull(usuario.getIdPerfiles());
-        assertTrue(usuario.getIdPerfiles().isEmpty());
     }
 
     @Test

@@ -1,0 +1,400 @@
+ESTRUCTURAS DE DATOS - SUBGRUP PROP 11.5
+=========================================
+
+══════════════════════════════════════════════════════════════════════════
+1. HASHMAP<K,V> - Almacenamiento Principal
+══════════════════════════════════════════════════════════════════════════
+
+UBICACIÓN: GestorPersistencia (capa persistencia)
+
+ESTRUCTURA ELEGIDA:
+  - HashMap<String, Usuario>      (clave: nomUsuario)
+  - HashMap<Integer, Encuesta>     (clave: idEncuesta)
+  - HashMap<Integer, Pregunta>     (clave: idPregunta)
+  - HashMap<Integer, Respuesta>    (clave: idRespuesta)
+
+JUSTIFICACIÓN:
+  - Acceso O(1) promedio por clave primaria
+  - Inserción/eliminación O(1)
+  - Ideal para búsquedas frecuentes por ID
+  - No necesitamos ordenación en persistencia
+
+ALTERNATIVAS DESCARTADAS:
+  a) TreeMap<K,V>
+     - O(log n) vs O(1) en HashMap
+     - Ordenación innecesaria (sobrecosto sin beneficio)
+     - Solo útil si necesitáramos rangos ordenados
+  
+  b) ArrayList<T> con búsqueda lineal
+     - O(n) para búsquedas
+     - Inaceptable con cientos/miles de usuarios
+     - Solo válido para listas pequeñas (<20 elementos)
+  
+  c) HashSet<T> con búsqueda por equals()
+     - No permite acceso directo por clave
+     - Requiere búsqueda lineal O(n)
+     - HashMap es superior en todos los aspectos
+
+COMPLEJIDAD OPERACIONES:
+  - get(key):        O(1) promedio, O(n) peor caso (colisiones)
+  - put(key,value):  O(1) promedio
+  - remove(key):     O(1) promedio
+  - containsKey():   O(1) promedio
+  - getAllValues():  O(n) - conversión a ArrayList
+  - Espacio:         O(n)
+
+
+══════════════════════════════════════════════════════════════════════════
+2. ARRAYLIST<T> - Colecciones Ordenadas
+══════════════════════════════════════════════════════════════════════════
+
+UBICACIÓN: 
+  - Usuario (idPerfiles, idEncuestasCreadas, idRespuestas)
+  - Encuesta (idPreguntas)
+  - Kalgorithm (clusters, miembros, respuestas)
+  - CalculoCentroide (componentes del centroide)
+
+ESTRUCTURA ELEGIDA:
+  - ArrayList<Integer> para listas de IDs
+  - ArrayList<Cluster> para clusters temporales
+  - ArrayList<List<Respuesta>> para matriz de respuestas
+
+JUSTIFICACIÓN:
+  - Acceso por índice O(1)
+  - Inserción al final O(1) amortizado
+  - Orden de inserción preservado (importante para preguntas)
+  - Menor overhead que LinkedList
+  - Tamaño dinámico (vs array fijo)
+
+ALTERNATIVAS DESCARTADAS:
+  a) LinkedList<T>
+     - O(n) para acceso por índice vs O(1) en ArrayList
+     - Mayor overhead de memoria (nodos con punteros)
+     - Solo mejor para inserciones frecuentes en medio
+     - Nuestro caso: 95% acceso, 5% modificación
+  
+  b) int[] (array primitivo)
+     - Tamaño fijo (problema con crecimiento dinámico)
+     - Sin métodos útiles (add, remove, contains)
+     - Válido solo para datos estáticos conocidos
+  
+  c) HashSet<Integer>
+     - Sin orden (perdemos secuencia de preguntas)
+     - Sin acceso por índice
+     - Incompatible con algoritmos que usan posiciones
+
+COMPLEJIDAD OPERACIONES:
+  - get(index):      O(1)
+  - add(element):    O(1) amortizado, O(n) si resize
+  - add(index,elem): O(n) - desplazamiento de elementos
+  - remove(index):   O(n) - desplazamiento de elementos
+  - contains(elem):  O(n) - búsqueda lineal
+  - size():          O(1)
+  - Espacio:         O(n)
+
+
+══════════════════════════════════════════════════════════════════════════
+3. LIST<T> (Interfaz) - Flexibilidad de Implementación
+══════════════════════════════════════════════════════════════════════════
+
+UBICACIÓN: 
+  - Kalgorithm (List<Cluster>, List<Pregunta>)
+  - EvaluarCluster (List<List<Respuesta>>)
+  - Firmas de métodos en controladores
+
+ESTRUCTURA ELEGIDA:
+  - Tipo: List<T> (interfaz)
+  - Implementación subyacente: ArrayList<T>
+
+JUSTIFICACIÓN:
+  - Programar contra interfaz (principio SOLID)
+  - Permite cambiar implementación sin romper código
+  - Más flexible que ArrayList directo
+  - Compatibilidad con todas las colecciones List
+
+ALTERNATIVAS DESCARTADAS:
+  a) Collection<T> (demasiado genérico)
+     - Sin get(index) ni acceso posicional
+     - Demasiado abstracto para nuestras necesidades
+  
+  b) ArrayList<T> directo en firmas
+     - Acopla implementación específica
+     - Dificulta testing y cambios futuros
+     - Viola Open/Closed Principle
+
+COMPLEJIDAD: Heredada de la implementación (ArrayList)
+
+
+══════════════════════════════════════════════════════════════════════════
+4. HASHSET<T> - Colecciones Sin Duplicados
+══════════════════════════════════════════════════════════════════════════
+
+UBICACIÓN: 
+  - CtrlDominioEncuesta.getRespuestasEncuesta()
+  - InicializacionPlusPlus (centroidesSeleccionados)
+
+ESTRUCTURA ELEGIDA:
+  - HashSet<Integer> para evitar IDs duplicados
+  - HashSet<Respuesta> para agrupar respuestas únicas
+
+JUSTIFICACIÓN:
+  - Garantiza unicidad O(1)
+  - contains() en O(1) vs O(n) en ArrayList
+  - add() más eficiente que validar duplicados manualmente
+  - Ideal para verificaciones de existencia rápida
+
+ALTERNATIVAS DESCARTADAS:
+  a) TreeSet<T>
+     - O(log n) vs O(1) en HashSet
+     - Ordenación innecesaria
+     - Solo útil si necesitáramos orden natural
+  
+  b) ArrayList<T> con contains()
+     - O(n) para verificar duplicados
+     - Ineficiente para conjuntos grandes
+     - Requiere lógica manual de validación
+
+COMPLEJIDAD OPERACIONES:
+  - add(element):     O(1) promedio
+  - contains(elem):   O(1) promedio
+  - remove(elem):     O(1) promedio
+  - Iteración:        O(n)
+  - Espacio:          O(n)
+
+
+══════════════════════════════════════════════════════════════════════════
+5. MAP<K,V> (Interfaz) - Agregaciones Temporales
+══════════════════════════════════════════════════════════════════════════
+
+UBICACIÓN:
+  - EvaluarCluster (Map<Integer, List<List<Respuesta>>>)
+  - CalculoCentroide (Map<String, Integer> frecuencias texto)
+
+ESTRUCTURA ELEGIDA:
+  - Tipo: Map<K,V> (interfaz)
+  - Implementación: HashMap<K,V>
+
+JUSTIFICACIÓN:
+  - Flexibilidad de interfaz
+  - Agregaciones temporales en algoritmos
+  - O(1) para agrupar clusters por índice
+  - Conteo de frecuencias en texto libre
+
+ALTERNATIVAS: (mismas que HashMap #1)
+
+COMPLEJIDAD: Heredada de HashMap
+
+
+══════════════════════════════════════════════════════════════════════════
+6. ESTRUCTURAS ESPECÍFICAS DE CLUSTERING
+══════════════════════════════════════════════════════════════════════════
+
+6.1. CLUSTER
+-------------
+ESTRUCTURA:
+  - Centroide centroide
+  - ArrayList<Integer> miembros (índices de usuarios)
+
+JUSTIFICACIÓN:
+  - miembros como índices (no copiar List<Respuesta>)
+  - Acceso O(1) a respuestas mediante índice
+  - Mínimo uso de memoria
+
+COMPLEJIDAD:
+  - addMiembro():     O(1)
+  - getMiembros():    O(1)
+  - borrarMiembros(): O(1) (clear ArrayList)
+
+
+6.2. CENTROIDE
+--------------
+ESTRUCTURA:
+  - List<ComponenteCentroide> vectorComponentes
+
+JUSTIFICACIÓN:
+  - Lista heterogénea (ComponenteNumerico, ComponenteUnico, etc.)
+  - Orden preservado (corresponde a orden de preguntas)
+  - Polimorfismo para tipos de componentes
+
+COMPLEJIDAD:
+  - getComponente(i): O(1) por ArrayList subyacente
+  - getVector():      O(1)
+
+
+6.3. PERFIL
+-----------
+ESTRUCTURA:
+  - String representante
+  - Centroide centroide
+  - List<String> miembros (nombres usuarios)
+
+JUSTIFICACIÓN:
+  - Inmutable (final fields)
+  - Resultado final del clustering (no modificable)
+  - miembros como nombres (interfaz usuario)
+
+COMPLEJIDAD:
+  - getters: O(1)
+
+
+══════════════════════════════════════════════════════════════════════════
+7. BOOLEAN[] - Arrays Primitivos de Estado
+══════════════════════════════════════════════════════════════════════════
+
+UBICACIÓN: Kalgorithm.asignarUsuariosAClusters()
+
+ESTRUCTURA ELEGIDA:
+  - Boolean[] cambiados (indica si cluster i cambió)
+
+JUSTIFICACIÓN:
+  - Tamaño fijo = número de clusters (conocido)
+  - Acceso O(1) por índice
+  - Menor overhead que ArrayList<Boolean>
+  - Array primitivo suficiente (no necesita métodos)
+
+ALTERNATIVAS DESCARTADAS:
+  a) ArrayList<Boolean>
+     - Overhead innecesario (boxing/unboxing)
+     - Más lento que array primitivo
+     - Tamaño conocido de antemano
+  
+  b) BitSet
+     - Overkill para 3-10 clusters
+     - Mayor complejidad de API
+     - Útil solo para >1000 flags
+
+COMPLEJIDAD:
+  - Acceso [i]:  O(1)
+  - Espacio:     O(k) donde k=número clusters
+
+
+══════════════════════════════════════════════════════════════════════════
+8. INT[] - Arrays para Respuestas de Opción Múltiple
+══════════════════════════════════════════════════════════════════════════
+
+UBICACIÓN: RespuestaOpcionMultiple
+
+ESTRUCTURA ELEGIDA:
+  - int[] indices (opciones seleccionadas)
+
+JUSTIFICACIÓN:
+  - Opciones como índices enteros (0-based)
+  - Ordenado automáticamente (Arrays.sort)
+  - Búsqueda binaria O(log n) (Arrays.binarySearch)
+  - Menor memoria que List<Integer>
+  - Defensive copy en constructor/getter
+
+ALTERNATIVAS DESCARTADAS:
+  a) ArrayList<Integer>
+     - Boxing overhead (Integer vs int)
+     - Más memoria por elemento
+     - Métodos sort/binarySearch más lentos
+  
+  b) HashSet<Integer>
+     - Sin orden (dificulta equals/hashCode)
+     - No permite búsqueda binaria
+     - Mayor overhead de memoria
+
+COMPLEJIDAD:
+  - Ordenación:       O(n log n) con Arrays.sort
+  - Búsqueda:         O(log n) con Arrays.binarySearch
+  - Acceso [i]:       O(1)
+  - Defensive copy:   O(n)
+
+
+══════════════════════════════════════════════════════════════════════════
+9. INT[][] - Matriz de Programación Dinámica (Levenshtein)
+══════════════════════════════════════════════════════════════════════════
+
+UBICACIÓN: CalculoDistanciaUsuario.levenshtein()
+
+ESTRUCTURA ELEGIDA:
+  - int[][] dp (matriz DP para distancia de edición)
+
+JUSTIFICACIÓN:
+  - Algoritmo clásico requiere matriz 2D
+  - Acceso O(1) por índices [i][j]
+  - Tamaño conocido: (n1+1) x (n2+1)
+  - Array primitivo más eficiente que ArrayList<ArrayList<>>
+
+ALTERNATIVAS DESCARTADAS:
+  a) ArrayList<ArrayList<Integer>>
+     - 3x más memoria (boxing + overhead)
+     - Acceso más lento
+     - Innecesariamente complejo
+  
+  b) Optimización espacial O(n) (solo 2 filas)
+     - Más complejo de implementar
+     - Ganancia marginal (textos cortos ~50 chars)
+     - Sacrifica claridad del código
+
+COMPLEJIDAD:
+  - Espacio:  O(n1 × n2)
+  - Tiempo:   O(n1 × n2) - DP completo
+  - Acceso:   O(1)
+
+
+══════════════════════════════════════════════════════════════════════════
+10. RESUMEN COMPARATIVO
+══════════════════════════════════════════════════════════════════════════
+
+Estructura         | Caso de Uso             | Acceso  | Inserción | Búsqueda
+-------------------|-------------------------|---------|-----------|----------
+HashMap<K,V>       | Persistencia (ID→Obj)   | O(1)    | O(1)      | O(1)
+ArrayList<T>       | Listas ordenadas        | O(1)    | O(1)*     | O(n)
+HashSet<T>         | Unicidad, verificación  | N/A     | O(1)      | O(1)
+List<T> interface  | Flexibilidad APIs       | O(1)**  | O(1)**    | O(n)**
+int[]              | Opciones múltiples      | O(1)    | N/A       | O(log n)***
+Boolean[]          | Flags de estado         | O(1)    | N/A       | N/A
+int[][]            | Matriz DP               | O(1)    | N/A       | N/A
+
+*   Amortizado al final, O(n) en medio
+**  Depende de implementación (asumimos ArrayList)
+*** Con Arrays.binarySearch (array ordenado)
+
+
+══════════════════════════════════════════════════════════════════════════
+DECISIONES DE DISEÑO CLAVE
+══════════════════════════════════════════════════════════════════════════
+
+1. PREFERENCIA POR INTERFACES (List, Map, Set)
+   - Firmas de métodos usan interfaces
+   - Implementaciones concretas internas
+   - Facilita testing y cambios
+
+2. HASHMAP PARA ÍNDICES PRINCIPALES
+   - Todas las búsquedas por ID en O(1)
+   - Trade-off: memoria vs velocidad
+   - Decisión: priorizar velocidad
+
+3. ARRAYLIST COMO IMPLEMENTACIÓN ESTÁNDAR
+   - 90% de operaciones son acceso/append
+   - Inserción en medio poco frecuente
+   - Mejor balance rendimiento/memoria
+
+4. ARRAYS PRIMITIVOS PARA DATOS CONOCIDOS
+   - Tamaño fijo conocido
+   - Sin overhead de objetos
+   - Más eficiente que wrappers
+
+5. DEFENSIVE COPY EN RESPUESTA OPCIÓN MÚLTIPLE
+   - Previene modificación externa
+   - Garantiza inmutabilidad de respuestas
+   - Overhead aceptable (arrays pequeños ~5 elementos)
+
+
+══════════════════════════════════════════════════════════════════════════
+MEJORAS FUTURAS CONSIDERADAS (NO IMPLEMENTADAS)
+══════════════════════════════════════════════════════════════════════════
+
+1. Cache de distancias Levenshtein (Map<Pair<String,String>, Double>)
+   - Reduciría 60-80% tiempo clustering con textos
+   - No implementado: complejidad adicional vs beneficio marginal
+
+2. TreeMap para ordenación automática de usuarios
+   - Descartado: ordenación innecesaria para persistencia
+   - HashMap suficiente (ordenamos solo para UI)
+
+3. BitSet para flags de cambios en clustering
+   - Descartado: overkill para k=3-10 clusters
+   - Boolean[] más simple y claro

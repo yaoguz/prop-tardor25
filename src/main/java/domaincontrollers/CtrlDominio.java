@@ -421,16 +421,6 @@ public class CtrlDominio {
 
 	// ==================== GESTIÓN DE PERFILES ====================
 	// Delega en CtrlDominioPerfil
-	
-	/**
-	 * Obtiene los perfiles de un usuario (funcionalidad de clustering/análisis).
-	 * 
-	 * @param nomUsuario Nombre del usuario
-	 * @return Lista de perfiles del usuario
-	 */
-	public List<Integer> getPerfilesUsuario(String nomUsuario) {
-		return ctrlDominioPerfil.getPerfilesUsuario(nomUsuario);
-	}
 
 	/**
      * Ejecuta análisis de clustering sobre una encuesta.
