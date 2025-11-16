@@ -7,7 +7,6 @@ public class Usuario {
     private String nomUsuario;
     private String contrasena;
 
-    protected ArrayList<Integer> idPerfiles;
     protected ArrayList<Integer> idEncuestasCreadas;
     protected ArrayList<Integer> idRespuestas;
 
@@ -21,7 +20,6 @@ public class Usuario {
     public Usuario(String nomUsuario, String contrasena) {
         this.nomUsuario = nomUsuario;
         this.contrasena = contrasena;
-        this.idPerfiles = new ArrayList<>();
         this.idEncuestasCreadas = new ArrayList<>();
         this.idRespuestas = new ArrayList<>();
     }
