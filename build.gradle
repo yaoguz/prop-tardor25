@@ -67,6 +67,12 @@ task runDriverUsuario(type: JavaExec) {
     standardInput = System.in
 }
 
+task runDriverClustering(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'drivers.DriverClustering'
+    standardInput = System.in
+}
+
 repositories {
     mavenCentral()
 }

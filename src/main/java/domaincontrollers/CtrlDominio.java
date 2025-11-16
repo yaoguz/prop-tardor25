@@ -425,4 +425,35 @@ public class CtrlDominio {
     public List<domain.algorithm.estructuras.Perfil> ejecutarClustering(int idEncuesta, int k, String algoritmo) {
         return ctrlDominioPerfil.ejecutarClustering(idEncuesta, k, algoritmo);
     }
+
+	/**
+	 * Evalúa la calidad de un clustering mediante el coeficiente de silueta.
+	 * 
+	 * @param perfiles Lista de perfiles a evaluar
+	 * @param idEncuesta ID de la encuesta analizada
+	 * @return Coeficiente de silueta ([-1, 1], valores altos = mejor)
+	 */
+	public double evaluarCalidadClustering(List<domain.algorithm.estructuras.Perfil> perfiles, int idEncuesta) {
+		return ctrlDominioPerfil.evaluarCalidadClustering(perfiles, idEncuesta);
+	}
+
+	/**
+	 * Obtiene los miembros de un perfil.
+	 * 
+	 * @param perfil Perfil
+	 * @return Lista de nombres de usuarios
+	 */
+	public List<String> obtenerMiembrosPerfil(domain.algorithm.estructuras.Perfil perfil) {
+		return ctrlDominioPerfil.obtenerMiembrosPerfil(perfil);
+	}
+
+	/**
+	 * Obtiene el representante de un perfil.
+	 * 
+	 * @param perfil Perfil
+	 * @return Nombre del representante
+	 */
+	public String obtenerRepresentantePerfil(domain.algorithm.estructuras.Perfil perfil) {
+		return ctrlDominioPerfil.obtenerRepresentantePerfil(perfil);
+	}
 }

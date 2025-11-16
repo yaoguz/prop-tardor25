@@ -487,7 +487,7 @@ public class DriverPregunta {
         try {
             HashMap<Integer, Pregunta> preguntas = new HashMap<>(ctrlPregunta.getAllPreguntas());
             System.out.println("Total de preguntas: " + preguntas.size());
-            if(preguntas.size > 0){
+            if(preguntas.size() > 0){
                 System.out.println("Preguntas:");
                 for(Pregunta p : preguntas.values()){
                     System.out.println("Id: " +p.getIdPregunta());

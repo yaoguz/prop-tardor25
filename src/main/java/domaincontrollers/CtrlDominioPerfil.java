@@ -8,6 +8,7 @@ import domain.Usuario;
 import domain.Pregunta;
 import domain.algorithm.*;
 import domain.algorithm.estructuras.Perfil;
+import domain.algorithm.funciones.ClusterEvaluator;
 import persistence.GestorPersistencia;
 
 /**
@@ -113,11 +114,42 @@ public class CtrlDominioPerfil {
         // 4. Ejecutar clustering
         List<Perfil> perfiles = alg.ejecutarClustering(variables, respuestasPorUsuario, k);
         
-        // 5. Evaluar calidad
-        //double silueta = ClusterEvaluator.calcularCoeficienteSilueta(clusters, respuestasPorUsuario);
-        
         return perfiles;
     }
+
+	/**
+	 * Evalúa la calidad del clustering mediante el coeficiente de silueta.
+	 * 
+	 * @param perfiles Lista de perfiles obtenidos del clustering
+	 * @param idEncuesta ID de la encuesta analizada
+	 * @return Coeficiente de silueta (rango [-1, 1], valores altos = mejor clustering)
+	 */
+	public double evaluarCalidadClustering(List<Perfil> perfiles, int idEncuesta) {
+		List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
+		List<Pregunta> variables = ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
+		
+		return ClusterEvaluator.calcularCoeficienteSilueta(perfiles, respuestasPorUsuario, variables);
+	}
+
+	/**
+	 * Obtiene todos los miembros de un perfil específico.
+	 * 
+	 * @param perfil Perfil del que obtener miembros
+	 * @return Lista de nombres de usuarios en el perfil
+	 */
+	public List<String> obtenerMiembrosPerfil(Perfil perfil) {
+		return new ArrayList<>(perfil.miembros());
+	}
+
+	/**
+	 * Obtiene el representante de un perfil.
+	 * 
+	 * @param perfil Perfil del que obtener representante
+	 * @return Nombre del usuario representante
+	 */
+	public String obtenerRepresentantePerfil(Perfil perfil) {
+		return perfil.getRepresentante();
+	}
 
 	/** Métodos privados **/
     

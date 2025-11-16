@@ -154,7 +154,7 @@ public class CtrlDominioRespuesta {
 		
 		int idR = gestor.getNextIdRespuesta();
 		Respuesta nuevaRespuesta = p.crearRespuesta(idR, nomUsuario, respuesta);
-		gestor.guardarRespuesta(nuevaRespuesta); // persistencia: respuestas.put(Integer.valueOf(idR), nuevaRespuesta);
+		gestor.guardarRespuesta(nuevaRespuesta);
 		
 		u.guardarIdRespuesta(idR);
 		gestor.actualizarUsuario(u);
@@ -222,9 +222,6 @@ public class CtrlDominioRespuesta {
 			}
 			if (!ctrlDominioPregunta.existePregunta(dato.idPregunta)) {
 				throw new IllegalStateException("Pregunta con ID " + dato.idPregunta + " no existe");
-			}
-			if (!ctrlDominioUsuario.existeUsuario(dato.nomUsuario)) {
-				throw new IllegalStateException("Usuario " + dato.nomUsuario + " no existe");
 			}
 			
 			// validar que la pregunta pertenece a la encuesta
@@ -302,7 +299,13 @@ public class CtrlDominioRespuesta {
 				
 				// Validar que el usuario existe
 				if (!ctrlDominioUsuario.existeUsuario(nomUsuario)) {
-					throw new IllegalStateException("Usuario '" + nomUsuario + "' no existe. Debe registrarse antes de importar respuestas.");
+					// si el usuario no existe, registrarlo automaticamente con contraseña por defecto
+					try {
+						ctrlDominioUsuario.registrarUsuario(nomUsuario, "123456", "123456");
+						System.out.println("Usuario '" + nomUsuario + "' registrado automáticamente");
+					} catch (Exception e1) {
+						throw new IllegalStateException("Error al registrar usuario '" + nomUsuario + "': " + e1.getMessage());
+					}
 				}
 				
 				// Procesar respuestas en orden secuencial (sin saber idPregunta, solo el orden)
