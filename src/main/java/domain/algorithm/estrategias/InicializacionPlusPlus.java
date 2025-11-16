@@ -45,16 +45,18 @@ public class InicializacionPlusPlus implements EstrategiaInicializacion {
                     continue;
                 }
                 
-                double minDistancia = Double.MAX_VALUE; // de esta respuesta con el centroide mas cercano
+                double minDistancia = Double.MAX_VALUE; // de esta respuesta al centroide mas cercano
                 for (Cluster cluster : clusters) {
                     double distancia = CalculoDistanciaCentroide.calcularDistanciaCentroide(
                                        respuestas.get(j), cluster.getCentroide(), variables);
                     if (distancia < minDistancia) minDistancia = distancia;
                 }                
                 distanciasMinimas[j] = minDistancia;
-                sumDistanciasCuadradas += minDistancia * minDistancia;
+                sumDistanciasCuadradas += minDistancia * minDistancia; // asignar intervalo de la respuesta
             }
             
+            // generar numero random entre 0 y sumDistanciasCuadradas
+            // que caerá en alguno de los intervalos de una respuesta
             double randomValue = random.nextDouble() * sumDistanciasCuadradas;
             double acumulado = 0.0;
             int nuevoIndice = 0;
@@ -64,7 +66,7 @@ public class InicializacionPlusPlus implements EstrategiaInicializacion {
                 
                 // poner comentarios
                 acumulado += distanciasMinimas[j] * distanciasMinimas[j];
-                if (acumulado >= randomValue) {
+                if (acumulado >= randomValue) { // randomValue esta dentro del intervalo asignado a la preg j
                     nuevoIndice = j;
                     break;
                 }
