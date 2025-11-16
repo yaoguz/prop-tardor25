@@ -293,11 +293,11 @@ public class DriverClustering {
             System.out.println("      Representante: " + p.getRepresentante());
         }
 
-        // Evaluar calidad automáticamente
-        double silueta = ctrlDominio.evaluarCalidadClustering(perfiles, idEncuesta);
-        System.out.println("\n📈 Calidad del clustering:");
-        System.out.println("   Coeficiente de silueta: " + String.format("%.4f", silueta));
-        System.out.println("   Interpretación: " + ClusterEvaluator.interpretarSilueta(silueta));
+        // // Evaluar calidad automáticamente
+        // double silueta = ctrlDominio.evaluarCalidadClustering(perfiles, idEncuesta);
+        // System.out.println("\n📈 Calidad del clustering:");
+        // System.out.println("   Coeficiente de silueta: " + String.format("%.4f", silueta));
+        // System.out.println("   Interpretación: " + ClusterEvaluator.interpretarSilueta(silueta));
     }
 
     private static void obtenerPerfiles() {
