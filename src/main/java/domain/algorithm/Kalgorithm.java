@@ -112,8 +112,13 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
             String representante = representanteCluster (cluster, respuestas, variables);
 
             for (Integer i : miembros) {
-                String name = respuestas.get(i).get(0).getNomUsuario(); // toda la fila es de un usuario
-                usuarios.add(name);
+                for (Respuesta res : respuestas.get(i)) { // recorre hasta encontrar una respuesta no nula del usuario
+                    if (res != null) {
+                        String name = res.getNomUsuario(); // toda la fila es de un usuario
+                        usuarios.add(name);
+                        break;
+                    }
+                }
             }
 
             perfiles.add(new domain.algorithm.estructuras.Perfil(representante, cluster.getCentroide(), usuarios));

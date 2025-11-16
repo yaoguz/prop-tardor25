@@ -412,6 +412,20 @@ public class GestorPersistencia {
 
 
     /**
+     * Guarda una nueva respuesta en el sistema.
+     * 
+     * @param r Respuesta a guardar
+     * @throws IllegalArgumentException si ya existe una respuesta con el mismo ID
+     */
+    public void guardarRespuesta(Respuesta r) {
+        Integer id = r.getId();
+        if (respuestas.containsKey(id)) {
+            throw new IllegalArgumentException("La respuesta con id: " + id + " ya existe");
+        }
+        respuestas.put(id, r);
+    }
+
+    /**
      * Actualiza una respuesta existente.
      * 
      * @param r Respuesta a actualizar

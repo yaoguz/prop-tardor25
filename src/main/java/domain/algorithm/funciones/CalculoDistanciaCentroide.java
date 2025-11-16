@@ -23,7 +23,7 @@ public class CalculoDistanciaCentroide {
         //distancia local de cada variable
         for (int i = 0; i < N; ++i) {
             Respuesta r = p.get(i);
-            ComponenteCentroide c = centro.get(i);
+            ComponenteCentroide c = centro.getComponente(i);
             if (r != null && c != null) {
                 sumaDistanciaLocales += calcularDistanciaLocal(r, centro.getComponente(i), variables.get(i));
                 contadorValidas++;

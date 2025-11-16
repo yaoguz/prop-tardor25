@@ -231,8 +231,15 @@ public class CtrlDominioRespuesta {
 					" no pertenece a la encuesta " + dato.idEncuesta);
 			}
 			
-			// crear respuesta
-			darRespuesta(dato.nomUsuario, dato.idPregunta, dato.respuesta);
+			
+			try {
+				// crear respuesta
+				darRespuesta(dato.nomUsuario, dato.idPregunta, dato.respuesta);
+			} catch (IllegalArgumentException ex) {
+				// respuesta invalida
+				System.out.println(" ! Respuesta no guardada para usuario '" + dato.nomUsuario + 
+							   "' en pregunta " + dato.idPregunta + ": " + ex.getMessage());
+			}
 		}
 	}
 	
@@ -284,7 +291,10 @@ public class CtrlDominioRespuesta {
 			List<Integer> idPreguntas = ctrlDominioEncuesta.getIdPreguntasEncuesta(idEncuesta);
 			
 			// Línea 2: encabezados (ignorar, solo para legibilidad del CSV)
-			reader.readLine();
+			String linea2 = reader.readLine();
+			if (linea2 == null) {
+				throw new IllegalArgumentException("Fichero CSV sin línea de encabezados");
+			}
 			
 			// Líneas 3+: respuestas en orden secuencial
 			String linea;
@@ -313,13 +323,20 @@ public class CtrlDominioRespuesta {
 					String valorRespuesta = valores[i + 1].trim();
 					if (valorRespuesta.isEmpty()) continue; // pregunta no respondida
 					
-					RespuestaImportData data = new RespuestaImportData();
-					data.idEncuesta = idEncuesta;
-					data.idPregunta = idPreguntas.get(i);
-					data.nomUsuario = nomUsuario;
-					data.respuesta = parsearValorRespuesta(data.idPregunta, valorRespuesta);
-					
-					resultado.add(data);
+					try {
+						RespuestaImportData data = new RespuestaImportData();
+						data.idEncuesta = idEncuesta;
+						data.idPregunta = idPreguntas.get(i);
+						data.nomUsuario = nomUsuario;
+						data.respuesta = parsearValorRespuesta(data.idPregunta, valorRespuesta);
+						
+						resultado.add(data);
+					} catch (IllegalArgumentException ex) {
+						// respuesta no valida, omitir y continuar
+						Pregunta pregunta = ctrlDominioPregunta.getPregunta(idPreguntas.get(i));
+						System.out.println(" ! Respuesta inválida omitida para usuario '" + nomUsuario + 
+									   "' en pregunta " + (i + 1) + " ('" + pregunta.getEnunciado() + "'): " + ex.getMessage());
+					}
 				}
 			}
 			
@@ -342,20 +359,63 @@ public class CtrlDominioRespuesta {
 		
 		switch (tipoPregunta) {
 			case "PreguntaNumerica":
-				return Integer.parseInt(valor);
+				return Double.parseDouble(valor);
 			case "PreguntaOpcionUnica":
-				return Integer.parseInt(valor);
+				// intentar parsear como numero primero
+				try {
+					return Integer.parseInt(valor);
+				} catch (NumberFormatException e) {
+					// si no es numero, buscar el indice de la opcion por su texto
+					ArrayList<String> opciones = p.getOpciones();
+					for (int i = 0; i < opciones.size(); i++) {
+						if (opciones.get(i).equalsIgnoreCase(valor.trim())) {
+							return i;
+						}
+					}
+					throw new IllegalArgumentException("Opción '" + valor + "' no encontrada en pregunta " + idPregunta);
+				}
 			case "PreguntaOpcionMultiple":
-				// Formato: "0;1" o "0;2;3"
+				// formato: "0;1" o "0;2;3" o "Casa;Coche"
 				if (valor.contains(";")) {
-					String[] indices = valor.split(";");
-					int[] resultado = new int[indices.length];
-					for (int i = 0; i < indices.length; i++) {
-						resultado[i] = Integer.parseInt(indices[i].trim());
+					String[] partes = valor.split(";");
+					int[] resultado = new int[partes.length];
+					ArrayList<String> opciones = p.getOpciones();
+					
+					for (int i = 0; i < partes.length; i++) {
+						String parte = partes[i].trim();
+						try {
+							// intentar parsear como número
+							resultado[i] = Integer.parseInt(parte);
+						} catch (NumberFormatException e) {
+							// si no es numero, buscar el índice por texto
+							boolean encontrado = false;
+							for (int j = 0; j < opciones.size(); j++) {
+								if (opciones.get(j).equalsIgnoreCase(parte)) {
+									resultado[i] = j;
+									encontrado = true;
+									break;
+								}
+							}
+							if (!encontrado) {
+								throw new IllegalArgumentException("Opción '" + parte + "' no encontrada en pregunta " + idPregunta);
+							}
+						}
 					}
 					return resultado;
 				} else {
-					return new int[]{Integer.parseInt(valor)};
+					// una sola opcion
+					try {
+						return new int[]{Integer.parseInt(valor)};
+					} catch (NumberFormatException e) {
+						// buscar el índice por texto
+						ArrayList<String> opciones = p.getOpciones();
+						for (int i = 0; i < opciones.size(); i++) {
+							if (opciones.get(i).equalsIgnoreCase(valor.trim())) {
+								return new int[]{i};
+							}
+						}
+						throw new IllegalArgumentException("Opción '" + valor + "' no encontrada en pregunta " + idPregunta);
+					}
 				}
 			case "PreguntaLibre":
 				return valor;

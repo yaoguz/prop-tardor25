@@ -6,10 +6,9 @@ import domain.*;
 import domain.algorithm.estructuras.*;
 
 /**
- * @author Alessandro Jin
- */
-/**
  * Transforma un perfil de respuestas en un Centroide.
+ * 
+ * @author Alessandro Jin
  */
 public class TransformarEnCentroide {
     public static Centroide transformarEnCentroide(List<Respuesta> respuesta) {
@@ -17,7 +16,7 @@ public class TransformarEnCentroide {
 
         for (Respuesta r: respuesta) {
             if (r == null) {
-                // para respuestas nulas, añadir componente con valor por defecto (pnd revisar)
+                // para respuestas nulas, añadir componente nulo
                 centroide.add(null);
             }
             else if (r instanceof RespuestaNumerica) {
