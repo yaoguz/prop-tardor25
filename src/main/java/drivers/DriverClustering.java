@@ -22,7 +22,6 @@ import persistence.GestorPersistencia;
  */
 public class DriverClustering {
 
-    private static CtrlDominio ctrlDominio;
     private static CtrlDominioEncuesta ctrlEncuesta;
     private static CtrlDominioUsuario ctrlUsuario;
     private static CtrlDominioRespuesta ctrlRespuesta;
@@ -60,6 +59,7 @@ public class DriverClustering {
         ultimoIdEncuesta = ctrlEncuesta.importarEncuesta(fE);
         File fR = new File("./loan-test.csv");
         ctrlRespuesta.importarRespuestas(fR);
+        ctrlUsuario.cerrarSesionActual();
 
 
 
@@ -81,7 +81,7 @@ public class DriverClustering {
         System.out.println("| #      #      #   #      #    #    #      # #      #    #  ##  #   # |");
         System.out.println("|  ####  #####   ###   ####     #    #####  #  #   #####  #   #   ###  |");
         System.out.println("+----------------------------------------------------------------------+");
-        System.out.println("Dispone de un usuario con sesión iniciada con nombre: " +nomU);
+        System.out.println("Dispone de un usuario con nombre: " +nomU);
         System.out.println("que tiene una encuesta creada con id: " +ultimoIdEncuesta);
         System.out.println("sacada del archivo: " +fE);
         System.out.println("con las respuestas sacadas del archivo: " +fR);
@@ -177,42 +177,34 @@ public class DriverClustering {
     private static void importarEncuesta() {
         System.out.println("\n--{ IMPORTAR UNA ENCUESTA DE UN FICHERO }--");
         
-        // Mostrar usuarios disponibles
-        System.out.println("Introduzca el usuario propietario de la encuesta: ");
+        System.out.println("Introduzca el nombre del usuario propietario de la encuesta: ");
         String usr = scanner.nextLine();
         ctrlUsuario.registrarUsuario(usr, "123456", "123456");
 
-
-        // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-        // ||||||||||||||||||| -- REVISADO HASTA AQUÍ -- |||||||||||||||||||
-        // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-
-        System.out.print("📁 Ruta del archivo JSON de la encuesta: ");
+        System.out.print("Introduzca la ruta del archivo JSON de la encuesta: ");
         String ruta = scanner.nextLine().trim();
         File fichero = new File(ruta);
 
         if (!fichero.exists()) {
-            System.out.println("❌ El archivo no existe: " + ruta);
+            System.out.println("El archivo especificado no existe: " + ruta);
             return;
         }
 
         try {
             // Iniciar sesión para establecer usuario activo
-            ctrlUsuario.iniciarSesion(usuario, obtenerPasswordUsuario(usuario));
+            ctrlUsuario.iniciarSesion(usr, "123456");
             
             int idEncuesta = ctrlEncuesta.importarEncuesta(fichero);
-            System.out.println("✓ Encuesta importada exitosamente!");
-            System.out.println("   ID asignado: " + idEncuesta);
+            System.out.println("Se ha importado la encuesta exitosamente. Se le ha asignado el identificador " + idEncuesta);
             
             // Mostrar información
             Encuesta e = ctrlEncuesta.getEncuesta(idEncuesta);
-            System.out.println("   Título: " + e.getTitulo());
-            System.out.println("   Preguntas: " + e.getIdPreguntas().size());
-            System.out.println("   Creador: " + e.getIdCreador());
+            System.out.println("Su título es: " + e.getTitulo());
+            System.out.println("tiene " + e.getIdPreguntas().size() + " preguntas");
+            System.out.println("y su creador es: " + e.getIdCreador());
             
         } catch (Exception e) {
-            System.out.println("❌ Error al importar: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         } finally {
             ctrlUsuario.cerrarSesionActual();
         }
@@ -700,15 +692,5 @@ public class DriverClustering {
             System.out.println("❌ Error al obtener matriz: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Obtiene la contraseña de un usuario (simplificado para el driver).
-     * En un sistema real, esto vendría de la base de datos.
-     */
-    private static String obtenerPasswordUsuario(String usuario) {
-        // Para simplificar, usamos contraseñas por defecto
-        if (usuario.equals("ana")) return "ana123";
-        return "123456"; // Contraseña por defecto
     }
 }
