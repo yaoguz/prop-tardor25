@@ -86,17 +86,6 @@ public class Encuesta {
         this.IdPreguntas.add(IdPregunta);
     }
 
-    /*
-    public ArrayList<ArrayList<Respuesta>> verRespuestas() {
-
-        ArrayList<ArrayList<Respuesta>> respuestas = new ArrayList<>(); 
-        for (Pregunta p : preguntas) {
-            respuestas.add(p.getRespuestas());
-        }
-        return respuestas;
-    }
-    */
-
     /**
      * Se elimina un IdPregunta, equivalente a eliminar una pregunta 
      * de la encuesta

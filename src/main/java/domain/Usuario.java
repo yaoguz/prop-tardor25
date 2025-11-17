@@ -110,23 +110,4 @@ public class Usuario {
         this.idEncuestasCreadas.remove(Integer.valueOf(idE));
     }
 
-    // public Set<Integer> getIdEncuestasRespondidas() {
-    //     Set<Integer> aux = new HashSet<>();
-    //     for (int i = 0; i < idRespuestas.size(); ++i)
-    //     {
-    //         aux.add(idRespuestas.get(i).getEncuesta());
-    //     }
-    //     return aux;
-    // }
-    // public ArrayList<Integer> getRespuestasEncuesta(int idEncuesta)
-    // {
-    //     ArrayList<Integer> aux = new ArrayList<>();
-    //     for (int i = 0; i < idRespuestas.size(); ++i)
-    //     {
-    //         if (idRespuestas.get(i).getIdEncuesta() == idEncuesta) {
-    //             aux.add(idRespuestas.get(i));
-    //         }
-    //     }
-    //     return aux;
-    // }
 }
