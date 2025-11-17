@@ -36,6 +36,8 @@ OPERATIVA:
 7. Opción 0 para salir
 
 DATOS DE PRUEBA INICIALES:
-- Usuario: user1, contraseña: 123456
-- Usuario: user2, contraseña: pass2
-- Usuario: user3, contraseña: pass3
+- Usuario: user1
+- Encuesta: Encuesta1
+- Pregunta: Pregunta libre -  "Quien eres?"
+- Respuesta: "Soy user1"
+

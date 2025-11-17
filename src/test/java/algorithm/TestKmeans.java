@@ -77,7 +77,7 @@ public class TestKmeans {
      */
     @Test
     public void testGetNombre_RetornaNombreCorrecto() {
-        assertEquals("Kmeans", kmeans.getNombre());
+        assertEquals("Deberia ser Kmeans", "Kmeans", kmeans.getNombre());
     }
     
     /**
@@ -87,17 +87,17 @@ public class TestKmeans {
     public void testEjecutarClustering_K2_GeneraDosPerfiles() {
         ResultadoClustering resultado = kmeans.ejecutarClustering(variables, respuestas, 2);
         
-        assertNotNull(resultado);
-        assertEquals(2, resultado.getPerfiles().size());
+        assertNotNull("Esta nulo", resultado);
+        assertEquals("No genera cantidad perfil bien", 2, resultado.getPerfiles().size());
         
-        // Verificar que cada perfil tiene miembros
+        // Verificar que cada perfil tiene 3 miembros por grupo
         for (Perfil p : resultado.getPerfiles()) {
-            assertTrue(p.getMiembros().size() == 3);
-            assertNotNull(p.getRepresentante());
+            assertTrue("Deberia ser grupos de 3 perfectos",p.getMiembros().size() == 3);
+            assertNotNull("Debe de haber representante", p.getRepresentante());
         }
         
         // Calidad debe estar entre -1 y 1
-        assertTrue(resultado.getCalidad() >= -1.0 && resultado.getCalidad() <= 1.0);
+        assertTrue("Silueta esta mal", resultado.getCalidad() >= -1.0 && resultado.getCalidad() <= 1.0);
     }
     
     /**
@@ -112,23 +112,9 @@ public class TestKmeans {
             totalMiembros += p.getMiembros().size();
         }
         
-        assertEquals(respuestas.size(), totalMiembros);
+        assertEquals("No ha asignado a donde mundo", respuestas.size(), totalMiembros);
     }
     
-    /**
-     * Genera 3 clusters correctamente.
-     */
-    @Test
-    public void testEjecutarClustering_K3_GeneraTresPerfiles() {
-        ResultadoClustering resultado = kmeans.ejecutarClustering(variables, respuestas, 3);
-        
-        assertEquals(3, resultado.getPerfiles().size());
-        
-        // Verificar que no hay perfiles vacíos (puede pasar con pocos datos)
-        for (Perfil p : resultado.getPerfiles()) {
-            assertTrue(p.getMiembros().size() >= 0);
-        }
-    }
     
     /**
      * El centroide está en la lista de miembros.
@@ -139,7 +125,7 @@ public class TestKmeans {
         
         for (Perfil p : resultado.getPerfiles()) {
             if (p.getMiembros().size() > 0) {
-                assertTrue(p.getMiembros().contains(p.getRepresentante()));
+                assertTrue("Representante no esta en miembro", p.getMiembros().contains(p.getRepresentante()));
             }
         }
     }
@@ -149,13 +135,34 @@ public class TestKmeans {
      */
     @Test
     public void testEjecutarClustering_ConsistenciaMultiplesEjecuciones() {
-        ResultadoClustering r1 = kmeans.ejecutarClustering(variables, respuestas, 2);
-        ResultadoClustering r2 = kmeans.ejecutarClustering(variables, respuestas, 2);
-        ResultadoClustering r3 = kmeans.ejecutarClustering(variables, respuestas, 2);
+        ResultadoClustering r1 = kmeans.ejecutarClustering(variables, respuestas, 4);
+        ResultadoClustering r2 = kmeans.ejecutarClustering(variables, respuestas, 5);
+        ResultadoClustering r3 = kmeans.ejecutarClustering(variables, respuestas, 6);
+   
+        assertEquals("No genera cantidad perfil bien",4, r1.getPerfiles().size());
+        assertEquals("No genera cantidad perfil bien",5, r2.getPerfiles().size());
+        assertEquals("No genera cantidad perfil bien",6, r3.getPerfiles().size());
+    }
+
+    /**
+     * Ningún usuario aparece en múltiples clusters.
+     */
+    @Test
+    public void testEjecutarClustering_UsuariosSinDuplicar() {
+        ResultadoClustering resultado = kmeans.ejecutarClustering(variables, respuestas, 2);
         
-        // Siempre debe generar 2 perfiles
-        assertEquals(2, r1.getPerfiles().size());
-        assertEquals(2, r2.getPerfiles().size());
-        assertEquals(2, r3.getPerfiles().size());
+        List<String> todosUsuarios = new ArrayList<>();
+        for (Perfil p : resultado.getPerfiles()) {
+            todosUsuarios.addAll(p.getMiembros());
+        }
+        
+        // Verificar que no hay duplicados
+        for (String usuario : todosUsuarios) {
+            int count = 0;
+            for (String u : todosUsuarios) {
+                if (u.equals(usuario)) count++;
+            }
+            assertEquals("Duplicados",1, count);
+        }
     }
 }

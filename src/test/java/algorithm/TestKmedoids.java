@@ -77,7 +77,7 @@ public class TestKmedoids {
      */
     @Test
     public void testGetNombre_RetornaNombreCorrecto() {
-        assertEquals("KMedoids", kmedoids.getNombre());
+        assertEquals("Deberia ser KMedoids","KMedoids", kmedoids.getNombre());
     }
     
     /**
@@ -87,15 +87,15 @@ public class TestKmedoids {
     public void testEjecutarClustering_K2_GeneraDosPerfiles() {
         ResultadoClustering resultado = kmedoids.ejecutarClustering(variables, respuestas, 2);
         
-        assertNotNull(resultado);
-        assertEquals(2, resultado.getPerfiles().size());
+        assertNotNull("Esta nulo", resultado);
+        assertEquals("No genera cantidad perfil bien",2, resultado.getPerfiles().size());
         
         for (Perfil p : resultado.getPerfiles()) {
-            assertTrue(p.getMiembros().size() > 0);
-            assertNotNull(p.getRepresentante());
+            assertTrue("Deberia ser grupos de 3 perfectos",p.getMiembros().size() == 3);
+            assertNotNull("Debe de haber representante",p.getRepresentante());
         }
         
-        assertTrue(resultado.getCalidad() >= -1.0 && resultado.getCalidad() <= 1.0);
+        assertTrue("Silueta esta mal",resultado.getCalidad() >= -1.0 && resultado.getCalidad() <= 1.0);
     }
     
     /**
@@ -110,35 +110,10 @@ public class TestKmedoids {
             totalMiembros += p.getMiembros().size();
         }
         
-        assertEquals(respuestas.size(), totalMiembros);
+        assertEquals("No ha asignado a donde mundo",respuestas.size(), totalMiembros);
     }
     
-    /**
-     * Los medoides son usuarios reales del dataset.
-     */
-    @Test
-    public void testEjecutarClustering_RepresentantesSonUsuariosReales() {
-        ResultadoClustering resultado = kmedoids.ejecutarClustering(variables, respuestas, 2);
-        
-        List<String> usuariosOriginales = Arrays.asList("U1", "U2", "U3", "U4", "U5", "U6");
-        
-        for (Perfil p : resultado.getPerfiles()) {
-            if (p.getMiembros().size() > 0) {
-                // El representante debe ser un usuario real
-                assertTrue(usuariosOriginales.contains(p.getRepresentante()));
-            }
-        }
-    }
-    
-    /**
-     * Genera 3 clusters correctamente.
-     */
-    @Test
-    public void testEjecutarClustering_K3_GeneraTresPerfiles() {
-        ResultadoClustering resultado = kmedoids.ejecutarClustering(variables, respuestas, 3);
-        
-        assertEquals(3, resultado.getPerfiles().size());
-    }
+
     
     /**
      * El medoide está en la lista de miembros.
@@ -159,13 +134,13 @@ public class TestKmedoids {
      */
     @Test
     public void testEjecutarClustering_ConsistenciaMultiplesEjecuciones() {
-        ResultadoClustering r1 = kmedoids.ejecutarClustering(variables, respuestas, 2);
-        ResultadoClustering r2 = kmedoids.ejecutarClustering(variables, respuestas, 2);
-        ResultadoClustering r3 = kmedoids.ejecutarClustering(variables, respuestas, 2);
+        ResultadoClustering r1 = kmedoids.ejecutarClustering(variables, respuestas, 4);
+        ResultadoClustering r2 = kmedoids.ejecutarClustering(variables, respuestas, 5);
+        ResultadoClustering r3 = kmedoids.ejecutarClustering(variables, respuestas, 6);
         
-        assertEquals(2, r1.getPerfiles().size());
-        assertEquals(2, r2.getPerfiles().size());
-        assertEquals(2, r3.getPerfiles().size());
+        assertEquals("No genera cantidad perfil bien",4, r1.getPerfiles().size());
+        assertEquals("No genera cantidad perfil bien",5, r2.getPerfiles().size());
+        assertEquals("No genera cantidad perfil bien",6, r3.getPerfiles().size());
     }
     
     /**
@@ -186,7 +161,7 @@ public class TestKmedoids {
             for (String u : todosUsuarios) {
                 if (u.equals(usuario)) count++;
             }
-            assertEquals(1, count);
+            assertEquals("Duplicados", 1, count);
         }
     }
 }

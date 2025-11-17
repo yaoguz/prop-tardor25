@@ -77,7 +77,7 @@ public class TestKmeansPlusPlus {
      */
     @Test
     public void testGetNombre_RetornaNombreCorrecto() {
-        assertEquals("KMeans++", kmeansPlusPlus.getNombre());
+        assertEquals("Deberia ser KMeans++", "KMeans++", kmeansPlusPlus.getNombre());
     }
     
     /**
@@ -85,17 +85,17 @@ public class TestKmeansPlusPlus {
      */
     @Test
     public void testEjecutarClustering_K2_GeneraDosPerfiles() {
-        ResultadoClustering resultado = kmeansPlusPlus.ejecutarClustering(variables, respuestas, 2);
+        ResultadoClustering resultado = kmedoids.ejecutarClustering(variables, respuestas, 2);
         
-        assertNotNull(resultado);
-        assertEquals(2, resultado.getPerfiles().size());
+        assertNotNull("Esta nulo", resultado);
+        assertEquals("No genera cantidad perfil bien",2, resultado.getPerfiles().size());
         
         for (Perfil p : resultado.getPerfiles()) {
-            assertTrue(p.getMiembros().size() > 0);
-            assertNotNull(p.getRepresentante());
+            assertTrue("Deberia ser grupos de 3 perfectos",p.getMiembros().size() == 3);
+            assertNotNull("Debe de haber representante",p.getRepresentante());
         }
         
-        assertTrue(resultado.getCalidad() >= -1.0 && resultado.getCalidad() <= 1.0);
+        assertTrue("Silueta esta mal",resultado.getCalidad() >= -1.0 && resultado.getCalidad() <= 1.0);
     }
     
     /**
@@ -110,7 +110,7 @@ public class TestKmeansPlusPlus {
             totalMiembros += p.getMiembros().size();
         }
         
-        assertEquals(respuestas.size(), totalMiembros);
+        assertEquals("No ha asignado a donde mundo", respuestas.size(), totalMiembros);
     }
     
     /**
@@ -136,19 +136,24 @@ public class TestKmeansPlusPlus {
         
         // K-means++ debería dar igual o mejor calidad en promedio
         // (permitimos un pequeño margen de error)
-        assertTrue(calidadPlusPlus >= calidadKmeans - 0.15);
+        assertTrue("Kmeans++ mal", calidadPlusPlus >= calidadKmeans - 0.15);
     }
+    
     
     /**
-     * Genera 3 clusters correctamente.
+     * Múltiples ejecuciones generan el mismo número de clusters.
      */
     @Test
-    public void testEjecutarClustering_K3_GeneraTresPerfiles() {
-        ResultadoClustering resultado = kmeansPlusPlus.ejecutarClustering(variables, respuestas, 3);
+    public void testEjecutarClustering_ConsistenciaMultiplesEjecuciones() {
+        ResultadoClustering r1 = kmeansPlusPlus.ejecutarClustering(variables, respuestas, 4);
+        ResultadoClustering r2 = kmeansPlusPlus.ejecutarClustering(variables, respuestas, 5);
+        ResultadoClustering r3 = kmeansPlusPlus.ejecutarClustering(variables, respuestas, 6);
         
-        assertEquals(3, resultado.getPerfiles().size());
+        assertEquals("No genera cantidad perfil bien",4, r1.getPerfiles().size());
+        assertEquals("No genera cantidad perfil bien",5, r2.getPerfiles().size());
+        assertEquals("No genera cantidad perfil bien",6, r3.getPerfiles().size());
     }
-    
+
     /**
      * Ningún usuario aparece en múltiples clusters.
      */
@@ -167,7 +172,7 @@ public class TestKmeansPlusPlus {
             for (String u : todosUsuarios) {
                 if (u.equals(usuario)) count++;
             }
-            assertEquals(1, count);
+            assertEquals("Duplicados",1, count);
         }
     }
 }

@@ -44,5 +44,7 @@ OPERATIVA:
 7. Opción 0 para salir
 
 DATOS DE PRUEBA INICIALES:
-- Encuesta: ID=1
-- Preguntas de cada tipo con datos válidos predefinidos
+- Usuario: nomUsuario="Tester", contrasena="123456"
+- Encuesta: ID=1, titulo="Titulo"
+- Preguntas: Varias de tipos Libre, Numérica, Opción Única y Opción Multiple
+- Respuesta: Tester ha respondido a todas las respuestas creadas

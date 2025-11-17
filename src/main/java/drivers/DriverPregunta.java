@@ -83,7 +83,7 @@ public class DriverPregunta {
 
         // Inicializar datos de prueba
         nomU = ctrlUsuario.registrarUsuario("Tester", "123456", "123456");
-        idE = ctrlEncuesta.crearEncuesta(nomU, "Título");
+        idE = ctrlEncuesta.crearEncuesta(nomU, "Titulo");
         int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:");
         int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "Respuesta Libre");
         int idPN = ctrlPregunta.crearPreguntaNumerica(idE,  "Enunciado numérico:", 2, 8);
