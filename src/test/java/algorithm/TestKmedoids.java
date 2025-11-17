@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  * Pruebas del algoritmo K-medoids.
- * @author ?
+ * @author Xiangjun Yepan
  */
 public class TestKmedoids {
     

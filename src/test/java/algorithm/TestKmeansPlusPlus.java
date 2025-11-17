@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  * Pruebas del algoritmo K-means++.
- * @author ?
+ * @author Denis Roca
  */
 public class TestKmeansPlusPlus {
     
