@@ -228,3 +228,15 @@ El perfil 3 tiene 24 miembros. Su representante es: LP002860.
 El coeficiente de silueta del clustering es: 0.0942
 Calidad POBRE: Estructura de clusters muy débil o artificial
 
+PRUEBA 5: Mostrar información de los datos actuales
+------------------------------------
+Opcion: 5 
+Resultado esperado:
+--{ INFORMACIÓN ACTUAL DE LOS DATOS DEL SISTEMA }--
+Usuarios registrados: 368
+Encuestas registradas: 1
+Información de las encuestas:
+
+Id: 1 - Encuesta Informaciones Personales
+-Preguntas: 13
+-Usuarios que han respondido: 367
