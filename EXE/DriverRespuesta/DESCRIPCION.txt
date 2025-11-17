@@ -45,7 +45,6 @@ OPERATIVA:
 7. Opción 0 para salir
 
 DATOS DE PRUEBA INICIALES:
-- Usuarios: user1, user2, user3
-- Encuestas: ID=1, ID=2
-- Preguntas: Varios tipos asociados a encuestas
-- Respuestas: Ejemplos de cada tipo
+- Usuarios: ana, pol, juan
+- Encuestas: ID=1
+- Preguntas de cada tipo con tipo con datos válidos predefinidos
