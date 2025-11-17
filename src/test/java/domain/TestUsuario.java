@@ -21,6 +21,9 @@ public class TestUsuario {
         usuario = new Usuario(userName, contrasena);
     }
 
+    /**
+     * Comprueba constructor y getters del usuario.
+     */
     @Test
     public void testConstructor_Getters() {
         assertEquals(userName, usuario.getNomUsuario());
@@ -33,11 +36,17 @@ public class TestUsuario {
         assertTrue(usuario.getIdEncuestasCreadas().isEmpty());
     }
 
+    /**
+     * Verifica que contraseña incorrecta retorna false.
+     */
     @Test
     public void testComprobarContrasenaIncorrecta() {
         assertFalse(usuario.comprobarContrasena("otra"));
     }
 
+    /**
+     * Verifica que se cambia la contraseña correctamente.
+     */
     @Test
     public void testNewContrasena() {
         String nueva = "newPass";
@@ -45,11 +54,17 @@ public class TestUsuario {
         assertTrue(usuario.comprobarContrasena(nueva));
     }
 
+    /**
+     * Comprueba que cambiar a la misma contraseña lanza excepción.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testNewContrasena_SamePassword() {
         usuario.newContrasena(contrasena); // misma que la actual 
     }
 
+    /**
+     * Verifica guardar y eliminar ids de respuesta.
+     */
     @Test
     public void testGuardar_EliminarIdRespuesta() {
         usuario.guardarIdRespuesta(1);
@@ -75,6 +90,9 @@ public class TestUsuario {
         assertEquals(2, usuario.getIdRespuestas().size());
     }
 
+    /**
+     * Verifica guardar y eliminar ids de encuesta.
+     */
     @Test
     public void testGuardar_EliminarIdEncuesta() {
         usuario.guardarIdEncuesta(10);
