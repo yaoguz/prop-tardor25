@@ -1,0 +1,41 @@
+/src/test/java/domain
+
+Este directorio contiene todos los ficheros con el codigo de los tests de las clases del dominio.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- TestEncuesta.java:
+    Clase testeadora de la clase Encuesta del dominio.
+
+- TestPreguntaLibre.java:
+    Clase testeadora de la clase PreguntaLibre del dominio que es una subclase de Pregunta.
+
+- TestPreguntaNumerica.java:
+    Clase testeadora de la clase PreguntaNumerica del dominio que es una subclase de Pregunta.
+
+- TestPreguntaOpcionMultiple.java:
+    Clase testeadora de la clase PreguntaOpcionMultiple del dominio que es una subclase de Pregunta.
+
+- TestPreguntaOpcionUnica.java:
+    Clase testeadora de la clase PreguntaOpcionUnica del dominio que es una subclase de Pregunta.
+
+- TestTestRespuesta.java:
+    Clase testeadora de la clase Respuesta del dominio.
+
+- TestRespuestaLibre.java:
+    Clase testeadora de la clase RespuestaLibre del dominio que es una subclase de Respuesta.
+
+- TestRespuestaNumerica.java:
+    Clase testeadora de la clase RespuestaNumerica del dominio que es una subclase de Respuesta.
+
+- TestRespuestaOpcionMultiple.java:
+    Clase testeadora de la clase RespuestaOpcionMultiple del dominio que es una subclase de Respuesta.
+
+- TestRespuestaOpcionUnica.java:
+    Clase testeadora de la clase RespuestaOpcionUnica del dominio que es una subclase de Respuesta.
+
+- TestUsuario.java:
+    Clase testeadora de la clase Usuario del dominio.

@@ -1,0 +1,15 @@
+/src/main/java
+
+Este directorio contiene todos ficheros de codigo con los test del algoritmo, domain y domain controllers.
+
+Descripcion de los directorios:
+
+- /algorithm
+    Contiene los ficheros del codigo de test de los algoritmos kmeans, kmeansplusplus y kmodoids.
+
+- /domain
+    Contiene los ficheros del codigo de test de domain.
+
+- /domaincontrollers
+    Contiene los ficheros del codigo de test de domaincontroller.
+    

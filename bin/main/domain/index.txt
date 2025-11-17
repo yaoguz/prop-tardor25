@@ -13,10 +13,10 @@ Descripcion de los ficheros:
     Este archivo. Contiene la informacion del directorio y su contenido.
 
 - Encuesta.java:
-    La clase Encuesta del dominio.
+    La clase Encuesta del dominio que gestiona los datos de una encuesta.
 
 - Pregunta.java:
-    La clase Pregunta del dominio.
+    La clase Pregunta del dominio que gestiona los datos de una pregunta.
 
 - PreguntaLibre.java:
     La clase PreguntaLibre del dominio, es una subclase de Pregunta.
@@ -31,7 +31,7 @@ Descripcion de los ficheros:
     La clase PreguntaOpcionUnica del dominio, es una subclase de Pregunta.
 
 - Respuesta.java:
-    La clase Respuesta del dominio.
+    La clase Respuesta del dominio que gestiona los datos de una respuesta.
 
 - RespuestaLibre.java:
     La clase RespuestaLibre del dominio, es una subclase de Respuesta.
@@ -46,4 +46,4 @@ Descripcion de los ficheros:
     La clase RespuestaOpcionUnica del dominio, es una subclase de Respuesta.
 
 - Usuario.java:
-    La clase Usuario del dominio.
+    La clase Usuario del dominio que gestiona los datos de un usuario.
