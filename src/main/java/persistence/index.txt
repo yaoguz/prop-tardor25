@@ -1,0 +1,11 @@
+/src/main/java/persistence
+
+Este directorio contiene el gestor de persistencia.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- GestorPersistencia.java
+    El gestor de perdidtencia almacena todas las entidades del dominio en memoria con HashMaps y proporciona operaciones CRUD para Usuario, Encuesta, Pregunta y Respuesta.
