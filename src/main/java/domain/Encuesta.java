@@ -17,7 +17,7 @@ public class Encuesta {
 
     /** Constructora **/
     /**
-     * Se crea uan encuesta con un nuevo idEncuesta, un titulo y el 
+     * Se crea una encuesta con un nuevo idEncuesta, un titulo y el 
      * nombre del usuario creador de esta encuesta
      * @param idEncuesta id unico de cada encuesta disponible
      * @param titulo de la encuesta
