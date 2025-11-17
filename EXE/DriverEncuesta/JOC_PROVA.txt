@@ -34,6 +34,12 @@ Resultado esperado:
    Creador: pol
    Preguntas: []
 
+PRUEBA 4: Añadir pregunta a encuesta inexistente
+---------------------------
+Opcion: 2 (Añadir pregunta)
+ID: 9999
+Resultado esperado: "ERROR: La encuesta con id 999 no existe."
+
 PRUEBA 5: Añadir pregunta libre
 --------------------------------
 Opcion: 2 (Añadir pregunta)
@@ -130,11 +136,9 @@ Opcion: 0 (Salir)
 VALORES PROBADOS:
 - Caja negra: CRUD completo de encuestas y preguntas
 - 4 tipos de preguntas: Libre, Numerica, Opcion Unica, Opcion Multiple
-- Validaciones: Encuesta duplicada, encuesta inexistente
 - Atributos especificos: Rangos, opciones, ordenada, num max
 
 RESULTADO ESPERADO:
 - Todas las operaciones CRUD funcionan correctamente
 - Cada tipo de pregunta se crea con sus atributos especificos
-- Validaciones detectan errores apropiadamente
 - Integridad referencial encuesta-preguntas se mantiene
