@@ -1,0 +1,49 @@
+/src/main/java/domain
+
+Este directorio contiene todos los ficheros con el codigo de las clases java del dominio.
+
+Descripcion de los directorios:
+
+- /algorithm:
+    Contiene los ficheros de codigo java relacionados con el algoritmo.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- Encuesta.java:
+    La clase Encuesta del dominio.
+
+- Pregunta.java:
+    La clase Pregunta del dominio.
+
+- PreguntaLibre.java:
+    La clase PreguntaLibre del dominio, es una subclase de Pregunta.
+
+- PreguntaNumerica.java:
+    La clase PreguntaNumerica del dominio, es una subclase de Pregunta.
+
+- PreguntaOpcionMultiple.java:
+    La clase PreguntaOpcionMultiple del dominio, es una subclase de Pregunta.
+
+- PreguntaOpcionUnica.java:
+    La clase PreguntaOpcionUnica del dominio, es una subclase de Pregunta.
+
+- Respuesta.java:
+    La clase Respuesta del dominio.
+
+- RespuestaLibre.java:
+    La clase RespuestaLibre del dominio, es una subclase de Respuesta.
+
+- RespuestaNumerica.java:
+    La clase RespuestaNumerica del dominio, es una subclase de Respuesta.
+
+- RespuestaOpcionMultiple.java:
+    La clase RespuestaOpcionMultiple del dominio, es una subclase de Respuesta.
+
+- RespuestaOpcionUnica.java:
+    La clase RespuestaOpcionUnica del dominio, es una subclase de Respuesta.
+
+- Usuario.java:
+    La clase Usuario del dominio.

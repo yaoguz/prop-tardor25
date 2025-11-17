@@ -1,0 +1,16 @@
+/src
+
+Este directorio contiene todos los ficheros con el codigo de las clases java y los tests unitarios.
+
+Descripcion de los directorios:
+
+- /main:
+    Contiene los ficheros de codigo java del programa y de los drivers.
+
+- /test:
+    Contiene todos los ficheros relacionados con los tests unitarios.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.

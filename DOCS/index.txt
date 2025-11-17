@@ -1,0 +1,8 @@
+/DOCS
+
+Este directorio contiene toda la documentacion relativa al proyecto.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.

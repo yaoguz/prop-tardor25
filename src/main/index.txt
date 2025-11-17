@@ -1,0 +1,13 @@
+/src/main
+
+Este directorio contiene todos los ficheros con el codigo de las clases java.
+
+Descripcion de los directorios:
+
+- /java:
+    Contiene los ficheros de codigo java del programa y de los drivers.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.

@@ -1,0 +1,11 @@
+/EXE/DriverEncuesta
+
+Este directorio contiene los juegos de prueba para el driver de encuesta.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- DESCRIPCION.txt:
+    Texto que describe el uso y funcionalidad del driver de encuesta.
