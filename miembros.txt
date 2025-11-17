@@ -3,7 +3,7 @@
 MIEMBROS (Apellidos, Nombre):
 Guo Zhang, Yaoyao
 Jin, Alessandro
-Roca, Denis
+Roca Socias, Denis
 Wang, peiyu
 Yepan, Xiangjun
 
