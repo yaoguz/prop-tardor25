@@ -14,7 +14,12 @@ import java.util.*;
 public class CalculoCentroideKmeans implements EstrategiaCalculoCentroide {
     
     @Override
-    //dado un cluster devuelve un centroide
+    /**
+     * Calcula el centroide de un conjunto de respuestas (K-means).
+     * @param respuestas Matriz de respuestas (cada fila = un miembro)
+     * @param variables Lista de preguntas/variables que definen las columnas
+     * @return Centroide calculado a partir de la media/moda/representante según el tipo
+     */
     public Centroide calcularCentroide(List<List<Respuesta>> respuestas, List<Pregunta> variables) {
 
         int N = variables.size();
@@ -56,7 +61,12 @@ public class CalculoCentroideKmeans implements EstrategiaCalculoCentroide {
         return new Centroide(centro);
     }
 
-    // Función auxiliar para extraer una columna de respuestas
+    /**
+     * Extrae una columna (lista de respuestas para una variable) de la matriz.
+     * @param respuestas Matriz de respuestas donde cada fila es un usuario
+     * @param columna Índice de la columna a extraer
+     * @return Lista de respuestas correspondiente a la columna indicada
+     */
     private static List<Respuesta> obtenerColumna(List<List<Respuesta>> respuestas, int columna) {
         List<Respuesta> columnaRespuestas = new ArrayList<>();
         for (List<Respuesta> fila : respuestas) {
@@ -66,6 +76,11 @@ public class CalculoCentroideKmeans implements EstrategiaCalculoCentroide {
     }
 
 
+    /**
+     * Calcula la media de respuestas numéricas en una columna.
+     * @param respuestas Lista de respuestas numéricas
+     * @return Media aritmética de las respuestas (double)
+     */
     private static double mediaNumerica (List<Respuesta> respuestas) {
         int size = respuestas.size();
 
@@ -78,6 +93,12 @@ public class CalculoCentroideKmeans implements EstrategiaCalculoCentroide {
         return sum/size;
     }
 
+    /**
+     * Obtiene el índice más frecuente en respuestas de opción única.
+     * @param respuestas Lista de respuestas de opción única
+     * @param N Número de opciones posibles
+     * @return Índice (0-based) de la opción más frecuente
+     */
     private static int indiceUnicoFrecuente (List<Respuesta> respuestas, int N) {
      
         int [] frecuencia = new int[N];
@@ -100,6 +121,12 @@ public class CalculoCentroideKmeans implements EstrategiaCalculoCentroide {
         return index;
     }
 
+    /**
+     * Obtiene la(s) opción(es) más frecuentes en respuestas múltiples.
+     * @param respuestas Lista de respuestas de opción múltiple
+     * @param N Número de opciones posibles
+     * @return Lista de índices (0-based) de las opciones mayoritarias
+     */
     private static List<Integer> indicesMultipleFrecuente(List<Respuesta> respuestas, int N) {
         
         int [] frecuencia = new int[N];
@@ -127,6 +154,11 @@ public class CalculoCentroideKmeans implements EstrategiaCalculoCentroide {
         return l;
     }
 
+    /**
+     * Selecciona palabras representativas de respuestas libres (tokeniza y quita stop words).
+     * @param respuestas Lista de respuestas libres
+     * @return Texto formado por la(s) palabra(s) con mayor frecuencia
+     */
     private static String textoRepresentante(List<Respuesta> respuestas) {
        
 

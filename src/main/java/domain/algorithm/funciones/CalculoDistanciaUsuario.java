@@ -43,6 +43,13 @@ public class CalculoDistanciaUsuario {
 
     }
 
+    /**
+     * Calcula la distancia local entre dos respuestas según el tipo de pregunta.
+     * @param r1 Respuesta del primer usuario
+     * @param r2 Respuesta del segundo usuario
+     * @param variable Pregunta que define la métrica
+     * @return Distancia normalizada entre 0.0 y 1.0 para esa variable
+     */
     private static double  calcularDistanciaLocal (Respuesta r1, Respuesta r2, Pregunta variable) {
         if (r1 instanceof RespuestaNumerica && r2 instanceof RespuestaNumerica && variable instanceof PreguntaNumerica) {
             return distanciaLocalNumerica((RespuestaNumerica) r1, (RespuestaNumerica) r2, (PreguntaNumerica) variable);
@@ -66,6 +73,13 @@ public class CalculoDistanciaUsuario {
 
     }
 
+    /**
+     * Distancia normalizada para respuestas numéricas.
+     * @param r1 Respuesta numérica del primer usuario
+     * @param r2 Respuesta numérica del segundo usuario
+     * @param variable Pregunta numérica que contiene rango min/max
+     * @return Distancia en [0,1] proporcional a la diferencia relativa
+     */
     private static double distanciaLocalNumerica(RespuestaNumerica r1, RespuestaNumerica r2, PreguntaNumerica variable) {
         int maxim = variable.getRangoSup();
         int minim = variable.getRangoInf();
@@ -79,6 +93,13 @@ public class CalculoDistanciaUsuario {
         return n/rango;
     }
 
+    /**
+     * Distancia para preguntas de opción única (considera ordenación si aplica).
+     * @param r1 Respuesta del primer usuario
+     * @param r2 Respuesta del segundo usuario
+     * @param variable Pregunta de tipo opción única
+     * @return Distancia local en [0,1]
+     */
     private static double distanciaLocalOpcionUnica(RespuestaOpcionUnica r1, RespuestaOpcionUnica r2, PreguntaOpcionUnica variable) {
         if (variable.esOrdenada()) {
             int n = variable.getCantidad(); //size del arraylist
@@ -89,6 +110,13 @@ public class CalculoDistanciaUsuario {
         return distanciaLocalNoOrdenada(r1, r2);
     }
 
+    /**
+     * Distancia para opciones ordenadas: diferencia normalizada por rango.
+     * @param r1 Respuesta del primer usuario
+     * @param r2 Respuesta del segundo usuario
+     * @param n Número de opciones
+     * @return Distancia normalizada
+     */
     private static double distanciaLocalOrdenada(RespuestaOpcionUnica r1, RespuestaOpcionUnica r2, int n) {
         int index1 = r1.getRespuesta();
         int index2 = r2.getRespuesta();
@@ -101,6 +129,12 @@ public class CalculoDistanciaUsuario {
         return res;
     }
 
+    /**
+     * Distancia para opciones no ordenadas: 0 si coincide, 1 si no.
+     * @param r1 Respuesta del primer usuario
+     * @param r2 Respuesta del segundo usuario
+     * @return 0.0 si mismo índice, 1.0 si distinto
+     */
     private static double distanciaLocalNoOrdenada(RespuestaOpcionUnica r1, RespuestaOpcionUnica r2) {
         int index1 = r1.getRespuesta();
         int index2 = r2.getRespuesta();
@@ -108,6 +142,13 @@ public class CalculoDistanciaUsuario {
         return (index1 == index2) ? 0.0 : 1.0;
     }
 
+    /**
+     * Distancia para preguntas de opción múltiple (1 - Jaccard similarity).
+     * @param r1 Respuesta múltiple del primer usuario
+     * @param r2 Respuesta múltiple del segundo usuario
+     * @param variable Pregunta de tipo opción múltiple
+     * @return Distancia entre 0.0 y 1.0 basada en intersección/union
+     */
     private static double distanciaLocalOpcionMultiple(RespuestaOpcionMultiple r1, RespuestaOpcionMultiple r2, PreguntaOpcionMultiple variable) {
         int[] arr1 = r1.getRespuesta();
         int[] arr2 = r2.getRespuesta();
@@ -131,6 +172,12 @@ public class CalculoDistanciaUsuario {
         return (1.0 - ((double)intersec/union));
     }
 
+    /**
+     * Distancia para respuestas libres basada en distancia de Levenshtein normalizada.
+     * @param r1 Respuesta libre del primer usuario
+     * @param r2 Respuesta libre del segundo usuario
+     * @return Distancia normalizada en [0,1]
+     */
     private static double distanciaLocalLibre(RespuestaLibre r1, RespuestaLibre r2) {
         String s1 = r1.getRespuesta();
         String s2 = r2.getRespuesta();
@@ -149,6 +196,12 @@ public class CalculoDistanciaUsuario {
         return res;
     }
 
+    /**
+     * Calcula la distancia de Levenshtein (número mínimo de operaciones).
+     * @param s1 Texto 1
+     * @param s2 Texto 2
+     * @return Distancia entera de Levenshtein
+     */
     private static int levenshtein(String s1, String s2) {
         int n1 = s1.length();
         int n2 = s2.length();
