@@ -1,0 +1,23 @@
+/src/main/java/domain/algorithm/funciones
+
+Este directorio contiene los ficheros con el codigo de las clases java que contienen las funciones basicas que usa el algoritmo.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- CalculoDistanciaCentroide.java:
+    La clase CalculoDistanciaCentroide que calcula la distancia entre un usuario y un centroide.
+
+- CalculoDistanciaUsuario.java:
+    La clase CalculoDistanciaUsuario que calcula la distancia entre dos usuarios.
+
+- EvaluarCluster.java:
+    La clase EvaluarCluster que calcula la calidad de un clustering.
+
+- StopWordsES.java:
+    La clase StopWordsES que contiene las palabras a ignorar en el calculo de distancias en las respuestas libres.
+
+- TransformarEnCentroide.java:
+    La clase TransformarEnCentroide que convierte un usuario en un centroide.

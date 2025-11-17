@@ -1,0 +1,35 @@
+/src/main/java/domain/algorithm/estructuras
+
+Este directorio contiene los ficheros con el codigo de las clases de objetos java que se usan con el algoritmo.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- Centroide.java:
+    La clase Centroide que gestiona los datos de un centroide de un cluster.
+
+- Cluster.java:
+    La clase Cluster que gestiona los datos de un cluster en la ejecucion del algoritmo.
+
+- ComponenteCentroide.java:
+    La clase abstracta ComponenteCentroide que se usa para generalizar los componentes de los centroides.
+
+- ComponenteLibre.java:
+    La clase ComponenteLibre que gestiona los datos de un componente libre de una respuesta libre.
+
+- ComponenteMultiple.java:
+    La clase ComponenteMultiple que gestiona los datos de un componente multiple de una respuesta de opcion multiple.
+
+- ComponenteNumerico.java:
+    La clase ComponenteNumerico que gestiona los datos de un componente numerico de una respuesta numerica.
+
+- ComponenteUnico.java:
+    La clase ComponenteLibre que gestiona los datos de un componente unico de una respuesta de opcion unica.
+
+- Perfil.java:
+    La clase Perfil que gestiona los datos de un perfil como representacion de un cluster.
+
+- ResultadoClustering.java:
+    La clase ResultadoClustering que gestiona la informacion que se retorna al ejecutar el algoritmo.
