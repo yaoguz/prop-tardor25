@@ -39,7 +39,7 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
      * Estrategia para recalcular centroides.
      * @return Estrategia de recálculo (media para K-means, medoide para K-medoids)
      */
-    protected abstract EstrategiaRecalculo getEstrategiaRecalculo();
+    protected abstract EstrategiaCalculoCentroide getEstrategiaCalculoCentroide();
     
     @Override
     public abstract String getNombre();
@@ -151,7 +151,6 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
      */
     private void recalcularCentroides(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables, Boolean[] cambiados) {
         int N = clusters.size();
-        EstrategiaRecalculo estrategia = getEstrategiaRecalculo();
 
         for (int i = 0; i < N; ++i) {
             if (cambiados[i]) {
@@ -160,7 +159,7 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
 
                 List<List<Respuesta>> cluster = sacarMiembros(miembros, respuestas);
 
-                Centroide c = CalculoCentroide.calcularCentroide(cluster, variables);
+                Centroide c = getEstrategiaCalculoCentroide().calcularCentroide(cluster, variables);
 
                 clusters.get(i).changeCentroide(c);
             }

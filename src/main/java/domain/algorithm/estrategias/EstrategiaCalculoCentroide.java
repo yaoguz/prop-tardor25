@@ -8,9 +8,9 @@ import java.util.*;
  * Estrategia para recalcular centroides de clusters.
  * Define cómo actualizar el centroide tras reasignar miembros.
  * 
- * @author Yaoyao Guo
+ * @author Alessandro Jin
  */
-public interface EstrategiaRecalculo {
+public interface EstrategiaCalculoCentroide {
     /**
      * Recalcula el centroide de un cluster.
      * 
@@ -19,5 +19,5 @@ public interface EstrategiaRecalculo {
      * @param variables Preguntas de la encuesta
      * @return Nuevo centroide calculado
      */
-    Centroide recalcularCentroide(List<Integer> miembros, List<List<Respuesta>> respuestas, List<Pregunta> variables);
+    Centroide calcularCentroide(List<List<Respuesta>> respuestas, List<Pregunta> variables);
 }

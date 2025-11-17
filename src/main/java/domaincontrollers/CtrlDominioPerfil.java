@@ -30,15 +30,8 @@ public class CtrlDominioPerfil {
 	/** Atributos **/
 
 	private static CtrlDominioPerfil singletonInstance;
-	@SuppressWarnings("unused")
-	private GestorPersistencia gestor;
-	
-	/** Controlador de encuestas (inyección de dependencia) */
+
 	private CtrlDominioEncuesta ctrlDominioEncuesta;
-	@SuppressWarnings("unused")
-	private CtrlDominioUsuario ctrlDominioUsuario;
-	@SuppressWarnings("unused")
-	private CtrlDominioRespuesta ctrlDominioRespuesta;
 
 	/** Constructor **/
 
@@ -47,10 +40,8 @@ public class CtrlDominioPerfil {
 	 * 
 	 * @param gestor Gestor de persistencia del sistema
 	 */
-	private CtrlDominioPerfil(GestorPersistencia gestor, CtrlDominioUsuario ctrlDominioUsuario, CtrlDominioRespuesta ctrlDominioRespuesta, CtrlDominioEncuesta ctrlDominioEncuesta) {
-		this.gestor = gestor;
-		this.ctrlDominioUsuario = ctrlDominioUsuario;
-		this.ctrlDominioRespuesta = ctrlDominioRespuesta;
+	private CtrlDominioPerfil(CtrlDominioEncuesta ctrlDominioEncuesta) {
+	
 		this.ctrlDominioEncuesta = ctrlDominioEncuesta;
 	}
 
