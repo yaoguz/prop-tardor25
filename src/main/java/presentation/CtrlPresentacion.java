@@ -5,6 +5,16 @@ package presentation;
 
 import domaincontrollers.CtrlDominio;
 
+/**
+ * Controlador de Presentación (pendiente de implementar).
+ * 
+ * Responsabilidades:
+ * - Intermediar entre vistas y controlador de dominio
+ * - Gestionar sincronización entre múltiples vistas
+ * - Inicializar interfaz gráfica (implementación futura)
+ * 
+ * @author Grupo 11.5
+ */
 public class CtrlPresentacion {
 
     // ejemplo

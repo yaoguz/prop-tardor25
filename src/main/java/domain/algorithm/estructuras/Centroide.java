@@ -3,15 +3,17 @@ package domain.algorithm.estructuras;
 import java.util.List;
 
 /**
+ * Representa el vector centroide de un clúster de forma dinámica.
+ * 
+ * Responsabilidades:
+ * - Almacenar N componentes del centroide (media/moda/medoide según tipo)
+ * - Proporcionar acceso a componentes individuales o completos
+ * - Mantener estructura inmutable del centroide
+ * 
  * @author Alessandro Jin
  */
-
-/**
- * Representa el vector centroide de un clúster de forma dinámica.
- * Almacena los N componentes calculados como una lista de objetos ComponenteCentroide.
- */
 public class Centroide {
-    
+    /** Lista de componentes del centroide (uno por cada pregunta de la encuesta) */
     private final List<ComponenteCentroide> vectorComponentes;
 
     /**

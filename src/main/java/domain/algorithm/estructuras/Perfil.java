@@ -4,14 +4,22 @@ import java.util.List;
 
 /**
  * Representa un perfil de usuario resultante del clustering.
- * Contiene un representante, el centroide del cluster y la lista de miembros.
+ * 
+ * Responsabilidades:
+ * - Almacenar resultado de un cluster (representante, centroide, miembros)
+ * - Proporcionar acceso a componentes del perfil
+ * - Mantener datos inmutables del clustering
  * 
  * @author Alessandro Jin
  */
 public class Perfil {
+    /** Nombre del usuario representante del cluster */
     private final String representante;
 
+    /** Centroide calculado del cluster */
     private final Centroide centroide;
+    
+    /** Lista de nombres de usuarios que pertenecen al cluster */
     private final List<String> miembros;
 
     /**

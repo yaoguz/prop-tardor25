@@ -5,12 +5,19 @@ import java.util.ArrayList;
 
 /**
  * Representa un cluster en el algoritmo de clustering.
- * Contiene un centroide y una lista de índices de usuarios que pertenecen al cluster.
+ * 
+ * Responsabilidades:
+ * - Mantener centroide del cluster
+ * - Gestionar lista de miembros (índices de usuarios)
+ * - Permitir modificar centroide y añadir/limpiar miembros
  * 
  * @author Alessandro Jin
  */
 public class Cluster {
+    /** Centroide actual del cluster */
     private Centroide centroide;
+    
+    /** Lista de índices de usuarios que pertenecen al cluster */
     private List<Integer> miembros;
 
     /**

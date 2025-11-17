@@ -4,12 +4,19 @@ import java.util.List;
 
 /**
  * Representa el resultado de ejecutar un algoritmo de clustering.
- * Contiene los perfiles generados y la calidad del clustering.
+ * 
+ * Responsabilidades:
+ * - Almacenar perfiles generados por el algoritmo
+ * - Mantener métrica de calidad del clustering (silueta)
+ * - Proporcionar datos inmutables del resultado
  * 
  * @author Alessandro Jin
  */
 public class ResultadoClustering {
+    /** Lista de perfiles (clusters) generados */
     private final List<Perfil> perfiles;
+    
+    /** Métrica de calidad (silueta) del clustering */
     private final double calidad;
 
     /**

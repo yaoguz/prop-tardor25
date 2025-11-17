@@ -3,16 +3,29 @@ package domain;
 import java.util.ArrayList;
 
 /**
- * Implementacion de la clase Encuesta
+ * Representa una encuesta del sistema.
+ * 
+ * Responsabilidades:
+ * - Almacenar metadatos de la encuesta (ID, título, creador)
+ * - Gestionar lista de preguntas asociadas
+ * - Permitir añadir y eliminar preguntas
  * 
  * @author Peiyu Wang
  */
 public class Encuesta {
 
     /** Atributos **/
+    
+    /** Identificador único de la encuesta */
     private int idEncuesta;
+    
+    /** Título de la encuesta */
     private String titulo;
+    
+    /** Lista de IDs de preguntas asociadas */
     private ArrayList<Integer> IdPreguntas;
+    
+    /** Nombre del usuario creador */
     private String creador;
 
     /** Constructora **/

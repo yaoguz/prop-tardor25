@@ -24,6 +24,15 @@ import domain.Respuesta;
 /**
  * Controlador de Dominio para la gestión de encuestas.
  * 
+ * Responsabilidades:
+ * - CRUD de encuestas (crear, leer, modificar, eliminar)
+ * - Importar encuestas desde JSON
+ * - Gestionar preguntas asociadas a encuestas
+ * - Obtener respuestas de encuestas para clustering
+ * - Validar existencia y permisos de encuestas
+ * 
+ * Patrón Singleton para mantener estado consistente.
+ * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class CtrlDominioEncuesta {
