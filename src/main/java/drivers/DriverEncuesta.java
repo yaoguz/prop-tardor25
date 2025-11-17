@@ -176,7 +176,15 @@ public class DriverEncuesta {
             return;
         }
         System.out.print("Titulo encuesta: ");
-        String titulo = scanner.nextLine();
+        String titulo = scanner.nextLine().trim();
+        // Comprobar que el mismo usuario no tenga ya una encuesta con el mismo titulo
+        HashMap<Integer, Encuesta> todas = ctrlEncuesta.getAllEncuestas();
+        for (Encuesta e : todas.values()) {
+            if (usuario.equals(e.getIdCreador()) && titulo.equals(e.getTitulo())) {
+                System.out.println("ERROR: El usuario ya tiene una encuesta con ese título.");
+                return;
+            }
+        }
         int id = ctrlEncuesta.crearEncuesta(usuario, titulo);
         System.out.println("Encuesta creada con id: " + id);
     }
@@ -187,6 +195,11 @@ public class DriverEncuesta {
         System.out.println("\n--- Anadir Pregunta ---");
         System.out.print("ID encuesta: ");
         int idE = Integer.parseInt(scanner.nextLine().trim());
+        // Comprobar que la encuesta existe antes de intentar añadir una pregunta
+        if (!ctrlEncuesta.existeEncuesta(idE)) {
+            System.out.println("ERROR: La encuesta con id " + idE + " no existe.");
+            return;
+        }
         System.out.println("Tipo de pregunta: 1=libre, 2=numerica, 3=opcion_unica, 4=opcion_multiple");
         System.out.print("Introduzca un numero: ");
         String tipo = scanner.nextLine().trim();
