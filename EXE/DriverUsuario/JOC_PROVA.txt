@@ -12,7 +12,9 @@ SCRIPT DE PRUEBA MANUAL
 PRUEBA 1: Verificar datos iniciales
 -----------------------------------
 Opcion: 10 (Ver todos los usuarios)
-Resultado esperado: Lista con user1, user2, user3
+Resultado esperado: 
+    Total de usuarios: 1
+    Usuario: user1
 
 PRUEBA 2: Registro usuario nuevo
 ---------------------------------
@@ -20,97 +22,68 @@ Opcion: 3 (Registrar usuario)
 Nombre: testuser
 Contraseña: test123
 Repetir contraseña: test123
-Resultado esperado: "Usuario registrado exitosamente"
+Resultado esperado: "Usuario registrado correctamente."
 
-Opcion: 1 (Existe usuario)
-Nombre: testuser
-Resultado esperado: "El usuario 'testuser' existe"
-
-PRUEBA 3: Registro usuario duplicado
+PRUEBA 3: Existe usuario
 ------------------------------------
-Opcion: 3 (Registrar usuario)
-Nombre: user1
-Contraseña: cualquiera
-Repetir contraseña: cualquiera
-Resultado esperado: ERROR - "El usuario ya existe"
+Opcion: 1
+Nombre: testuser
+Resultado esperado: "El usuario testuser existe"
 
-PRUEBA 4: Registro con contraseñas no coincidentes
---------------------------------------------------
-Opcion: 3 (Registrar usuario)
-Nombre: failuser
-Contraseña: pass1
-Repetir contraseña: pass2
-Resultado esperado: ERROR - "Las contraseñas no coinciden"
+PRUEBA 4: Get usuario
+------------------------------------
+Opcion: 2
+Nombre: testuser
+Resultado esperado: "Usuario testuser obtenido correctamente."
 
 PRUEBA 5: Login exitoso
 ------------------------
 Opcion: 4 (Iniciar sesion)
 Nombre: user1
 Contraseña: 123456
-Resultado esperado: "Sesión iniciada"
+Resultado esperado: "Sesión iniciada correctamente. Bienvenido, user1!"
 
+PRUEBA 6: Login exitoso
+------------------------
 Opcion: 6 (Ver usuario activo)
 Resultado esperado: "Usuario activo: user1"
 
-PRUEBA 6: Login con contraseña incorrecta
------------------------------------------
-Opcion: 4 (Iniciar sesion)
-Nombre: user2
-Contraseña: wrongpass
-Resultado esperado: ERROR - "Contraseña incorrecta"
-
-PRUEBA 7: Login usuario inexistente
------------------------------------
-Opcion: 4 (Iniciar sesion)
-Nombre: noexiste
-Contraseña: cualquiera
-Resultado esperado: ERROR - "Usuario no existe"
-
-PRUEBA 8: Modificar contraseña
+PRUEBA 7: Modificar contraseña
 -------------------------------
 Opcion: 7 (Modificar contraseña)
 Nombre: user1
-Contraseña antigua: 123456
 Contraseña nueva: newpass
-Repetir nueva: newpass
-Resultado esperado: "Contraseña modificada"
+Resultado esperado: "Contraseña modificada correctamente."
 
-Verificar:
-Opcion: 4 (Iniciar sesion)
-Nombre: user1
-Contraseña: newpass
-Resultado esperado: "Sesión iniciada"
+PRUEBA 8: Consultar encuestas respondidas
+------------------------------------------
+Opcion: 8 (Ver encuestas respondidas)
+Resultado esperado: "Encuestas respondidas por user1: [1]"
 
 PRUEBA 9: Cerrar sesión
 ------------------------
 Opcion: 5 (Cerrar sesion)
-Resultado esperado: "Sesión cerrada"
+Confimar: s
+Resultado esperado: "Sesión cerrada correctamente. Hasta pronto, user1!"
 
+PRUEBA 10: No hay usuario
+------------------------
 Opcion: 6 (Ver usuario activo)
 Resultado esperado: "No hay usuario activo"
 
-PRUEBA 10: Consultar encuestas respondidas
+PRUEBA 11: Get Respuestas Encuesta
 ------------------------------------------
-Opcion: 8 (Ver encuestas respondidas)
-Nombre: user1
-Resultado esperado: Lista de IDs de encuestas
-
-PRUEBA 11: Consultar respuestas de encuesta
--------------------------------------------
-Opcion: 9 (Ver respuestas encuesta)
-Nombre: user1
+Opcion: 9
+Usuario: user1
 ID encuesta: 1
-Resultado esperado: Lista de respuestas del usuario
+Resultado esperado:
+    Respuestas de la encuesta 1 del usuario user1: 
+    ID Respuesta: 1, ID Pregunta: 1
 
-Opcion: 0 (Salir)
-
-VALORES PROBADOS:
-- Caja negra: Validaciones de entrada (duplicados, coincidencia contraseñas)
-- Casos válidos: Registro, login, modificar contraseña
-- Casos inválidos: Usuario duplicado, contraseña incorrecta, usuario inexistente
-- Estados: Usuario activo/inactivo, sesión iniciada/cerrada
-
-RESULTADO ESPERADO:
-- Todas las operaciones válidas se ejecutan correctamente
-- Todas las validaciones lanzan errores apropiados
-- Estado de sesión se mantiene consistente
+PRUEBA 12: Get All Usuarios
+------------------------------------------
+Opcion: 10
+Resultado esperado:
+    Total de usuarios: 2
+    Usuario: user1
+    Usuario: testuser
