@@ -85,14 +85,4 @@ public class RespuestaOpcionUnica extends Respuesta {
         return this.indiceOpcion == indice;
     }
     
-    // /**
-    //  * Representación en String de la respuesta de opción única.
-    //  * 
-    //  * @return Descripción con el índice de la opción seleccionada
-    //  */
-    // @Override
-    // public String toString() {
-    //     return String.format("RespuestaOpcionUnica[id=%d, usuario=%s, opcionSeleccionada=%d]", 
-    //                        getId(), getNomUsuario(), indiceOpcion);
-    // }
 }
