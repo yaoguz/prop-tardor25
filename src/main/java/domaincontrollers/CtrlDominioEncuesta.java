@@ -446,7 +446,7 @@ public class CtrlDominioEncuesta {
 	 * El algoritmo de clustering ignora los valores nulos en los calculos.
 	 * 
 	 * @param idEncuesta ID de la encuesta
-	 * @return List<List<Respuesta>> donde cada sublista es un usuario con sus respuestas ordenadas por pregunta
+	 * @return Lista de listas donde cada sublista es un usuario con sus respuestas ordenadas por pregunta
 	 */
 	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta) {
 		Encuesta e = getEncuesta(idEncuesta);

@@ -9,11 +9,19 @@ import domain.*;
 import domain.algorithm.estructuras.*;
 
 /**
+ * Clase utilit aria para calcular el centroide de un cluster.
+ * Proporciona métodos estáticos para calcular centroides basados en diferentes tipos de preguntas.
+ * 
  * @author Alessandro Jin
  */
- public class CalculoCentroide {
+public class CalculoCentroide {
     
-    //dado un cluster devuelve un centroide
+    /**
+     * Calcula el centroide de un cluster dado las respuestas y variables.
+     * @param respuestas Matriz de respuestas del cluster
+     * @param variables Lista de preguntas/variables
+     * @return Centroide calculado
+     */
     public static Centroide calcularCentroide (List<List<Respuesta>> respuestas, List<Pregunta> variables) {
 
         int N = variables.size();

@@ -227,8 +227,6 @@ public class CtrlDominioUsuario {
 	/**
 	 * Obtiene los IDs de las encuestas respondidas por el usuario iniciado sesion
 	 * 
-	 * @param ctrlDominioRespuesta Controlador de respuestas
-	 * @param ctrlDominioPregunta Controlador de preguntas
 	 * @return Lista de IDs de encuestas respondidas
 	 * @throws IllegalStateException si no hay un usuario activo
 	 */
@@ -270,8 +268,6 @@ public class CtrlDominioUsuario {
 	 * 
 	 * @param nomUsuario Nombre del usuario
 	 * @param idEncuesta ID de la encuesta
-	 * @param ctrlDominioRespuesta Controlador de respuestas
-	 * @param ctrlDominioPregunta Controlador de preguntas
 	 * @return Lista de las respuestas respondidas por el usuario en esta encuesta
 	 * @throws IllegalArgumentException si el usuario no ha respondido la encuesta
 	 */

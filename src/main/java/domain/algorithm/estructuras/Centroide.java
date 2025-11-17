@@ -16,6 +16,7 @@ public class Centroide {
 
     /**
      * Constructor que acepta el vector completo de componentes calculados.
+     * @param vectorComponentes Lista de componentes del centroide
      */
     public Centroide(List<ComponenteCentroide> vectorComponentes) {
         // Asegura que el centroide se inicializa con los N valores de las variables.
@@ -24,6 +25,7 @@ public class Centroide {
 
     /**
      * Devuelve el vector completo de componentes del centroide (la media, moda, medoide, etc.).
+     * @return Lista de componentes del centroide
      */
     public List<ComponenteCentroide> getVectorComponentes() {
         return this.vectorComponentes;
@@ -31,6 +33,8 @@ public class Centroide {
 
     /**
      * Devuelve el componente del centroide para la variable en la posición 'indice'.
+     * @param indice Posición del componente
+     * @return Componente en la posición indicada
      */
     public ComponenteCentroide getComponente(int indice) {
         if (indice >= 0 && indice < vectorComponentes.size()) {

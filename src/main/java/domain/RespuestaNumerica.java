@@ -7,14 +7,6 @@ package domain;
  * Corresponde a preguntas de tipo PreguntaNumerica, que pueden tener rangos
  * mínimo y máximo opcionales.
  * 
- * Ejemplos:
- * - "¿Cuál es tu edad?" → 25
- * - "¿Cuántas horas estudias al día?" → 3.5
- * - "Valoración del 1 al 10:" → 8.5
- * 
- * NOTA: La validación de rangos la realiza PreguntaNumerica. Esta clase
- * solo almacena y gestiona el valor numérico.
- * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class RespuestaNumerica extends Respuesta {

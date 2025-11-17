@@ -124,6 +124,7 @@ public abstract class Pregunta {
 	
 	/**
 	 * No hace nada si no es del tipo de subclase correspondiente.
+	 * @param opcion Opción a añadir
 	 */
 	public void addOpcion(String opcion) {}
 	
@@ -147,6 +148,7 @@ public abstract class Pregunta {
 	
 	/**
 	 * No hace nada si no es del tipo de subclase correspondiente.
+	 * @param numMaxOpc Número máximo de opciones seleccionables
 	 */
 	public void setNumMaxOpc(int numMaxOpc) {}
 	

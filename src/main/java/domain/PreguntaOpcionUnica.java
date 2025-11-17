@@ -33,6 +33,7 @@ public class PreguntaOpcionUnica extends Pregunta {
 	 * @param idEncuesta el identificador único de la encuesta en la que se crea la pregunta.
 	 * @param idPregunta el identificador de la pregunta.
 	 * @param enunciado el enunciado de la pregunta.
+	 * @param ordenada indica si las opciones están ordenadas.
 	 * @throws IllegalArgumentException si el enunciado está vacio o es null.
 	 */
 	public PreguntaOpcionUnica(int idEncuesta, int idPregunta, String enunciado, boolean ordenada) throws IllegalArgumentException {

@@ -6,12 +6,22 @@ import domain.*;
 import domain.algorithm.estructuras.*;
 
 /**
+ * Clase utilitaria para calcular la distancia entre un usuario y un centroide.
+ * Utiliza diferentes métricas de distancia según el tipo de pregunta.
+ * 
  * @author Alessandro Jin
  */
 public class CalculoDistanciaCentroide {
     
     //p1 y p2 tiene misma longitud y mismas columnas (variables)
     //variables son las columnas
+    /**
+     * Calcula la distancia entre las respuestas de un usuario y un centroide.
+     * @param p Lista de respuestas del usuario
+     * @param centro Centroide del cluster
+     * @param variables Lista de preguntas/variables
+     * @return Distancia normalizada entre usuario y centroide
+     */
     public static double calcularDistanciaCentroide(List<Respuesta> p, Centroide centro, List<Pregunta> variables) {
         
 

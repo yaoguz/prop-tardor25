@@ -168,7 +168,7 @@ public class CtrlDominioRespuesta {
 	/**
 	 * Modifica una respuesta existente.
 	 * 
-	 * @param <T> Tipo de la respuesta (String, Integer, List<String>, etc.)
+	 * @param <T> Tipo de la respuesta (String, Integer, List&lt;String&gt;, etc.)
 	 * @param idRespuesta ID de la respuesta a modificar
 	 * @param newResp Nueva respuesta
 	 * @throws IllegalArgumentException si el tipo de respuesta no coincide con el tipo de pregunta

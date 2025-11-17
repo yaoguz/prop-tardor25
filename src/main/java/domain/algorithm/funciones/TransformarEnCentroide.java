@@ -11,6 +11,11 @@ import domain.algorithm.estructuras.*;
  * @author Alessandro Jin
  */
 public class TransformarEnCentroide {
+    /**
+     * Transforma una lista de respuestas en un centroide.
+     * @param respuesta Lista de respuestas a transformar
+     * @return Centroide generado
+     */
     public static Centroide transformarEnCentroide(List<Respuesta> respuesta) {
         List<ComponenteCentroide> centroide = new ArrayList<>();
 

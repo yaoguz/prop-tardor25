@@ -11,16 +11,6 @@ import java.util.Set;
  * Los valores almacenados son los índices de las opciones seleccionadas (basado en 0).
  * Corresponde a preguntas de tipo PreguntaOpcionMultiple.
  * 
- * Ejemplos:
- * - "¿Qué idiomas hablas? [Español, Inglés, Francés, Alemán]" → [0, 1] (Español, Inglés)
- * - "Intereses: [Deportes, Música, Lectura, Cine]" → [1, 2, 3] (Música, Lectura, Cine)
- * 
- * DISEÑO: Se usa array de índices (int[]) en lugar de List<String> para:
- * - Menor uso de memoria
- * - Facilitar análisis estadístico
- * - Validación más eficiente
- * - Inmutabilidad controlada
- * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class RespuestaOpcionMultiple extends Respuesta {

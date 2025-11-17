@@ -18,9 +18,6 @@ import domain.algorithm.estructuras.ResultadoClustering;
  * - Comparar perfiles entre usuarios
  * - Orquestación de algoritmos de clustering
  * 
- * NOTA: CtrlDominioPerfil no gestiona datos propios, solo realiza análisis
- * sobre datos existentes en otros controladores.
- * 
  * @author Alessandro Jin
  */
 public class CtrlDominioPerfil {

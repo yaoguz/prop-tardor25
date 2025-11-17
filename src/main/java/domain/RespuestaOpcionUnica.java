@@ -7,15 +7,6 @@ package domain;
  * El valor almacenado es el índice de la opción seleccionada (basado en 0).
  * Corresponde a preguntas de tipo PreguntaOpcionUnica.
  * 
- * Ejemplos:
- * - "¿Cuál es tu color favorito? [Rojo, Azul, Verde]" → 1 (Azul)
- * - "Nivel de estudios: [Primaria, Secundaria, Universidad]" → 2 (Universidad)
- * 
- * DISEÑO: Se usa índice (int) en lugar de String para:
- * - Menor uso de memoria
- * - Facilitar análisis estadístico
- * - Validación más eficiente
- * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class RespuestaOpcionUnica extends Respuesta {

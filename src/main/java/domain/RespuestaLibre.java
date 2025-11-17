@@ -6,10 +6,6 @@ package domain;
  * Permite al usuario proporcionar una respuesta en formato de texto sin restricciones
  * (salvo longitud máxima opcional). Corresponde a preguntas de tipo PreguntaLibre.
  * 
- * Ejemplos:
- * - "¿Qué te pareció el curso?" → "El curso fue muy interesante y útil..."
- * - "Comentarios adicionales:" → "Ninguno"
- * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
 public class RespuestaLibre extends Respuesta {

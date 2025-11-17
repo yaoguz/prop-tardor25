@@ -8,8 +8,21 @@ import java.util.HashMap;
 import domain.*;
 import domain.algorithm.estructuras.*;
 
+/**
+ * Clase utilitaria para evaluar la calidad de un clustering.
+ * Calcula métricas de calidad como el coeficiente de silueta.
+ * 
+ * @author Alessandro Jin
+ */
 public class EvaluarCluster {
-        public static double calcularCalidadCluster(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
+    /**
+     * Calcula la calidad del clustering usando el coeficiente de silueta.
+     * @param clusters Lista de clusters
+     * @param respuestas Matriz de respuestas
+     * @param variables Lista de preguntas/variables
+     * @return Coeficiente de calidad (silueta promedio)
+     */
+    public static double calcularCalidadCluster(List<Cluster> clusters, List<List<Respuesta>> respuestas, List<Pregunta> variables) {
         if (clusters.size() <= 1) {
             // Si solo hay un cluster, la silueta no está definida
             return 0.0;

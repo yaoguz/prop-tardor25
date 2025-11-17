@@ -10,49 +10,14 @@ import domain.Respuesta;
 import persistence.GestorPersistencia;
 
 /**
- * Controlador de Dominio - Actúa como fachada (Facade Pattern) del sistema.
+ * Controlador de Dominio - Actua como fachada del sistema.
  * 
- * ARQUITECTURA 3 CAPAS (según PDF info_3capas.txt):
- * 
- * CAPA DE PRESENTACIÓN
- *     ↓
- * CAPA DE DOMINIO:
- *   - CtrlDominio (Facade MINIMALISTA - punto de entrada, solo delega)
- *   - CtrlDominioUsuario (lógica de usuarios)
- *   - CtrlDominioEncuesta (lógica de encuestas)
- *   - CtrlDominioPregunta (lógica de preguntas)
- *   - CtrlDominioRespuesta (lógica de respuestas)
- *   - CtrlDominioPerfil (lógica de clustering, no gestiona datos propios)
- *     ↓
- * CAPA DE PERSISTENCIA:
- *   - GestorPersistencia (STUB - almacenamiento en HashMap, simula BD)
- * 
- * CAMBIO ARQUITECTÓNICO IMPORTANTE:
- * Los datos (HashMap<K,V>) ya NO están en CtrlDominioXXX, sino en GestorPersistencia.
- * Los controladores de dominio solo contienen LÓGICA DE NEGOCIO.
- * 
- * RESPONSABILIDAD DE CtrlDominio (Facade):
+ * Responsabilidades :
  * - Punto de entrada único para la capa de presentación
  * - Delegación pura a controladores especializados
- * - Coordinación de operaciones que cruzan múltiples controladores
- * - NO contiene lógica de negocio compleja
- * - NO gestiona datos (HashMap están en GestorPersistencia)
  * 
- * PATRÓN SINGLETON:
  * Todos los controladores (CtrlDominio, CtrlDominioUsuario, etc.) son singleton
  * para garantizar una única instancia y estado consistente del sistema.
- * 
- * VENTAJAS:
- * 1. **Facade Pattern**: Interfaz simplificada para presentación
- * 2. **Single Responsibility**: Cada CtrlDominioXXX gestiona una entidad
- * 3. **Low Coupling**: Presentación solo conoce CtrlDominio
- * 4. **High Cohesion**: Lógica de negocio encapsulada en controladores especializados
- * 5. **Persistencia independiente**: Los datos están centralizados en un solo lugar
- * 
- * PATRÓN DE DISEÑO APLICADO:
- * - Facade Pattern: CtrlDominio oculta la complejidad de los controladores internos
- * - Dependency Injection: CtrlDominio inyecta dependencias entre controladores
- * - Singleton Pattern: Garantiza única instancia de cada controlador
  * 
  * @author Yaoyao Guo Zhang (yaoyao.guo@estudiantat.upc.edu)
  */
@@ -192,7 +157,7 @@ public class CtrlDominio {
 	/**
 	 * Modifica una respuesta existente.
 	 * 
-	 * @param <T> Tipo de la respuesta (String, Integer, List<String>, etc.)
+	 * @param <T> Tipo de la respuesta (String, Integer, List&lt;String&gt;, etc.)
 	 * @param idRespuesta ID de la respuesta a modificar
 	 * @param newResp Nueva respuesta
 	 * @throws IllegalArgumentException si el tipo de respuesta no coincide con el tipo de pregunta
@@ -358,6 +323,7 @@ public class CtrlDominio {
 	 * @param idEncuesta ID de la encuesta
 	 * @param enunciado Enunciado de la pregunta
 	 * @param opciones Lista de opciones disponibles
+	 * @param ordenada Indica si las opciones están ordenadas
 	 * @return ID de la pregunta creada
 	 */
 	public int anadirPreguntaOpcionUnica(int idEncuesta, String enunciado, List<String> opciones, boolean ordenada) {

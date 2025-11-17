@@ -5,12 +5,22 @@ import java.util.ArrayList;
 import domain.*;
 
 /**
+ * Clase utilitaria para calcular la distancia entre dos usuarios.
+ * Utiliza diferentes métricas de distancia según el tipo de pregunta.
+ * 
  * @author Alessandro Jin
  */
 public class CalculoDistanciaUsuario {
     
     //p1 y p2 tiene misma longitud y mismas columnas (variables)
     //variables son las columnas
+    /**
+     * Calcula la distancia entre las respuestas de dos usuarios.
+     * @param p1 Lista de respuestas del primer usuario
+     * @param p2 Lista de respuestas del segundo usuario
+     * @param variables Lista de preguntas/variables
+     * @return Distancia normalizada entre los dos usuarios
+     */
     public static double calcularDistanciaUsuario(List<Respuesta> p1, List<Respuesta> p2, List<Pregunta> variables) {
         
         if (p1.size() != p2.size()) throw new IllegalArgumentException("Tamaño vector no concuerdan");

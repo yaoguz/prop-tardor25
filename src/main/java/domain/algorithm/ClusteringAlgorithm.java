@@ -6,19 +6,18 @@ import domain.Respuesta;
 import domain.Pregunta;
 import domain.algorithm.estructuras.ResultadoClustering;
 
-
-/**
- * @author Alessandro Jin
- */
 /**
  * Interfaz para algoritmos de clustering.
  * Permite añadir nuevos algoritmos sin modificar código existente (Open/Closed).
+ * 
+ * @author Alessandro Jin
  */
 public interface ClusteringAlgorithm {
     /**
      * Ejecuta el algoritmo de clustering.
      * 
-     * @param respuestas Mapa de idUsuario -> lista de respuestas
+     * @param variables Lista de preguntas/variables
+     * @param respuestas Mapa de idUsuario -&gt; lista de respuestas
      * @param k Número de clusters deseados
      * @return Lista de clusters obtenidos
      */
@@ -26,6 +25,7 @@ public interface ClusteringAlgorithm {
     
     /**
      * Nombre del algoritmo (para logging/reporting).
+     * @return Nombre del algoritmo
      */
     String getNombre();
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 /**
  * Implementacion de la clase Encuesta
+ * 
+ * @author Peiyu Wang
  */
 public class Encuesta {
 

@@ -5,9 +5,11 @@ import java.util.HashSet;
 import java.util.Arrays;
 
 /**
+ * Clase utilitaria que contiene palabras vacías (stop words) en español.
+ * Proporciona métodos para verificar si una palabra debe ser ignorada en análisis de texto.
+ * 
  * @author Alessandro Jin
  */
-
 public class StopWordsES {
     
     /**
@@ -216,7 +218,9 @@ public class StopWordsES {
     ));
     
     /**
-     * Verifica si una palabra es una stop word
+     * Verifica si una palabra es una stop word.
+     * @param word Palabra a verificar
+     * @return true si es una stop word, false en caso contrario
      */
     public static boolean isStopWord(String word) {
         if (word == null || word.isEmpty()) {

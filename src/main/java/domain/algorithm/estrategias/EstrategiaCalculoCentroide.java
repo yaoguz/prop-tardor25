@@ -14,7 +14,6 @@ public interface EstrategiaCalculoCentroide {
     /**
      * Recalcula el centroide de un cluster.
      * 
-     * @param miembros Índices de usuarios en el cluster
      * @param respuestas Matriz de respuestas (todas)
      * @param variables Preguntas de la encuesta
      * @return Nuevo centroide calculado
