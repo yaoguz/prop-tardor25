@@ -1,0 +1,26 @@
+/src/main/java/domain/algorithm/estrategias
+
+Este directorio contiene los ficheros con el codigo de las clases java donde se guardan las estrategias del algoritmo.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- EstrategiaCalculoCentroide.java:
+    La interficie EstrategiaCalculoCentroide a partir de la cual se implementan los calculos de centroides.
+
+- CalculoCentroideKmeans.java:
+    La clase CalculoCentroideKmeans que calcula el centroide de un cluster segun el algoritmo K-Means (también lo usa K-Means++).
+
+- CalculoCentroideMedoids.java:
+    La clase CalculoCentroideMedoids que calcula el centroide de un cluster segun el algoritmo K-Medoids.
+
+- EstrategiaInicializacion.java:
+    La interficie EstrategiaInicializacion a partir de la cual se implementan las inicializaciones de los centroides.
+
+- InicialicazionAleatoria.java:
+    La clase InicialicazionAleatoria que calcula los k centroides iniciales segun el algoritmo K-Means (también lo usa K-Medoids).
+
+- InicializacionPlusPlus.java:
+    La clase InicializacionPlusPlus que calcula los k centroides iniciales segun el algoritmo K-Means++.

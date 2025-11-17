@@ -1,0 +1,34 @@
+/src/main/java/domain/algorithm
+
+Este directorio contiene los ficheros con el codigo de las clases java relativas al algoritmo.
+
+Descripcion de los directorios:
+
+- /estrategias:
+    Contiene los ficheros de codigo java de los patrones estrategia aplicados, tanto interficies como clases que las implementan.
+
+- /estructuras:
+    Contiene los ficheros de codigo java de las clases objeto que se usan para el calculo del algoritmo.
+
+- /funciones:
+    Contiene los ficheros de codigo java de las funciones de cálculo que usa el algoritmo.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- ClusteringAlgorithm.java:
+    La interficie ClusteringAlgorithm a partir de la cual se implementan los algoritmos.
+
+- Kalgorithm.java:
+    La clase abstracta Kalgorithm que tiene las funciones necesarias para ejecutar un algoritmo genérico.
+
+- Kmeans.java:
+    La clase Kmeans, que es una subclase de Kalgorithm donde se especifica la estrategia a seguir para ejecutar el algoritmo K-Means.
+
+- KmeansPlusPlus.java:
+    La clase KmeansPlusPlus, que es una subclase de Kalgorithm donde se especifica la estrategia a seguir para ejecutar el algoritmo K-Means++.
+
+- Kmedoids.java:
+    La clase Kmedoids, que es una subclase de Kalgorithm donde se especifica la estrategia a seguir para ejecutar el algoritmo K-Medoids.
