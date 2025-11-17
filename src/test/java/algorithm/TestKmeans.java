@@ -92,7 +92,7 @@ public class TestKmeans {
         
         // Verificar que cada perfil tiene miembros
         for (Perfil p : resultado.getPerfiles()) {
-            assertTrue(p.getMiembros().size() > 0);
+            assertTrue(p.getMiembros().size() == 2);
             assertNotNull(p.getRepresentante());
         }
         
