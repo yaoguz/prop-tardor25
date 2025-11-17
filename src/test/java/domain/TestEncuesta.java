@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 /**
- * Tests unitarios para la clase Encuesta - JUnit 4.
+ * Tests unitarios para la clase Encuesta.
  * 
  * Las clases de dominio puras no necesitan mocks porque no tienen dependencias externas.
  * Solo prueban lógica interna.
@@ -22,7 +22,7 @@ public class TestEncuesta {
     private final String TITULO_ENCUESTA = "Encuesta de Prueba";
     
     /**
-     * Configuración inicial antes de cada test.
+     * Inicializa la encuesta antes de cada test.
      */
     @Before
     public void setUp() {
@@ -30,10 +30,7 @@ public class TestEncuesta {
     }
     
     /**
-     * Objeto de la prueba: Casos de uso de construcción e inicialización de una encuesta.
-     * Ficheros de datos necesarios: Datos introducidos manualmente. No se requieren ficheros adicionales.
-     * Valores estudiados: Estrategia caja gris. Se verifica que el constructor crea los atributos correctamente y las listas están vacías.
-     * Operativa: Se crea una encuesta con ID, creador y título; se comprueba que los getters retornan los valores esperados y getIdPreguntas() está vacío.
+     * Comprueba que la constructora y los getters funcionan.
      */
     @Test
     public void testConstructor_CreaEncuestaCorrectamente() {
@@ -51,12 +48,8 @@ public class TestEncuesta {
         assertTrue(encuesta.getIdPreguntas().isEmpty());
     }
     
-
     /**
-     * Objeto de la prueba: Casos de uso de guardamiento de múltiples preguntas en una encuesta.
-     * Ficheros de datos necesarios: Datos introducidos manualmente. No se requieren ficheros adicionales.
-     * Valores estudiados: Estrategia caja gris. Se prueban entradas válidas: guardamiento de 3 ids de preguntas.
-     * Operativa: Se crea una encuesta; se guardan ids (10,20,30); se verifica que getIdPreguntas() retorna una lista de tamaño 3 con los elementos esperados.
+     * Verifica que se guardan correctamente múltiples preguntas.
      */
     @Test
     public void testGuardarPregunta_AgregaCorrectamente() {
@@ -70,12 +63,9 @@ public class TestEncuesta {
         assertTrue(lista.contains(Integer.valueOf(20)));
         assertTrue(lista.contains(Integer.valueOf(30)));
     }
-     
+    
     /**
-     * Objeto de la prueba: Casos de uso de eliminación de preguntas existentes en una encuesta.
-     * Ficheros de datos necesarios: Datos introducidos manualmente. No se requieren ficheros adicionales.
-     * Valores estudiados: Estrategia caja gris. Se prueban entradas válidas: eliminación de un id existente de la lista.
-     * Operativa: Se guardan ids (1,2,3); se elimina id 2; se verifica que la lista tiene tamaño 2 y ya no contiene el 2, pero sí contiene 1 y 3.
+     * Verifica que se elimina una pregunta correctamente.
      */
     @Test
     public void testEliminarPregunta_EliminaCorrectamente() {
@@ -93,10 +83,7 @@ public class TestEncuesta {
     }
     
     /**
-     * Objeto de la prueba: Casos de error: intentar eliminar una pregunta inexistente de la encuesta.
-     * Ficheros de datos necesarios: Datos introducidos manualmente. No se requieren ficheros adicionales.
-     * Valores estudiados: Estrategia caja negra. Se prueba con entrada inválida: eliminación de id inexistente (999).
-     * Operativa: Se guarda id 5; se intenta eliminar id 999 (no existente); se verifica que la lista sigue con 1 elemento (5) sin error.
+     * Comprueba que eliminar una pregunta inexistente no causa error.
      */
     @Test
     public void testEliminarPregunta_SiNoExiste_NoFalla() {
@@ -109,10 +96,7 @@ public class TestEncuesta {
     }
     
     /**
-     * Objeto de la prueba: Casos de uso de cambio del título de una encuesta.
-     * Ficheros de datos necesarios: Datos introducidos manualmente. No se requieren ficheros adicionales.
-     * Valores estudiados: Estrategia caja gris. Se prueba con una entrada válida: título nuevo diferente al original.
-     * Operativa: Se crea una encuesta con título "Encuesta de Prueba"; se cambia a "Nuevo título"; se verifica que getTitulo() retorna "Nuevo título".
+     * Verifica que se cambia el título correctamente.
      */
     @Test
     public void testCambiarTitulo() {
@@ -122,10 +106,7 @@ public class TestEncuesta {
     }
     
     /**
-     * Objeto de la prueba: Casos de uso complejos: añadir y eliminar múltiples preguntas en secuencia.
-     * Ficheros de datos necesarios: Datos introducidos manualmente. No se requieren ficheros adicionales.
-     * Valores estudiados: Estrategia caja gris. Se prueban múltiples operaciones válidas con conjuntos de datos homogéneo (ids 1-10).
-     * Operativa: Se guardan ids 1-10 (10 preguntas); se eliminan los pares (2,4,6,8,10); se verifica que quedan 5 preguntas (impares 1,3,5,7,9).
+     * Prueba agregar y eliminar múltiples preguntas en conjunto.
      */
     @Test
     public void testAgregarYEliminarMultiplesPreguntas() {
