@@ -1,0 +1,16 @@
+/src/test
+
+Este directorio contiene todos los ficheros relacionados con los tests unitarios.
+
+Descripcion de los directorios:
+
+- /java:
+    Contiene los ficheros de codigo java de los tests unitarios.
+
+- /resources:
+    Contiene los ficheros csv que se usan en el TestCtrlDominioRespuesta.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
