@@ -12,58 +12,193 @@ SCRIPT DE PRUEBA MANUAL
 PASO 1: Importar encuesta
 --------------------------
 Opcion: 1 (Importar encuesta JSON)
-Usuario propietario: testuser
+Usuario propietario: ana
 Ruta archivo: EXE/DriverClustering/datos-encuestas.json
-Resultado esperado: "Encuesta importada exitosamente. ID: X"
+Resultado esperado: 
+
+--{ IMPORTAR UNA ENCUESTA DE UN FICHERO }--
+Introduzca el usuario propietario de la encuesta: 
+ana
+Introduzca la ruta del archivo JSON de la encuesta: 
+EXE/DriverClustering/datos-encuestas.json
+
+"Se ha importado la encuesta exitosamente. Se le ha asignado el identificador 1
+Su título es: Encuesta Informaciones Personales
+tiene 13 preguntas
+y su creador es: ana"
+
 Nota: Guardar el ID de la encuesta
 
 PASO 2: Verificar encuesta importada
 -------------------------------------
 Opcion: 5 (Ver datos actuales)
-Resultado esperado: Muestra encuestas importadas y sus preguntas
+Resultado esperado: 
+
+--{ INFORMACIÓN ACTUAL DE LOS DATOS DEL SISTEMA }--
+Usuarios registrados: 1
+Encuestas registradas: 1
+Información de las encuestas:
+
+Id: 1 - Encuesta Informaciones Personales
+-Preguntas: 13
+-Usuarios que han respondido: 0
+Presione enter para continuar.
 
 PASO 3: Importar respuestas
 ----------------------------
 Opcion: 2 (Importar respuestas CSV)
-Ruta archivo: EXE/DriverClustering/respuestas-deportes.csv
-Resultado esperado: "Respuestas importadas exitosamente"
+Ruta archivo: EXE/DriverClustering/loan-test.csv
+Resultado esperado: 
+--{ IMPORTAR RESPUESTAS DE UN FICHERO }--
+Introduzca la ruta del archivo CSV de respuestas:
+EXE/DriverClustering/loan-test.csv
+
+Usuario 'LP002876' registrado automáticamente
+Usuario 'LP002878' registrado automáticamente
+Usuario 'LP002879' registrado automáticamente
+Usuario 'LP002885' registrado automáticamente
+Usuario 'LP002890' registrado automáticamente
+Usuario 'LP002891' registrado automáticamente
+Usuario 'LP002899' registrado automáticamente
+Usuario 'LP002901' registrado automáticamente
+Usuario 'LP002907' registrado automáticamente
+Usuario 'LP002920' registrado automáticamente
+Usuario 'LP002921' registrado automáticamente
+Usuario 'LP002932' registrado automáticamente
+Usuario 'LP002935' registrado automáticamente
+Usuario 'LP002952' registrado automáticamente
+Usuario 'LP002954' registrado automáticamente
+Usuario 'LP002962' registrado automáticamente
+Usuario 'LP002965' registrado automáticamente
+Usuario 'LP002969' registrado automáticamente
+Usuario 'LP002971' registrado automáticamente
+Usuario 'LP002975' registrado automáticamente
+Usuario 'LP002980' registrado automáticamente
+Usuario 'LP002986' registrado automáticamente
+Usuario 'LP002989' registrado automáticamente
+ ! Respuesta no guardada para usuario 'LP001791' en pregunta 8: Valor 550.0 fuera de rango [0, 500]
+Se han importado las respuestas exitosamente.
 
 PASO 4: Ver respuestas de encuesta
 -----------------------------------
 Opcion: 6 (Ver respuestas encuesta)
-ID encuesta: X (el que obtuviste en PASO 1)
-Resultado esperado: Matriz con respuestas de usuarios
+ID encuesta: 1 (el que obtuviste en PASO 1)
+Resultado esperado: 
+
+--{ VISUALIZAR RESPUESTAS DE UNA ENCUESTA }--
+Encuestas disponibles:
+Id: 1 - Encuesta Informaciones Personales (13 preguntas)
+Indique el identificador de la encuesta a analizar:
+1
+-Id de la respuesta: 3042. Usuario: LP002346
+-Id de la respuesta: 3128. Usuario: LP002383
+-Id de la respuesta: 4211. Usuario: LP002856
+-Id de la respuesta: 231. Usuario: LP001108
+-Id de la respuesta: 1268. Usuario: LP001542
+-Id de la respuesta: 4452. Usuario: LP002935
+-Id de la respuesta: 2701. Usuario: LP002186
 
 3. PRUEBAS DE CLUSTERING:
 
-PRUEBA 1: K-means basico (k=2)
+PRUEBA 1: K-means basico (k=8)
 -------------------------------
 Opcion: 3 (Ejecutar clustering)
-ID encuesta: X
-k (num clusters): 2
-maxIteraciones: 100
-Algoritmo (1=K-means, 2=K-means++, 3=K-medoids): 1
+ID encuesta: 1
+k (num clusters): 8
+maxIteraciones: 150
+Algoritmo (1=K-means, 2=K-means++, 3=K-medoids): 2
 Resultado esperado:
-- 2 perfiles generados
-- Cada perfil con representante y lista miembros
-- Calidad (silueta) entre -1 y 1
 
-PRUEBA 2: Ver info ultimo clustering
-------------------------------------
-Opcion: 4 (Info ultimo clustering)
-Resultado esperado: Detalles de los 2 perfiles generados
+--{ EJECUTAR ALGORITMO DE CLUSTERING }--
+Encuestas disponibles:
+Id: 1 - Encuesta Informaciones Personales (13 preguntas)
+Indique el identificador de la encuesta a analizar:
+1
+La encuesta tiene respuestas de 367 usuarios.
+Introduzca el número de clústers que se quieren generar (entre 2 y 367): 
+7
+Indique el algoritmo a usar [ 1: K-Means | 2: K-Means++ | 3: K-Medoids ]: 
+1
 
-PRUEBA 3: K-means++ (k=3)
+Clustering completado en 2720 milisegundos.
+Información del clustering:
+El perfil 1 tiene 58 miembros. Su representante es: LP002016.
+El perfil 2 tiene 12 miembros. Su representante es: LP002867.
+El perfil 3 tiene 64 miembros. Su representante es: LP001185.
+El perfil 4 tiene 26 miembros. Su representante es: LP002754.
+El perfil 5 tiene 48 miembros. Su representante es: LP002869.
+El perfil 6 tiene 95 miembros. Su representante es: LP002816.
+El perfil 7 tiene 20 miembros. Su representante es: LP002891.
+El perfil 8 tiene 44 miembros. Su representante es: LP002425.
+El coeficiente de silueta del clustering es: 0.0888
+Calidad POBRE: Estructura de clusters muy débil o artificial
+
+PRUEBA 2: K-means++ (k=7)
 --------------------------
 Opcion: 3 (Ejecutar clustering)
-ID encuesta: X
-k: 3
+ID encuesta: 1
+k: 7
 maxIteraciones: 100
 Algoritmo: 2 (K-means++)
 Resultado esperado:
-- 3 perfiles generados
-- Calidad posiblemente mejor que K-means
-- Convergencia mas rapida
+
+--{ EJECUTAR ALGORITMO DE CLUSTERING }--
+Encuestas disponibles:
+Id: 1 - Encuesta Informaciones Personales (13 preguntas)
+Indique el identificador de la encuesta a analizar:
+1
+Introduzca el número de clústers que se quieren generar (entre 2 y 367):
+7
+Indique el algoritmo a usar [ 1: K-Means | 2: K-Means++ | 3: K-Medoids ]:
+2
+
+Clustering completado en 1832 milisegundos.
+Información del clustering:
+El perfil 1 tiene 19 miembros. Su representante es: LP002550.
+El perfil 2 tiene 66 miembros. Su representante es: LP002843.
+El perfil 3 tiene 24 miembros. Su representante es: LP001317.
+El perfil 4 tiene 41 miembros. Su representante es: LP002070.
+El perfil 5 tiene 117 miembros. Su representante es: LP002975.
+El perfil 6 tiene 70 miembros. Su representante es: LP002760.
+El perfil 7 tiene 30 miembros. Su representante es: LP001420.
+El coeficiente de silueta del clustering es: 0.0689
+Calidad POBRE: Estructura de clusters muy débil o artificial
+
+PRUEBA 3: Ver info ultimo clustering
+------------------------------------
+Opcion: 4 (Info ultimo clustering)
+Resultado esperado: 
+--{ OBTENER PERFILES DEL ÚLTIMO CLUSTERING }--
+La última ejecución del algoritmo generó los siguientes 7 perfiles:
+Perfil 1:
+-Tamaño: 19 usuarios.
+-Representante: LP002550.
+-Miembros: LP001961, LP002253, LP002376, LP002256, LP002802, LP002584, LP002901, LP001769, LP002962, LP001857, LP001203, LP002654, LP002415, LP002980, LP002747, LP001921, LP001466, LP001584, LP002550.
+Perfil 2:
+-Tamaño: 66 usuarios.
+-Representante: LP002843.
+-Miembros: LP002016, LP002018, LP001728, LP002125, LP002803, LP001959, LP001022, LP002476, LP002355, LP002117, LP001499, LP002346, LP002105, LP001818, LP002062, LP002056, LP002059, LP002612, LP002609, LP001878, LP001999, LP002042, LP002046, LP002721, LP002843, LP002965, LP002849, LP001867, LP001501, LP001742, LP002397, LP002711, LP001975, LP002385, LP002389, LP002027, LP002826, LP001446, LP001567, LP001324, LP001323, LP001561, LP002899, LP002400, LP002766, LP002769, LP001542, LP002635, LP001419, LP001415, LP001096, LP002195, LP002186, LP002744, LP002986, LP001486, LP002570, LP002339, LP001591, LP002326, LP001226, LP001587, LP002793, LP002311, LP002420, LP002306.
+Perfil 3:
+-Tamaño: 24 usuarios.
+-Representante: LP001317.
+-Miembros: LP001607, LP002240, LP002009, LP002354, LP001815, LP001135, LP001817, LP001886, LP002183, LP002853, LP002165, LP002605, LP001067, LP001177, LP001055, LP002775, LP001317, LP002630, LP001652, LP001923, LP001242, LP001471, LP002445, LP002568.
+Perfil 4:
+-Tamaño: 41 usuarios.
+-Representante: LP002070.
+-Miembros: LP001287, LP002806, LP001950, LP002921, LP001270, LP001933, LP002581, LP001881, LP002057, LP002735, LP001995, LP002286, LP002047, LP002168, LP001622, LP002399, LP002712, LP002954, LP001853, LP001973, LP001056, LP001445, LP002774, LP002657, LP002417, LP001794, LP001548, LP001789, LP001787, LP002879, LP002070, LP002069, LP002869, LP001361, LP001490, LP002450, LP001237, LP001475, LP001352, LP002325, LP002551.
+Perfil 5:
+-Tamaño: 117 usuarios.
+-Representante: LP002975.
+-Miembros: LP001169, LP001284, LP001291, LP002375, LP002935, LP002816, LP001831, LP001031, LP002123, LP002245, LP002007, LP002920, LP001703, LP001943, LP001149, LP001386, LP002360, LP002593, LP002111, LP002599, LP002358, LP002907, LP001015, LP001375, LP001380, LP002102, LP002344, LP001407, LP001400, LP002184, LP002850, LP002971, LP002610, LP002975, LP002856, LP002857, LP001517, LP001757, LP001082, LP002604, LP002969, LP001500, LP001862, LP001187, LP002394, LP001190, LP001855, LP001059, LP001298, LP001054, LP002270, LP001174, LP002264, LP002148, LP002028, LP002823, LP001739, LP001208, LP001568, LP001321, LP002890, LP002891, LP002412, LP001312, LP001791, LP002096, LP002402, LP002523, LP002644, LP001428, LP001547, LP001785, LP001663, LP002083, LP002077, LP002870, LP002876, LP002759, LP002639, LP001651, LP001650, LP001099, LP002192, LP002860, LP002745, LP002746, LP002867, LP002989, LP001121, LP002572, LP002212, LP002333, LP001359, LP001358, LP001599, LP001232, LP001351, LP002440, LP002561, LP002208, LP001108, LP001105, LP001220, LP002791, LP002433, LP002554, LP001335, LP001455, LP001332, LP001695, LP001210, LP001452, LP001573, LP002782, LP002542, LP002786, LP002425.        
+Perfil 6:
+-Tamaño: 70 usuarios.
+-Representante: LP002760.
+-Miembros: LP001842, LP001051, LP002496, LP002257, LP001153, LP002482, LP002485, LP001718, LP001822, LP001268, LP002471, LP002592, LP002118, LP001827, LP002176, LP002298, LP002614, LP002858, LP001078, LP002294, LP002167, LP001627, LP001185, LP002152, LP002279, LP002952, LP001737, LP001979, LP001735, LP001613, LP001176, LP001563, LP001558, LP001313, LP001797, LP002760, LP002885, LP001667, LP001662, LP001660, LP002754, LP001413, LP001534, LP001655, LP001771, LP002064, LP001128, LP001368, LP001124, LP001366, LP001911, LP001115, LP001231, LP001230, LP001472, LP002321, LP002566, LP002329, LP001347, LP001589, LP001221, LP002310, LP002553, LP001909, LP002316, LP001906, LP001219, LP001338, LP001211, LP002781.
+Perfil 7:
+-Tamaño: 30 usuarios.
+-Representante: LP001420.
+-Miembros: LP001601, LP001163, LP002495, LP002017, LP002932, LP001035, LP002805, LP001496, LP002107, LP001527, LP001094, LP002172, LP001083, LP002045, LP001611, LP001183, LP002383, LP002825, LP002099, LP002651, LP002090, LP001420, LP002878, LP001483, LP002441, LP002442, LP001107, LP001348, LP002790, LP001450.
+
 
 PRUEBA 4: K-medoids (k=3)
 --------------------------
@@ -73,120 +208,23 @@ k: 3
 maxIteraciones: 100
 Algoritmo: 3 (K-medoids)
 Resultado esperado:
-- 3 perfiles generados
-- Representantes son usuarios reales (no promedios)
-- Calidad similar o mejor
 
-PRUEBA 5: Clustering con k invalido (k > n)
--------------------------------------------
-Opcion: 3 (Ejecutar clustering)
-ID encuesta: X
-k: 999 (mayor que numero de usuarios)
-Resultado esperado: ERROR - "k debe ser menor que num usuarios"
+--{ EJECUTAR ALGORITMO DE CLUSTERING }--
+Encuestas disponibles:
+Id: 1 - Encuesta Informaciones Personales (13 preguntas)
+Indique el identificador de la encuesta a analizar:
+1
+La encuesta tiene respuestas de 367 usuarios.
+Introduzca el número de clústers que se quieren generar (entre 2 y 367): 
+3
+Indique el algoritmo a usar [ 1: K-Means | 2: K-Means++ | 3: K-Medoids ]: 
+3
 
-PRUEBA 6: Clustering con k=1
------------------------------
-Opcion: 3 (Ejecutar clustering)
-ID encuesta: X
-k: 1
-maxIteraciones: 100
-Algoritmo: 1
-Resultado esperado:
-- 1 perfil con todos los usuarios
-- Calidad muy baja (todos en un cluster)
+Clustering completado en 2634 milisegundos.
+Información del clustering:
+El perfil 1 tiene 54 miembros. Su representante es: LP002867.
+El perfil 2 tiene 289 miembros. Su representante es: LP002027.
+El perfil 3 tiene 24 miembros. Su representante es: LP002860.
+El coeficiente de silueta del clustering es: 0.0942
+Calidad POBRE: Estructura de clusters muy débil o artificial
 
-PRUEBA 7: Clustering con maxIter bajo
---------------------------------------
-Opcion: 3 (Ejecutar clustering)
-ID encuesta: X
-k: 3
-maxIteraciones: 5
-Algoritmo: 1
-Resultado esperado:
-- 3 perfiles pero puede no convergir
-- Advertencia si no convergio
-
-PRUEBA 8: Comparar algoritmos (mismo k)
----------------------------------------
-Ejecutar 3 veces con k=3:
-1. K-means (algoritmo 1)
-2. K-means++ (algoritmo 2)
-3. K-medoids (algoritmo 3)
-
-Comparar:
-- Calidad (silueta): K-means++ suele ser mejor
-- Iteraciones: K-means++ converge mas rapido
-- Representantes: K-medoids usa usuarios reales
-
-4. PRUEBAS CON OTRA ENCUESTA:
-
-PRUEBA 9: Importar segunda encuesta
-------------------------------------
-Opcion: 1 (Importar encuesta)
-Usuario: testuser2
-Ruta: EXE/DriverClustering/encuesta-deportes.json
-Resultado esperado: Nueva encuesta importada
-
-PRUEBA 10: Importar respuestas para segunda encuesta
-----------------------------------------------------
-Opcion: 2 (Importar respuestas)
-Ruta: EXE/DriverClustering/respuestas-deportes.csv
-Resultado esperado: Respuestas importadas
-
-PRUEBA 11: Clustering en segunda encuesta
------------------------------------------
-Opcion: 3 (Ejecutar clustering)
-ID encuesta: Y (nuevo ID)
-k: 2
-maxIteraciones: 100
-Algoritmo: 2
-Resultado esperado: Perfiles diferentes a primera encuesta
-
-5. PRUEBAS DE ROBUSTEZ:
-
-PRUEBA 12: Encuesta sin respuestas
------------------------------------
-Opcion: 1 (Importar encuesta nueva sin respuestas)
-Opcion: 3 (Intentar clustering)
-Resultado esperado: ERROR - "No hay suficientes respuestas"
-
-PRUEBA 13: Archivo JSON invalido
----------------------------------
-Opcion: 1 (Importar encuesta)
-Ruta: archivo_no_existe.json
-Resultado esperado: ERROR - "Archivo no existe"
-
-PRUEBA 14: Archivo CSV invalido
---------------------------------
-Opcion: 2 (Importar respuestas)
-Ruta: archivo_invalido.csv
-Resultado esperado: ERROR - "Formato incorrecto"
-
-Opcion: 0 (Salir)
-
-VALORES PROBADOS:
-- Caja blanca: Conocimiento de Template Method (Kalgorithm)
-- Estrategias: InicializacionAleatoria vs InicializacionPlusPlus
-- Calculo centroide: Media (K-means) vs Medoide (K-medoids)
-- k valido: 1 <= k < n
-- Convergencia: maxIteraciones suficientes
-- Calidad: Coeficiente silueta [-1, 1]
-
-EFECTES ESTUDIATS:
-- Importacion masiva JSON/CSV
-- Creacion automatica de usuarios
-- Convergencia iterativa de algoritmos
-- Comparacion calidad entre algoritmos
-- Visualizacion de perfiles
-
-RESULTADO ESPERADO:
-- 3 algoritmos generan perfiles validos
-- K-means++ converge mas rapido y mejor calidad
-- K-medoids usa representantes reales
-- Validaciones detectan k invalido o datos insuficientes
-- Calidad aumenta con k optimo (silhouette plot)
-
-ARCHIVOS NECESARIOS:
-- EXE/DriverClustering/datos-encuestas.json
-- EXE/DriverClustering/respuestas-deportes.csv
-- EXE/DriverClustering/encuesta-deportes.json
