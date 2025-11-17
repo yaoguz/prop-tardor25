@@ -135,7 +135,7 @@ public class CalculoDistanciaUsuario {
         String s1 = r1.getRespuesta();
         String s2 = r2.getRespuesta();
 
-        int distance = levenshtein(s1, s2);
+        int distance = CalculoDistanciaCentroide.levenshtein(s1, s2);
 
         int n1 = s1.length();
         int n2 = s2.length();
@@ -147,32 +147,5 @@ public class CalculoDistanciaUsuario {
 
         double  res = (distance - n) / deno;
         return res;
-    }
-
-    private static int levenshtein(String s1, String s2) {
-        int n1 = s1.length();
-        int n2 = s2.length();
-        
-        int dp[][] = new int [n1+1][n2+1];
-
-        for (int i = 0; i < n1+1; ++i) dp[i][0] = i;
-        for (int j = 0; j < n2+1; ++j) dp[0][j] = j;
-
-        for (int i = 1; i < n1+1; ++i) {    
-            for (int j = 1; j < n2+1; ++j) {
-                int insert = dp[i][j-1] + 1;
-
-                int elim = dp[i-1][j] + 1;
-
-                int subs = dp[i-1][j-1];
-
-                int cost = (s1.charAt(i-1) == s2.charAt(j-1)) ? 0 : 1;
-
-                dp[i][j] = Math.min (Math.min(insert, elim), subs+cost);
-            }
-        }
-
-        return dp[n1][n2];
-        
     }
 }

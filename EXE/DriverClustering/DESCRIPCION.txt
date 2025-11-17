@@ -1,63 +1,72 @@
-DRIVER CLUSTERING - DESCRIPCION DEL JOC DE PROVA
-=================================================
+DRIVER CLUSTERING - DESCRIPCION DEL JUEGO DE PRUEBA
+===================================================
 
 OBJECTE DE LA PROVA:
-- CtrlDominioPerfil: Ejecutar algoritmos de clustering (K-means, K-means++, K-medoids)
-- Casos d'ús: Importar encuestas JSON, importar respuestas CSV, ejecutar clustering, evaluar calidad
+- CtrlDominioPerfil: ejecutar algoritmos de clustering (K-means, K-means++, K-medoids)
+- CtrlDominioEncuesta: importar encuestas
+- CtrlDominioRespuesta: importar respuestas
+- Casos d'ús: Importar encuestas, importar respuestas, ejecutar clustering y evaluar calidad
 
 ALTRES ELEMENTS INTEGRATS:
 - GestorPersistencia: Almacenamiento de encuestas y respuestas
 - CtrlDominioEncuesta: Gestión de encuestas importadas
-- CtrlDominioUsuario: Crear usuarios automáticamente al importar respuestas
+- CtrlDominioUsuario: Para crear usuarios automáticamente al importar respuestas
 - CtrlDominioPregunta: Gestión de preguntas de encuestas
 - CtrlDominioRespuesta: Almacenar respuestas importadas
 - Algoritmos: Kmeans, KmeansPlusPlus, Kmedoids
 - Estructuras: Cluster, Perfil, Centroide, ResultadoClustering
 
-FITXERS DE DADES:
-Fichero: datos-encuestas.json
-- Contiene: Encuestas en formato JSON (id, título, creador, preguntas con tipos y opciones)
-
-Fichero: respuestas-deportes.csv
-- Contiene: Respuestas de usuarios a encuestas (usuario, id_pregunta, valor respuesta)
+FICHEROS DE DATOS:
 
 Fichero: encuesta-deportes.json
 - Contiene: Encuesta de ejemplo sobre deportes
 
-VALORS ESTUDIATS:
+Fichero: respuestas-deportes.csv
+- Contiene: Respuestas de usuarios a la encuesta de deportes
+
+Fichero: datos-encuestas.json
+- Contiene: Encuesta de ejemplo en formato JSON sobre informaciones personales para pedir un préstamo
+
+Fichero: loan-test.csv
+- Contiene: Respuestas de usuarios a la encuesta de informaciones personales
+
+VALORES ESTUDIADOS:
 - Importación JSON: Encuestas válidas/inválidas, diferentes tipos de preguntas
 - Importación CSV: Respuestas válidas, formato correcto, usuarios nuevos/existentes
-- Clustering: k válido (2-10), número respuestas suficientes (k < n), iteraciones válidas
-- Algoritmos: K-means (inicialización aleatoria), K-means++ (inicialización inteligente), K-medoids (medoide real)
-- Evaluación: Coeficiente de silueta (calidad [-1, 1])
-- Caja blanca: Se conoce implementación de algoritmos (Template Method, Strategy)
+- Clustering: k válido, número respuestas suficientes (k < n), iteraciones válidas
+- Algoritmos: K-means, K-means++, K-medoids
+- Evaluación: Coeficiente de silueta (calidad)
 
-EFECTES ESTUDIATS:
+EFECTOS ESTUDIADOS:
 - Importación masiva de datos JSON/CSV
 - Ejecución de algoritmos de clustering con diferentes estrategias
 - Comparación de calidad entre algoritmos
 - Visualización de perfiles (representante + miembros)
-- Convergencia iterativa de algoritmos
 
 OPERATIVA:
 1. Ejecutar: ./gradlew runDriverClustering
-2. Aparece menú ASCII art
+2. Aparece menú
 3. Opción 1: Importar encuesta JSON
-   - Introducir path relativo: EXE/DriverClustering/datos-encuestas.json
-   - Introducir usuario creador
+   - Introducir path relativo: (1) EXE/DriverClustering/encuesta-deportes.json o (2) EXE/DriverClustering/datos-encuestas.json
+   - Introducir usuario propietario, (IMPORTANTE) que tiene que ser "ana" en los 2 juegos prueba, para que se pueda identificar correctamente la encuesta al importar respuestas.
 4. Opción 2: Importar respuestas CSV
-   - Introducir path relativo: EXE/DriverClustering/respuestas-deportes.csv
+   - Introducir path relativo: (1) EXE/DriverClustering/respuestas-deportes.csv o (2) EXE/DriverClustering/loan-test.csv
    - Introducir ID encuesta
 5. Opción 3: Ejecutar clustering
    - Introducir ID encuesta
    - Introducir k (número de clusters)
-   - Introducir maxIteraciones (ej: 100)
-   - Seleccionar algoritmo: 1=K-means, 2=K-means++, 3=K-medoids
-6. Ver perfiles generados (representante + miembros + calidad)
-7. Repetir con diferentes k o algoritmos para comparar
-8. Opción 0 para salir
+   - Seleccionar algoritmo: 1=K-means, 2=K-means++, 3=K-medoids 
+   - Muestra los resultados
+6. Opción 4: Ver perfiles generados (representante + miembros + calidad) del último clustering ejecutado
+7. Opción 5: Mostrar información de los datos actuales
+8. Opción 6: Ver respuestas de una encuesta
+9. Opción 0 para salir
+
 
 DATOS DE PRUEBA INCLUIDOS:
-- EXE/DriverClustering/datos-encuestas.json: Encuesta de deportes con 4 preguntas
-- EXE/DriverClustering/respuestas-deportes.csv: Respuestas de 10+ usuarios
-- EXE/DriverClustering/encuesta-deportes.json: Encuesta alternativa
+
+- EXE/DriverClustering/encuesta-deportes.json: Encuesta de deportes y Lifestyle
+- EXE/DriverClustering/respuestas-deportes.csv: Respuestas a esta encuesta
+
+- EXE/DriverClustering/datos-encuestas.json: Encuesta de informaciones personales para solicitar un préstamo
+- EXE/DriverClustering/loan-test.csv: Respuestas a esta encuesta
