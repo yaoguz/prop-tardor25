@@ -15,28 +15,11 @@ O manualmente:
 
 ## Ejecutar Drivers
 
-### Driver Usuario
 ```bash
 ./gradlew runDriverUsuario
-```
-
-### Driver Encuesta
-```bash
 ./gradlew runDriverEncuesta
-```
-
-### Driver Pregunta
-```bash
 ./gradlew runDriverPregunta
-```
-
-### Driver Respuesta
-```bash
 ./gradlew runDriverRespuesta
-```
-
-### Driver Clustering
-```bash
 ./gradlew runDriverClustering
 ```
 
@@ -49,6 +32,12 @@ O manualmente:
 Ver reporte:
 ```bash
 build/reports/tests/test/index.html
+```
+
+## Limpiar
+
+```bash
+./gradlew clean
 ```
 
 ## Estructura Entrega
@@ -64,7 +53,5 @@ compilar.sh - Script de compilación
 ## Descripción Drivers
 
 Cada driver en EXE/ tiene:
-- DESCRIPCION.txt: Casos de uso, datos, operativa
+- DESCRIPCION.txt: Casos de uso, datos, operativa...
 - Archivos de datos (si aplica)
-
-Consulta EXE/DriverXXX/DESCRIPCION.txt para detalles de cada driver.
