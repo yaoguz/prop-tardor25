@@ -1,0 +1,199 @@
+JOC DE PROVA - DRIVER RESPUESTA
+================================
+
+SCRIPT DE PRUEBA MANUAL
+------------------------
+
+1. INICIAR DRIVER:
+   ./gradlew runDriverRespuesta
+
+2. SECUENCIA DE PRUEBAS:
+
+DATOS INICIALES:
+- Usuarios: user1, user2, user3
+- Encuestas: ID=1, ID=2
+- Preguntas: Varios tipos asociados a encuestas
+
+PRUEBA 1: Crear respuesta libre
+--------------------------------
+Opcion: 1 (Crear respuesta libre)
+ID respuesta: 200
+Usuario: user1
+ID pregunta: 1
+Texto respuesta: Esta es mi respuesta de texto libre
+Resultado esperado: "Respuesta libre creada"
+
+PRUEBA 2: Obtener respuesta libre
+----------------------------------
+Opcion: 2 (Obtener respuesta)
+ID: 200
+Resultado esperado: Info completa (usuario, pregunta, texto)
+
+PRUEBA 3: Crear respuesta numerica
+-----------------------------------
+Opcion: 5 (Crear respuesta numerica)
+ID respuesta: 201
+Usuario: user1
+ID pregunta: 2
+Valor: 8.5
+Resultado esperado: "Respuesta numerica creada"
+
+PRUEBA 4: Obtener valor numerico
+---------------------------------
+Opcion: 8 (Obtener valor numerico)
+ID: 201
+Resultado esperado: "Valor: 8.5"
+
+PRUEBA 5: Crear respuesta numerica invalida (NaN)
+-------------------------------------------------
+Opcion: 5 (Crear respuesta numerica)
+ID respuesta: 202
+Usuario: user1
+ID pregunta: 2
+Valor: abc (texto en lugar de numero)
+Resultado esperado: ERROR - "Valor no es un numero valido"
+
+PRUEBA 6: Crear respuesta opcion unica
+---------------------------------------
+Opcion: 9 (Crear respuesta opcion unica)
+ID respuesta: 203
+Usuario: user2
+ID pregunta: 3
+Indice opcion: 1
+Resultado esperado: "Respuesta opcion unica creada"
+
+PRUEBA 7: Obtener indice opcion unica
+--------------------------------------
+Opcion: 12 (Obtener indice opcion)
+ID: 203
+Resultado esperado: "Indice: 1"
+
+PRUEBA 8: Crear respuesta opcion unica invalida (indice negativo)
+-----------------------------------------------------------------
+Opcion: 9 (Crear respuesta opcion unica)
+ID respuesta: 204
+Usuario: user2
+ID pregunta: 3
+Indice opcion: -1
+Resultado esperado: ERROR - "Indice no puede ser negativo"
+
+PRUEBA 9: Crear respuesta opcion multiple
+-----------------------------------------
+Opcion: 13 (Crear respuesta opcion multiple)
+ID respuesta: 205
+Usuario: user3
+ID pregunta: 4
+Indices (separados por coma): 0,2,3
+Resultado esperado: "Respuesta opcion multiple creada"
+
+PRUEBA 10: Obtener indices opciones
+------------------------------------
+Opcion: 16 (Obtener indices opciones)
+ID: 205
+Resultado esperado: "Indices: [0, 2, 3]"
+
+PRUEBA 11: Crear respuesta opcion multiple con duplicados
+---------------------------------------------------------
+Opcion: 13 (Crear respuesta opcion multiple)
+ID respuesta: 206
+Usuario: user3
+ID pregunta: 4
+Indices: 1,2,1
+Resultado esperado: ERROR - "No puede haber indices duplicados"
+
+PRUEBA 12: Obtener respuestas de usuario
+----------------------------------------
+Opcion: 20 (Ver respuestas de usuario)
+Usuario: user1
+Resultado esperado: Lista de IDs [200, 201, ...]
+
+PRUEBA 13: Obtener respuestas de encuesta
+-----------------------------------------
+Opcion: 21 (Ver respuestas de encuesta)
+ID encuesta: 1
+Resultado esperado: Matriz (usuarios x preguntas) con respuestas
+
+PRUEBA 14: Obtener respuestas de pregunta
+-----------------------------------------
+Opcion: 22 (Ver respuestas de pregunta)
+ID pregunta: 1
+Resultado esperado: Lista de respuestas a esa pregunta
+
+PRUEBA 15: Usuario responde encuesta
+-------------------------------------
+Opcion: 23 (Usuario responde encuesta)
+Usuario: user1
+ID encuesta: 1
+Resultado esperado: "True" (usuario ha respondido)
+
+Opcion: 23 (Usuario responde encuesta)
+Usuario: user2
+ID encuesta: 2
+Resultado esperado: "False" (usuario no ha respondido)
+
+PRUEBA 16: Modificar respuesta libre
+-------------------------------------
+Opcion: 3 (Modificar texto respuesta libre)
+ID: 200
+Nuevo texto: Respuesta modificada
+Resultado esperado: "Texto modificado"
+
+Verificar:
+Opcion: 2 (Obtener respuesta)
+ID: 200
+Resultado esperado: Texto actualizado
+
+PRUEBA 17: Modificar respuesta numerica
+---------------------------------------
+Opcion: 6 (Modificar valor respuesta numerica)
+ID: 201
+Nuevo valor: 9.0
+Resultado esperado: "Valor modificado"
+
+Verificar:
+Opcion: 8 (Obtener valor numerico)
+ID: 201
+Resultado esperado: "Valor: 9.0"
+
+PRUEBA 18: Modificar respuesta opcion unica
+-------------------------------------------
+Opcion: 10 (Modificar indice opcion unica)
+ID: 203
+Nuevo indice: 2
+Resultado esperado: "Indice modificado"
+
+PRUEBA 19: Modificar respuesta opcion multiple
+----------------------------------------------
+Opcion: 14 (Modificar indices opcion multiple)
+ID: 205
+Nuevos indices: 1,3
+Resultado esperado: "Indices modificados"
+
+PRUEBA 20: Eliminar respuesta
+------------------------------
+Opcion: 19 (Eliminar respuesta)
+ID: 200
+Resultado esperado: "Respuesta eliminada"
+
+Verificar:
+Opcion: 18 (Existe respuesta)
+ID: 200
+Resultado esperado: "La respuesta NO existe"
+
+Opcion: 0 (Salir)
+
+VALORES PROBADOS:
+- Caja negra: Creacion de 4 tipos de respuestas
+- Validaciones especificas por tipo:
+  - Numerica: NaN, Infinito
+  - Opcion Unica: Indice negativo
+  - Opcion Multiple: Duplicados, array vacio
+- Consultas: Por usuario, encuesta, pregunta
+- Modificaciones: Valor, texto, indices
+
+RESULTADO ESPERADO:
+- Cada tipo de respuesta se crea y valida correctamente
+- Validaciones detectan valores invalidos
+- Consultas devuelven datos correctos
+- Asociacion respuesta-usuario-pregunta se mantiene
+- Polimorfismo: Comportamiento especifico por tipo

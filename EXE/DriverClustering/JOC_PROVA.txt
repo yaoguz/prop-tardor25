@@ -1,0 +1,192 @@
+JOC DE PROVA - DRIVER CLUSTERING
+=================================
+
+SCRIPT DE PRUEBA MANUAL
+------------------------
+
+1. INICIAR DRIVER:
+   ./gradlew runDriverClustering
+
+2. PREPARAR DATOS:
+
+PASO 1: Importar encuesta
+--------------------------
+Opcion: 1 (Importar encuesta JSON)
+Usuario propietario: testuser
+Ruta archivo: EXE/DriverClustering/datos-encuestas.json
+Resultado esperado: "Encuesta importada exitosamente. ID: X"
+Nota: Guardar el ID de la encuesta
+
+PASO 2: Verificar encuesta importada
+-------------------------------------
+Opcion: 5 (Ver datos actuales)
+Resultado esperado: Muestra encuestas importadas y sus preguntas
+
+PASO 3: Importar respuestas
+----------------------------
+Opcion: 2 (Importar respuestas CSV)
+Ruta archivo: EXE/DriverClustering/respuestas-deportes.csv
+Resultado esperado: "Respuestas importadas exitosamente"
+
+PASO 4: Ver respuestas de encuesta
+-----------------------------------
+Opcion: 6 (Ver respuestas encuesta)
+ID encuesta: X (el que obtuviste en PASO 1)
+Resultado esperado: Matriz con respuestas de usuarios
+
+3. PRUEBAS DE CLUSTERING:
+
+PRUEBA 1: K-means basico (k=2)
+-------------------------------
+Opcion: 3 (Ejecutar clustering)
+ID encuesta: X
+k (num clusters): 2
+maxIteraciones: 100
+Algoritmo (1=K-means, 2=K-means++, 3=K-medoids): 1
+Resultado esperado:
+- 2 perfiles generados
+- Cada perfil con representante y lista miembros
+- Calidad (silueta) entre -1 y 1
+
+PRUEBA 2: Ver info ultimo clustering
+------------------------------------
+Opcion: 4 (Info ultimo clustering)
+Resultado esperado: Detalles de los 2 perfiles generados
+
+PRUEBA 3: K-means++ (k=3)
+--------------------------
+Opcion: 3 (Ejecutar clustering)
+ID encuesta: X
+k: 3
+maxIteraciones: 100
+Algoritmo: 2 (K-means++)
+Resultado esperado:
+- 3 perfiles generados
+- Calidad posiblemente mejor que K-means
+- Convergencia mas rapida
+
+PRUEBA 4: K-medoids (k=3)
+--------------------------
+Opcion: 3 (Ejecutar clustering)
+ID encuesta: X
+k: 3
+maxIteraciones: 100
+Algoritmo: 3 (K-medoids)
+Resultado esperado:
+- 3 perfiles generados
+- Representantes son usuarios reales (no promedios)
+- Calidad similar o mejor
+
+PRUEBA 5: Clustering con k invalido (k > n)
+-------------------------------------------
+Opcion: 3 (Ejecutar clustering)
+ID encuesta: X
+k: 999 (mayor que numero de usuarios)
+Resultado esperado: ERROR - "k debe ser menor que num usuarios"
+
+PRUEBA 6: Clustering con k=1
+-----------------------------
+Opcion: 3 (Ejecutar clustering)
+ID encuesta: X
+k: 1
+maxIteraciones: 100
+Algoritmo: 1
+Resultado esperado:
+- 1 perfil con todos los usuarios
+- Calidad muy baja (todos en un cluster)
+
+PRUEBA 7: Clustering con maxIter bajo
+--------------------------------------
+Opcion: 3 (Ejecutar clustering)
+ID encuesta: X
+k: 3
+maxIteraciones: 5
+Algoritmo: 1
+Resultado esperado:
+- 3 perfiles pero puede no convergir
+- Advertencia si no convergio
+
+PRUEBA 8: Comparar algoritmos (mismo k)
+---------------------------------------
+Ejecutar 3 veces con k=3:
+1. K-means (algoritmo 1)
+2. K-means++ (algoritmo 2)
+3. K-medoids (algoritmo 3)
+
+Comparar:
+- Calidad (silueta): K-means++ suele ser mejor
+- Iteraciones: K-means++ converge mas rapido
+- Representantes: K-medoids usa usuarios reales
+
+4. PRUEBAS CON OTRA ENCUESTA:
+
+PRUEBA 9: Importar segunda encuesta
+------------------------------------
+Opcion: 1 (Importar encuesta)
+Usuario: testuser2
+Ruta: EXE/DriverClustering/encuesta-deportes.json
+Resultado esperado: Nueva encuesta importada
+
+PRUEBA 10: Importar respuestas para segunda encuesta
+----------------------------------------------------
+Opcion: 2 (Importar respuestas)
+Ruta: EXE/DriverClustering/respuestas-deportes.csv
+Resultado esperado: Respuestas importadas
+
+PRUEBA 11: Clustering en segunda encuesta
+-----------------------------------------
+Opcion: 3 (Ejecutar clustering)
+ID encuesta: Y (nuevo ID)
+k: 2
+maxIteraciones: 100
+Algoritmo: 2
+Resultado esperado: Perfiles diferentes a primera encuesta
+
+5. PRUEBAS DE ROBUSTEZ:
+
+PRUEBA 12: Encuesta sin respuestas
+-----------------------------------
+Opcion: 1 (Importar encuesta nueva sin respuestas)
+Opcion: 3 (Intentar clustering)
+Resultado esperado: ERROR - "No hay suficientes respuestas"
+
+PRUEBA 13: Archivo JSON invalido
+---------------------------------
+Opcion: 1 (Importar encuesta)
+Ruta: archivo_no_existe.json
+Resultado esperado: ERROR - "Archivo no existe"
+
+PRUEBA 14: Archivo CSV invalido
+--------------------------------
+Opcion: 2 (Importar respuestas)
+Ruta: archivo_invalido.csv
+Resultado esperado: ERROR - "Formato incorrecto"
+
+Opcion: 0 (Salir)
+
+VALORES PROBADOS:
+- Caja blanca: Conocimiento de Template Method (Kalgorithm)
+- Estrategias: InicializacionAleatoria vs InicializacionPlusPlus
+- Calculo centroide: Media (K-means) vs Medoide (K-medoids)
+- k valido: 1 <= k < n
+- Convergencia: maxIteraciones suficientes
+- Calidad: Coeficiente silueta [-1, 1]
+
+EFECTES ESTUDIATS:
+- Importacion masiva JSON/CSV
+- Creacion automatica de usuarios
+- Convergencia iterativa de algoritmos
+- Comparacion calidad entre algoritmos
+- Visualizacion de perfiles
+
+RESULTADO ESPERADO:
+- 3 algoritmos generan perfiles validos
+- K-means++ converge mas rapido y mejor calidad
+- K-medoids usa representantes reales
+- Validaciones detectan k invalido o datos insuficientes
+- Calidad aumenta con k optimo (silhouette plot)
+
+ARCHIVOS NECESARIOS:
+- EXE/DriverClustering/datos-encuestas.json
+- EXE/DriverClustering/respuestas-deportes.csv
+- EXE/DriverClustering/encuesta-deportes.json

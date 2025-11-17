@@ -1,0 +1,139 @@
+JOC DE PROVA - DRIVER ENCUESTA
+===============================
+
+SCRIPT DE PRUEBA MANUAL
+------------------------
+
+1. INICIAR DRIVER:
+   ./gradlew runDriverEncuesta
+
+2. SECUENCIA DE PRUEBAS:
+
+PRUEBA 1: Verificar datos iniciales
+-----------------------------------
+Opcion: 8 (Ver todas las encuestas)
+Resultado esperado: Lista con encuesta ID=1 "Encuesta de Prueba"
+
+PRUEBA 2: Crear encuesta nueva
+-------------------------------
+Opcion: 1 (Crear encuesta)
+Titulo: Mi Nueva Encuesta
+Usuario: creator1
+Resultado esperado: "Encuesta creada con ID: X"
+
+Opcion: 6 (Existe encuesta)
+ID: X (el ID que te dio)
+Resultado esperado: "La encuesta existe"
+
+PRUEBA 3: Crear encuesta duplicada (mismo usuario+titulo)
+---------------------------------------------------------
+Opcion: 1 (Crear encuesta)
+Titulo: Encuesta de Prueba
+Usuario: creator1
+Resultado esperado: ERROR - "Ya existe encuesta con ese titulo"
+
+PRUEBA 4: Obtener encuesta
+---------------------------
+Opcion: 7 (Obtener encuesta)
+ID: 1
+Resultado esperado: Info completa (ID, titulo, creador, preguntas)
+
+PRUEBA 5: Añadir pregunta libre
+--------------------------------
+Opcion: 2 (Añadir pregunta)
+ID encuesta: 1
+Tipo (1=Libre, 2=Numerica, 3=Unica, 4=Multiple): 1
+Enunciado: ¿Cual es tu opinion?
+Resultado esperado: "Pregunta añadida con ID: X"
+
+PRUEBA 6: Añadir pregunta numerica
+-----------------------------------
+Opcion: 2 (Añadir pregunta)
+ID encuesta: 1
+Tipo: 2
+Enunciado: ¿Cuantos años tienes?
+Rango inferior: 0
+Rango superior: 120
+Resultado esperado: "Pregunta añadida con ID: X"
+
+PRUEBA 7: Añadir pregunta opcion unica
+---------------------------------------
+Opcion: 2 (Añadir pregunta)
+ID encuesta: 1
+Tipo: 3
+Enunciado: ¿Cual es tu color favorito?
+Cantidad opciones: 3
+Opcion 1: Rojo
+Opcion 2: Verde
+Opcion 3: Azul
+¿Ordenada? (si/no): no
+Resultado esperado: "Pregunta añadida con ID: X"
+
+PRUEBA 8: Añadir pregunta opcion multiple
+-----------------------------------------
+Opcion: 2 (Añadir pregunta)
+ID encuesta: 1
+Tipo: 4
+Enunciado: ¿Que deportes practicas?
+Cantidad opciones: 4
+Opcion 1: Futbol
+Opcion 2: Baloncesto
+Opcion 3: Tenis
+Opcion 4: Natacion
+Num max seleccionables: 2
+Resultado esperado: "Pregunta añadida con ID: X"
+
+PRUEBA 9: Ver preguntas de encuesta
+------------------------------------
+Opcion: 3 (Ver preguntas)
+ID encuesta: 1
+Resultado esperado: Lista de todas las preguntas añadidas
+
+PRUEBA 10: Modificar titulo
+----------------------------
+Opcion: 4 (Modificar titulo)
+ID encuesta: 1
+Nuevo titulo: Encuesta Modificada
+Resultado esperado: "Titulo modificado"
+
+Verificar:
+Opcion: 7 (Obtener encuesta)
+ID: 1
+Resultado esperado: Titulo "Encuesta Modificada"
+
+PRUEBA 11: Intentar añadir pregunta a encuesta inexistente
+----------------------------------------------------------
+Opcion: 2 (Añadir pregunta)
+ID encuesta: 9999
+Resultado esperado: ERROR - "Encuesta no existe"
+
+PRUEBA 12: Obtener respuestas de encuesta
+-----------------------------------------
+Opcion: 9 (Ver respuestas encuesta)
+ID encuesta: 1
+Resultado esperado: Matriz de respuestas (usuario x preguntas)
+
+PRUEBA 13: Eliminar encuesta
+-----------------------------
+Opcion: 5 (Eliminar encuesta)
+ID: 1
+Resultado esperado: "Encuesta eliminada"
+
+Verificar:
+Opcion: 6 (Existe encuesta)
+ID: 1
+Resultado esperado: "La encuesta NO existe"
+
+Opcion: 0 (Salir)
+
+VALORES PROBADOS:
+- Caja negra: CRUD completo de encuestas y preguntas
+- 4 tipos de preguntas: Libre, Numerica, Opcion Unica, Opcion Multiple
+- Validaciones: Encuesta duplicada, encuesta inexistente
+- Atributos especificos: Rangos, opciones, ordenada, num max
+
+RESULTADO ESPERADO:
+- Todas las operaciones CRUD funcionan correctamente
+- Cada tipo de pregunta se crea con sus atributos especificos
+- Validaciones detectan errores apropiadamente
+- Integridad referencial encuesta-preguntas se mantiene
