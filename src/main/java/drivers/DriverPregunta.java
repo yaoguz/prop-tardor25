@@ -85,7 +85,7 @@ public class DriverPregunta {
         nomU = ctrlUsuario.registrarUsuario("Tester", "123456", "123456");
         idE = ctrlEncuesta.crearEncuesta(nomU, "Titulo");
         int idPL = ctrlPregunta.crearPreguntaLibre(idE,  "Enunciado libre:");
-        int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "Respuesta Libre");
+        int idRL = ctrlRespuesta.darRespuesta(nomU, idPL, "RespuestaBlaBlaBla");
         int idPN = ctrlPregunta.crearPreguntaNumerica(idE,  "Enunciado numérico:", 2, 8);
         int idRN = ctrlRespuesta.darRespuesta(nomU, idPN, 3.0);
         ArrayList<String> ops = new ArrayList<>();
@@ -279,15 +279,12 @@ public class DriverPregunta {
         System.out.println("\n--{ CREAR UNA PREGUNTA }--");
         
         System.out.print("Introduzca el enunciado de la pregunta a crear: ");
-        String enunciado = scanner.nextLine().trim();
+        String enunciado = null;
+        while(enunciado == null || enunciado == "") enunciado = scanner.nextLine();
 
         System.out.println("Indique el tipo de pregunta que quiere crear:");
         System.out.println("[ 0 -> Libre | 1 -> Numérica | 2 -> Opción múltiple | 3 -> Opción única ]");
-        int tipo = -1;
-        while(tipo < 0 || tipo > 3){
-            tipo = scanner.nextInt();
-            if(tipo < 0 || tipo > 3) System.out.println("Entrada no válida. Introduzca un número válido (0, 1, 2 o 3).");
-        }
+        int tipo = scanner.nextInt();
         try {
             int idPregunta = 0;
             switch(tipo){
@@ -303,11 +300,12 @@ public class DriverPregunta {
                     break;
                 case 2: //múltiple
                     ArrayList<String> opsM = new ArrayList<>();
-                    String sm = null;
-                    while(sm != "_fin"){
-                        System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                        sm = scanner.nextLine().trim();
-                        if(sm != "_fin") opsM.add(sm);
+                    System.out.println("Introduzca el úmero de opciones: ");
+                    int numops = scanner.nextInt();
+                    for(int i = 1; i <= numops; ++i){
+                        System.out.print("Introduzca la opción " + i + " de la pregunta: ");
+                        String s = null;
+                        while(s == null || s == "") s = scanner.nextLine();
                     }
                     System.out.print("Introduzca el número máximo(incluido) de opciones seleccionables para la pregunta: ");
                     int maxOpc = scanner.nextInt();
@@ -315,11 +313,13 @@ public class DriverPregunta {
                     break;
                 case 3: //única
                     ArrayList<String> opsU = new ArrayList<>();
-                    String su = null;
-                    while(su != "_fin"){
-                        System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                        su = scanner.nextLine().trim();
-                        if(su != "_fin") opsU.add(su);
+                    System.out.println("Introduzca el úmero de opciones: ");
+                    int numOps = scanner.nextInt();
+                    for(int i = 1; i <= numOps; ++i){
+                        System.out.print("Introduzca la opción " + i + " de la pregunta: ");
+                        String s = null;
+                        while(s == null || s == "") s = scanner.nextLine();
+                        opsU.add(s);
                     }
                     System.out.print("Introduzca 1 si las opciones siguen un orden o 0 si no lo siguen: ");
                     int ord = scanner.nextInt();
@@ -371,7 +371,8 @@ public class DriverPregunta {
         CtrlDominioPregunta.PreguntaImportData info = new CtrlDominioPregunta.PreguntaImportData();
         
         System.out.print("Introduzca el enunciado modificado (escriba _igual para mantener el enunciado antiguo): ");
-        String s = scanner.nextLine().trim();
+        String s = null;
+        while(s == null || s == "") s = scanner.nextLine();
         if(s == "_igual") info.enunciado = p.getEnunciado();
         else info.enunciado = s;
 
@@ -384,11 +385,12 @@ public class DriverPregunta {
                 break;
             case "opcion_multiple":
                 ArrayList<String> opsM = new ArrayList<>();
-                String opm = null;
-                while(opm != "_fin"){
-                    System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                    opm = scanner.nextLine().trim();
-                    if(opm != "_fin") opsM.add(opm);
+                System.out.println("Introduzca el úmero de opciones: ");
+                int numops = scanner.nextInt();
+                for(int i = 1; i <= numops; ++i){
+                    System.out.print("Introduzca la opción " + i + " de la pregunta: ");
+                    String s2 = null;
+                    while(s2 == null || s2 == "") s2 = scanner.nextLine();
                 }
                 info.atributosEspecificos.put("opciones", opsM);
                 System.out.print("Introduzca el número máximo(incluido) de opciones seleccionables para la pregunta: ");
@@ -396,11 +398,13 @@ public class DriverPregunta {
                 break;
             case "opcion_unica":
                 ArrayList<String> opsU = new ArrayList<>();
-                String opu = null;
-                while(opu != "_fin"){
-                    System.out.print("Introduzca una opción de la pregunta (escriba _fin para dejar de añadir opciones): ");
-                    opu = scanner.nextLine().trim();
-                    if(opu != "_fin") opsU.add(opu);
+                System.out.println("Introduzca el úmero de opciones: ");
+                int numOps = scanner.nextInt();
+                for(int i = 1; i <= numOps; ++i){
+                    System.out.print("Introduzca la opción " + i + " de la pregunta: ");
+                    String s1 = null;
+                    while(s1 == null || s1 == "") s1 = scanner.nextLine();
+                    opsU.add(s1);
                 }
                 info.atributosEspecificos.put("opciones", opsU);
                 System.out.print("Introduzca 1 si las opciones siguen un orden o 0 si no lo siguen: ");
@@ -561,7 +565,8 @@ public class DriverPregunta {
         System.out.println("\n--{ AÑADIR UNA RESPUESTA A UNA PREGUNTA }--");
 
         System.out.print("Introduzca el nombre del usuario que responderá: ");
-        String usr = scanner.nextLine().trim();
+        String usr = null;
+        while(usr == null || usr == "") usr = scanner.nextLine();
 
         System.out.print("Introduzca el id de la pregunta a responder: ");
         int idPregunta = scanner.nextInt();

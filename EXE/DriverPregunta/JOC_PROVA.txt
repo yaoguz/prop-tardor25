@@ -4,167 +4,102 @@ JOC DE PROVA - DRIVER PREGUNTA
 SCRIPT DE PRUEBA MANUAL
 ------------------------
 
+Hacer cada prueba desde una ejecución nueva.
+
 1. INICIAR DRIVER:
    ./gradlew runDriverPregunta
 
-2. SECUENCIA DE PRUEBAS:
 
-PRUEBA 1: Crear pregunta libre
--------------------------------
-Opcion: 1 (Crear pregunta libre)
-ID pregunta: 100
-ID encuesta: 1
-Enunciado: ¿Que te parece el sistema?
-Resultado esperado: "Pregunta libre creada"
 
-PRUEBA 2: Obtener pregunta libre
----------------------------------
-Opcion: 2 (Obtener pregunta)
-ID: 100
-Resultado esperado: Info completa (ID, enunciado, tipo: Libre)
+2. PRUEBAS:
 
-PRUEBA 3: Crear pregunta numerica
+PRUEBA 1: Obtener respuestas de una pregunta.
+
+Opcion: 1 (Obtener respuestas de una pregunta)
+ID pregunta: 1
+
+Resultado esperado:
+Id: 1. Usuario: Tester. Respuesta: RespuestaBlaBlaBla.
+
+
+
+PRUEBA 2: Crear pregunta
+
+Opcion: 2 (Crear pregunta)
+Enunciado: ¿Funciona el driver?
+Tipo: 3 (opcion unica)
+Numero de opciones: 2
+1ª opcion: Si
+2ª opcion: No
+Orden: 0 (no)
+
+Resultado esperado: Pregunta creada con id: 6
+
+PRUEBA 3: Modificar pregunta
 ----------------------------------
-Opcion: 5 (Crear pregunta numerica)
-ID pregunta: 101
-ID encuesta: 1
+Opcion: 3 (Modificar pregunta)
+ID pregunta: 1
 Enunciado: ¿Cuantas horas estudias al dia?
-Rango inferior: 0
-Rango superior: 24
-Resultado esperado: "Pregunta numerica creada"
 
-PRUEBA 4: Obtener rango
+Resultado esperado: Pregunta modificada. Ahora tiene el id: 6
+
+
+
+PRUEBA 4: Eliminar pregunta
 ------------------------
-Opcion: 8 (Obtener rango)
-ID: 101
-Resultado esperado: "Rango: [0, 24]"
+Opcion: 4 (Eliminar pregunta)
+ID: 3
 
-PRUEBA 5: Crear pregunta numerica con rango invalido
+Resultado esperado: Eliminada la pregunta con id: 3
+
+
+
+PRUEBA 5: Obtener pregunta
 ----------------------------------------------------
-Opcion: 5 (Crear pregunta numerica)
-ID pregunta: 102
-ID encuesta: 1
-Enunciado: Test rango malo
-Rango inferior: 100
-Rango superior: 10
-Resultado esperado: ERROR - "Rango inferior debe ser menor que superior"
+Opcion: 5 (Obtener pregunta)
+ID pregunta: 4
 
-PRUEBA 6: Crear pregunta opcion unica
+Resultado esperado:
+Información de la pregunta:
+Id: 4
+Id de su encuesta: 1
+Enunciado: Enunciado opción única no ordenada:
+Tipo: opcion_unica
+Número de respuestas: 1
+
+
+
+
+
+PRUEBA 6: Obtener todas las preguntas
 --------------------------------------
-Opcion: 9 (Crear pregunta opcion unica)
-ID pregunta: 103
-ID encuesta: 1
-Enunciado: ¿Cual es tu nivel?
-Opciones (separadas por coma): Principiante,Intermedio,Avanzado
-¿Ordenada? (true/false): true
-Resultado esperado: "Pregunta opcion unica creada"
+Opcion: 6 (Obtener todas las preguntas)
 
-PRUEBA 7: Obtener opciones
+Resultado esperado:
+Total de preguntas: 5
+Preguntas:
+Id: 1
+Id: 2
+Id: 3
+Id: 4
+Id: 5
+
+
+
+
+PRUEBA 7: Comprobar existencia de preguntas
 ---------------------------
-Opcion: 12 (Obtener opciones)
-ID: 103
-Resultado esperado: Lista [Principiante, Intermedio, Avanzado]
+Opcion: 7 (Comprobar existencia de preguntas)
+ID: 5
 
-PRUEBA 8: Añadir opcion
+Resultado esperado: La pregunta con id 5 existe
+
+
+
+PRUEBA 8: Añadir respuesta a una pregunta
 ------------------------
-Opcion: 13 (Añadir opcion)
-ID: 103
-Nueva opcion: Experto
-Resultado esperado: "Opcion añadida"
+Opcion: 8 (Añadir respuesta a una pregunta)
+Usuario: pepe
+ID: 1
 
-Verificar:
-Opcion: 12 (Obtener opciones)
-ID: 103
-Resultado esperado: [Principiante, Intermedio, Avanzado, Experto]
-
-PRUEBA 9: Eliminar opcion
---------------------------
-Opcion: 14 (Eliminar opcion)
-ID: 103
-Indice opcion: 3
-Resultado esperado: "Opcion eliminada"
-
-Verificar:
-Opcion: 12 (Obtener opciones)
-ID: 103
-Resultado esperado: [Principiante, Intermedio, Avanzado]
-
-PRUEBA 10: Crear pregunta opcion multiple
------------------------------------------
-Opcion: 15 (Crear pregunta opcion multiple)
-ID pregunta: 104
-ID encuesta: 1
-Enunciado: ¿Que lenguajes conoces?
-Opciones (separadas por coma): Java,Python,C++,JavaScript
-Num max opciones: 3
-Resultado esperado: "Pregunta opcion multiple creada"
-
-PRUEBA 11: Obtener num max opciones
-------------------------------------
-Opcion: 18 (Obtener num max opciones)
-ID: 104
-Resultado esperado: "Num max: 3"
-
-PRUEBA 12: Modificar num max opciones
--------------------------------------
-Opcion: 19 (Modificar num max opciones)
-ID: 104
-Nuevo num max: 2
-Resultado esperado: "Num max modificado"
-
-Verificar:
-Opcion: 18 (Obtener num max opciones)
-ID: 104
-Resultado esperado: "Num max: 2"
-
-PRUEBA 13: Modificar enunciado
--------------------------------
-Opcion: 3 (Modificar enunciado)
-ID: 100
-Nuevo enunciado: ¿Como valoras el sistema?
-Resultado esperado: "Enunciado modificado"
-
-Verificar:
-Opcion: 2 (Obtener pregunta)
-ID: 100
-Resultado esperado: Enunciado actualizado
-
-PRUEBA 14: Obtener ID encuesta
--------------------------------
-Opcion: 4 (Obtener ID encuesta)
-ID pregunta: 100
-Resultado esperado: "ID Encuesta: 1"
-
-PRUEBA 15: Ver todas las preguntas
------------------------------------
-Opcion: 22 (Ver todas las preguntas)
-Resultado esperado: Lista completa incluyendo preguntas creadas
-
-PRUEBA 16: Eliminar pregunta
------------------------------
-Opcion: 21 (Eliminar pregunta)
-ID: 100
-Resultado esperado: "Pregunta eliminada"
-
-Verificar:
-Opcion: 20 (Existe pregunta)
-ID: 100
-Resultado esperado: "La pregunta NO existe"
-
-Opcion: 0 (Salir)
-
-VALORES PROBADOS:
-- Caja negra: Creacion de 4 tipos de preguntas
-- Validaciones: Rangos invalidos, indices fuera de rango
-- Operaciones especificas:
-  - Libre: Sin restricciones
-  - Numerica: Rangos validos
-  - Opcion Unica: Opciones + ordenada
-  - Opcion Multiple: Opciones + num max
-- Modificaciones: Enunciado, opciones, num max
-
-RESULTADO ESPERADO:
-- Cada tipo de pregunta se crea con atributos correctos
-- Validaciones detectan errores (rangos, indices)
-- Operaciones de modificacion funcionan correctamente
-- Polimorfismo: Comportamiento especifico por tipo
+Resultado esperado: "Creada respuesta con id: 6"
