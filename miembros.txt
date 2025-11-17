@@ -2,12 +2,14 @@
 
 MIEMBROS (Apellidos, Nombre):
 Guo Zhang, Yaoyao
-Miembro 2
-Miembro 3
-Miembro 4
+Jin, Alessandro
+Roca, Denis
+Wang, peiyu
+Yepan, Xiangjun
 
 EMAILS (mismo orden):
 yaoyao.guo@estudiantat.upc.edu
-miembro2@estudiantat.upc.edu
-miembro3@estudiantat.upc.edu
-miembro4@estudiantat.upc.edu
+alessandro.jin@estudiantat.upc.edu
+denis.roca@estudiantat.upc.edu
+peiyu.wang@estudiantat.upc.edu
+xiangjun.yepan@estudiantat.upc.edu
