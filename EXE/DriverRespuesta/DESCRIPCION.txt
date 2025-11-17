@@ -45,6 +45,6 @@ OPERATIVA:
 7. Opción 0 para salir
 
 DATOS DE PRUEBA INICIALES:
-- Usuarios: ana, pol, juan
-- Encuestas: ID=1
-- Preguntas de cada tipo con tipo con datos válidos predefinidos
+- Usuarios: ana, pol, juan, contrasena="pass123"
+- Encuestas: ID=1, titulo="Encuesta Hábitos Deportivos"
+- Preguntas: Varias de tipos Libre, Numérica, Opción Única y Opción Múltiple

@@ -39,7 +39,7 @@ OPERATIVA:
 7. Opción 0 para salir
 
 DATOS DE PRUEBA INICIALES:
-- Usuarios: ana, pol, joan
-- Encuesta: ID=1, Título="Encuesta Prueba"
-- Preguntas: Varias de tipos Libre, Numérica, Opción Única, Opción Múltiple
-- Respuestas: ana, pol y joan han respondido respectivamente a unas cuantas preguntas
+- Usuarios: ana, pol, joan, contrasena="pass123"
+- Encuesta: ID=1, Título="Encuesta Prueba", Creador="ana"
+- Preguntas: Varias de tipos Libre, Numérica, Opción Única
+- Respuestas: ana, pol y joan han respondido dos de las preguntas

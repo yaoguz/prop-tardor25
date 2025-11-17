@@ -115,26 +115,26 @@ public class DriverEncuesta {
         // crear una encuesta de prueba
         idEncuestaPrueba = ctrlEncuesta.crearEncuesta("ana", "Encuesta prueba");
 
-    // crear algunas preguntas con ctrlPregunta (guardar los ids para crear respuestas)
-    List<String> ops = new ArrayList<>();
-    ops.add("Si");
-    ops.add("No");
-    int idP_opUnica = ctrlPregunta.crearPreguntaOpcionUnica(idEncuestaPrueba, "¿Te gusta programar?", ops, false);
-    int idP_numerica = ctrlPregunta.crearPreguntaNumerica(idEncuestaPrueba, "¿Cuántas horas al dia programas?", 0, 24);
-    int idP_libre = ctrlPregunta.crearPreguntaLibre(idEncuestaPrueba, "Comentarios sobre la encuesta");
+        // crear algunas preguntas con ctrlPregunta (guardar los ids para crear respuestas)
+        List<String> ops = new ArrayList<>();
+        ops.add("Si");
+        ops.add("No");
+        int idP_opUnica = ctrlPregunta.crearPreguntaOpcionUnica(idEncuestaPrueba, "¿Te gusta programar?", ops, false);
+        int idP_numerica = ctrlPregunta.crearPreguntaNumerica(idEncuestaPrueba, "¿Cuántas horas al dia programas?", 0, 24);
+        int idP_libre = ctrlPregunta.crearPreguntaLibre(idEncuestaPrueba, "Comentarios sobre la encuesta");
 
-    // Añadir respuestas de prueba para las preguntas creadas
-    // Respuestas a pregunta opción única (indices 0=Si, 1=No)
-    ctrlRespuesta.darRespuesta("ana", idP_opUnica, Integer.valueOf(0));
-    ctrlRespuesta.darRespuesta("pol", idP_opUnica, Integer.valueOf(1));
+        // Añadir respuestas de prueba para las preguntas creadas
+        // Respuestas a pregunta opción única (indices 0=Si, 1=No)
+        ctrlRespuesta.darRespuesta("ana", idP_opUnica, Integer.valueOf(0));
+        ctrlRespuesta.darRespuesta("pol", idP_opUnica, Integer.valueOf(1));
 
-    // Respuestas a pregunta numérica
-    ctrlRespuesta.darRespuesta("ana", idP_numerica, Double.valueOf(2.0));
-    ctrlRespuesta.darRespuesta("joan", idP_numerica, Double.valueOf(5.0));
+        // Respuestas a pregunta numérica
+        ctrlRespuesta.darRespuesta("ana", idP_numerica, Double.valueOf(2.0));
+        ctrlRespuesta.darRespuesta("joan", idP_numerica, Double.valueOf(5.0));
 
-    // Respuestas a pregunta libre
-    ctrlRespuesta.darRespuesta("pol", idP_libre, "Me gusta mucho");
-    ctrlRespuesta.darRespuesta("joan", idP_libre, "Podría mejorar") ;
+        // Respuestas a pregunta libre
+        ctrlRespuesta.darRespuesta("pol", idP_libre, "Me gusta mucho");
+        ctrlRespuesta.darRespuesta("joan", idP_libre, "Podría mejorar") ;
     }
 
     /** Crea datos de ejemplo (usuarios, encuesta, preguntas, respuestas) para pruebas manuales. */
