@@ -94,6 +94,14 @@ public class EvaluarCluster {
         return res;
     }
 
+    /**
+     * Calcula la silueta de una persona dentro de su cluster (distancia promedio intra-cluster).
+     * @param persona Lista de respuestas de la persona
+     * @param grupo Lista de respuestas de todos los miembros del cluster
+     * @param variables Lista de preguntas/variables
+     * @param elMismo Índice de la persona dentro del grupo (o -1 si no aplica)
+     * @return Distancia/silueta promedio para la persona respecto al cluster
+     */
     private static double calcularSiluetaPersonaCluster (List<Respuesta> persona, List<List<Respuesta>> grupo, List<Pregunta> variables, int elMismo) {
         double sumaDistancias = 0.0;
         int n = grupo.size();
