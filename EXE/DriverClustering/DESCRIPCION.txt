@@ -8,9 +8,10 @@ OBJECTE DE LA PROVA:
 ALTRES ELEMENTS INTEGRATS:
 - GestorPersistencia: Almacenamiento de encuestas y respuestas
 - CtrlDominioEncuesta: Gestión de encuestas importadas
-- CtrlDominioUsuario: Crear usuarios automáticamente al importar respuestas
+- CtrlDominioUsuario: Crear usuarios automáticamente al importar encuestas/respuestas
 - CtrlDominioPregunta: Gestión de preguntas de encuestas
 - CtrlDominioRespuesta: Almacenar respuestas importadas
+- CtrlDominioPerfil: Orquestación y ejecución del algoritmo de clustering
 - Algoritmos: Kmeans, KmeansPlusPlus, Kmedoids
 - Estructuras: Cluster, Perfil, Centroide, ResultadoClustering
 
@@ -24,6 +25,10 @@ Fichero: respuestas-deportes.csv
 Fichero: encuesta-deportes.json
 - Contiene: Encuesta de ejemplo sobre deportes
 
+Ubicaciones / usos sugeridos:
+- `EXE/DriverClustering/datos-encuestas.json` -> ejemplo para importar encuesta
+- `EXE/DriverClustering/respuestas-deportes.csv` -> ejemplo para importar respuestas
+
 VALORS ESTUDIATS:
 - Importación JSON: Encuestas válidas/inválidas, diferentes tipos de preguntas
 - Importación CSV: Respuestas válidas, formato correcto, usuarios nuevos/existentes
@@ -33,29 +38,35 @@ VALORS ESTUDIATS:
 - Caja blanca: Se conoce implementación de algoritmos (Template Method, Strategy)
 
 EFECTES ESTUDIATS:
-- Importación masiva de datos JSON/CSV
-- Ejecución de algoritmos de clustering con diferentes estrategias
-- Comparación de calidad entre algoritmos
-- Visualización de perfiles (representante + miembros)
-- Convergencia iterativa de algoritmos
+- Importación masiva de datos JSON/CSV y su impacto en persistencia (GestorPersistencia).
+- Ejecución de algoritmos con distintos parámetros y comparación de resultados (perfiles, tamaño, representante).
+- Visualización por consola (listados, menús, mensajes de error, resumen con métricas y tiempo de ejecución).
 
-OPERATIVA:
-1. Ejecutar: ./gradlew runDriverClustering
-2. Aparece menú ASCII art
-3. Opción 1: Importar encuesta JSON
-   - Introducir path relativo: EXE/DriverClustering/datos-encuestas.json
-   - Introducir usuario creador
-4. Opción 2: Importar respuestas CSV
-   - Introducir path relativo: EXE/DriverClustering/respuestas-deportes.csv
-   - Introducir ID encuesta
-5. Opción 3: Ejecutar clustering
-   - Introducir ID encuesta
-   - Introducir k (número de clusters)
-   - Introducir maxIteraciones (ej: 100)
-   - Seleccionar algoritmo: 1=K-means, 2=K-means++, 3=K-medoids
-6. Ver perfiles generados (representante + miembros + calidad)
-7. Repetir con diferentes k o algoritmos para comparar
-8. Opción 0 para salir
+OPERATIVA (MANUAL BÁSICO Y EJEMPLOS):
+1. Ejecutar el driver (desde el proyecto):
+   ./gradlew runDriverClustering
+
+2. Al iniciar, se muestra un menú con opciones:
+   1. Importar encuesta desde archivo JSON
+   2. Importar respuestas desde archivo CSV
+   3. Ejecutar clustering
+   4. Obtener información de los perfiles del último clustering
+   5. Mostrar información del estado actual (usuarios/encuestas/respuestas)
+   6. Ver respuestas de una encuesta
+   0. Salir
+
+3. Ejemplo de uso:
+   - Opción 1: introducir ruta (ej.: `EXE/DriverClustering/encuesta-deportes.json`) y usuario creador.
+     Si el usuario no existe, el driver lo crea con contraseña "123456" y abre sesión temporal.
+   - Opción 2: introducir ruta del CSV (ej.: `EXE/DriverClustering/respuestas-deportes.csv`).
+     El driver comprobará la existencia del fichero antes de delegar la importación.
+   - Opción 3: seleccionar encuesta (por id), introducir k (2..n) y elegir algoritmo: 1=K-means, 2=K-means++, 3=K-medoids.
+     El driver muestra tiempo de ejecución, tamaño de perfiles y coeficiente de silueta con interpretación.
+
+Notas:
+- Las rutas de ejemplo son relativas al directorio del proyecto; pueden especificarse rutas absolutas.
+- El driver valida la existencia del fichero antes de llamar a los métodos de importación.
+- El parámetro de algoritmo se mapea internamente a las cadenas esperadas por `CtrlDominioPerfil` ("kmeans", "kmeans++", "kmedoids").
 
 DATOS DE PRUEBA INCLUIDOS:
 - EXE/DriverClustering/datos-encuestas.json: Encuesta de deportes con 4 preguntas
