@@ -15,9 +15,7 @@ import domain.*;
 import domain.algorithm.estructuras.*;
 
 /**
- * Tests unitarios para CtrlDominioPerfil.
- * Mockea CtrlDominioEncuesta pero usa datos reales para clustering.
- * 
+ * Pruebas del controlador CtrlDominioPerfil.
  * @author Alessandro Jin
  */
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -39,45 +37,6 @@ public class TestCtrlDominioPerfil {
         instance.set(null, null);
         
         ctrlDominioPerfil = CtrlDominioPerfil.getInstance(mockCtrlDominioEncuesta);
-
-        /*
-        Respuesta mockU1R1 = mock(RespuestaLibre.class);
-        Respuesta mockU1R2 = mock(RespuestaNumerica.class);
-        Respuesta mockU1R3 = mock(RespuestaOpcionMultiple.class);
-        Respuesta mockU1R4 = mock(RespuestaOpcionUnica.class);
-        Respuesta mockU1R5 = mock(RespuestaOpcionUnica.class);
-
-        Respuesta mockU2R1 = mock(RespuestaLibre.class);
-        Respuesta mockU2R2 = mock(RespuestaNumerica.class);
-        Respuesta mockU2R3 = mock(RespuestaOpcionMultiple.class);
-        Respuesta mockU2R4 = mock(RespuestaOpcionUnica.class);
-        Respuesta mockU2R5 = mock(RespuestaOpcionUnica.class);
-
-        Respuesta mockU3R1 = mock(RespuestaLibre.class);
-        Respuesta mockU3R2 = mock(RespuestaNumerica.class);
-        Respuesta mockU3R3 = mock(RespuestaOpcionMultiple.class);
-        Respuesta mockU3R4 = mock(RespuestaOpcionUnica.class);
-        Respuesta mockU3R5 = mock(RespuestaOpcionUnica.class);
-
-        Respuesta mockU4R1 = mock(RespuestaLibre.class);
-        Respuesta mockU4R2 = mock(RespuestaNumerica.class);
-        Respuesta mockU4R3 = mock(RespuestaOpcionMultiple.class);
-        Respuesta mockU4R4 = mock(RespuestaOpcionUnica.class);
-        Respuesta mockU4R5 = mock(RespuestaOpcionUnica.class);
-
-                
-        // Creamos listas individuales
-        List<Respuesta> lista1 = Arrays.asList(mockU1R1, mockU1R2, mockU1R3, mockU1R4, mockU1R5);
-        List<Respuesta> lista2 = Arrays.asList(mockU2R1, mockU2R2, mockU2R3, mockU2R4, mockU2R5);
-        List<Respuesta> lista3 = Arrays.asList(mockU3R1, mockU3R2, mockU3R3, mockU3R4, mockU3R5);
-        List<Respuesta> lista4 = Arrays.asList(mockU4R1, mockU4R2, mockU4R3, mockU4R4, mockU4R5);
-        List<Respuesta> lista5 = Arrays.asList(mockU5R1, mockU5R2, mockU5R3, mockU5R4, mockU5R5);
-
-        // Lista de listas
-        res = Arrays.asList(lista1, lista2, lista3, lista4, lista5); 
-
-        when(mockU1R1.getRespuesta()).thenReturn("Buenos dias");
-         */
         
         // Crear preguntas reales (el algoritmo necesita datos reales)
         PreguntaNumerica p1 = new PreguntaNumerica(1, 1, "Edad?", 18, 99);

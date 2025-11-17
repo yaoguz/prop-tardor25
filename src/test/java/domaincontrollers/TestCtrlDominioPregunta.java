@@ -17,6 +17,7 @@ import persistence.GestorPersistencia;
 
 
 /**
+ * Pruebas del controlador CtrlDominioPregunta.
  * @author Alessandro Jin
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -31,6 +32,9 @@ public class TestCtrlDominioPregunta {
 
     private CtrlDominioPregunta ctrlDominioPregunta;
 
+    /**
+     * Inicializa el controlador antes de cada test.
+     */
     @Before
     public void setUp() throws Exception {
         // Resetear singleton
@@ -42,10 +46,7 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Objeto de la prueba: existePregunta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Verificación de existencia de preguntas
-     * Operativa: Mocks retornan true/false, se verifica comportamiento correcto
+     * Verifica existencia de preguntas.
      */
     @Test
     public void testExistePregunta() {
@@ -62,10 +63,7 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Objeto de la prueba: getPregunta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención correcta de pregunta por ID
-     * Operativa: Mock retorna pregunta, se verifica obtención
+     * Comprueba obtención de pregunta.
      */
     @Test
     public void testGetPregunta() {
@@ -78,6 +76,9 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).getPregunta(1);
     }
 
+    /**
+     * Obtener pregunta inexistente lanza excepción.
+     */
     @Test(expected = IllegalStateException.class)
     public void testGetPreguntaNoExiste() {
         when(mockGestor.getPregunta(1)).thenReturn(null);
@@ -86,10 +87,7 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Objeto de la prueba: crearPreguntaLibre()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Creación correcta de pregunta de tipo libre
-     * Operativa: Mocks configurados, se crea pregunta y se verifican persistencia y actualización
+     * Verifica creación de pregunta libre.
      */
     @Test
     public void testCrearPreguntaLibre() {
@@ -106,21 +104,24 @@ public class TestCtrlDominioPregunta {
         verify(mockEncuesta).guardarPregunta(10);
     }
 
+    /**
+     * Enunciado vacío lanza excepción.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testCrearPreguntaLibreEnunciadoVacio() {
         ctrlDominioPregunta.crearPreguntaLibre(1, "");
     }
 
+    /**
+     * Enunciado nulo lanza excepción.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testCrearPreguntaLibreEnunciadoNulo() {
         ctrlDominioPregunta.crearPreguntaLibre(1, null);
     }
 
     /**
-     * Objeto de la prueba: crearPreguntaNumerica()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Creación correcta de pregunta numérica con rango
-     * Operativa: Mocks configurados, se crea pregunta con rango 0-100 y se verifica
+     * Verifica creación de pregunta numérica.
      */
     @Test
     public void testCrearPreguntaNumerica() {
@@ -136,6 +137,9 @@ public class TestCtrlDominioPregunta {
         verify(mockEncuesta).guardarPregunta(10);
     }
 
+    /**
+     * Rango inválido lanza excepción.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testCrearPreguntaNumerica_RangoInvalido() {
 
@@ -143,10 +147,7 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Objeto de la prueba: crearPreguntaOpcionUnica()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Creación correcta de pregunta de opción única
-     * Operativa: Mocks configurados, se crea pregunta con opciones Si/No y se verifica
+     * Verifica creación de pregunta de opción única.
      */
     @Test
     public void testCrearPreguntaOpcionUnica() {
@@ -163,16 +164,16 @@ public class TestCtrlDominioPregunta {
         verify(mockEncuesta).guardarPregunta(10);
     }
 
+    /**
+     * Menos de 2 opciones lanza excepción.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testCrearPreguntaOpcionUnicaSinOpciones() {
         ctrlDominioPregunta.crearPreguntaOpcionUnica(1, "¿Pregunta?", Arrays.asList("Una"), false);
     }
 
     /**
-     * Objeto de la prueba: crearPreguntaOpcionMultiple()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Creación correcta de pregunta de opción múltiple
-     * Operativa: Mocks configurados, se crea pregunta con 3 opciones y máximo 2 selecciones
+     * Verifica creación de pregunta de opción múltiple.
      */
     @Test
     public void testCrearPreguntaOpcionMultiple() {
@@ -190,10 +191,7 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Objeto de la prueba: anadirRespuesta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Añadir referencia de respuesta a pregunta
-     * Operativa: Mock de pregunta, se añade respuesta y se verifica actualización
+     * Verifica añadir referencia de respuesta.
      */
     @Test
     public void testAnadirRespuesta() {
@@ -206,6 +204,9 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).actualizarPregunta(mockPregunta);
     }
 
+    /**
+     * Añadir respuesta a pregunta nula lanza excepción.
+     */
     @Test(expected = IllegalStateException.class)
     public void testAnadirRespuestaNulo () {
 
@@ -215,10 +216,7 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Objeto de la prueba: eliminarRespuestaReferencia()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Eliminación de referencia de respuesta de pregunta
-     * Operativa: Mock de pregunta, se elimina referencia y se verifica actualización
+     * Verifica eliminación de referencia de respuesta.
      */
     @Test
     public void testEliminarRespuestaReferencia() {
@@ -231,6 +229,9 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).actualizarPregunta(mockPregunta);
     }
 
+    /**
+     * Eliminar referencia con pregunta nula lanza excepción.
+     */
     @Test(expected = IllegalStateException.class)
     public void testEliminarRespuestaReferenciaConPreguntaNull() {
         when(mockGestor.getPregunta(1)).thenReturn(null);
@@ -240,10 +241,7 @@ public class TestCtrlDominioPregunta {
 
 
     /**
-     * Objeto de la prueba: eliminarPregunta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Eliminación de pregunta y sus respuestas asociadas
-     * Operativa: Mocks configurados, se elimina pregunta y se verifica eliminación en cascada
+     * Verifica eliminación de pregunta y cascada.
      */
     @Test
     public void testEliminarPregunta() {
@@ -265,10 +263,7 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Objeto de la prueba: getAllPreguntas()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención de todas las preguntas como HashMap
-     * Operativa: Mock retorna lista de preguntas, se verifica conversión a HashMap
+     * Verifica obtención de todas las preguntas.
      */
     @Test
     public void testGetAllPreguntas() {
@@ -286,10 +281,7 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Objeto de la prueba: getRespuestasPregunta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención de respuestas asociadas a una pregunta
-     * Operativa: Mocks retornan respuestas por IDs, se verifica obtención correcta
+     * Verifica obtención de respuestas de una pregunta.
      */
     @Test
     public void testGetRespuestasPregunta() {

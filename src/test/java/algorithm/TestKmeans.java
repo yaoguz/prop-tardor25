@@ -13,8 +13,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Tests unitarios para el algoritmo K-means.
- * 
+ * Pruebas del algoritmo K-means.
  * @author ?
  */
 public class TestKmeans {
@@ -24,8 +23,7 @@ public class TestKmeans {
     private List<List<Respuesta>> respuestas;
     
     /**
-     * Configuración inicial antes de cada test.
-     * Crea un dataset simple de 6 usuarios con 3 preguntas.
+     * Inicializa dataset de prueba con 6 usuarios.
      */
     @Before
     public void setUp() {
@@ -75,10 +73,7 @@ public class TestKmeans {
     }
     
     /**
-     * Objeto de la prueba: Verificar que el nombre del algoritmo es correcto.
-     * Ficheros de datos necesarios: Ninguno.
-     * Valores estudiados: Estrategia caja negra. Se verifica que getNombre() retorna "Kmeans".
-     * Operativa: Se llama a getNombre() y se comprueba que retorna el valor esperado.
+     * Verifica que el nombre del algoritmo es "Kmeans".
      */
     @Test
     public void testGetNombre_RetornaNombreCorrecto() {
@@ -86,10 +81,7 @@ public class TestKmeans {
     }
     
     /**
-     * Objeto de la prueba: Verificar clustering básico con k=2.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se verifica que genera 2 perfiles y la calidad está en rango válido.
-     * Operativa: Se ejecuta clustering con k=2; se verifica que el resultado tiene 2 perfiles con miembros y calidad entre -1 y 1.
+     * Genera 2 clusters correctamente.
      */
     @Test
     public void testEjecutarClustering_K2_GeneraDosPerfiles() {
@@ -109,10 +101,7 @@ public class TestKmeans {
     }
     
     /**
-     * Objeto de la prueba: Verificar que todos los usuarios son asignados a algún perfil.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja gris. Se verifica que la suma de tamaños de perfiles es igual al número de usuarios.
-     * Operativa: Se ejecuta clustering con k=2; se suma el tamaño de cada perfil y se compara con el total de usuarios.
+     * Todos los usuarios son asignados a un cluster.
      */
     @Test
     public void testEjecutarClustering_TodosUsuariosAsignados() {
@@ -127,10 +116,7 @@ public class TestKmeans {
     }
     
     /**
-     * Objeto de la prueba: Verificar clustering con k=3.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se verifica que genera 3 perfiles.
-     * Operativa: Se ejecuta clustering con k=3; se verifica que el resultado tiene 3 perfiles.
+     * Genera 3 clusters correctamente.
      */
     @Test
     public void testEjecutarClustering_K3_GeneraTresPerfiles() {
@@ -145,10 +131,7 @@ public class TestKmeans {
     }
     
     /**
-     * Objeto de la prueba: Verificar que el representante de cada perfil está en la lista de miembros.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja gris. Se verifica que cada representante pertenece a su perfil.
-     * Operativa: Se ejecuta clustering con k=2; se verifica que el representante de cada perfil está en su lista de miembros.
+     * El centroide está en la lista de miembros.
      */
     @Test
     public void testEjecutarClustering_RepresentanteEnMiembros() {
@@ -162,10 +145,7 @@ public class TestKmeans {
     }
     
     /**
-     * Objeto de la prueba: Verificar consistencia de clustering (múltiples ejecuciones).
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se ejecuta el algoritmo 3 veces y se verifica que siempre genera el mismo número de perfiles.
-     * Operativa: Se ejecuta clustering 3 veces con k=2; se verifica que todas las ejecuciones generan 2 perfiles.
+     * Múltiples ejecuciones generan el mismo número de clusters.
      */
     @Test
     public void testEjecutarClustering_ConsistenciaMultiplesEjecuciones() {
