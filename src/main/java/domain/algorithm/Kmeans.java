@@ -31,7 +31,7 @@ public class Kmeans extends Kalgorithm {
     }
     
     @Override
-    protected EstrategiaRecalculo getEstrategiaRecalculo() {
-        return new RecalculoMedia();
+    protected EstrategiaCalculoCentroide getEstrategiaCalculoCentroide() {
+        return new CalculoCentroideKmeans();
     }
 }

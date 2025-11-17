@@ -47,7 +47,7 @@ public class Kmedoids extends Kalgorithm {
     }
     
     @Override
-    protected EstrategiaRecalculo getEstrategiaRecalculo() {
-        return new RecalculoMedoide();
+    protected EstrategiaCalculoCentroide getEstrategiaCalculoCentroide() {
+        return new CalculoCentroideMedoids();
     }
 }
