@@ -138,10 +138,31 @@ public class TestKmeans {
         ResultadoClustering r1 = kmeans.ejecutarClustering(variables, respuestas, 4);
         ResultadoClustering r2 = kmeans.ejecutarClustering(variables, respuestas, 5);
         ResultadoClustering r3 = kmeans.ejecutarClustering(variables, respuestas, 6);
-        
-        // Siempre debe generar 2 perfiles
+   
         assertEquals("No genera cantidad perfil bien",4, r1.getPerfiles().size());
         assertEquals("No genera cantidad perfil bien",5, r2.getPerfiles().size());
         assertEquals("No genera cantidad perfil bien",6, r3.getPerfiles().size());
+    }
+
+    /**
+     * Ningún usuario aparece en múltiples clusters.
+     */
+    @Test
+    public void testEjecutarClustering_UsuariosSinDuplicar() {
+        ResultadoClustering resultado = kmeans.ejecutarClustering(variables, respuestas, 2);
+        
+        List<String> todosUsuarios = new ArrayList<>();
+        for (Perfil p : resultado.getPerfiles()) {
+            todosUsuarios.addAll(p.getMiembros());
+        }
+        
+        // Verificar que no hay duplicados
+        for (String usuario : todosUsuarios) {
+            int count = 0;
+            for (String u : todosUsuarios) {
+                if (u.equals(usuario)) count++;
+            }
+            assertEquals("Duplicados",1, count);
+        }
     }
 }
