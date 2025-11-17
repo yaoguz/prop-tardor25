@@ -132,13 +132,3 @@ ID: 1
 Resultado esperado: "No existe"
 
 Opcion: 0 (Salir)
-
-VALORES PROBADOS:
-- Caja negra: CRUD completo de encuestas y preguntas
-- 4 tipos de preguntas: Libre, Numerica, Opcion Unica, Opcion Multiple
-- Atributos especificos: Rangos, opciones, ordenada, num max
-
-RESULTADO ESPERADO:
-- Todas las operaciones CRUD funcionan correctamente
-- Cada tipo de pregunta se crea con sus atributos especificos
-- Integridad referencial encuesta-preguntas se mantiene
