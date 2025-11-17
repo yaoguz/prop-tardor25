@@ -1,0 +1,14 @@
+/src/test/java/resources
+
+Este directorio contiene todos los ficheros con los csv de entrada para test de controlador de dominio respuesta.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+-invalid_respuestas.csv
+    Archivo csv para que el test falle.
+
+-test_respuestas.csv
+    Archivo csv para que el test pase.

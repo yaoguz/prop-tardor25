@@ -1,0 +1,17 @@
+/src/test/java/algorithm
+
+Este directorio contiene todos los ficheros con los tests de los algoritmos.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+-TestKmeans.java:
+    La clase testeadora del algoritmo Kmeans.
+
+-TestKmeansPlusPlus:
+    La clase testeadora del algoritmo KmeansPlusPlus.
+
+-TestKmedoids:
+    La clase testeadora del algoritmo Kmedoids.

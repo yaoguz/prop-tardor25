@@ -1,0 +1,23 @@
+/src/test/java/domaincontrollers
+
+Este directorio contiene todos los ficheros con los tests de los controladores de dominios.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+-TestCtrlDominioEncuesta:
+    La clase testeadora del controlador dominio encuesta.
+
+-TestCtrlDominioPerfil:
+    La clase testeadora del controlador dominio perfil.
+
+-TestCtrlDominioPregunta:
+    La clase testeadora del controlador dominio pregunta.
+
+-TestCtrlDominioRespuesta:
+    La clase testeadora del controlador dominio respuesta.
+
+-TestCtrlDominioUsuario:
+    La clase testeadora del controlador dominio usuario.
