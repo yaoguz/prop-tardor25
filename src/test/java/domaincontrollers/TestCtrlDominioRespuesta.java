@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import persistence.GestorPersistencia;
 
 /**
+ * Pruebas del controlador CtrlDominioRespuesta.
  * @author Xiangjun Yepan
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -31,6 +32,9 @@ public class TestCtrlDominioRespuesta {
 
     private CtrlDominioRespuesta ctrlDominioRespuesta;
 
+    /**
+     * Inicializa el controlador antes de cada test.
+     */
     @Before
     public void setUp() throws Exception {
         Field instance = CtrlDominioRespuesta.class.getDeclaredField("singletonInstance");
@@ -41,10 +45,7 @@ public class TestCtrlDominioRespuesta {
     }
 
     /**
-     * Objeto de la prueba: existeRespuesta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Verificación de existencia de respuestas
-     * Operativa: Mocks retornan true/false, se verifica comportamiento correcto
+     * Verifica existencia de respuestas.
      */
     @Test
     public void testExisteRespuesta() {
@@ -61,10 +62,7 @@ public class TestCtrlDominioRespuesta {
     }
 
     /**
-     * Objeto de la prueba: getRespuesta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención correcta de respuesta por ID
-     * Operativa: Mock retorna respuesta, se verifica obtención
+     * Comprueba obtención de respuesta.
      */
     @Test
     public void testGetRespuesta() {
@@ -77,6 +75,9 @@ public class TestCtrlDominioRespuesta {
         verify(mockGestor).getRespuesta(1);
     }
 
+    /**
+     * Obtener respuesta inexistente lanza excepción.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testGetRespuestaNoExiste() {
         when(mockGestor.getRespuesta(1)).thenReturn(null);
@@ -85,10 +86,7 @@ public class TestCtrlDominioRespuesta {
     }
 
     /**
-     * Objeto de la prueba: darRespuesta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Creación correcta de respuesta a pregunta
-     * Operativa: Mocks de pregunta y usuario, se crea respuesta y se verifican actualizaciones
+     * Verifica creación y guardado de respuesta.
      */
     @Test
     public void testDarRespuesta() {
@@ -112,10 +110,7 @@ public class TestCtrlDominioRespuesta {
     }
 
     /**
-     * Objeto de la prueba: modificarRespuesta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Modificación correcta del contenido de respuesta
-     * Operativa: Mock de respuesta, se modifica contenido y se verifica actualización
+     * Verifica modificación de respuesta.
      */
     @Test
     public void testModificarRespuesta() {
@@ -129,10 +124,7 @@ public class TestCtrlDominioRespuesta {
     }
 
     /**
-     * Objeto de la prueba: eliminarRespuesta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Eliminación correcta de respuesta y sus referencias
-     * Operativa: Mocks configurados, se elimina respuesta y se verifican eliminaciones en usuario y pregunta
+     * Verifica eliminación de respuesta.
      */
     @Test
     public void testEliminarRespuesta() {
@@ -154,10 +146,7 @@ public class TestCtrlDominioRespuesta {
     }
 
     /**
-     * Objeto de la prueba: importarRespuestas()
-     * Ficheros de datos necesarios: src/test/resources/test_respuestas.csv
-     * Valores estudiados: Importación correcta de respuestas desde CSV
-     * Operativa: Mocks de encuesta, pregunta y usuario, se importan respuestas y se verifican creaciones
+     * Verifica importación de respuestas desde archivo.
      */
     @Test 
     public void testImportarRespuestas() {
@@ -188,12 +177,7 @@ public class TestCtrlDominioRespuesta {
         verify(mockPregunta).guardarIdRespuesta(10);
     }
 
-    /**
-     * Objeto de la prueba: importarRespuestas()
-     * Ficheros de datos necesarios: src/test/resources/invalid_respuestas.csv
-     * Valores estudiados: Excepción cuando la encuesta referenciada no existe
-     * Operativa: Mock lanza excepción al buscar encuesta inexistente
-     */
+    /** Importar respuestas con encuesta inexistente lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class) 
     public void testImportarRespuestasEncuestaNoExiste() {
         File file = new File("src/test/resources/invalid_respuestas.csv");
@@ -201,12 +185,7 @@ public class TestCtrlDominioRespuesta {
         ctrlDominioRespuesta.importarRespuestas(file);
     }
 
-    /**
-     * Objeto de la prueba: importarRespuestas()
-     * Ficheros de datos necesarios: src/test/resources/invalid_respuestas.csv
-     * Valores estudiados: Excepción cuando la pregunta referenciada no existe
-     * Operativa: Mocks configurados para validación fallida de pregunta inexistente
-     */
+    /** Importar respuestas cuando la pregunta no existe provoca IllegalStateException. */
     @Test
     public void testImportarRespuestasPreguntaNoExiste() {
         File file = new File("src/test/resources/invalid_respuestas.csv");
@@ -233,12 +212,7 @@ public class TestCtrlDominioRespuesta {
         }
     }
 
-    /**
-     * Objeto de la prueba: importarRespuestas()
-     * Ficheros de datos necesarios: src/test/resources/test_respuestas.csv
-     * Valores estudiados: Excepción cuando la pregunta no pertenece a la encuesta
-     * Operativa: Mocks configurados con pregunta de encuesta diferente
-     */
+    /** Importar respuestas cuando la pregunta no pertenece a la encuesta provoca IllegalStateException. */
     @Test
     public void testImportarRespuestasEncuestaNoTienePregunta() {
         File file = new File("src/test/resources/test_respuestas.csv");
@@ -262,12 +236,7 @@ public class TestCtrlDominioRespuesta {
         }
     }
 
-    /**
-     * Objeto de la prueba: getAllRespuestas()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención de todas las respuestas como HashMap
-     * Operativa: Mock retorna lista de respuestas, se verifica conversión a HashMap
-     */
+    /** Recupera todas las respuestas y las mapea por id. */
     @Test
     public void testGetAllRespuestas() {
         ArrayList<Respuesta> lista = new ArrayList<>();

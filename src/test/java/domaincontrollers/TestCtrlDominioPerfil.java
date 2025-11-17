@@ -81,12 +81,7 @@ public class TestCtrlDominioPerfil {
         respuestas = Arrays.asList(u1, u2, u3, u4, u5, u6);
     }
 
-    /**
-     * Objeto de la prueba: Verificar ejecución de K-means.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se verifica que ejecutarClustering retorna resultado válido.
-     * Operativa: Se mockea CtrlDominioEncuesta; se ejecuta clustering con k=2; se verifica que retorna 2 perfiles.
-     */
+    /** Ejecuta clustering con KMeans y verifica que el resultado sea válido. */
     @Test
     public void testEjecutarClusteringKmeans_RetornaResultadoValido() {
         when(mockCtrlDominioEncuesta.getRespuestasParaClustering(1)).thenReturn(respuestas);
@@ -102,12 +97,7 @@ public class TestCtrlDominioPerfil {
         verify(mockCtrlDominioEncuesta, times(1)).getPreguntasEncuesta(1);
     }
 
-    /**
-     * Objeto de la prueba: Verificar ejecución de K-means++.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se verifica que ejecutarClustering con kmeans++ retorna resultado válido.
-     * Operativa: Se mockea CtrlDominioEncuesta; se ejecuta clustering con kmeans++; se verifica resultado.
-     */
+    /** Ejecuta clustering con KMeans++ y verifica resultado válido. */
     @Test
     public void testEjecutarClusteringKmeansPlusPlus_RetornaResultadoValido() {
         when(mockCtrlDominioEncuesta.getRespuestasParaClustering(1)).thenReturn(respuestas);
@@ -123,12 +113,7 @@ public class TestCtrlDominioPerfil {
         verify(mockCtrlDominioEncuesta, times(1)).getPreguntasEncuesta(1);
     }
 
-    /**
-     * Objeto de la prueba: Verificar ejecución de K-medoids.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se verifica que ejecutarClustering con kmedoids retorna resultado válido.
-     * Operativa: Se mockea CtrlDominioEncuesta; se ejecuta clustering con kmedoids; se verifica resultado.
-     */
+    /** Ejecuta clustering con KMedoids y comprueba el resultado. */
     @Test
     public void testEjecutarClusteringKmedoids_RetornaResultadoValido() {
         when(mockCtrlDominioEncuesta.getRespuestasParaClustering(1)).thenReturn(respuestas);
@@ -144,12 +129,7 @@ public class TestCtrlDominioPerfil {
         verify(mockCtrlDominioEncuesta, times(1)).getPreguntasEncuesta(1);
     }
 
-    /**
-     * Objeto de la prueba: Verificar obtención de miembros de un perfil.
-     * Ficheros de datos necesarios: Perfil creado manualmente.
-     * Valores estudiados: Estrategia caja negra. Se verifica que obtenerMiembrosPerfil retorna la lista correcta.
-     * Operativa: Se crea un perfil con 3 miembros; se llama a obtenerMiembrosPerfil; se verifica tamaño y contenido.
-     */
+    /** Verifica que se obtienen correctamente los miembros de un perfil. */
     @Test
     public void testObtenerMiembrosPerfil_RetornaListaCorrecta() {
         List<String> miembros = Arrays.asList("U1", "U2", "U3");
@@ -165,12 +145,7 @@ public class TestCtrlDominioPerfil {
         assertTrue(resultado.contains("U3"));
     }
 
-    /**
-     * Objeto de la prueba: Verificar obtención del representante de un perfil.
-     * Ficheros de datos necesarios: Perfil creado manualmente.
-     * Valores estudiados: Estrategia caja negra. Se verifica que obtenerRepresentantePerfil retorna el representante correcto.
-     * Operativa: Se crea un perfil con representante U1; se llama a obtenerRepresentantePerfil; se verifica el valor.
-     */
+    /** Verifica que se obtiene el representante esperado de un perfil. */
     @Test
     public void testObtenerRepresentantePerfil_RetornaRepresentanteCorrecto() {
         List<String> miembros = Arrays.asList("U1", "U2", "U3");
@@ -183,12 +158,7 @@ public class TestCtrlDominioPerfil {
         assertEquals("U1", resultado);
     }
 
-    /**
-     * Objeto de la prueba: Verificar clustering con diferentes valores de k.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se verifica que clustering con k=3 genera 3 perfiles.
-     * Operativa: Se mockea CtrlDominioEncuesta; se ejecuta clustering con k=3; se verifica que retorna 3 perfiles.
-     */
+    /** Ejecuta clustering con k=3 y comprueba que genera tres perfiles. */
     @Test
     public void testEjecutarClustering_K3_GeneraTresPerfiles() {
         when(mockCtrlDominioEncuesta.getRespuestasParaClustering(1)).thenReturn(respuestas);
@@ -200,12 +170,7 @@ public class TestCtrlDominioPerfil {
         assertEquals(3, resultado.getPerfiles().size());
     }
 
-    /**
-     * Objeto de la prueba: Verificar que algoritmo desconocido usa K-means por defecto.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja gris. Se verifica que un algoritmo no reconocido usa K-means.
-     * Operativa: Se llama a ejecutarClustering con algoritmo "desconocido"; se verifica que retorna resultado válido.
-     */
+    /** Si se pasa un algoritmo desconocido, usa KMeans por defecto. */
     @Test
     public void testEjecutarClustering_AlgoritmoDesconocido_UsaKmeansPorDefecto() {
         when(mockCtrlDominioEncuesta.getRespuestasParaClustering(1)).thenReturn(respuestas);
