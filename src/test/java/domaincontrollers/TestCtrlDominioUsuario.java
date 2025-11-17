@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
+ * Pruebas del controlador CtrlDominioUsuario.
  * @author Alessandro Jin
  */
 
@@ -31,6 +32,9 @@ public class TestCtrlDominioUsuario {
     
     private CtrlDominioUsuario ctrlDominioUsuario;   
 
+    /**
+     * Inicializa el controlador antes de cada test.
+     */
     @Before
     public void setUp() throws Exception {
         // Resetear singleton
@@ -42,10 +46,7 @@ public class TestCtrlDominioUsuario {
     }
 
     /**
-     * Objeto de la prueba: existeUsuario()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Verificación de existencia de usuario
-     * Operativa: Mock retorna true, se verifica que el método retorna true
+     * Verifica que existeUsuario retorna true.
      */
     @Test
     public void testExisteUsuarioTrue() {
@@ -58,10 +59,7 @@ public class TestCtrlDominioUsuario {
 	}
 
     /**
-     * Objeto de la prueba: existeUsuario()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Caso en que el usuario no existe
-     * Operativa: Mock retorna false, se verifica comportamiento correcto
+     * Verifica que existeUsuario retorna false.
      */
     @Test 
     public void testExisteUsuarioFalse() {
@@ -74,10 +72,7 @@ public class TestCtrlDominioUsuario {
     }
 
     /**
-     * Objeto de la prueba: getUsuario()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención correcta de usuario por nombre
-     * Operativa: Mock retorna usuario, se verifica obtención
+     * Comprueba obtención de usuario existente.
      */
     @Test
     public void testGetUsuarioSinError() {
@@ -91,6 +86,9 @@ public class TestCtrlDominioUsuario {
         verify(mockGestor, times(1)).getUsuario("Alessandro");
 	}
 
+    /**
+     * Obtener usuario inexistente lanza excepción.
+     */
     @Test (expected=IllegalArgumentException.class) 
     public void testGetUsuarioConError() {
             
@@ -101,10 +99,7 @@ public class TestCtrlDominioUsuario {
     }
 
     /**
-     * Objeto de la prueba: registrarUsuario()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Registro correcto de nuevo usuario
-     * Operativa: Mocks configurados, se registra usuario y se verifica persistencia
+     * Verifica registro de usuario correctamente.
      */
     @Test
     public void testRegistrarUsuarioBueno() {
@@ -117,41 +112,48 @@ public class TestCtrlDominioUsuario {
         verify(mockGestor, times(1)).guardarUsuario(any(Usuario.class));
     }
 
+    /** Registrar usuario con nombre vacío lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testRegistrarUsuarioNombreVacio() {
      
         ctrlDominioUsuario.registrarUsuario("", "123456", "123456");
     }
 
+    /** Registrar usuario con contraseña vacía lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testRegistrarUsuarioPasswordVacia() {
       
         ctrlDominioUsuario.registrarUsuario("Alessandro", "", "123456");
     }
 
+    /** Registrar usuario con confirmación vacía lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testRegistrarUsuarioConfirmVacia() {
        
         ctrlDominioUsuario.registrarUsuario("Alessandro", "123456", "");
     }
 
+    /** Registrar usuario con nombre corto lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testRegistrarUsuarioNombreCorto() {
      
         ctrlDominioUsuario.registrarUsuario("al", "123456", "123456");
     }
 
+    /** Registrar usuario con contraseña corta lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testRegistrarUsuarioPasswordCorta() {
         ctrlDominioUsuario.registrarUsuario("Alessandro", "12345", "12345");
     }
 
+    /** Registrar usuario con contraseñas que no coinciden lanza IllegalStateException. */
     @Test(expected = IllegalStateException.class)
     public void testRegistrarUsuarioPasswordNoCoincide() {
  
         ctrlDominioUsuario.registrarUsuario("Alessandro", "123456", "654321");
     }
 
+    /** Registrar usuario duplicado lanza IllegalStateException. */
     @Test(expected = IllegalStateException.class)
     public void testRegistrarUsuarioUsuarioDuplicado() {
 
@@ -162,12 +164,7 @@ public class TestCtrlDominioUsuario {
     }
 
 
-    /**
-     * Objeto de la prueba: iniciarSesion()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Inicio de sesión correcto con credenciales válidas
-     * Operativa: Mocks de usuario y contraseña, se inicia sesión y se verifica usuario activo
-     */
+    /** Iniciar sesión con credenciales válidas activa al usuario. */
     @Test
     public void testIniciarSesionBueno() {
         
@@ -185,6 +182,7 @@ public class TestCtrlDominioUsuario {
         verify(mockUser, times(1)).comprobarContrasena("123456");
     }
 
+    /** Intentar iniciar sesión cuando ya hay usuario activo lanza IllegalStateException. */
     @Test(expected = IllegalStateException.class)
     public void testIniciarSesionYaHayUsuarioActivo() {
 
@@ -202,6 +200,7 @@ public class TestCtrlDominioUsuario {
     }
 
 
+    /** Iniciar sesión con contraseña incorrecta lanza IllegalStateException. */
     @Test(expected = IllegalStateException.class)
     public void testIniciarSesionContrasenaIncorrecta() {
         
@@ -215,6 +214,7 @@ public class TestCtrlDominioUsuario {
    
     }
 
+    /** Iniciar sesión con usuario inexistente lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testIniciarSesionUsuarioNoExiste() {
         // usar mockUsuarios -> devuelve null por defecto para get()
@@ -223,24 +223,14 @@ public class TestCtrlDominioUsuario {
     }
 
 
-    /**
-     * Objeto de la prueba: getUsuarioActivo()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Caso en que no hay usuario con sesión activa
-     * Operativa: Sin iniciar sesión, se verifica que retorna null
-     */
+    /** Devuelve null si no hay usuario activo. */
     @Test
     public void testGetUsuarioActivoSinSesion() {
         
         assertNull("Debe devolver null si no hay usuario activo", ctrlDominioUsuario.getUsuarioActivo());
     }
 
-    /**
-     * Objeto de la prueba: getUsuarioActivo()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención del usuario activo con sesión iniciada
-     * Operativa: Se inicia sesión, se verifica que getUsuarioActivo retorna el nombre correcto
-     */
+    /** Devuelve el usuario activo tras iniciar sesión. */
     @Test
     public void testGetUsuarioActivoConSesion() {
 
@@ -257,12 +247,7 @@ public class TestCtrlDominioUsuario {
         
     }
 
-    /**
-     * Objeto de la prueba: cerrarSesionActual()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Cierre correcto de sesión activa
-     * Operativa: Se inicia sesión, se cierra y se verifica que usuario activo queda null
-     */
+    /** Cierra la sesión actual y deja usuario activo a null. */
     @Test
     public void testCerrarSesionActual() {
         
@@ -279,12 +264,7 @@ public class TestCtrlDominioUsuario {
         assertNull("Debe quedar null después de cerrar sesión", ctrlDominioUsuario.getUsuarioActivo());
     }
 
-    /**
-     * Objeto de la prueba: modificarContrasena()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Modificación correcta de contraseña
-     * Operativa: Usuario con sesión activa modifica contraseña, se verifican llamadas
-     */
+    /** Modifica la contraseña cuando la nueva es válida. */
     @Test
     public void testModificarContrasenaValida() {
 
@@ -300,6 +280,7 @@ public class TestCtrlDominioUsuario {
         verify(mockGestor, times(1)).actualizarUsuario(mockUser);
     }
 
+    /** Modificar contraseña nula lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testModificarContrasena_nula() {
         Usuario mockUser = mock(Usuario.class);
@@ -311,6 +292,7 @@ public class TestCtrlDominioUsuario {
         ctrlDominioUsuario.modificarContrasena(null);
     }
 
+    /** Modificar contraseña vacía lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testModificarContrasena_vacia() {
         Usuario mockUser = mock(Usuario.class);
@@ -322,6 +304,7 @@ public class TestCtrlDominioUsuario {
         ctrlDominioUsuario.modificarContrasena("");
     }
 
+    /** Modificar contraseña corta lanza IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
     public void testModificarContrasena_corta() {
         Usuario mockUser = mock(Usuario.class);
@@ -333,6 +316,7 @@ public class TestCtrlDominioUsuario {
         ctrlDominioUsuario.modificarContrasena("123");
     }
 
+    /** Modificar contraseña idéntica a la actual lanza IllegalStateException. */
     @Test(expected = IllegalStateException.class)
     public void testModificarContrasenaIgualActual() {
         
@@ -349,12 +333,7 @@ public class TestCtrlDominioUsuario {
     }
 
 
-    /**
-     * Objeto de la prueba: getEncuestasRespondidas()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención de IDs de encuestas respondidas por usuario activo
-     * Operativa: Mocks de respuestas y preguntas, se obtienen encuestas y se verifica lista
-     */
+    /** Devuelve las encuestas respondidas por el usuario activo. */
     @Test
     public void testGetEncuestasRespondidas() {
         // Mocks 
@@ -398,12 +377,7 @@ public class TestCtrlDominioUsuario {
     }
 
 
-    /**
-     * Objeto de la prueba: getRespuestasEncuesta()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención de respuestas de un usuario para una encuesta específica
-     * Operativa: Mocks de respuestas de usuario a 2 encuestas, se filtran por encuesta
-     */
+    /** Devuelve las respuestas del usuario filtradas por encuesta. */
     @Test
     public void testGetRespuestasEncuesta() {
      
@@ -445,12 +419,6 @@ public class TestCtrlDominioUsuario {
         verify(mockCtrlDominioPregunta, times(3)).getPregunta(anyInt());
     }
 
-    /**
-     * Objeto de la prueba: getAllUsuarios()
-     * Ficheros de datos necesarios: Ninguno
-     * Valores estudiados: Obtención de todos los usuarios como copia
-     * Operativa: Mock retorna lista de usuarios, se verifica que devuelve copia independiente
-     */
     @Test
     public void testGetAllUsuariosDevuelveCopia() {
         Usuario mockUser1 = mock(Usuario.class);

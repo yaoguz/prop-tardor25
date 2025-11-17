@@ -102,7 +102,12 @@ public class DriverClustering {
         scanner.close();
         System.out.println("\nSaliendo del driver...\n");
     }
-
+    /**
+     * Punto de entrada del driver en modo interactivo.
+     * Inicializa controladores y procesa el menú de usuario.
+     * @param args argumentos de línea de comandos (no usados)
+     */
+    
     private static void mostrarMenu() {
         System.out.println("\nMENÚ DRIVER CLUSTERING");
         System.out.println("1. Importar encuesta desde archivo JSON");
@@ -114,6 +119,8 @@ public class DriverClustering {
         System.out.println("0. Salir");
         System.out.println("\nIntroduzca el número correspondiente a la acción a ejecutar: ");
     }
+
+    /** Muestra el menú principal del driver por consola. */
 
 	/**
 	 * Devuelve un entero leído del terminal.
@@ -132,6 +139,9 @@ public class DriverClustering {
         }
     }
 
+    /** Lee un entero desde la entrada estándar, repite hasta obtener uno válido. */
+
+    /** Importa una encuesta desde un archivo JSON y muestra información básica. */
     private static void importarEncuesta() {
         System.out.println("\n--{ IMPORTAR UNA ENCUESTA DE UN FICHERO }--");
         
@@ -169,6 +179,7 @@ public class DriverClustering {
         }
     }
 
+    /** Importa respuestas desde un archivo CSV. */
     private static void importarRespuestas() {
         System.out.println("\n--{ IMPORTAR RESPUESTAS DE UN FICHERO }--");
         
@@ -189,6 +200,7 @@ public class DriverClustering {
         }
     }
 
+    /** Ejecuta el algoritmo de clustering para una encuesta seleccionada. */
     private static void ejecutarClustering() {
         System.out.println("\n--{ EJECUTAR ALGORITMO DE CLUSTERING }--");
         
@@ -271,6 +283,7 @@ public class DriverClustering {
         System.out.println("Calidad "+EvaluarCluster.interpretarSilueta(silueta));
     }
 
+    /** Muestra los perfiles resultantes del último clustering ejecutado. */
     private static void obtenerPerfiles() {
         System.out.println("\n--{ OBTENER PERFILES DEL ÚLTIMO CLUSTERING }--");
         
@@ -291,6 +304,7 @@ public class DriverClustering {
         }
     }
 
+    /** Muestra información resumida del estado actual del sistema (usuarios, encuestas, último clustering). */
     private static void mostrarEstadoSistema() {
         System.out.println("\n--{ INFORMACIÓN ACTUAL DE LOS DATOS DEL SISTEMA }--");
         
@@ -318,6 +332,7 @@ public class DriverClustering {
         }
     }
 
+    /** Visualiza las respuestas de una encuesta seleccionada por consola. */
     private static void verRespuestasEncuesta() {
         System.out.println("\n--{ VISUALIZAR RESPUESTAS DE UNA ENCUESTA }--");
         

@@ -87,6 +87,8 @@ public class DriverEncuesta {
         scanner.close();
     }
 
+    /** Punto de entrada del driver para interactuar con CtrlDominioEncuesta. */
+
     private static void inicializarControladores() {
         gestor = GestorPersistencia.getInstance();
 
@@ -99,6 +101,8 @@ public class DriverEncuesta {
         ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlUsuario, ctrlEncuesta, ctrlPregunta);
         ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, ctrlEncuesta);
     }
+
+    /** Inicializa controladores y persistencia necesarias por el driver. */
 
     private static void crearDatosPrueba() {
         // crear usuarios
@@ -133,6 +137,8 @@ public class DriverEncuesta {
     ctrlRespuesta.darRespuesta("joan", idP_libre, "Podría mejorar") ;
     }
 
+    /** Crea datos de ejemplo (usuarios, encuesta, preguntas, respuestas) para pruebas manuales. */
+
     private static void mostrarMenu() {
         System.out.println("\n=== MENU ENCUESTA ===");
         System.out.println("1. Crear encuesta");
@@ -148,12 +154,16 @@ public class DriverEncuesta {
         System.out.print("Escoge una opción: ");
     }
 
+    /** Muestra el menú principal del driver. */
+
     /**
      * Muestra los usuarios disponibles.
      */
     private static void mostrarUsuariosDisponibles() {
         System.out.println("Usuarios disponibles: ana, pol, joan");
     }
+
+    /** Muestra los usuarios de prueba disponibles en este driver. */
 
     private static void crearEncuesta() {
         System.out.println("\n--- Crear Encuesta ---");
@@ -170,6 +180,8 @@ public class DriverEncuesta {
         int id = ctrlEncuesta.crearEncuesta(usuario, titulo);
         System.out.println("Encuesta creada con id: " + id);
     }
+
+    /** Crea una nueva encuesta con los datos introducidos por consola. */
 
     private static void anadirPregunta() {
         System.out.println("\n--- Anadir Pregunta ---");
@@ -229,6 +241,8 @@ public class DriverEncuesta {
         }
     }
 
+    /** Añade una pregunta a una encuesta existente según el tipo seleccionado. */
+
     private static void obtenerPreguntas() {
         System.out.println("\n--- Obtener Preguntas de una Encuesta ---");
         System.out.print("ID encuesta: ");
@@ -249,6 +263,8 @@ public class DriverEncuesta {
         }
     }
 
+    /** Obtiene y muestra las preguntas de una encuesta. */
+
     private static void modificarTitulo() {
         System.out.println("\n--- Modificar Titulo ---");
         System.out.print("ID encuesta: ");
@@ -262,6 +278,8 @@ public class DriverEncuesta {
             System.out.println("ERROR: " + e.getMessage());
         }
     }
+
+    /** Modifica el título de una encuesta indicada por id. */
 
     private static void eliminarEncuesta() {
         System.out.println("\n--- Eliminar Encuesta ---");
@@ -281,6 +299,8 @@ public class DriverEncuesta {
         }
     }
 
+    /** Elimina una encuesta tras confirmar la operación por consola. */
+
     private static void existeEncuesta() {
         System.out.println("\n--- Existe Encuesta ---");
         System.out.print("ID encuesta: ");
@@ -289,6 +309,8 @@ public class DriverEncuesta {
         if(b) System.out.println("Existe.");
         else System.out.println("No existe.");
     }
+
+    /** Comprueba la existencia de una encuesta por id. */
 
     private static void obtenerEncuesta() {
         System.out.println("\n--- Obtener Encuesta ---");
@@ -305,6 +327,8 @@ public class DriverEncuesta {
         }
     }
 
+    /** Obtiene y muestra la información de una encuesta por id. */
+
     private static void obtenerAllEncuestas() {
         System.out.println("\n--- Todas las Encuestas ---");
         HashMap<Integer, Encuesta> all = ctrlEncuesta.getAllEncuestas();
@@ -313,6 +337,8 @@ public class DriverEncuesta {
             System.out.println("ID=" + e.getIdEncuesta() + " Titulo='" + e.getTitulo() + "' Creador='" + e.getIdCreador() + "'");
         }
     }
+
+    /** Lista todas las encuestas registradas en el sistema. */
 
     private static void obtenerRespuestasEncuesta() {
         System.out.println("\n--- Respuestas de Encuesta ---");
@@ -331,4 +357,6 @@ public class DriverEncuesta {
             System.out.println("ERROR: " + e.getMessage());
         }
     }
+
+    /** Muestra las respuestas de una encuesta especificada. */
 }

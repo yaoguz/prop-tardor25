@@ -28,6 +28,7 @@ public class DriverUsuario {
     private static Scanner scanner;
     private static String usuarioActual = null; // Usuario con sesión iniciada
     
+    /** Punto de entrada del driver para interactuar con CtrlDominioUsuario. */
     public static void main(String[] args) {
         // Inicializar dependencias (capa real, no mocks)
         GestorPersistencia gestor = GestorPersistencia.getInstance();
@@ -96,6 +97,7 @@ public class DriverUsuario {
         scanner.close();
     }
 
+    /** Crea datos mínimos (usuario, encuesta, pregunta y respuesta) para pruebas manuales. */
     private static void crearDatosDePrueba() {
         String nomUsuario = ctrlDominioUsuario.registrarUsuario("user1", "123456", "123456");
         int idEncuesta = ctrlDominioEncuesta.crearEncuesta("user1", "Encuesta1");
@@ -107,6 +109,7 @@ public class DriverUsuario {
         System.out.println("Datos de prueba creados. ID respuesta: " + idRespuesta);
     }
     
+    /** Muestra el menú principal y las opciones disponibles por consola. */
     private static void mostrarMenu() {
         System.out.println("\nMENÚ PRINCIPAL");
         System.out.println("1. Existe Usuario");
@@ -127,6 +130,7 @@ public class DriverUsuario {
         
         System.out.print("\nSelecciona una opción: ");
     }
+    /** Consulta interactivamente si un usuario existe. */
     private static void testExisteUsuario() {
         System.out.println("\nTEST: EXISTE USUARIO");
         
@@ -146,6 +150,7 @@ public class DriverUsuario {
         }
     }
 
+    /** Obtiene y muestra información de un usuario por nombre. */
     private static void testGetUsuario() {
         System.out.println("\nTEST: GET USUARIO");
         
@@ -163,6 +168,7 @@ public class DriverUsuario {
         }
     }
 
+    /** Registra un usuario usando datos introducidos por consola. */
     private static void testRegistrarUsuario() {
         System.out.println("\nTEST: REGISTRAR USUARIO");
         
@@ -186,6 +192,7 @@ public class DriverUsuario {
         }
     }
 
+    /** Inicia sesión para un usuario con las credenciales dadas. */
     private static void testIniciarSesion() {
         System.out.println("TEST: INICIAR SESIÓN");
         
@@ -207,6 +214,7 @@ public class DriverUsuario {
         }
     }
 
+    /** Cierra la sesión actual tras confirmación por consola. */
     private static void testCerrarSesionActual() {
         System.out.println("TEST: CERRAR SESIÓN ACTUAL");
         
@@ -230,6 +238,7 @@ public class DriverUsuario {
         }
     }
 
+    /** Muestra el usuario actualmente activo (si existe). */
     private static void testGetUsuarioActivo() {
         System.out.println("TEST: GET USUARIO ACTIVO");
         
@@ -246,6 +255,7 @@ public class DriverUsuario {
         }
     }
     
+    /** Modifica la contraseña del usuario actualmente con sesión iniciada. */
     private static void testModificarContrasena() {
         System.out.println("TEST: MODIFICAR CONTRASEÑA");
         
@@ -269,6 +279,7 @@ public class DriverUsuario {
         }
     }
 
+    /** Muestra las encuestas respondidas por el usuario con sesión iniciada. */
     private static void testGetEncuestasRespondidas() {
         System.out.println("TEST: GET ENCUESTAS RESPONDIDAS");
         
@@ -286,6 +297,7 @@ public class DriverUsuario {
         }
     }
 
+    /** Muestra las respuestas de una encuesta para un usuario dado. */
     private static void testGetRespuestasEncuesta() {
         System.out.println("TEST: GET RESPUESTAS ENCUESTA");
         
@@ -306,6 +318,7 @@ public class DriverUsuario {
         }
     }
     
+    /** Lista por consola todos los usuarios registrados. */
     private static void testGetAllUsuarios() {
         System.out.println("TEST: GET ALL USUARIOS");
         try {
@@ -354,6 +367,7 @@ public class DriverUsuario {
     }
         */
 
+    /** Lee un entero por consola, repitiendo hasta recibir entrada válida. */
     private static int leerEntero() {
         while (true) {
             try {
