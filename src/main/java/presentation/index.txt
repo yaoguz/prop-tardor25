@@ -1,0 +1,14 @@
+/src/main/java/presentation
+
+Este directorio contiene las clases de la capa de presetnacion (pendiente de implementar).
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- CtrlPresentacion.java
+    El controlador de la capa de presentacion.
+
+- VistaPrincipal.java
+    Vista principal del sistema.
