@@ -10,8 +10,8 @@ Descripcion de los ficheros:
 -TestKmeans.java:
     La clase testeadora del algoritmo Kmeans.
 
--TestKmeansPlusPlus:
+-TestKmeansPlusPlus.java:
     La clase testeadora del algoritmo KmeansPlusPlus.
 
--TestKmedoids:
+-TestKmedoids.java:
     La clase testeadora del algoritmo Kmedoids.

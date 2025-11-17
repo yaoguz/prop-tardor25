@@ -7,17 +7,17 @@ Descripcion de los ficheros:
 - index.txt:
     Este archivo. Contiene la informacion del directorio y su contenido.
 
--TestCtrlDominioEncuesta:
+-TestCtrlDominioEncuesta.java:
     La clase testeadora del controlador dominio encuesta.
 
--TestCtrlDominioPerfil:
+-TestCtrlDominioPerfil.java:
     La clase testeadora del controlador dominio perfil.
 
--TestCtrlDominioPregunta:
+-TestCtrlDominioPregunta.java:
     La clase testeadora del controlador dominio pregunta.
 
--TestCtrlDominioRespuesta:
+-TestCtrlDominioRespuesta.java:
     La clase testeadora del controlador dominio respuesta.
 
--TestCtrlDominioUsuario:
+-TestCtrlDominioUsuario.java:
     La clase testeadora del controlador dominio usuario.
