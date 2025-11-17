@@ -1,0 +1,28 @@
+/src/main/java/domaincontrollers
+
+Este directorio contiene los ficheros con el codigo de las clases java de los controladores del dominio.
+
+Descripcion de los directorios:
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- CtrlDominio.java:
+    La clase CtrlDominio, cuya funcion es hacer de puente entre la capa de presentacion y la del dominio.
+
+- CtrlDominioEncuesta.java:
+    La clase CtrlDominioEncuesta que tiene un subconjunto de las funciones de CtrlDominio, ademas de gestionar las llamadas al gestor de persistencia de las encuestas.
+
+- CtrlDominioPerfil.java:
+    La clase CtrlDominioPerfil que tiene un subconjunto de las funciones de CtrlDominio y alguna funcion auxiliar del algoritmo.
+
+- CtrlDominioPregunta.java:
+    La clase CtrlDominioPregunta que tiene un subconjunto de las funciones de CtrlDominio, ademas de gestionar las llamadas al gestor de persistencia de las preguntas.
+
+- CtrlDominioRespuesta.java:
+    La clase CtrlDominioRespuesta que tiene un subconjunto de las funciones de CtrlDominio, además de gestionar las llamadas al gestor de persistencia de las respuestas.
+
+- CtrlDominioUsuario.java:
+    La clase CtrlDominioUsuario que tiene un subconjunto de las funciones de CtrlDominio, además de gestionar las llamadas al gestor de persistencia de los usuarios.
