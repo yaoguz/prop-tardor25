@@ -1,0 +1,51 @@
+DRIVER RESPUESTA - DESCRIPCION DEL JOC DE PROVA
+================================================
+
+OBJECTE DE LA PROVA:
+- CtrlDominioRespuesta: Gestión de respuestas (Libre, Numérica, Opción Única, Opción Múltiple)
+- Casos d'ús: Crear respuestas de distintos tipos, validar respuestas, consultar por usuario/encuesta
+
+ALTRES ELEMENTS INTEGRATS:
+- GestorPersistencia: Almacenamiento de respuestas
+- CtrlDominioUsuario: Validar usuarios que responden
+- CtrlDominioPregunta: Validar preguntas respondidas
+- CtrlDominioEncuesta: Obtener encuestas respondidas
+- Clases: RespuestaLibre, RespuestaNumerica, RespuestaOpcionUnica, RespuestaOpcionMultiple
+
+FITXERS DE DADES:
+- No requiere archivos externos
+- Datos creados en memoria durante ejecución
+
+VALORS ESTUDIATS:
+- Respuesta Libre: Textos libres, sin restricciones
+- Respuesta Numérica: Valores dentro/fuera del rango de la pregunta
+- Respuesta Opción Única: Índice válido (0-based), índices fuera de rango
+- Respuesta Opción Múltiple: Array de índices válidos, sin duplicados, validar número máximo
+- Consultas: Respuestas por usuario, por encuesta, por pregunta
+- Validaciones: Usuario existe, pregunta existe, valores dentro de límites
+- Caja negra: Validación de inputs/outputs
+
+EFECTES ESTUDIATS:
+- Polimorfismo: 4 tipos de respuesta heredan de Respuesta
+- Validaciones específicas por tipo de pregunta
+- Asociación respuesta-usuario-pregunta-encuesta
+- Integridad referencial (FK a usuario y pregunta)
+
+OPERATIVA:
+1. Ejecutar: ./gradlew runDriverRespuesta
+2. Aparece menú con opciones organizadas por tipo
+3. Seleccionar número de operación
+4. Introducir datos según tipo de respuesta:
+   - Libre: ID, usuario, pregunta, texto
+   - Numérica: ID, usuario, pregunta, valor
+   - Opción Única: ID, usuario, pregunta, índice opción
+   - Opción Múltiple: ID, usuario, pregunta, array de índices
+5. Ver resultado en consola
+6. Probar consultas (respuestas por usuario, por encuesta)
+7. Opción 0 para salir
+
+DATOS DE PRUEBA INICIALES:
+- Usuarios: user1, user2, user3
+- Encuestas: ID=1, ID=2
+- Preguntas: Varios tipos asociados a encuestas
+- Respuestas: Ejemplos de cada tipo

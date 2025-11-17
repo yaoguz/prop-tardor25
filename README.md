@@ -1,17 +1,70 @@
+# PROYECTO PROP - SUBGRUP 11.5
 
-Useful commands:
+Sistema de gestión de encuestas con clustering de usuarios.
 
+## Compilar
 
-./gradlew test: will run your unit tests.
-./gradlew run : will run your application in the environment. This is useful to test your application in the development environment.
-./gradlew jar: will create the jar inside the directory <project root>/build/libs with only the project's code. Not dependencies.
-./gradlew assembleDist: will create a .tar and a .zip (both contain the same) in the directory <project root>/build/distributions that contain
-the whole directory structure that will allow to install your project along with its dependencies in a machine without IDE (only with java 11 installed) and run it.
-./gradlew clean: will clean the compilation files and the created artifacts
+```bash
+./compilar.sh
+```
 
+O manualmente:
+```bash
+./gradlew build
+```
 
-More info
+## Ejecutar Drivers
 
+### Driver Usuario
+```bash
+./gradlew runDriverUsuario
+```
 
-Gradle application plugin
-https://docs.gradle.org/current/userguide/application_plugin.html
+### Driver Encuesta
+```bash
+./gradlew runDriverEncuesta
+```
+
+### Driver Pregunta
+```bash
+./gradlew runDriverPregunta
+```
+
+### Driver Respuesta
+```bash
+./gradlew runDriverRespuesta
+```
+
+### Driver Clustering
+```bash
+./gradlew runDriverClustering
+```
+
+## Ejecutar Tests
+
+```bash
+./gradlew test
+```
+
+Ver reporte:
+```bash
+build/reports/tests/test/index.html
+```
+
+## Estructura Entrega
+
+```
+DOCS/       - Documentación (UML, javadoc)
+EXE/        - Drivers y datos de prueba
+src/        - Código fuente
+build.gradle - Configuración Gradle
+compilar.sh - Script de compilación
+```
+
+## Descripción Drivers
+
+Cada driver en EXE/ tiene:
+- DESCRIPCION.txt: Casos de uso, datos, operativa
+- Archivos de datos (si aplica)
+
+Consulta EXE/DriverXXX/DESCRIPCION.txt para detalles de cada driver.

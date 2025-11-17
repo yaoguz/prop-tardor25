@@ -1,3 +1,31 @@
+# Gradle
 .gradle
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# IDE
 .idea
-build
+.vscode
+*.iml
+*.iws
+*.ipr
+
+# Compilación
+*.class
+*.jar
+*.war
+*.ear
+
+# Windows
+*:Zone.Identifier
+Thumbs.db
+
+# Mac
+.DS_Store
+
+# Temporales
+*.log
+*.tmp
+*.swp
+*~

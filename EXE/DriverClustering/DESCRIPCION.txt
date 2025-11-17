@@ -1,0 +1,63 @@
+DRIVER CLUSTERING - DESCRIPCION DEL JOC DE PROVA
+=================================================
+
+OBJECTE DE LA PROVA:
+- CtrlDominioPerfil: Ejecutar algoritmos de clustering (K-means, K-means++, K-medoids)
+- Casos d'ús: Importar encuestas JSON, importar respuestas CSV, ejecutar clustering, evaluar calidad
+
+ALTRES ELEMENTS INTEGRATS:
+- GestorPersistencia: Almacenamiento de encuestas y respuestas
+- CtrlDominioEncuesta: Gestión de encuestas importadas
+- CtrlDominioUsuario: Crear usuarios automáticamente al importar respuestas
+- CtrlDominioPregunta: Gestión de preguntas de encuestas
+- CtrlDominioRespuesta: Almacenar respuestas importadas
+- Algoritmos: Kmeans, KmeansPlusPlus, Kmedoids
+- Estructuras: Cluster, Perfil, Centroide, ResultadoClustering
+
+FITXERS DE DADES:
+Fichero: datos-encuestas.json
+- Contiene: Encuestas en formato JSON (id, título, creador, preguntas con tipos y opciones)
+
+Fichero: respuestas-deportes.csv
+- Contiene: Respuestas de usuarios a encuestas (usuario, id_pregunta, valor respuesta)
+
+Fichero: encuesta-deportes.json
+- Contiene: Encuesta de ejemplo sobre deportes
+
+VALORS ESTUDIATS:
+- Importación JSON: Encuestas válidas/inválidas, diferentes tipos de preguntas
+- Importación CSV: Respuestas válidas, formato correcto, usuarios nuevos/existentes
+- Clustering: k válido (2-10), número respuestas suficientes (k < n), iteraciones válidas
+- Algoritmos: K-means (inicialización aleatoria), K-means++ (inicialización inteligente), K-medoids (medoide real)
+- Evaluación: Coeficiente de silueta (calidad [-1, 1])
+- Caja blanca: Se conoce implementación de algoritmos (Template Method, Strategy)
+
+EFECTES ESTUDIATS:
+- Importación masiva de datos JSON/CSV
+- Ejecución de algoritmos de clustering con diferentes estrategias
+- Comparación de calidad entre algoritmos
+- Visualización de perfiles (representante + miembros)
+- Convergencia iterativa de algoritmos
+
+OPERATIVA:
+1. Ejecutar: ./gradlew runDriverClustering
+2. Aparece menú ASCII art
+3. Opción 1: Importar encuesta JSON
+   - Introducir path relativo: EXE/DriverClustering/datos-encuestas.json
+   - Introducir usuario creador
+4. Opción 2: Importar respuestas CSV
+   - Introducir path relativo: EXE/DriverClustering/respuestas-deportes.csv
+   - Introducir ID encuesta
+5. Opción 3: Ejecutar clustering
+   - Introducir ID encuesta
+   - Introducir k (número de clusters)
+   - Introducir maxIteraciones (ej: 100)
+   - Seleccionar algoritmo: 1=K-means, 2=K-means++, 3=K-medoids
+6. Ver perfiles generados (representante + miembros + calidad)
+7. Repetir con diferentes k o algoritmos para comparar
+8. Opción 0 para salir
+
+DATOS DE PRUEBA INCLUIDOS:
+- EXE/DriverClustering/datos-encuestas.json: Encuesta de deportes con 4 preguntas
+- EXE/DriverClustering/respuestas-deportes.csv: Respuestas de 10+ usuarios
+- EXE/DriverClustering/encuesta-deportes.json: Encuesta alternativa

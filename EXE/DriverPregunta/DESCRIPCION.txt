@@ -1,0 +1,48 @@
+DRIVER PREGUNTA - DESCRIPCION DEL JOC DE PROVA
+===============================================
+
+OBJECTE DE LA PROVA:
+- CtrlDominioPregunta: Gestión de preguntas (Libre, Numérica, Opción Única, Opción Múltiple)
+- Casos d'ús: Crear preguntas de distintos tipos, modificar enunciados, gestionar opciones
+
+ALTRES ELEMENTS INTEGRATS:
+- GestorPersistencia: Almacenamiento de preguntas
+- CtrlDominioRespuesta: Validar respuestas asociadas
+- CtrlDominioEncuesta: Asociar preguntas a encuestas
+- Clases: PreguntaLibre, PreguntaNumerica, PreguntaOpcionUnica, PreguntaOpcionMultiple
+
+FITXERS DE DADES:
+- No requiere archivos externos
+- Datos creados en memoria durante ejecución
+
+VALORS ESTUDIATS:
+- Pregunta Libre: Enunciados válidos, sin restricciones
+- Pregunta Numérica: Rangos válidos (inferior < superior), valores extremos
+- Pregunta Opción Única: Lista de opciones, ordenadas/no ordenadas
+- Pregunta Opción Múltiple: Lista de opciones, número máximo de selecciones
+- Modificar enunciado: Preguntas existentes, nuevos textos
+- Añadir/eliminar opciones: Validación de índices, límites
+- Caja negra: Inputs/outputs sin conocer implementación
+
+EFECTES ESTUDIATS:
+- Polimorfismo: 4 tipos de pregunta heredan de Pregunta
+- Validaciones específicas por tipo
+- Persistencia en memoria
+- Asociación pregunta-encuesta
+
+OPERATIVA:
+1. Ejecutar: ./gradlew runDriverPregunta
+2. Aparece menú con múltiples opciones organizadas por tipo
+3. Seleccionar número de operación
+4. Introducir datos según tipo de pregunta:
+   - Libre: ID, encuesta, enunciado
+   - Numérica: ID, encuesta, enunciado, rango inferior, rango superior
+   - Opción Única: ID, encuesta, enunciado, opciones, ordenada (sí/no)
+   - Opción Múltiple: ID, encuesta, enunciado, opciones, num max seleccionables
+5. Ver resultado en consola
+6. Probar modificaciones (enunciado, opciones)
+7. Opción 0 para salir
+
+DATOS DE PRUEBA INICIALES:
+- Encuesta: ID=1
+- Preguntas de cada tipo con datos válidos predefinidos

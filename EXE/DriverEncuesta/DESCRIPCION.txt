@@ -1,0 +1,44 @@
+DRIVER ENCUESTA - DESCRIPCION DEL JOC DE PROVA
+===============================================
+
+OBJECTE DE LA PROVA:
+- CtrlDominioEncuesta: CRUD de encuestas, gestión de preguntas asociadas
+- Casos d'ús: Crear/modificar/eliminar encuestas, añadir preguntas, consultar respuestas
+
+ALTRES ELEMENTS INTEGRATS:
+- GestorPersistencia: Almacenamiento de encuestas
+- CtrlDominioPregunta: Gestión de preguntas de encuestas
+- CtrlDominioRespuesta: Obtener respuestas de encuestas
+- CtrlDominioUsuario: Validar creadores de encuestas
+
+FITXERS DE DADES:
+- No requiere archivos externos
+- Datos creados en memoria durante ejecución
+
+VALORS ESTUDIATS:
+- Crear encuesta: IDs únicos, títulos válidos, usuarios existentes
+- Añadir pregunta: Preguntas válidas, tipos diferentes (Libre, Numérica, Opción)
+- Modificar título: Encuestas existentes, nuevos títulos
+- Eliminar: Encuestas existentes/inexistentes
+- Consultas: Encuestas por ID, todas las encuestas, respuestas
+- Caja negra: Validación sin conocer estructura interna
+
+EFECTES ESTUDIATS:
+- Persistencia de encuestas en memoria
+- Asociación encuesta-preguntas-respuestas
+- Validaciones de existencia y permisos
+- Integridad referencial con usuarios y preguntas
+
+OPERATIVA:
+1. Ejecutar: ./gradlew runDriverEncuesta
+2. Aparece menú con 9 opciones
+3. Seleccionar número de operación
+4. Introducir datos solicitados (ID, título, tipo pregunta, etc.)
+5. Ver resultado en consola
+6. Repetir para probar diferentes casos
+7. Opción 0 para salir
+
+DATOS DE PRUEBA INICIALES:
+- Usuario: creator1
+- Encuesta: ID=1, Título="Encuesta de Prueba"
+- Preguntas: Varias de tipos Libre, Numérica, Opción Única, Opción Múltiple

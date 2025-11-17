@@ -1,43 +1,68 @@
 PROYECTO PROP - SUBGRUP 11.5
 =============================
 
-DESCRIPCION DEL PROYECTO:
-Sistema de gestion de encuestas con analisis de clustering para agrupar usuarios
-segun sus respuestas. Implementa algoritmos K-means y K-means++ para identificar
-perfiles de usuarios.
+DESCRIPCION:
+Sistema de gestion de encuestas con clustering de usuarios (K-means, K-means++, K-medoids).
 
-CONTENIDO DEL DIRECTORIO RAIZ:
-- equipos.txt: Informacion del equipo (nombres y emails)
-- index.txt: Este fichero (descripcion del directorio raiz)
-- GUIA_PRIMERA_ENTREGA.md: Guia completa sobre Gradle, estructura y checklist
-- build.gradle: Configuracion de Gradle (dependencias, compilacion)
-- settings.gradle: Nombre del proyecto Gradle
-- gradlew, gradlew.bat: Scripts de Gradle wrapper (Linux/Windows)
-- gradle/: Directorio con el wrapper de Gradle
+CONTENIDO:
+- miembros.txt: Equipo y emails
+- index.txt: Este fichero
+- README.md: Instrucciones compilacion y ejecucion
+- compilar.sh: Script de compilacion
+- build.gradle: Configuracion Gradle
+- settings.gradle: Nombre proyecto
+- gradlew, gradlew.bat: Gradle wrapper
 
-DIRECTORIOS PRINCIPALES:
-- DOCS/: Documentacion para la entrega (diagramas UML, descripciones)
-- FONTS/: Codigo fuente del proyecto (src/main/java, src/test/java)
-- EXE/: Ejecutables y jocs de proves para demostrar funcionalidades
-- src/: Codigo fuente organizado en packages (domain, domaincontrollers, etc.)
-- build/: Directorio generado por Gradle (NO ENTREGAR)
+DIRECTORIOS:
+- DOCS/: Documentacion (javadoc, UML, estructuras de datos)
+- EXE/: Ejecutables (drivers) y jocs de prova
+- src/: Codigo fuente (main/java, test/java)
+- gradle/: Wrapper de Gradle
+- build/: Generado por Gradle (NO ENTREGAR)
 
-COMO COMPILAR:
-./gradlew build
+COMPILAR:
+./compilar.sh
 
-COMO EJECUTAR TESTS:
+EJECUTAR DRIVERS:
+./gradlew runDriverUsuario
+./gradlew runDriverEncuesta
+./gradlew runDriverPregunta
+./gradlew runDriverRespuesta
+./gradlew runDriverClustering
+
+EJECUTAR TESTS:
 ./gradlew test
 
-COMO EJECUTAR UN DRIVER:
-./gradlew run --args="NombreDriver"
+JOCS DE PROVA:
+Cada driver en EXE/ tiene:
+- DESCRIPCION.txt: Casos de uso, datos, operativa
+- Archivos de datos (si aplica)
+
+ESTRUCTURA EXE/:
+EXE/
+  DriverUsuario/
+    DESCRIPCION.txt
+  DriverEncuesta/
+    DESCRIPCION.txt
+  DriverPregunta/
+    DESCRIPCION.txt
+  DriverRespuesta/
+    DESCRIPCION.txt
+  DriverClustering/
+    DESCRIPCION.txt
+    datos-encuestas.json
+    respuestas-deportes.csv
+    encuesta-deportes.json
 
 TECNOLOGIAS:
-- Java 11+
-- Gradle 7.x (gestion de dependencias y compilacion)
-- JUnit 5 (tests unitarios)
-- Gson (parsing JSON)
+- Java 21
+- Gradle 7.x
+- JUnit 4
+- Mockito
+- Gson
 
 NOTAS:
-- No usar javac directamente, siempre usar Gradle
-- No incluir directorio build/ en la entrega
-- Consultar GUIA_PRIMERA_ENTREGA.md para mas detalles
+- NO usar javac directamente, siempre Gradle
+- NO incluir build/ en entrega
+- Paths siempre relativos al proyecto
+- Consultar README.md para mas detalles

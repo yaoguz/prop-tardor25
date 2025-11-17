@@ -1,0 +1,41 @@
+DRIVER USUARIO - DESCRIPCION DEL JOC DE PROVA
+==============================================
+
+OBJECTE DE LA PROVA:
+- CtrlDominioUsuario: Registro, login, sesiones, consultas de usuarios
+- Casos d'ús: Registro de usuarios, autenticación, gestión de sesiones
+
+ALTRES ELEMENTS INTEGRATS:
+- GestorPersistencia: Almacenamiento en memoria de usuarios
+- CtrlDominioRespuesta: Obtener respuestas de usuarios
+- CtrlDominioPregunta: Validar preguntas de encuestas
+
+FITXERS DE DADES:
+- No requiere archivos externos
+- Datos creados en memoria durante ejecución
+
+VALORS ESTUDIATS:
+- Registro: Nombres válidos/inválidos, contraseñas que coinciden/no coinciden
+- Login: Usuarios existentes/inexistentes, contraseñas correctas/incorrectas
+- Sesiones: Usuario activo, cerrar sesión
+- Consultas: Encuestas respondidas, respuestas por encuesta
+- Caja negra: Validación de inputs y outputs sin conocer implementación
+
+EFECTES ESTUDIATS:
+- Persistencia de usuarios en memoria
+- Gestión de sesión activa (solo un usuario a la vez)
+- Validaciones de reglas de negocio (nombre único, contraseña coincidente)
+
+OPERATIVA:
+1. Ejecutar: ./gradlew runDriverUsuario
+2. Aparece menú con 11 opciones
+3. Seleccionar número de operación
+4. Introducir datos solicitados (nombres, contraseñas, etc.)
+5. Ver resultado en consola
+6. Repetir hasta probar todos los casos
+7. Opción 0 para salir
+
+DATOS DE PRUEBA INICIALES:
+- Usuario: user1, contraseña: 123456
+- Usuario: user2, contraseña: pass2
+- Usuario: user3, contraseña: pass3

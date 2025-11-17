@@ -1,40 +1,23 @@
 #!/bin/bash
-# Script de compilacion para el proyecto PROP 11.5
-# Usa Gradle para compilar todo el proyecto
+# Compilación proyecto PROP 11.5
 
-echo "=========================================="
-echo "  COMPILACION PROYECTO PROP 11.5"
-echo "=========================================="
-echo ""
-
-# Verificar que estamos en el directorio correcto
-if [ ! -f "build.gradle" ]; then
-    echo "ERROR: No se encuentra build.gradle"
-    echo "Ejecuta este script desde el directorio raiz del proyecto"
-    exit 1
-fi
-
-echo "Compilando con Gradle..."
+echo "Compilando..."
 ./gradlew build
 
 if [ $? -eq 0 ]; then
     echo ""
-    echo "=========================================="
-    echo "  COMPILACION EXITOSA"
-    echo "=========================================="
+    echo "COMPILACION EXITOSA"
     echo ""
-    echo "COMANDOS DISPONIBLES:"
-    echo "  - Ejecutar tests:        ./gradlew test"
-    echo "  - Ejecutar un driver:    ./gradlew run --args=\"NombreDriver\""
-    echo "  - Ver tests en HTML:     build/reports/tests/test/index.html"
-    echo "  - Limpiar proyecto:      ./gradlew clean"
+    echo "Comandos disponibles:"
+    echo "  ./gradlew test                  - Ejecutar tests"
+    echo "  ./gradlew runDriverUsuario      - Driver Usuario"
+    echo "  ./gradlew runDriverEncuesta     - Driver Encuesta"
+    echo "  ./gradlew runDriverPregunta     - Driver Pregunta"
+    echo "  ./gradlew runDriverRespuesta    - Driver Respuesta"
+    echo "  ./gradlew runDriverClustering   - Driver Clustering"
     echo ""
 else
     echo ""
-    echo "=========================================="
-    echo "  ERROR EN LA COMPILACION"
-    echo "=========================================="
-    echo ""
-    echo "Revisa los errores arriba y corrigelos."
+    echo "ERROR EN COMPILACION"
     exit 1
 fi
