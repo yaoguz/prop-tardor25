@@ -2,7 +2,7 @@ package domain.algorithm.estrategias;
 
 import domain.*;
 import domain.algorithm.estructuras.*;
-import domain.algorithm.funciones.CalculoCentroide;
+import domain.algorithm.funciones.StopWordsES;
 import java.util.*;
 
 /**
@@ -15,7 +15,7 @@ public class CalculoCentroideKmeans implements EstrategiaCalculoCentroide {
     
     @Override
     //dado un cluster devuelve un centroide
-    public static Centroide calcularCentroide (List<List<Respuesta>> respuestas, List<Pregunta> variables) {
+    public Centroide calcularCentroide(List<List<Respuesta>> respuestas, List<Pregunta> variables) {
 
         int N = variables.size();
 

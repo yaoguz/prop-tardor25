@@ -101,7 +101,7 @@ public class CtrlDominio {
 		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia, ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);
 		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, ctrlDominioRespuesta, ctrlDominioEncuesta);
 		
-		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(gestorPersistencia, ctrlDominioUsuario, ctrlDominioRespuesta, ctrlDominioEncuesta);
+		ctrlDominioPerfil = CtrlDominioPerfil.getInstance(ctrlDominioEncuesta);
 	}
 
     /**
@@ -427,7 +427,7 @@ public class CtrlDominio {
      * 
      * @param idEncuesta ID de la encuesta a analizar
      * @param k Número de clusters (perfiles) deseados
-     * @param algoritmo "kmeans" o "kmeans++"
+     * @param algoritmo "kmeans", "kmeans++" o "kmedoids"
      * @return Lista de perfiles obtenidos
      */
     public domain.algorithm.estructuras.ResultadoClustering ejecutarClustering(int idEncuesta, int k, String algoritmo) {

@@ -1,6 +1,12 @@
 package domain;
 import java.util.ArrayList;
 
+/**
+ * Clase que representa un usuario del sistema.
+ * Un usuario puede crear encuestas y responder a ellas.
+ * 
+ * @author Xiangjun Yepan
+ */
 public class Usuario {
 
     /** Atributos **/

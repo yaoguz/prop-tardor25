@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import domain.Respuesta;
-import domain.Usuario;
 import domain.Pregunta;
 import domain.algorithm.*;
 import domain.algorithm.estructuras.Perfil;
 import domain.algorithm.estructuras.ResultadoClustering;
-import persistence.GestorPersistencia;
 
 /**
  * Controlador de Dominio para la gestión de perfiles.
@@ -48,20 +46,14 @@ public class CtrlDominioPerfil {
 	/**
 	 * Obtiene la instancia única del controlador (patrón singleton).
 	 * 
-	 * @param gestor Gestor de persistencia
+	 * @param ctrlDominioEncuesta CtrlDominioEncuesta
 	 * @return Instancia única de CtrlDominioPerfil
 	 */
-	public static CtrlDominioPerfil getInstance(GestorPersistencia gestor, CtrlDominioUsuario ctrlDominioUsuario, CtrlDominioRespuesta ctrlDominioRespuesta, CtrlDominioEncuesta ctrlDominioEncuesta) {
+	public static CtrlDominioPerfil getInstance(CtrlDominioEncuesta ctrlDominioEncuesta) {
 		if (singletonInstance == null) {
-			singletonInstance = new CtrlDominioPerfil(gestor, ctrlDominioUsuario, ctrlDominioRespuesta, ctrlDominioEncuesta);
+			singletonInstance = new CtrlDominioPerfil(ctrlDominioEncuesta);
 		} else {
 			// Actualizar referencias circulares si ya existe la instancia
-			if (ctrlDominioUsuario != null) {
-				singletonInstance.ctrlDominioUsuario = ctrlDominioUsuario;
-			}
-			if (ctrlDominioRespuesta != null) {
-				singletonInstance.ctrlDominioRespuesta = ctrlDominioRespuesta;
-			}
 			if (ctrlDominioEncuesta != null) {
 				singletonInstance.ctrlDominioEncuesta = ctrlDominioEncuesta;
 			}
@@ -116,13 +108,15 @@ public class CtrlDominioPerfil {
 	/**
 	 * Selecciona el algoritmo de clustering según el nombre.
 	 * 
-	 * @param nombre Nombre del algoritmo ("kmeans" o "kmeans++")
+	 * @param nombre Nombre del algoritmo ("kmeans", "kmeans++" o "kmedoids")
 	 * @return Instancia del algoritmo seleccionado
 	 */
     private ClusteringAlgorithm seleccionarAlgoritmo(String nombre) {
         switch (nombre.toLowerCase()) {
             case "kmeans++":
                 return new KmeansPlusPlus();
+            case "kmedoids":
+                return new Kmedoids();
             case "kmeans":
             default:
                 return new Kmeans();

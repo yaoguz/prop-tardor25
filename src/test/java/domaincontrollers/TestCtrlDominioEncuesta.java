@@ -45,6 +45,12 @@ public class TestCtrlDominioEncuesta {
         ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(mockGestor, mockCtrlDominioPregunta, mockCtrlDominioRespuesta, mockCtrlDominioUsuario);
     }
 
+    /**
+     * Objeto de la prueba: existeEncuesta(idEncuesta)
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Caso en que la encuesta existe
+     * Operativa: Mock de gestor retorna true, se verifica que el método retorna true y se llama al gestor
+     */
     @Test
     public void TestExisteEncuestaIdEncuestaTrue() {
         when(mockGestor.existeEncuesta(1)).thenReturn(true);
@@ -55,6 +61,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockGestor, times(1)).existeEncuesta(1); 
 	}
 
+    /**
+     * Objeto de la prueba: existeEncuesta(idEncuesta)
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Caso en que la encuesta no existe
+     * Operativa: Mock de gestor retorna false, se verifica que el método retorna false
+     */
     @Test 
     public void TestExisteEncuestaIdEncuestaFalse() {
         when(mockGestor.existeEncuesta(1)).thenReturn(false);
@@ -65,6 +77,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockGestor, times(1)).existeEncuesta(1); 
     }
 
+    /**
+     * Objeto de la prueba: existeEncuesta(autor, titulo)
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Caso en que la encuesta del autor con ese título existe
+     * Operativa: Mocks de usuario y encuesta con título coincidente, se verifica que retorna true
+     */
     @Test
     public void TestExisteEncuestaAutorTituloTrue() {
         Usuario mockUsuario = mock(Usuario.class);
@@ -86,6 +104,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockEncuesta, times(1)).getTitulo(); 
 	}
 
+    /**
+     * Objeto de la prueba: existeEncuesta(autor, titulo)
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Caso en que la encuesta del autor no tiene ese título
+     * Operativa: Mocks configurados, se busca título diferente y se verifica que retorna false
+     */
     @Test 
     public void TestExisteEncuestaAutorTituloFalse() {
         Usuario mockUsuario = mock(Usuario.class);
@@ -107,6 +131,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockEncuesta, times(1)).getTitulo();     
     }
 
+    /**
+     * Objeto de la prueba: getEncuesta(idEncuesta)
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención correcta de encuesta por ID
+     * Operativa: Mock de gestor retorna encuesta, se verifica que se obtiene la correcta
+     */
     @Test
     public void testGetEncuestaIdEncuestaSinError() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -118,6 +148,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockGestor, times(1)).getEncuesta(1);
 	}
 
+    /**
+     * Objeto de la prueba: getEncuesta(idEncuesta)
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Excepción cuando la encuesta no existe
+     * Operativa: Mock retorna null, se espera IllegalStateException
+     */
     @Test (expected=IllegalStateException.class) 
     public void testGetEncuestaIdEncuestaConError() {
         when(mockGestor.getEncuesta(1)).thenReturn(null);
@@ -125,6 +161,12 @@ public class TestCtrlDominioEncuesta {
         ctrlDominioEncuesta.getEncuesta(1);
     }
 
+    /**
+     * Objeto de la prueba: getEncuesta(titulo, autor)
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención correcta de encuesta por título y autor
+     * Operativa: Mocks configurados con encuesta existente, se verifica obtención correcta
+     */
     @Test
     public void testGetEncuestaTituloAutorSinError() {
         Usuario mockUsuario = mock(Usuario.class);
@@ -146,6 +188,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockEncuesta, times(1)).getTitulo(); 
 	}
 
+    /**
+     * Objeto de la prueba: getEncuesta(titulo, autor)
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Excepción cuando el título no existe para el autor
+     * Operativa: Mocks configurados, se busca título no existente, se espera IllegalStateException
+     */
     @Test (expected=IllegalStateException.class) 
     public void testGetEncuestaTituloAutorConError() {
         Usuario mockUsuario = mock(Usuario.class);
@@ -162,6 +210,12 @@ public class TestCtrlDominioEncuesta {
         // falta verificar?
     }
 
+    /**
+     * Objeto de la prueba: getAllEncuestas()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de todas las encuestas como HashMap
+     * Operativa: Mock retorna lista de encuestas, se verifica conversión a HashMap correcta
+     */
     @Test 
     public void testGetAllEncuestas() {
         ArrayList<Encuesta> lista = new ArrayList<>();
@@ -178,6 +232,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockEncuesta, times(1)).getIdEncuesta();
     }
 
+    /**
+     * Objeto de la prueba: getIdPreguntasEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de IDs de preguntas de una encuesta
+     * Operativa: Mock de encuesta retorna lista de IDs, se verifica obtención correcta
+     */
     @Test 
     public void testGetIdPreguntasEncuesta() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -192,6 +252,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockEncuesta, times(1)).getIdPreguntas();
     }
 
+    /**
+     * Objeto de la prueba: getPreguntasEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de objetos Pregunta de una encuesta
+     * Operativa: Mocks retornan preguntas por IDs, se verifica obtención correcta
+     */
     @Test 
     public void testGetPreguntasEncuesta() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -209,6 +275,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockCtrlDominioPregunta, times(1)).getPregunta(1);
     }
 
+    /**
+     * Objeto de la prueba: crearEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Creación correcta de una encuesta
+     * Operativa: Mocks configurados, se crea encuesta y se verifica ID y persistencia
+     */
     @Test 
     public void testCrearEncuestaSinError() {
         Usuario mockUsuario = mock(Usuario.class);
@@ -222,11 +294,23 @@ public class TestCtrlDominioEncuesta {
         verify(mockGestor).actualizarUsuario(mockUsuario);
     }
 
+    /**
+     * Objeto de la prueba: crearEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Excepción cuando el título es vacío
+     * Operativa: Se intenta crear encuesta con título vacío, se espera IllegalArgumentException
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testCrearEncuestaTituloVacio() {
         ctrlDominioEncuesta.crearEncuesta("user1", "");
     }
 
+    /**
+     * Objeto de la prueba: crearEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Excepción cuando ya existe encuesta con mismo título y autor
+     * Operativa: Mocks configurados con encuesta existente, se intenta crear duplicado
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testCrearEncuestaDuplicado() {
         Usuario mockUsuario = mock(Usuario.class);
@@ -279,6 +363,12 @@ public class TestCtrlDominioEncuesta {
     }
     */
 
+    /**
+     * Objeto de la prueba: modificarTituloEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Modificación correcta del título
+     * Operativa: Se modifica título y se verifica cambio y persistencia
+     */
     @Test //?
     public void testModificarTituloEncuestaSinError() {
         Encuesta e = new Encuesta(1, "Prueba", "user1");
@@ -291,11 +381,23 @@ public class TestCtrlDominioEncuesta {
         verify(mockGestor, times(1)).actualizarEncuesta(e);
     }
 
+    /**
+     * Objeto de la prueba: modificarTituloEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Excepción cuando el nuevo título es vacío
+     * Operativa: Se intenta modificar a título vacío, se espera IllegalArgumentException
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testModificarTituloEncuestaTituloVacio() {
         ctrlDominioEncuesta.modificarTituloEncuesta(1, "");
     }
 
+    /**
+     * Objeto de la prueba: eliminarEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Eliminación correcta de encuesta y sus preguntas
+     * Operativa: Mocks configurados, se elimina encuesta y se verifican llamadas a gestor
+     */
     @Test 
     public void testEliminarEncuesta() {
         Usuario mockUsuario = mock(Usuario.class);
@@ -314,6 +416,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockGestor).eliminarEncuesta(1);
     }
 
+    /**
+     * Objeto de la prueba: getRespuestasEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de respuestas agrupadas por pregunta
+     * Operativa: Mocks de preguntas y respuestas, se verifica estructura Map<Pregunta, Set<Respuesta>>
+     */
     @Test 
     public void testGetRespuestasEncuesta() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -352,6 +460,12 @@ public class TestCtrlDominioEncuesta {
     }
 
 
+    /**
+     * Objeto de la prueba: anadirPregunta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Añadir pregunta a encuesta existente
+     * Operativa: Mocks configurados, se añade pregunta y se verifica creación
+     */
     @Test
     public void testAnadirPregunta() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -369,6 +483,12 @@ public class TestCtrlDominioEncuesta {
         verify(mockCtrlDominioPregunta).crearPregunta(1, "¿Pregunta?", "libre", infoP.atributosEspecificos);
     }
 
+    /**
+     * Objeto de la prueba: getRespuestasParaClustering()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de matriz de respuestas organizada por usuarios
+     * Operativa: Mocks de preguntas y respuestas de usuarios, se verifica estructura matricial
+     */
     @Test
     public void testGetRespuestasParaClustering() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -424,6 +544,12 @@ public class TestCtrlDominioEncuesta {
     */
 
 
+    /**
+     * Objeto de la prueba: importarEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Excepción cuando no hay usuario activo
+     * Operativa: Mock retorna null para usuario activo, se espera IllegalStateException
+     */
     @Test(expected = IllegalStateException.class)
     public void testImportarEncuestaSinUsuarioActivo() {
         when(mockCtrlDominioUsuario.getUsuarioActivo()).thenReturn(null);

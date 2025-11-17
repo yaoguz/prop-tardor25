@@ -15,20 +15,20 @@ import java.util.*;
 public class CalculoCentroideMedoids implements EstrategiaCalculoCentroide {
     
     @Override
-    public static Centroide calcularCentroide(List<List<Respuesta>> cluster, List<Pregunta> variables) {
+    public Centroide calcularCentroide(List<List<Respuesta>> respuestas, List<Pregunta> variables) {
         double minDistanciaTotal = Double.MAX_VALUE;
         int index = -1;
-        for(int i = 0; i < cluster.size(); ++i) {
+        for(int i = 0; i < respuestas.size(); ++i) {
             double distanciaTotal = 0.0;
-            for(int j = 0; j < cluster.size(); ++j) {
+            for(int j = 0; j < respuestas.size(); ++j) {
                 if (i == j) continue;
-                distanciaTotal += CalculoDistanciaUsuario.calcularDistanciaUsuario(cluster.get(i), cluster.get(j), variables);
+                distanciaTotal += CalculoDistanciaUsuario.calcularDistanciaUsuario(respuestas.get(i), respuestas.get(j), variables);
             }
             if(distanciaTotal < minDistanciaTotal) {
                 minDistanciaTotal = distanciaTotal;
                 index = i;
             }
         }
-        return TransformarEnCentroide.transformarEnCentroide(cluster.get(index));
+        return TransformarEnCentroide.transformarEnCentroide(respuestas.get(index));
     }
 }

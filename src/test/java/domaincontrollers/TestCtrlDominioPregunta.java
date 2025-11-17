@@ -41,6 +41,12 @@ public class TestCtrlDominioPregunta {
         ctrlDominioPregunta = CtrlDominioPregunta.getInstance(mockGestor, mockCtrlDominioRespuesta, mockCtrlDominioEncuesta);
     }
 
+    /**
+     * Objeto de la prueba: existePregunta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Verificación de existencia de preguntas
+     * Operativa: Mocks retornan true/false, se verifica comportamiento correcto
+     */
     @Test
     public void testExistePregunta() {
         when(mockGestor.existePregunta(1)).thenReturn(true);
@@ -55,6 +61,12 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).existePregunta(2);
     }
 
+    /**
+     * Objeto de la prueba: getPregunta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención correcta de pregunta por ID
+     * Operativa: Mock retorna pregunta, se verifica obtención
+     */
     @Test
     public void testGetPregunta() {
         Pregunta mockPregunta = mock(PreguntaLibre.class);
@@ -73,6 +85,12 @@ public class TestCtrlDominioPregunta {
         ctrlDominioPregunta.getPregunta(1);
     }
 
+    /**
+     * Objeto de la prueba: crearPreguntaLibre()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Creación correcta de pregunta de tipo libre
+     * Operativa: Mocks configurados, se crea pregunta y se verifican persistencia y actualización
+     */
     @Test
     public void testCrearPreguntaLibre() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -98,6 +116,12 @@ public class TestCtrlDominioPregunta {
         ctrlDominioPregunta.crearPreguntaLibre(1, null);
     }
 
+    /**
+     * Objeto de la prueba: crearPreguntaNumerica()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Creación correcta de pregunta numérica con rango
+     * Operativa: Mocks configurados, se crea pregunta con rango 0-100 y se verifica
+     */
     @Test
     public void testCrearPreguntaNumerica() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -118,6 +142,12 @@ public class TestCtrlDominioPregunta {
         ctrlDominioPregunta.crearPreguntaNumerica(1, "¿Edad?", 100, 0);
     }
 
+    /**
+     * Objeto de la prueba: crearPreguntaOpcionUnica()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Creación correcta de pregunta de opción única
+     * Operativa: Mocks configurados, se crea pregunta con opciones Si/No y se verifica
+     */
     @Test
     public void testCrearPreguntaOpcionUnica() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -138,6 +168,12 @@ public class TestCtrlDominioPregunta {
         ctrlDominioPregunta.crearPreguntaOpcionUnica(1, "¿Pregunta?", Arrays.asList("Una"), false);
     }
 
+    /**
+     * Objeto de la prueba: crearPreguntaOpcionMultiple()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Creación correcta de pregunta de opción múltiple
+     * Operativa: Mocks configurados, se crea pregunta con 3 opciones y máximo 2 selecciones
+     */
     @Test
     public void testCrearPreguntaOpcionMultiple() {
         Encuesta mockEncuesta = mock(Encuesta.class);
@@ -153,6 +189,12 @@ public class TestCtrlDominioPregunta {
         verify(mockEncuesta).guardarPregunta(10);
     }
 
+    /**
+     * Objeto de la prueba: anadirRespuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Añadir referencia de respuesta a pregunta
+     * Operativa: Mock de pregunta, se añade respuesta y se verifica actualización
+     */
     @Test
     public void testAnadirRespuesta() {
         Pregunta mockPregunta = mock(PreguntaLibre.class);
@@ -172,6 +214,12 @@ public class TestCtrlDominioPregunta {
         ctrlDominioPregunta.anadirRespuesta(1, 100);
     }
 
+    /**
+     * Objeto de la prueba: eliminarRespuestaReferencia()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Eliminación de referencia de respuesta de pregunta
+     * Operativa: Mock de pregunta, se elimina referencia y se verifica actualización
+     */
     @Test
     public void testEliminarRespuestaReferencia() {
         Pregunta mockPregunta = mock(PreguntaLibre.class);
@@ -191,6 +239,12 @@ public class TestCtrlDominioPregunta {
     }
 
 
+    /**
+     * Objeto de la prueba: eliminarPregunta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Eliminación de pregunta y sus respuestas asociadas
+     * Operativa: Mocks configurados, se elimina pregunta y se verifica eliminación en cascada
+     */
     @Test
     public void testEliminarPregunta() {
         Pregunta mockPregunta = mock(PreguntaLibre.class);
@@ -210,6 +264,12 @@ public class TestCtrlDominioPregunta {
         verify(mockEncuesta).eliminarPregunta(10);
     }
 
+    /**
+     * Objeto de la prueba: getAllPreguntas()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de todas las preguntas como HashMap
+     * Operativa: Mock retorna lista de preguntas, se verifica conversión a HashMap
+     */
     @Test
     public void testGetAllPreguntas() {
         ArrayList<Pregunta> lista = new ArrayList<>();
@@ -225,6 +285,12 @@ public class TestCtrlDominioPregunta {
         verify(mockGestor).getPreguntas();
     }
 
+    /**
+     * Objeto de la prueba: getRespuestasPregunta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de respuestas asociadas a una pregunta
+     * Operativa: Mocks retornan respuestas por IDs, se verifica obtención correcta
+     */
     @Test
     public void testGetRespuestasPregunta() {
         Pregunta p = mock(PreguntaLibre.class);

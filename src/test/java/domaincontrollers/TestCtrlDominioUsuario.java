@@ -41,6 +41,12 @@ public class TestCtrlDominioUsuario {
         ctrlDominioUsuario = CtrlDominioUsuario.getInstance(mockGestor, mockCtrlDominioRespuesta, mockCtrlDominioPregunta);
     }
 
+    /**
+     * Objeto de la prueba: existeUsuario()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Verificación de existencia de usuario
+     * Operativa: Mock retorna true, se verifica que el método retorna true
+     */
     @Test
     public void testExisteUsuarioTrue() {
         when(mockGestor.existeUsuario("Alessandro")).thenReturn(true);
@@ -51,6 +57,12 @@ public class TestCtrlDominioUsuario {
         verify(mockGestor, times(1)).existeUsuario("Alessandro"); // verificar interacción
 	}
 
+    /**
+     * Objeto de la prueba: existeUsuario()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Caso en que el usuario no existe
+     * Operativa: Mock retorna false, se verifica comportamiento correcto
+     */
     @Test 
     public void testExisteUsuarioFalse() {
         when(mockGestor.existeUsuario("Yaoyao")).thenReturn(false);
@@ -61,6 +73,12 @@ public class TestCtrlDominioUsuario {
         verify(mockGestor, times(1)).existeUsuario("Yaoyao"); // verificar interacción
     }
 
+    /**
+     * Objeto de la prueba: getUsuario()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención correcta de usuario por nombre
+     * Operativa: Mock retorna usuario, se verifica obtención
+     */
     @Test
     public void testGetUsuarioSinError() {
         
@@ -82,6 +100,12 @@ public class TestCtrlDominioUsuario {
         // falta verificar?
     }
 
+    /**
+     * Objeto de la prueba: registrarUsuario()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Registro correcto de nuevo usuario
+     * Operativa: Mocks configurados, se registra usuario y se verifica persistencia
+     */
     @Test
     public void testRegistrarUsuarioBueno() {
         when(mockGestor.existeUsuario("Alessandro")).thenReturn(false);
@@ -138,6 +162,12 @@ public class TestCtrlDominioUsuario {
     }
 
 
+    /**
+     * Objeto de la prueba: iniciarSesion()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Inicio de sesión correcto con credenciales válidas
+     * Operativa: Mocks de usuario y contraseña, se inicia sesión y se verifica usuario activo
+     */
     @Test
     public void testIniciarSesionBueno() {
         
@@ -193,12 +223,24 @@ public class TestCtrlDominioUsuario {
     }
 
 
+    /**
+     * Objeto de la prueba: getUsuarioActivo()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Caso en que no hay usuario con sesión activa
+     * Operativa: Sin iniciar sesión, se verifica que retorna null
+     */
     @Test
     public void testGetUsuarioActivoSinSesion() {
         
         assertNull("Debe devolver null si no hay usuario activo", ctrlDominioUsuario.getUsuarioActivo());
     }
 
+    /**
+     * Objeto de la prueba: getUsuarioActivo()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención del usuario activo con sesión iniciada
+     * Operativa: Se inicia sesión, se verifica que getUsuarioActivo retorna el nombre correcto
+     */
     @Test
     public void testGetUsuarioActivoConSesion() {
 
@@ -215,6 +257,12 @@ public class TestCtrlDominioUsuario {
         
     }
 
+    /**
+     * Objeto de la prueba: cerrarSesionActual()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Cierre correcto de sesión activa
+     * Operativa: Se inicia sesión, se cierra y se verifica que usuario activo queda null
+     */
     @Test
     public void testCerrarSesionActual() {
         
@@ -231,6 +279,12 @@ public class TestCtrlDominioUsuario {
         assertNull("Debe quedar null después de cerrar sesión", ctrlDominioUsuario.getUsuarioActivo());
     }
 
+    /**
+     * Objeto de la prueba: modificarContrasena()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Modificación correcta de contraseña
+     * Operativa: Usuario con sesión activa modifica contraseña, se verifican llamadas
+     */
     @Test
     public void testModificarContrasenaValida() {
 
@@ -295,6 +349,12 @@ public class TestCtrlDominioUsuario {
     }
 
 
+    /**
+     * Objeto de la prueba: getEncuestasRespondidas()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de IDs de encuestas respondidas por usuario activo
+     * Operativa: Mocks de respuestas y preguntas, se obtienen encuestas y se verifica lista
+     */
     @Test
     public void testGetEncuestasRespondidas() {
         // Mocks 
@@ -338,6 +398,12 @@ public class TestCtrlDominioUsuario {
     }
 
 
+    /**
+     * Objeto de la prueba: getRespuestasEncuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de respuestas de un usuario para una encuesta específica
+     * Operativa: Mocks de respuestas de usuario a 2 encuestas, se filtran por encuesta
+     */
     @Test
     public void testGetRespuestasEncuesta() {
      
@@ -379,6 +445,12 @@ public class TestCtrlDominioUsuario {
         verify(mockCtrlDominioPregunta, times(3)).getPregunta(anyInt());
     }
 
+    /**
+     * Objeto de la prueba: getAllUsuarios()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de todos los usuarios como copia
+     * Operativa: Mock retorna lista de usuarios, se verifica que devuelve copia independiente
+     */
     @Test
     public void testGetAllUsuariosDevuelveCopia() {
         Usuario mockUser1 = mock(Usuario.class);

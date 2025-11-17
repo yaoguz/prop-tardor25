@@ -40,6 +40,12 @@ public class TestCtrlDominioRespuesta {
         ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(mockGestor, mockCtrlDominioUsuario, mockCtrlDominioEncuesta, mockCtrlDominioPregunta);
     }
 
+    /**
+     * Objeto de la prueba: existeRespuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Verificación de existencia de respuestas
+     * Operativa: Mocks retornan true/false, se verifica comportamiento correcto
+     */
     @Test
     public void testExisteRespuesta() {
         when(mockGestor.existeRespuesta(1)).thenReturn(true);
@@ -54,6 +60,12 @@ public class TestCtrlDominioRespuesta {
         verify(mockGestor).existeRespuesta(2);
     }
 
+    /**
+     * Objeto de la prueba: getRespuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención correcta de respuesta por ID
+     * Operativa: Mock retorna respuesta, se verifica obtención
+     */
     @Test
     public void testGetRespuesta() {
         Respuesta mockRespuesta = mock(RespuestaLibre.class);
@@ -72,6 +84,12 @@ public class TestCtrlDominioRespuesta {
         ctrlDominioRespuesta.getRespuesta(1);
     }
 
+    /**
+     * Objeto de la prueba: darRespuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Creación correcta de respuesta a pregunta
+     * Operativa: Mocks de pregunta y usuario, se crea respuesta y se verifican actualizaciones
+     */
     @Test
     public void testDarRespuesta() {
         PreguntaLibre mockPregunta = mock(PreguntaLibre.class);
@@ -93,6 +111,12 @@ public class TestCtrlDominioRespuesta {
         verify(mockPregunta).guardarIdRespuesta(100);
     }
 
+    /**
+     * Objeto de la prueba: modificarRespuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Modificación correcta del contenido de respuesta
+     * Operativa: Mock de respuesta, se modifica contenido y se verifica actualización
+     */
     @Test
     public void testModificarRespuesta() {
         RespuestaLibre mockRespuesta = mock(RespuestaLibre.class);
@@ -104,6 +128,12 @@ public class TestCtrlDominioRespuesta {
         verify(mockGestor).actualizarRespuesta(mockRespuesta);
     }
 
+    /**
+     * Objeto de la prueba: eliminarRespuesta()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Eliminación correcta de respuesta y sus referencias
+     * Operativa: Mocks configurados, se elimina respuesta y se verifican eliminaciones en usuario y pregunta
+     */
     @Test
     public void testEliminarRespuesta() {
         RespuestaLibre r = mock(RespuestaLibre.class);
@@ -123,6 +153,12 @@ public class TestCtrlDominioRespuesta {
         verify(mockGestor).eliminarRespuesta(100);
     }
 
+    /**
+     * Objeto de la prueba: importarRespuestas()
+     * Ficheros de datos necesarios: src/test/resources/test_respuestas.csv
+     * Valores estudiados: Importación correcta de respuestas desde CSV
+     * Operativa: Mocks de encuesta, pregunta y usuario, se importan respuestas y se verifican creaciones
+     */
     @Test 
     public void testImportarRespuestas() {
         File file = new File("src/test/resources/test_respuestas.csv");
@@ -152,6 +188,12 @@ public class TestCtrlDominioRespuesta {
         verify(mockPregunta).guardarIdRespuesta(10);
     }
 
+    /**
+     * Objeto de la prueba: importarRespuestas()
+     * Ficheros de datos necesarios: src/test/resources/invalid_respuestas.csv
+     * Valores estudiados: Excepción cuando la encuesta referenciada no existe
+     * Operativa: Mock lanza excepción al buscar encuesta inexistente
+     */
     @Test(expected = IllegalArgumentException.class) 
     public void testImportarRespuestasEncuestaNoExiste() {
         File file = new File("src/test/resources/invalid_respuestas.csv");
@@ -159,6 +201,12 @@ public class TestCtrlDominioRespuesta {
         ctrlDominioRespuesta.importarRespuestas(file);
     }
 
+    /**
+     * Objeto de la prueba: importarRespuestas()
+     * Ficheros de datos necesarios: src/test/resources/invalid_respuestas.csv
+     * Valores estudiados: Excepción cuando la pregunta referenciada no existe
+     * Operativa: Mocks configurados para validación fallida de pregunta inexistente
+     */
     @Test
     public void testImportarRespuestasPreguntaNoExiste() {
         File file = new File("src/test/resources/invalid_respuestas.csv");
@@ -185,6 +233,12 @@ public class TestCtrlDominioRespuesta {
         }
     }
 
+    /**
+     * Objeto de la prueba: importarRespuestas()
+     * Ficheros de datos necesarios: src/test/resources/test_respuestas.csv
+     * Valores estudiados: Excepción cuando la pregunta no pertenece a la encuesta
+     * Operativa: Mocks configurados con pregunta de encuesta diferente
+     */
     @Test
     public void testImportarRespuestasEncuestaNoTienePregunta() {
         File file = new File("src/test/resources/test_respuestas.csv");
@@ -208,6 +262,12 @@ public class TestCtrlDominioRespuesta {
         }
     }
 
+    /**
+     * Objeto de la prueba: getAllRespuestas()
+     * Ficheros de datos necesarios: Ninguno
+     * Valores estudiados: Obtención de todas las respuestas como HashMap
+     * Operativa: Mock retorna lista de respuestas, se verifica conversión a HashMap
+     */
     @Test
     public void testGetAllRespuestas() {
         ArrayList<Respuesta> lista = new ArrayList<>();
