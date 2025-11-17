@@ -31,7 +31,7 @@ EFECTES ESTUDIATS:
 
 OPERATIVA:
 1. Ejecutar: ./gradlew runDriverEncuesta
-2. Aparece menú con 9 opciones
+2. Aparece menú con 10 opciones
 3. Seleccionar número de operación
 4. Introducir datos solicitados (ID, título, tipo pregunta, etc.)
 5. Ver resultado en consola
