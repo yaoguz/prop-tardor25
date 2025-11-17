@@ -1,68 +1,63 @@
 PROYECTO PROP - SUBGRUP 11.5
-=============================
 
-DESCRIPCION:
-Sistema de gestion de encuestas con clustering de usuarios (K-means, K-means++, K-medoids).
+Carpeta raiz del sistema de gestion de encuestas con clustering de usuarios (algoritmos K-means, K-means++ y K-medoids).
 
-CONTENIDO:
-- miembros.txt: Equipo y emails
-- index.txt: Este fichero
-- README.md: Instrucciones compilacion y ejecucion
-- compilar.sh: Script de compilacion
-- build.gradle: Configuracion Gradle
-- settings.gradle: Nombre proyecto
-- gradlew, gradlew.bat: Gradle wrapper
+Descripcion de los directorios:
 
-DIRECTORIOS:
-- DOCS/: Documentacion (javadoc, UML, estructuras de datos)
-- EXE/: Ejecutables (drivers) y jocs de prova
-- src/: Codigo fuente (main/java, test/java)
-- gradle/: Wrapper de Gradle
-- build/: Generado por Gradle (NO ENTREGAR)
+- /bin:
+    Contiene los ficheros binarios de las clases.
 
-COMPILAR:
-./compilar.sh
+- /DOCS:
+    Contiene los documentos sobre la documentacion del proyecto.
 
-EJECUTAR DRIVERS:
-./gradlew runDriverUsuario
-./gradlew runDriverEncuesta
-./gradlew runDriverPregunta
-./gradlew runDriverRespuesta
-./gradlew runDriverClustering
+- /EXE:
+    Contiene los drivers con su descripciones y los juegos de pruebas si lo necesitan.
 
-EJECUTAR TESTS:
-./gradlew test
+- /gradle:
+    Contiene información del gradle.
 
-JOCS DE PROVA:
-Cada driver en EXE/ tiene:
-- DESCRIPCION.txt: Casos de uso, datos, operativa
-- Archivos de datos (si aplica)
+- /src:
+    Contiene los ficheros con el codigo de las calses java y los test unitarios.
 
-ESTRUCTURA EXE/:
-EXE/
-  DriverUsuario/
-    DESCRIPCION.txt
-  DriverEncuesta/
-    DESCRIPCION.txt
-  DriverPregunta/
-    DESCRIPCION.txt
-  DriverRespuesta/
-    DESCRIPCION.txt
-  DriverClustering/
-    DESCRIPCION.txt
-    datos-encuestas.json
-    respuestas-deportes.csv
-    encuesta-deportes.json
+Descripcion de los ficheros:
 
-TECNOLOGIAS:
-- Java 21
-- Gradle 7.x
-- JUnit 4
-- Mockito
-- Gson
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
 
-NOTAS:
-- NO usar javac directamente, siempre Gradle
-- NO incluir build/ en entrega
-- Paths siempre relativos al proyecto
-- Consultar README.md para mas detalles
+- build.gradle:
+    Fichero del gradle para ejecutar los drivers.
+
+- compilar.sh:
+    Ejecutable que compila el proyecto.
+
+- gradlew:
+    Fichero de gradle.
+
+- gradlew.bat:
+    Fichero de inicializacion de gradle para Windows.
+
+- miembros.txt:
+    Fichero con la información de los miembros del equipo.
+
+- README.md:
+    Contiene información sobre comandos utiles para el proyecto.
+
+- settings.gradle:
+    Configuraciones del gradle (nombre del proyecto).
+
+Informacon adicional:
+
+- Para compilar el proyecto usar:
+    ./compilar.sh
+
+Luego, para ejecutar los drivers usar:
+    ./gradlew runDriverUsuario
+    ./gradlew runDriverEncuesta
+    ./gradlew runDriverPregunta
+    ./gradlew runDriverRespuesta
+    ./gradlew runDriverClustering
+
+Para ejecutar los tests:
+    ./gradlew test
+
+Los juegos de prueba están en la carpeta correspondiente de su driver en EXE/
