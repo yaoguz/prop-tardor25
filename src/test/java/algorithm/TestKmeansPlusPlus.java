@@ -13,8 +13,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Tests unitarios para el algoritmo K-means++.
- * 
+ * Pruebas del algoritmo K-means++.
  * @author ?
  */
 public class TestKmeansPlusPlus {
@@ -24,8 +23,7 @@ public class TestKmeansPlusPlus {
     private List<List<Respuesta>> respuestas;
     
     /**
-     * Configuración inicial antes de cada test.
-     * Crea un dataset de 6 usuarios con 3 preguntas.
+     * Inicializa dataset de prueba con 6 usuarios.
      */
     @Before
     public void setUp() {
@@ -75,10 +73,7 @@ public class TestKmeansPlusPlus {
     }
     
     /**
-     * Objeto de la prueba: Verificar que el nombre del algoritmo es correcto.
-     * Ficheros de datos necesarios: Ninguno.
-     * Valores estudiados: Estrategia caja negra. Se verifica que getNombre() retorna "K-means++".
-     * Operativa: Se llama a getNombre() y se comprueba que retorna el valor esperado.
+     * Verifica que el nombre del algoritmo es "KMeans++".
      */
     @Test
     public void testGetNombre_RetornaNombreCorrecto() {
@@ -86,10 +81,7 @@ public class TestKmeansPlusPlus {
     }
     
     /**
-     * Objeto de la prueba: Verificar clustering básico con k=2.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se verifica que genera 2 perfiles con calidad válida.
-     * Operativa: Se ejecuta clustering con k=2; se verifica que el resultado tiene 2 perfiles no vacíos.
+     * Genera 2 clusters correctamente.
      */
     @Test
     public void testEjecutarClustering_K2_GeneraDosPerfiles() {
@@ -107,10 +99,7 @@ public class TestKmeansPlusPlus {
     }
     
     /**
-     * Objeto de la prueba: Verificar que todos los usuarios son asignados.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja gris. Se verifica que no se pierde ningún usuario.
-     * Operativa: Se ejecuta clustering; se suma el tamaño de perfiles y se compara con el total de usuarios.
+     * Todos los usuarios son asignados a un cluster.
      */
     @Test
     public void testEjecutarClustering_TodosUsuariosAsignados() {
@@ -125,10 +114,7 @@ public class TestKmeansPlusPlus {
     }
     
     /**
-     * Objeto de la prueba: Verificar que K-means++ tiende a dar mejor calidad que K-means aleatorio.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se compara calidad de K-means++ vs K-means en múltiples ejecuciones.
-     * Operativa: Se ejecutan ambos algoritmos 5 veces; se verifica que K-means++ obtiene mejor calidad promedio.
+     * K-means++ obtiene mejor o igual calidad que K-means.
      */
     @Test
     public void testEjecutarClustering_MejorCalidadQueKmeans() {
@@ -154,10 +140,7 @@ public class TestKmeansPlusPlus {
     }
     
     /**
-     * Objeto de la prueba: Verificar clustering con k=3.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja negra. Se verifica que genera 3 perfiles.
-     * Operativa: Se ejecuta clustering con k=3; se verifica que el resultado tiene 3 perfiles.
+     * Genera 3 clusters correctamente.
      */
     @Test
     public void testEjecutarClustering_K3_GeneraTresPerfiles() {
@@ -167,10 +150,7 @@ public class TestKmeansPlusPlus {
     }
     
     /**
-     * Objeto de la prueba: Verificar que cada usuario pertenece a un solo perfil.
-     * Ficheros de datos necesarios: Dataset creado en setUp().
-     * Valores estudiados: Estrategia caja gris. Se verifica que no hay usuarios duplicados entre perfiles.
-     * Operativa: Se ejecuta clustering; se verifica que cada usuario aparece una sola vez.
+     * Ningún usuario aparece en múltiples clusters.
      */
     @Test
     public void testEjecutarClustering_UsuariosSinDuplicar() {
