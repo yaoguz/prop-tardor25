@@ -36,7 +36,33 @@ public class CtrlPersistenciaUsuario {
      */
     public CtrlPersistenciaUsuario() {
         this.gson = new Gson();
-        crearDirectorio();
+    }
+
+    public Usuario getUsuario (String nom) {
+        File f = new File(FILE);
+        FileReader r = new FileReader(f);
+
+        //representacion ficherp
+        JsonObject root = JsonParser.parseReader(r).getAsJsonObject(); 
+
+        for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
+            JsonObject usuario = entry.getValue().getAsJsonObject();
+            String name = usuario.get("nombre").getAsString();
+
+            if (name == nom) {
+                String pass = usuario.get("password").getAsString();
+                ArrayList<Integer> idEncuestasCreadas = GestorPersistencia.convertirJsonArray(usuario.get("idEncuestasCreadas").getAsJsonArray());
+   
+                ArrayList<Integer> idRespuestas = GestorPersistencia.convertirJsonArray(usuario.get("idRespuestas").getAsJsonArray());
+
+                Usuario u = new Usuario(name, pass);
+                
+                //guardar idEncuestasCreadas, idRespuestas
+                return u;
+            }
+        }
+
+        throw new IllegalArgumentException("El usuario con nombre: " + nom + " no existe");
     }
 
     /**
@@ -97,10 +123,5 @@ public class CtrlPersistenciaUsuario {
         }
     }
 
-    /**
-     * Crea directorio DATA si no existe.
-     */
-    private void crearDirectorio() {
-        new File("DATA").mkdirs();
-    }
+   
 }
