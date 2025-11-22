@@ -1,6 +1,5 @@
 package persistence;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 import domain.Usuario;
 import domain.Encuesta;
@@ -409,7 +408,6 @@ public class GestorPersistencia {
         }
         respuestas.put(id, r);
     }
-
 
     /**
      * Guarda una nueva respuesta en el sistema.
