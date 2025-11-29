@@ -43,7 +43,7 @@ public class GestorPersistenciaUsuario {
         usuarios = new LinkedHashMap<>(CACHE_LIMIT, 2.0f, true);
 
         // Inicializar controladores de disco
-        ctrlUsuario = new CtrlPersistenciaUsuario();
+        ctrlFicheroUsuario = new CtrlPersistenciaUsuario();
     }
 
     // ==================== MÉTODOS DE USUARIO ====================
@@ -88,7 +88,7 @@ public class GestorPersistenciaUsuario {
         
         //Return arraylist
         return ctrlFicheroUsuario.getUsuarios();
-        
+
     }
 
     /**
@@ -125,9 +125,10 @@ public class GestorPersistenciaUsuario {
      * @param u Usuario a actualizar
      */
     public void actualizarUsuario(Usuario u) {
-        if (!usuarios.containsKey(u.getNomUsuario())) usuarios.sacarUsuarioFichero(nom);
+        String nom = u.getNomUsuario();
+        if (!usuarios.containsKey(nom)) usuarios.sacarUsuarioFichero(nom);
         
-        usuarios.put(u.getNomUsuario(), u); //sobre escribe
+        usuarios.put(nom, u); //sobre escribe
 
         ctrlFicheroUsuario.actualizarUsuario(u);
     }
