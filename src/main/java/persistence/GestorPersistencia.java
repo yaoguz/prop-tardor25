@@ -368,7 +368,53 @@ public class GestorPersistencia {
     }
 
     /**
+     * Obtiene todas las respuestas de una encuesta específica.
+     * 
+     * ESTRUCTURA DE PERSISTENCIA:
+     * - Cada respuesta es un archivo JSON individual
+     * - Ubicación: data/encuestas/[idEncuesta]/[idRespuesta].json
+     * - Ejemplo: data/encuestas/1/1.json, data/encuestas/1/2.json, etc.
+     * 
+     * IMPLEMENTACIÓN CON ARCHIVOS JSON:
+     * 1. Listar archivos en data/encuestas/[idEncuesta]/
+     * 2. Filtrar solo archivos numéricos (*.json excepto encuesta.json)
+     * 3. Leer y deserializar cada archivo de respuesta
+     * 4. Retornar lista completa
+     * 
+     * VENTAJA: Cada respuesta es independiente, fácil de añadir/eliminar/modificar
+     * 
+     * @param idEncuesta ID de la encuesta
+     * @return Lista con todas las respuestas de la encuesta
+     */
+    public ArrayList<Respuesta> getRespuestasEncuesta(int idEncuesta) {                 ////////////////// nuevo
+        // TODO: En implementación real con archivos JSON:
+        // Path dirEncuesta = Paths.get("data/encuestas/" + idEncuesta);
+        // List<Path> archivosRespuesta = Files.list(dirEncuesta)
+        //     .filter(p -> p.getFileName().toString().matches("\\d+\\.json"))
+        //     .collect(Collectors.toList());
+        // 
+        // Para cada archivo: leer JSON → deserializar según tipo → añadir a lista
+        
+        ArrayList<Respuesta> resultado = new ArrayList<>();
+        for (Respuesta r : respuestas.values()) {
+            // Obtener la pregunta para saber a qué encuesta pertenece
+            Pregunta p = preguntas.get(r.getIdPregunta());
+            if (p != null && p.getIdEncuesta() == idEncuesta) {
+                resultado.add(r);
+            }
+        }
+        return resultado;
+    }
+
+    /**
      * Obtiene una respuesta por su ID.
+     * 
+     * ESTRUCTURA DE PERSISTENCIA:                                 ////////////////// comentario nuevo
+     * - Archivo: data/encuestas/[idEncuesta]/[idRespuesta].json
+     * - Requiere conocer idEncuesta para construir la ruta
+     * 
+     * NOTA: Para obtener respuesta individual sin conocer idEncuesta,
+     * usar getRespuestasEncuesta() y filtrar, o mantener índice en memoria.
      * 
      * @param id ID de la respuesta
      * @return Respuesta correspondiente, o null si no existe
