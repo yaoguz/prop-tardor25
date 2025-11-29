@@ -72,26 +72,26 @@ public class VistaResponderEncuesta extends ComponenteBase {
 		panelPrincipal.setBackground(COLOR_BG);
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		// Barra de navegación
-		BarraNavegacion barra = new BarraNavegacion(nombreUsuario);
-        barra.setOnCerrarSesion(e -> {
-            ctrlPresentacion.cerrarSesion();
-            frame.dispose();
-            ctrlPresentacion.mostrarLogin();
-        });
-        barra.setOnCambiarContrasena(e -> {
-            String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:", "Cambiar Contraseña", JOptionPane.PLAIN_MESSAGE);
-            if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
-                try {
-                    ctrlPresentacion.cambiarContrasena(nuevaPass);
-                    JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-        barra.setOnSalir(e -> salir());
-        panelPrincipal.add(barra.getPanel(), BorderLayout.NORTH);		// Título
+		// // Barra de navegación
+		// BarraNavegacion barra = new BarraNavegacion(nombreUsuario);
+        // barra.setOnCerrarSesion(e -> {
+        //     ctrlPresentacion.cerrarSesion();
+        //     frame.dispose();
+        //     ctrlPresentacion.mostrarLogin();
+        // });
+        // barra.setOnCambiarContrasena(e -> {
+        //     String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:", "Cambiar Contraseña", JOptionPane.PLAIN_MESSAGE);
+        //     if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
+        //         try {
+        //             ctrlPresentacion.cambiarContrasena(nuevaPass);
+        //             JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        //         } catch (Exception ex) {
+        //             JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        //         }
+        //     }
+        // });
+        // barra.setOnSalir(e -> salir());
+        // panelPrincipal.add(barra.getPanel(), BorderLayout.NORTH);		// Título
 		String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
 		JLabel lblTitulo = createStyledLabel(titulo, FONT_TITLE);
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);

@@ -1,10 +1,13 @@
 package domaincontrollers;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import domain.Encuesta;
 import domain.Pregunta;
 import domain.Respuesta;
 import persistence.GestorPersistencia;
@@ -121,6 +124,7 @@ public class CtrlDominio {
 		ctrlDominioUsuario.modificarContrasena(newContrasena);
 	}
 
+	
 	/**
 	 * Obtiene los IDs de las encuestas respondidas por el usuario actualmente en sesión.
 	 * 
@@ -192,11 +196,26 @@ public class CtrlDominio {
 	// Delega en CtrlDominioEncuesta
 	
 	/**
+	 * Obtiene los IDs de todas las encuestas
+	 * 
+	 * @return Lista de IDs de encuestas 
+	 */
+	public List<Integer> getIdEncuestas() {
+		List<Integer> list = new ArrayList<>();
+		HashMap<Integer, Encuesta> map = new HashMap<>();
+		map = ctrlDominioEncuesta.getAllEncuestas();
+		for (int idE : map.keySet()) {
+			list.add(idE);
+		}
+		return list;
+	}
+	
+	/**
 	 * Obtiene los IDs de las preguntas de una encuesta.
 	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @return Lista de IDs de preguntas
-	 */
+	*/
 	public List<Integer> getIdPreguntasEncuesta(int idEncuesta) {
 		return ctrlDominioEncuesta.getIdPreguntasEncuesta(idEncuesta);
 	}
@@ -236,6 +255,26 @@ public class CtrlDominio {
 		return ctrlDominioEncuesta.importarEncuesta(fichero);
 	}
 	
+	/**
+	 * Retorna el título de la encuesta.
+	 *  @param idE id de la encuesta
+	 * @return titulo de la encuesta
+	 */
+	public String getTituloEncuesta(int idE) {
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idE);
+		return e.getTitulo();
+	}
+
+	/**
+	 * Retorna el autor de la encuesta.
+	 * @param idE id de la encuesta
+	 * @return creador de la encuesta
+	 */
+	public String getAutorEncuesta(int idE) {
+		Encuesta e = ctrlDominioEncuesta.getEncuesta(idE);
+		return e.getIdCreador();
+	}
+
 	/**
 	 * Modifica el título de una encuesta.
 	 * 
@@ -419,4 +458,5 @@ public class CtrlDominio {
 	public String obtenerRepresentantePerfil(domain.algorithm.estructuras.Perfil perfil) {
 		return ctrlDominioPerfil.obtenerRepresentantePerfil(perfil);
 	}
+
 }

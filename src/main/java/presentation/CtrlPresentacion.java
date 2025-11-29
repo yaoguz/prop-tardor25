@@ -108,8 +108,13 @@ public class CtrlPresentacion {
 	 * @param idEncuesta ID de encuesta
 	 */
 	public void mostrarResponderEncuesta(String nombreUsuario, int idEncuesta) {
-		// Placeholder: Vista no implementada en esta ubicación
-		javax.swing.JOptionPane.showMessageDialog(null, "Vista Responder Encuesta pendiente");
+		VistaResponderEncuesta vista = new VistaResponderEncuesta(this, nombreUsuario, idEncuesta);
+		vista.mostrar();
+	}
+
+	public void mostrarModificarResponderEncuesta(String nombreUsuario, int idEncuesta) {
+		VistaModificarRespuestaEncuesta vista = new VistaModificarRespuestaEncuesta(this, nombreUsuario, idEncuesta);
+		vista.mostrar();
 	}
 
 	/**
@@ -235,7 +240,7 @@ public class CtrlPresentacion {
 	public List<Integer> obtenerTodasEncuestas() {
 		// Implementación placeholder - en real se obtendría del dominio
 		List<Integer> result = new ArrayList<>();
-		// TODO: Obtener de CtrlDominio cuando esté disponible
+		result = ctrlDominio.getIdEncuestas();
 		return result;
 	}
 
@@ -267,7 +272,7 @@ public class CtrlPresentacion {
 	 */
 	public String obtenerTituloEncuesta(int idEncuesta) {
 		// Placeholder
-		return "Encuesta " + idEncuesta;
+		return ctrlDominio.getTituloEncuesta(idEncuesta);
 	}
 
 	/**
@@ -278,7 +283,7 @@ public class CtrlPresentacion {
 	 */
 	public String obtenerAutorEncuesta(int idEncuesta) {
 		// Placeholder
-		return "usuario" + (idEncuesta % 3);
+		return ctrlDominio.getAutorEncuesta(idEncuesta);
 	}
 
 	// ==================== PREGUNTAS ====================

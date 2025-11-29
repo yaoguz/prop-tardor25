@@ -294,7 +294,13 @@ public class VistaListaEncuestas extends ComponenteBase {
         JButton btnResponder = respondida ? 
             createStyledButton("Modificar respuesta", COLOR_WARNING) :
             createStyledButton("Responder", COLOR_SUCCESS);
-        btnResponder.addActionListener(e -> responderEncuesta(idEncuesta));
+            
+        if (respondida) {
+            btnResponder.addActionListener(e -> modificarResponderEncuesta(idEncuesta));
+        } else {
+            btnResponder.addActionListener(e -> responderEncuesta(idEncuesta));
+        }
+        //btnResponder.addActionListener(e -> responderEncuesta(idEncuesta));
         panelBotones.add(btnResponder);
         
         p.add(panelBotones, BorderLayout.EAST);
@@ -362,6 +368,10 @@ public class VistaListaEncuestas extends ComponenteBase {
     private void responderEncuesta(int id) {
         frame.dispose();
         ctrlPresentacion.mostrarResponderEncuesta(nombreUsuario, id);
+    }
+    private void modificarResponderEncuesta(int id) {
+        frame.dispose();
+        ctrlPresentacion.mostrarModificarResponderEncuesta(nombreUsuario, id);
     }
     
     private void verRespuestas(int id) {

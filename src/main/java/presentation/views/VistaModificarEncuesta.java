@@ -237,9 +237,9 @@ public class VistaModificarEncuesta extends ComponenteBase {
         try {
             // Crear o actualizar encuesta
             if (idEncuesta == -1) {
-                // idEncuesta = ctrlPresentacion.crearEncuesta(nombreUsuario, titulo);
+                idEncuesta = ctrlPresentacion.crearEncuesta(nombreUsuario, titulo);
             } else {
-                // ctrlPresentacion.modificarTituloEncuesta(idEncuesta, titulo);
+                ctrlPresentacion.modificarTituloEncuesta(idEncuesta, titulo);
             }
             
             // Guardar preguntas
@@ -250,7 +250,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
             cambiosSinGuardar = false;
             JOptionPane.showMessageDialog(frame, "Encuesta guardada correctamente");
             frame.dispose();
-            // ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
+            ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -272,7 +272,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
             }
         }
         frame.dispose();
-        // ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
+        ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
     }
     
     public void mostrar() {
@@ -317,7 +317,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
         public void guardar(int idEncuesta) {
             String enunciado = txtEnunciado.getText().trim();
             if (!enunciado.isEmpty()) {
-                // ctrlPresentacion.anadirPreguntaLibre(idEncuesta, enunciado);
+                ctrlPresentacion.anadirPreguntaLibre(idEncuesta, enunciado);
             }
         }
     }
@@ -364,7 +364,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
             if (!enunciado.isEmpty()) {
                 double min = (Integer) spinMin.getValue();
                 double max = (Integer) spinMax.getValue();
-                // ctrlPresentacion.anadirPreguntaNumerica(idEncuesta, enunciado, min, max);
+                ctrlPresentacion.anadirPreguntaNumerica(idEncuesta, enunciado, min, max);
             }
         }
     }
@@ -437,7 +437,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 }
                 if (!opciones.isEmpty()) {
                     boolean ordenada = chkOrdenada.isSelected();
-                    // ctrlPresentacion.anadirPreguntaOpcionUnica(idEncuesta, enunciado, opciones, ordenada);
+                    ctrlPresentacion.anadirPreguntaOpcionUnica(idEncuesta, enunciado, opciones, ordenada);
                 }
             }
         }
@@ -512,7 +512,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 }
                 if (!opciones.isEmpty()) {
                     int numMax = (Integer) spinNumMax.getValue();
-                    // ctrlPresentacion.anadirPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMax);
+                    ctrlPresentacion.anadirPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMax);
                 }
             }
         }
