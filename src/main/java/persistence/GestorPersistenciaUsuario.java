@@ -85,8 +85,10 @@ public class GestorPersistenciaUsuario {
     * @return una lista con todos los usuarios existentes
     */
     public ArrayList<Usuario> getUsuarios() {
-        // ???
-        return new ArrayList<>(usuarios.values());
+        
+        //Return arraylist
+        return ctrlFicheroUsuario.getUsuarios();
+        
     }
 
     /**
