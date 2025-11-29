@@ -264,24 +264,37 @@ public class CtrlDominioUsuario {
 	}
 
 	/**
-	 * Obtiene las respuestas que ha respondido el usuario nomUsuario en la encuesta idEncuesta
+	 * Obtiene las respuestas que ha respondido el usuario nomUsuario en la encuesta idEncuesta.
+	 * 
+	 * ESTRUCTURA DE PERSISTENCIA:                                              /////////////////////// cambios
+	 * - Cada respuesta: data/encuestas/[idEncuesta]/[idRespuesta].json
+	 * - Todas las respuestas de la encuesta en la misma carpeta
+	 * 
+	 * OPTIMIZACIÓN: Con getRespuestasEncuesta(idEncuesta):
+	 * - Lee todos los archivos de la carpeta de la encuesta
+	 * - Filtra en memoria por nomUsuario (muy rápido)
+	 * - Complejidad: O(M) donde M = número de respuestas de la encuesta
+	 * 
+	 * vs acceder a cada idRespuesta individualmente:
+	 * - Requeriría K accesos a disco donde K = |usuario.idRespuestas|
 	 * 
 	 * @param nomUsuario Nombre del usuario
 	 * @param idEncuesta ID de la encuesta
 	 * @return Lista de las respuestas respondidas por el usuario en esta encuesta
-	 * @throws IllegalArgumentException si el usuario no ha respondido la encuesta
+	 * @throws IllegalArgumentException si el usuario no existe o no ha respondido la encuesta
 	 */
 	public List<Respuesta> getRespuestasEncuesta(String nomUsuario, int idEncuesta) {
-		Usuario u = getUsuario(nomUsuario);
-		ArrayList<Integer> idRespuestas = u.getIdRespuestas();
+		// validar que el usuario existe
+		getUsuario(nomUsuario);
 		
+		// optimizacion: obtener todas las respuestas de la encuesta de una vez
+		// en persistencia: lee carpeta data/encuestas/{idEncuesta}/*.json
+		ArrayList<Respuesta> todasRespuestas = gestor.getRespuestasEncuesta(idEncuesta);
+		
+		// filtrar por usuario
 		ArrayList<Respuesta> respuestas = new ArrayList<>();
-												
-		// por cada respuesta, mirar si coincide el idEncuesta
-		for (Integer idR : idRespuestas) {
-			Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
-			Pregunta p = ctrlDominioPregunta.getPregunta(r.getIdPregunta());
-			if (p.getIdEncuesta() == idEncuesta) respuestas.add(r);
+		for (Respuesta r : todasRespuestas) {
+			if (r.getNomUsuario().equals(nomUsuario)) respuestas.add(r);
 		}
 
 		if (respuestas.isEmpty()) {

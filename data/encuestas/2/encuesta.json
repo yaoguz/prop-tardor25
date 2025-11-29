@@ -1,0 +1,32 @@
+{
+  "id": 2,
+  "titulo": "Preferencias de Ocio y Entretenimiento",
+  "autor": "juan",
+  "fechaCreacion": "2025-11-18",
+  "preguntas": [
+    {
+      "idPregunta": 5,
+      "tipo": "opcion_unica",
+      "enunciado": "¿Qué género de películas prefieres?",
+      "opciones": ["Acción", "Comedia", "Drama", "Ciencia Ficción", "Terror", "Romance"],
+      "ordenada": false,
+      "idRespuestas": [41, 42, 43, 44, 45, 46, 47, 48]
+    },
+    {
+      "idPregunta": 6,
+      "tipo": "numerica",
+      "enunciado": "¿Cuántas horas a la semana dedicas a hobbies?",
+      "rangoInf": 0,
+      "rangoSup": 50,
+      "idRespuestas": [49, 50, 51, 52, 53, 54, 55, 56]
+    },
+    {
+      "idPregunta": 7,
+      "tipo": "opcion_multiple",
+      "enunciado": "¿Qué actividades de ocio realizas regularmente? (máximo 4)",
+      "opciones": ["Leer", "Videojuegos", "Deportes", "Música", "Cocinar", "Viajar", "Fotografía", "Arte"],
+      "numMaxOpc": 4,
+      "idRespuestas": [57, 58, 59, 60, 61, 62, 63, 64]
+    }
+  ]
+}

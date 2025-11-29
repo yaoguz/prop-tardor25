@@ -1,0 +1,11 @@
+{
+  "idRespuesta": 29,
+  "idPregunta": 3,
+  "nomUsuario": "isabel",
+  "tipo": "opcion_multiple",
+  "respuesta": [
+    1,
+    4,
+    5
+  ]
+}
