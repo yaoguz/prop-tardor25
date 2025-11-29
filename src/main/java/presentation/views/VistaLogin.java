@@ -53,7 +53,6 @@ public class VistaLogin extends ComponenteBase {
     private void inicializar() {
         frame = new JFrame("Login - Encuestas");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 500);
         frame.setLocationRelativeTo(null);
         
         panel.setLayout(new GridBagLayout());
@@ -113,8 +112,10 @@ public class VistaLogin extends ComponenteBase {
         btnRegistro.addActionListener(e -> irARegistro());
         gbc.gridy = 5;
         panel.add(btnRegistro, gbc);
-        
         frame.add(panel);
+        
+        frame.pack();
+        frame.setMinimumSize(frame.getSize()); 
         
         // Enter en campos ejecuta login
         txtUsuario.addActionListener(e -> login());

@@ -51,7 +51,6 @@ public class VistaRegistro extends ComponenteBase {
     private void inicializar() {
         frame = new JFrame("Registro - Encuestas");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 550);
         frame.setLocationRelativeTo(null);
         
         panel.setLayout(new GridBagLayout());
@@ -123,6 +122,8 @@ public class VistaRegistro extends ComponenteBase {
         panel.add(btnLogin, gbc);
         
         frame.add(panel);
+        frame.pack();
+        frame.setMinimumSize(frame.getSize()); 
         
         // Enter ejecuta registro
         txtConfirm.addActionListener(e -> registrar());
