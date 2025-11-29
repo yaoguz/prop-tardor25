@@ -1,0 +1,18 @@
+{
+  "idPregunta": 8,
+  "tipo": "numerica",
+  "enunciado": "¿Cuántas horas duermes de promedio por noche?",
+  "rangoInf": 3,
+  "rangoSup": 12,
+  "idRespuestas": [
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "idPregunta": 5,
+  "tipo": "opcion_unica",
+  "enunciado": "¿Qué género de películas prefieres?",
+  "opciones": [
+    "Acción",
+    "Comedia",
+    "Drama",
+    "Ciencia Ficción",
+    "Terror",
+    "Romance"
+  ],
+  "ordenada": false,
+  "idRespuestas": [
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48
+  ]
+}

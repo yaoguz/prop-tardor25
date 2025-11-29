@@ -1,0 +1,26 @@
+{
+  "idPregunta": 7,
+  "tipo": "opcion_multiple",
+  "enunciado": "¿Qué actividades de ocio realizas regularmente? (máximo 4)",
+  "opciones": [
+    "Leer",
+    "Videojuegos",
+    "Deportes",
+    "Música",
+    "Cocinar",
+    "Viajar",
+    "Fotografía",
+    "Arte"
+  ],
+  "numMaxOpc": 4,
+  "idRespuestas": [
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64
+  ]
+}

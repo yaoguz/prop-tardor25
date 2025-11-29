@@ -1,0 +1,16 @@
+{
+  "idPregunta": 12,
+  "tipo": "numerica",
+  "enunciado": "¿Cuántas comidas principales haces al día?",
+  "rangoInf": 1,
+  "rangoSup": 6,
+  "idRespuestas": [
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107
+  ]
+}

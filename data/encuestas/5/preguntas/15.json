@@ -1,0 +1,17 @@
+{
+  "idPregunta": 15,
+  "tipo": "numerica",
+  "enunciado": "¿Cuántas horas al día usas el móvil?",
+  "rangoInf": 0,
+  "rangoSup": 18,
+  "idRespuestas": [
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "idPregunta": 6,
+  "tipo": "numerica",
+  "enunciado": "¿Cuántas horas a la semana dedicas a hobbies?",
+  "rangoInf": 0,
+  "rangoSup": 50,
+  "idRespuestas": [
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56
+  ]
+}

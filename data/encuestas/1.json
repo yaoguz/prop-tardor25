@@ -1,0 +1,11 @@
+{
+  "idEncuesta": 1,
+  "titulo": "Hábitos de Estudio Universitarios",
+  "creador": "maria",
+  "IdPreguntas": [
+    1,
+    2,
+    3,
+    4
+  ]
+}

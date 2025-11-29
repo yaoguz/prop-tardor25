@@ -1,0 +1,11 @@
+{
+  "idEncuesta": 3,
+  "titulo": "Salud y Bienestar Personal",
+  "creador": "maria",
+  "IdPreguntas": [
+    8,
+    9,
+    10,
+    11
+  ]
+}

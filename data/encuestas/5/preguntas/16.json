@@ -1,0 +1,26 @@
+{
+  "idPregunta": 16,
+  "tipo": "opcion_multiple",
+  "enunciado": "¿Qué redes sociales utilizas? (máximo 5)",
+  "opciones": [
+    "Instagram",
+    "Twitter",
+    "Facebook",
+    "TikTok",
+    "LinkedIn",
+    "YouTube",
+    "WhatsApp",
+    "Telegram"
+  ],
+  "numMaxOpc": 5,
+  "idRespuestas": [
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137
+  ]
+}

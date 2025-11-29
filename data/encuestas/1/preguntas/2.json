@@ -1,0 +1,24 @@
+{
+  "idPregunta": 2,
+  "tipo": "opcion_unica",
+  "enunciado": "¿En qué momento del día estudias mejor?",
+  "opciones": [
+    "Mañana",
+    "Tarde",
+    "Noche",
+    "Madrugada"
+  ],
+  "ordenada": false,
+  "idRespuestas": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ]
+}
