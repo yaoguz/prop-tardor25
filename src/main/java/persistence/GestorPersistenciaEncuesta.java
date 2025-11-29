@@ -43,7 +43,11 @@ public class GestorPersistenciaEncuesta {
 
     private GestorPersistenciaEncuesta() {
         // Inicializar LinkedHashMaps con accessOrder=true para tracking LRU
-        encuestas = new LinkedHashMap<>(CACHE_LIMIT, 2.0f, true);
+        encuestas = new LinkedHashMap<>(CACHE_LIMIT, 2.0f, true){
+            protected boolean removeEldestEntry(Map.Entry eldest){
+                return size() > CACHE_LIMIT;
+            }
+        };
 
         // Inicializar controladores de disco
         ctrlFicheroEncuesta = new CtrlPersistenciaEncuesta();
@@ -76,7 +80,7 @@ public class GestorPersistenciaEncuesta {
         }
 
         ctrlFicheroEncuesta.guardarEncuesta(e);
-        if (encuestas.size() == CACHE_LIMIT) espacioCache(encuestas);
+      
         encuestas.put(id, e);
     }
 

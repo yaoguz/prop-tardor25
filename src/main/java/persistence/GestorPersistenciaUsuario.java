@@ -40,7 +40,11 @@ public class GestorPersistenciaUsuario {
 
     private GestorPersistenciaUsuario() {
         // Inicializar LinkedHashMaps con accessOrder=true para tracking LRU
-        usuarios = new LinkedHashMap<>(CACHE_LIMIT, 2.0f, true);
+        usuarios = new LinkedHashMap<>(CACHE_LIMIT, 2.0f, true) {
+            protected boolean removeEldestEntry(Map.Entry eldest){
+                return size() > CACHE_LIMIT;
+            }
+        };
 
         // Inicializar controladores de disco
         ctrlFicheroUsuario = new CtrlPersistenciaUsuario();
@@ -73,8 +77,7 @@ public class GestorPersistenciaUsuario {
         }
 
         ctrlFicheroUsuario.guardarUsuario(nom);
-
-        if (usuarios.size() == CACHE_LIMIT) espacioCache(usuarios);
+        
         usuarios.put(nom, u);
     
     }
