@@ -25,18 +25,147 @@ import java.util.*;
  * - cargarTodas(): Lee todas las encuestas del disco
  * - guardar(): Escribe mapa completo de encuestas a disco
  * 
- * @author PROP Cluster XX
+ * @author Alessandro Jin
  */
 public class CtrlPersistenciaEncuesta {
-    private static final String FILE = "DATA/encuestas.json";
+
     private final Gson gson;
 
     /**
      * Crea controlador de persistencia de encuestas.
      */
     public CtrlPersistenciaEncuesta() {
-        this.gson = new Gson();
-        crearDirectorio();
+
+        //lo pone bonito cuando escribe
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
+    }
+
+    public int getNextId () {
+        
+        String FILE = "data/nextId.json";
+
+        try (FileReader reader = new FileReader(FILE)) {
+
+            JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+
+            return jsonObject.get("nextIdEncuesta").getAsInt();
+        }
+
+        catch (Exception e) {
+            throw new RuntimeException("Error leyendo el archivo JSON", e);
+        }
+    }
+
+    public Encuesta getEncuesta(int id) {
+
+        String FILE = "data/encuestas/" + id + "/encuesta.json";
+
+        try (FileReader reader = new FileReader(FILE)) {
+
+            JsonObject encuesta = JsonParser.parseReader(reader).getAsJsonObject();
+
+            int idEncuesta = encuesta.get("id").getAsInt();
+            String titulo = encuesta.get("titulo").getAsString();
+            String creador = encuesta.get("creador").getAsString();
+
+            JsonArray listaPreguntas = encuesta.getAsJsonArray("preguntas");
+            
+            
+            Encuesta e = new Encuesta(idEncuesta, titulo, creador);
+
+           
+            for (JsonElement elemento : listaPreguntas) {
+                
+                JsonObject preguntaObj = elemento.getAsJsonObject();
+                
+                int idP = preguntaObj.get("idPregunta").getAsInt();
+                
+                e.guardarPregunta(idP);
+            }
+
+            return e;
+
+        }
+
+        catch(Exception e) {
+            throw new RuntimeException("Error leyendo el archivo JSON", e);
+        }
+    }
+
+    public ArrayList<Encuesta> getEncuestas() {
+
+        File carpetaRaiz = new File("data/encuestas");
+
+        File[] subcarpetas = carpetaRaiz.listFiles(File::isDirectory);
+
+        if (subcarpetas != null) {
+
+            ArrayList<Encuesta> encuestas = new ArrayList<>();
+
+            for (File carpeta: subcarpetas) {
+                
+                try{
+                    String carpetaName = carpeta.getName();
+
+                    int id = Integer.parseInt(carpetaName);
+
+                    encuestas.add(getEncuesta(id));
+                }
+
+                catch(Exception e) {
+                    throw new RuntimeException("Error el nombre de la carpeta no es un número válido", e);
+                }
+            }
+
+            return encuestas;
+        }
+
+        else return null;
+
+    }
+
+
+    public void guardarEncuesta(Encuesta e) {
+
+        int newid = e.getIdEncuesta();
+
+        File carpetaRaiz = new File("data/encuestas");
+
+        File[] subcarpetas = carpetaRaiz.listFiles(File::isDirectory);
+
+        if (subcarpetas != null) {
+
+            for (File carpeta: subcarpetas) {
+                
+                try{
+                    String carpetaName = carpeta.getName();
+
+                    int id = Integer.parseInt(carpetaName);
+
+                    if (newid == id) throw new IllegalArgumentException("La encuesta con id: "+ id + " ya existe");
+                }
+
+                catch(Exception e) {
+                    throw new RuntimeException("Error el nombre de la carpeta no es un número válido", e);
+                }
+            }
+
+        }
+
+        String rutaCarpeta = "data/encuestas/" + newid;
+
+        File directorio = new File(rutaCarpeta);
+
+        File archivoJson = new File(directorio, "encuesta.json");
+
+        try (FileWriter writer = new FileWriter(archivoJson)) {
+        
+            gson.toJson(e, writer); // ?????
+
+        } 
+        catch (IOException e) {
+            throw new RuntimeException("Error al guardar el archivo JSON", e);
+        }
     }
 
     /**
@@ -97,10 +226,5 @@ public class CtrlPersistenciaEncuesta {
         }
     }
 
-    /**
-     * Crea directorio DATA si no existe.
-     */
-    private void crearDirectorio() {
-        new File("DATA").mkdirs();
-    }
+
 }

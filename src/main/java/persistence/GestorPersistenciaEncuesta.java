@@ -52,7 +52,7 @@ public class GestorPersistenciaEncuesta {
         // Inicializar controladores de disco
         ctrlFicheroEncuesta = new CtrlPersistenciaEncuesta();
 
-        nextIdEncuesta = ctrlFicheroEncuesta.getId();
+        nextIdEncuesta = ctrlFicheroEncuesta.getNextId();
     }
 
     // ==================== MÉTODOS DE ENCUESTA ====================
