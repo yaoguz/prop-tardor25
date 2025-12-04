@@ -28,11 +28,13 @@ import java.util.*;
  * - cargarTodas(): Lee todas las preguntas del disco
  * - guardar(): Escribe mapa completo de preguntas a disco
  * 
- * @author PROP Cluster XX
+ * @author Denis Roca
  */
 public class CtrlPersistenciaPregunta {
-    private static final String FILE = "DATA/preguntas.json";
+    private static final carpeta = "data/encuestas";
     private final Gson gson;
+    
+    private final CtrlPersistenciaPreguta singletonInstance;
 
     /**
      * Crea controlador de persistencia de preguntas con deserializador custom.
@@ -41,7 +43,18 @@ public class CtrlPersistenciaPregunta {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(Pregunta.class, new PreguntaDeserializer());
         this.gson = builder.create();
-        crearDirectorio();
+    }
+
+    /**
+     * Obtiene la instancia única del controlador (patrón singleton).
+     * 
+     * @return Instancia única de CtrlPersistenciaPregunta
+     */
+    public static CtrlPersistenciaPregunta getInstance() {
+        if (singletonInstance == null) {
+            singletonInstance = new CtrlPersistenciaPregunta();
+        }
+        return singletonInstance;
     }
 
     /**
@@ -50,15 +63,33 @@ public class CtrlPersistenciaPregunta {
      * @param id ID de la pregunta
      * @return Pregunta encontrada, o null si no existe
      */
-    public Pregunta cargarPregunta(int id) {
-        Map<Integer, Pregunta> todas = cargarTodas();
-        return todas.get(id);
+    public Pregunta getPregunta(int id) {
+    	File carpetaRaiz = new File(carpeta);
+    	File[] jsonFiles = carpetaRaiz.listFiles(file -> file.isFile() && file.getName()..endsWith(".json"));
+    	int idEncuesta = -1;
+    	try{
+    		for(File f : jsonFiles){
+    			FileReader reader = new FileReader(f);
+    			JsonObject encuesta = JsonParser.parseReader(reader).getAsJsonObject();
+    			JsonArray listaPreguntas = encuesta.getAsJsonArray("preguntas");
+    			for (JsonElement pregunta : listaPreguntas){
+    				if(pregunta.getAsInt() == id) idEncuesta = encuesta.get("id").getAsInt();
+    				break;
+    			}
+    			if(idEncuesta != -1) break;
+            }
+        } catch(Exception e) {
+            throw new RuntimeException("Fichero no válido", e);
+        }
+    	if(idEncuesta == -1) throw new IllegalArgumentException("No existe la pregunta");
+    	File carpetaPreguntas = new File(carpeta + "/" + idEncuesta + "/preguntas/" + id + ".json");
+		// por acabar <---------------------------------------------------------------------------
     }
 
     /**
      * Carga todas las preguntas desde disco.
      * 
-     * @return Mapa de ID → Pregunta (vacío si archivo no existe)
+     * @return Mapa de <ID,Pregunta> (vacío si archivo no existe)
      */
     public Map<Integer, Pregunta> cargarTodas() {
         File f = new File(FILE);
@@ -84,7 +115,7 @@ public class CtrlPersistenciaPregunta {
     /**
      * Guarda el mapa completo de preguntas a disco.
      * 
-     * @param preguntas Mapa de ID → Pregunta
+     * @param preguntas Mapa de <ID,Pregunta>
      */
     public void guardar(Map<Integer, Pregunta> preguntas) {
         JsonObject root = new JsonObject();
@@ -131,9 +162,9 @@ public class CtrlPersistenciaPregunta {
     /**
      * Crea directorio DATA si no existe.
      */
-    private void crearDirectorio() {
-        new File("DATA").mkdirs();
-    }
+    //private void crearDirectorio() {
+    //    new File("DATA").mkdirs();
+    //}
 
     /**
      * Deserializador custom para jerarquía de Pregunta.
