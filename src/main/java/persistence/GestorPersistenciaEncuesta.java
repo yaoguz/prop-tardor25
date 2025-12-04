@@ -3,8 +3,8 @@ package persistence;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.List;
 import domain.Encuesta;
+import domain.Respuesta;
 
 /**
  * Cache del Encuesta
@@ -21,7 +21,7 @@ public class GestorPersistenciaEncuesta {
     private static final int CACHE_LIMIT = 64;
 
     // Cache con LinkedHashMap (accessOrder=true para LRU tracking)
-    private final LinkedHashMap<String, Encuesta> encuestas;
+    private final LinkedHashMap<Integer, Encuesta> encuestas;
 
     // Controlador de persistencia usuario en disco
     private final CtrlPersistenciaEncuesta ctrlFicheroEncuesta;
@@ -44,7 +44,7 @@ public class GestorPersistenciaEncuesta {
     private GestorPersistenciaEncuesta() {
         // Inicializar LinkedHashMaps con accessOrder=true para tracking LRU
         encuestas = new LinkedHashMap<>(CACHE_LIMIT, 2.0f, true){
-            protected boolean removeEldestEntry(Map.Entry eldest){
+            protected boolean removeEldestEntry(Map.Entry<Integer, Encuesta> eldest){
                 return size() > CACHE_LIMIT;
             }
         };
@@ -115,10 +115,9 @@ public class GestorPersistenciaEncuesta {
         if (!encuestas.containsKey(id)) {
             try {
                  sacarEncuestaFichero(id);
-            }
-            
+            }            
             catch (Exception e) {
-                return false,
+                return false;
             }
            
         }
@@ -159,6 +158,6 @@ public class GestorPersistenciaEncuesta {
      */
     public void eliminarEncuesta(int id) {
         if (encuestas.containsKey(id)) encuestas.remove(id);
-        ctrlFicheroEncuesta.eliminarEncuesta(e);
+        ctrlFicheroEncuesta.eliminarEncuesta(id);
     }
 }
