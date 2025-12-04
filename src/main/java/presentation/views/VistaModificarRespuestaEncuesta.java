@@ -168,12 +168,12 @@ public class VistaModificarRespuestaEncuesta extends ComponenteBase {
     private void guardarRespuestas() {
         try {
             // validar
-            for (Map.Entry<Integer, PanelRespuesta> entry : paneles.entrySet()) {
-                if (!entry.getValue().tieneRespuesta()) {
-                    JOptionPane.showMessageDialog(frame, "Por favor, responde todas las preguntas", "Validación", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            }
+            // for (Map.Entry<Integer, PanelRespuesta> entry : paneles.entrySet()) {
+            //     if (!entry.getValue().tieneRespuesta()) {
+            //         JOptionPane.showMessageDialog(frame, "Por favor, responde todas las preguntas", "Validación", JOptionPane.WARNING_MESSAGE);
+            //         return;
+            //     }
+            // }
 
             // Guardar: si el panel tiene idRespuesta existente, modificar; si no, crear nueva
             for (Map.Entry<Integer, PanelRespuesta> entry : paneles.entrySet()) {

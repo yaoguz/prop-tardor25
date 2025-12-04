@@ -183,7 +183,16 @@ public class VistaResponderEncuesta extends ComponenteBase {
 			for (Map.Entry<Integer, PanelRespuesta> entry : paneles.entrySet()) {
 				int idPregunta = entry.getKey();
 				Object respuesta = entry.getValue().getRespuesta();
-				ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, respuesta);
+				//ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, respuesta);
+				if (respuesta instanceof List) {
+					@SuppressWarnings("unchecked")
+					List<Integer> list = (List<Integer>) respuesta;
+					int[] arr = new int[list.size()];
+					for (int i = 0; i < list.size(); i++) arr[i] = list.get(i);
+					ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, arr);
+				} else {
+					ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, respuesta);
+				}
 			}
 
 			JOptionPane.showMessageDialog(frame, "Respuestas guardadas correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
