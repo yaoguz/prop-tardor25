@@ -203,7 +203,7 @@ public class VistaVerRespuestas extends ComponenteBase {
 		for (Map.Entry<Pregunta, Set<Respuesta>> entry : respuestas.entrySet()) {
 			JPanel panelPregunta = crearPanelPregunta(entry.getKey(), entry.getValue());
 			panelContenido.add(panelPregunta);
-			panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
+			//panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
 		}
 	}
 
@@ -224,7 +224,7 @@ public class VistaVerRespuestas extends ComponenteBase {
 		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
 		// Título: nombre de usuario
-		JLabel lblUsuario = createStyledLabel("👤 " + usuario, FONT_SUBTITLE);
+		JLabel lblUsuario = createStyledLabel("Usuario: " + usuario, FONT_SUBTITLE);
 		panel.add(lblUsuario, BorderLayout.NORTH);
 
 		// Respuestas
@@ -265,7 +265,7 @@ public class VistaVerRespuestas extends ComponenteBase {
 		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
 		// Enunciado de pregunta
-		JLabel lblPregunta = createStyledLabel("❓ " + pregunta.getEnunciado(), FONT_SUBTITLE);
+		JLabel lblPregunta = createStyledLabel("Pregunta: " + pregunta.getEnunciado(), FONT_SUBTITLE);
 		panel.add(lblPregunta, BorderLayout.NORTH);
 
 		// Respuestas
