@@ -66,8 +66,8 @@ public class GestorPersistenciaPregunta {
     *
     * @return Lista con todas las preguntas existentes
     */
-    public ArrayList<Pregunta> getPreguntas() {
-        return ctrlFicheroPregunta.getAll();
+    public ArrayList<Pregunta> getAllPreguntas() {
+        return ctrlFicheroPregunta.getAllPreguntas();
     }
 
     /**
@@ -98,6 +98,17 @@ public class GestorPersistenciaPregunta {
 
         return p;
     }
+    
+    /**
+     * Obtiene todas las preguntas de la encuesta indicada.
+     * 
+     * @param idEncuesta identificador de la encuesta cuyas preguntas queremos obtener
+     * @return Lista de preguntas que tiene la encuesta
+     * @throws IllegalArgumentException si la encuesta especificada no existe
+     */
+    public ArrayList<Pregunta> getPreguntasEncuesta(int idEncuesta) throws IllegalArgumentException {
+    	return ctrlFicheroPregunta.getPreguntasEncuesta();
+    }
 
     /**
      * Verifica si existe una pregunta con el ID dado.
@@ -107,8 +118,11 @@ public class GestorPersistenciaPregunta {
      */
     public boolean existePregunta(int id) {
         if(!preguntas.containsKey(id)){
-            if(!CtrlPersistenciaPregunta.existePregunta(id)) return false;
-            sacarPreguntaFichero(id);
+            try{
+                sacarPreguntaFichero(id);
+            } catch(Exception e){
+                return false;
+            }
         }
         return true;
     }
@@ -119,11 +133,12 @@ public class GestorPersistenciaPregunta {
     * @param p Pregunta a guardar
     * @throws IllegalArgumentException si ya existe una pregunta con el mismo id
     */
-    public void guardarPregunta(Pregunta p) {
-        Integer id = p.getIdPregunta();
+    public void guardarPregunta(Pregunta p) throws IllegalArgumentException {
+        int id = p.getIdPregunta();
         if (preguntas.containsKey(id)) {
             throw new IllegalArgumentException("La pregunta con id: " + id + " ya existe");
         }
+        ctrlFicheroPregunta.guardar(p);
         preguntas.put(id, p);
     }
 
@@ -134,6 +149,7 @@ public class GestorPersistenciaPregunta {
      */
     public void actualizarPregunta(Pregunta p) {
         preguntas.put(p.getIdPregunta(), p);
+        ctrlFicheroPregunta.sobreescribe(p);
     }
 
     /**
