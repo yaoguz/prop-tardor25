@@ -47,7 +47,7 @@ public class CtrlDominioEncuesta {
 	private CtrlDominioPregunta ctrlDominioPregunta;
 	
 	/** Controlador de respuestas (inyección de dependencia) */
-	private CtrlDominioRespuesta ctrlDominioRespuesta;
+	private CtrlDominioRespuesta ctrlDominioRespuesta;                   // pnd de quitar
 	
 	/** Controlador de usuarios (inyección de dependencia) */
 	private CtrlDominioUsuario ctrlDominioUsuario;

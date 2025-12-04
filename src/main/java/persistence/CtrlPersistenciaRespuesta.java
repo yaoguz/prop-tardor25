@@ -3,166 +3,231 @@ package persistence;
 import com.google.gson.*;
 import domain.*;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.*;
+
+
+// pnd revisar
 
 /**
  * Controlador de persistencia de respuestas en disco.
  * 
- * Gestiona la lectura y escritura de respuestas en formato JSON, incluyendo
- * el manejo de la jerarquía polimórfica de respuestas (Libre, Numerica,
- * OpcionUnica, OpcionMultiple).
- * No mantiene cache interna - la cache es gestionada por GestorPersistencia.
+ * Gestiona la lectura y escritura de respuestas en formato JSON.
+ * Cada respuesta se almacena en data/encuestas/{idEncuesta}/respuestas/{idRespuesta}.json
  * 
- * RESPONSABILIDADES:
- * - Cargar respuestas desde archivo JSON con deserialización polimórfica
- * - Guardar respuestas a archivo JSON con información de tipo
- * - Gestionar operaciones I/O con disco
- * 
- * ATRIBUTOS PRINCIPALES:
- * - FILE: Ruta del archivo JSON
- * - gson: Serializador/deserializador JSON con custom deserializer
- * 
- * MÉTODOS PRINCIPALES:
- * - cargarRespuesta(): Lee una respuesta específica del disco
- * - cargarTodas(): Lee todas las respuestas del disco
- * - guardar(): Escribe mapa completo de respuestas a disco
- * 
- * @author PROP Cluster XX
+ * @author Yaoyao Guo
  */
 public class CtrlPersistenciaRespuesta {
-    private static final String FILE = "DATA/respuestas.json";
+
     private final Gson gson;
 
-    /**
-     * Crea controlador de persistencia de respuestas con deserializador custom.
-     */
     public CtrlPersistenciaRespuesta() {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Respuesta.class, new RespuestaDeserializer());
-        this.gson = builder.create();
-        crearDirectorio();
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     /**
-     * Carga una respuesta específica desde disco.
+     * Obtiene una respuesta desde disco.
      * 
-     * @param id ID de la respuesta
-     * @return Respuesta encontrada, o null si no existe
+     * @param idRespuesta ID de la respuesta
+     * @param idEncuesta ID de la encuesta a la que pertenece
+     * @return Respuesta encontrada
+     * @throws IllegalArgumentException si la respuesta no existe
      */
-    public Respuesta cargarRespuesta(int id) {
-        Map<Integer, Respuesta> todas = cargarTodas();
-        return todas.get(id);
-    }
+    public Respuesta getRespuesta(int idRespuesta, int idEncuesta) {
+        String FILE = "data/encuestas/" + idEncuesta + "/respuestas/" + idRespuesta + ".json";
 
-    /**
-     * Carga todas las respuestas desde disco.
-     * 
-     * @return Mapa de ID → Respuesta (vacío si archivo no existe)
-     */
-    public Map<Integer, Respuesta> cargarTodas() {
-        File f = new File(FILE);
-        if (!f.exists()) return new HashMap<>();
-        
-        try (FileReader r = new FileReader(f)) {
-            JsonObject root = JsonParser.parseReader(r).getAsJsonObject();
-            if (!root.has("respuestas")) return new HashMap<>();
-            
-            JsonObject respuestasObj = root.getAsJsonObject("respuestas");
-            Map<Integer, Respuesta> result = new HashMap<>();
-            
-            for (Map.Entry<String, JsonElement> entry : respuestasObj.entrySet()) {
-                Respuesta resp = gson.fromJson(entry.getValue(), Respuesta.class);
-                result.put(Integer.parseInt(entry.getKey()), resp);
-            }
-            return result;
-        } catch (IOException e) {
-            return new HashMap<>();
-        }
-    }
+        try (FileReader reader = new FileReader(FILE)) {
+            JsonObject obj = JsonParser.parseReader(reader).getAsJsonObject();
 
-    /**
-     * Guarda el mapa completo de respuestas a disco.
-     * 
-     * @param respuestas Mapa de ID → Respuesta
-     */
-    public void guardar(Map<Integer, Respuesta> respuestas) {
-        JsonObject root = new JsonObject();
-        JsonObject respuestasObj = new JsonObject();
-        
-        for (Map.Entry<Integer, Respuesta> e : respuestas.entrySet()) {
-            Respuesta r = e.getValue();
-            JsonObject rObj = new JsonObject();
-            rObj.addProperty("id", r.getId());
-            rObj.addProperty("nomUsuario", r.getNomUsuario());
-            rObj.addProperty("idPregunta", r.getIdPregunta());
-            
-            // Serialización polimórfica con tipo
-            if (r instanceof RespuestaLibre) {
-                rObj.addProperty("tipo", "libre");
-                rObj.addProperty("texto", ((RespuestaLibre) r).getRespuesta());
-            } else if (r instanceof RespuestaNumerica) {
-                rObj.addProperty("tipo", "numerica");
-                rObj.addProperty("valor", ((RespuestaNumerica) r).getRespuesta());
-            } else if (r instanceof RespuestaOpcionUnica) {
-                rObj.addProperty("tipo", "opcion_unica");
-                rObj.addProperty("indice", ((RespuestaOpcionUnica) r).getRespuesta());
-            } else if (r instanceof RespuestaOpcionMultiple) {
-                rObj.addProperty("tipo", "opcion_multiple");
-                rObj.add("indices", gson.toJsonTree(((RespuestaOpcionMultiple) r).getRespuesta()));
-            }
-            
-            respuestasObj.add(String.valueOf(e.getKey()), rObj);
-        }
-        root.add("respuestas", respuestasObj);
-        
-        try (FileWriter w = new FileWriter(FILE)) {
-            gson.toJson(root, w);
-        } catch (IOException e) {
-            throw new RuntimeException("Error guardando respuestas: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Crea directorio DATA si no existe.
-     */
-    private void crearDirectorio() {
-        new File("DATA").mkdirs();
-    }
-
-    /**
-     * Deserializador custom para jerarquía de Respuesta.
-     */
-    private static class RespuestaDeserializer implements JsonDeserializer<Respuesta> {
-        @Override
-        public Respuesta deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
-            JsonObject obj = json.getAsJsonObject();
-            int id = obj.get("id").getAsInt();
-            String nomUsuario = obj.get("nomUsuario").getAsString();
+            int id = obj.get("idRespuesta").getAsInt();
             int idPregunta = obj.get("idPregunta").getAsInt();
+            String nomUsuario = obj.get("nomUsuario").getAsString();
             String tipo = obj.get("tipo").getAsString();
-            
+            JsonElement respuestaElem = obj.get("respuesta");
+
             switch (tipo) {
-                case "libre":
-                    return new RespuestaLibre(id, nomUsuario, idPregunta, 
-                        obj.get("texto").getAsString());
                 case "numerica":
-                    return new RespuestaNumerica(id, nomUsuario, idPregunta,
-                        obj.get("valor").getAsDouble());
+                    double valor = respuestaElem.getAsDouble();
+                    return new RespuestaNumerica(id, nomUsuario, idPregunta, valor);
+                
+                case "libre":
+                    String texto = respuestaElem.getAsString();
+                    return new RespuestaLibre(id, nomUsuario, idPregunta, texto);
+                
                 case "opcion_unica":
-                    return new RespuestaOpcionUnica(id, nomUsuario, idPregunta,
-                        obj.get("indice").getAsInt());
+                    int indice = respuestaElem.getAsInt();
+                    return new RespuestaOpcionUnica(id, nomUsuario, idPregunta, indice);
+                
                 case "opcion_multiple":
-                    JsonArray indicesArray = obj.getAsJsonArray("indices");
-                    int[] indices = new int[indicesArray.size()];
-                    for (int i = 0; i < indicesArray.size(); i++) {
-                        indices[i] = indicesArray.get(i).getAsInt();
+                    JsonArray arr = respuestaElem.getAsJsonArray();
+                    int[] indices = new int[arr.size()];
+                    for (int i = 0; i < arr.size(); i++) {
+                        indices[i] = arr.get(i).getAsInt();
                     }
                     return new RespuestaOpcionMultiple(id, nomUsuario, idPregunta, indices);
+                
                 default:
-                    throw new JsonParseException("Tipo respuesta desconocido: " + tipo);
+                    throw new IllegalArgumentException("Tipo de respuesta desconocido: " + tipo);
             }
+        }
+        catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("La respuesta " + idRespuesta + " no existe");
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Error leyendo respuesta " + idRespuesta, e);
+        }
+    }
+
+    /**
+     * Obtiene todas las respuestas del sistema.
+     * 
+     * @return Lista con todas las respuestas
+     */
+    public ArrayList<Respuesta> getAllRespuestas() {
+        ArrayList<Respuesta> respuestas = new ArrayList<>();
+        File carpetaEncuestas = new File("data/encuestas");
+        
+        File[] directoriosEncuestas = carpetaEncuestas.listFiles(File::isDirectory);
+        if (directoriosEncuestas == null) return respuestas;
+        
+        for (File dirEncuesta : directoriosEncuestas) {
+            try {
+                int idEncuesta = Integer.parseInt(dirEncuesta.getName());
+                File carpetaRespuestas = new File(dirEncuesta, "respuestas");
+                
+                if (!carpetaRespuestas.exists()) continue;
+                
+                File[] archivos = carpetaRespuestas.listFiles((dir, name) -> name.endsWith(".json"));
+                if (archivos == null) continue;
+                
+                for (File archivo : archivos) {
+                    int idRespuesta = Integer.parseInt(archivo.getName().replace(".json", ""));
+                    respuestas.add(getRespuesta(idRespuesta, idEncuesta));
+                }
+            }
+            catch (NumberFormatException e) {
+                continue;
+            }
+        }
+        
+        return respuestas;
+    }
+
+    /**
+     * Guarda una nueva respuesta en disco.
+     * 
+     * @param r Respuesta a guardar
+     * @param idEncuesta ID de la encuesta a la que pertenece
+     * @throws IllegalArgumentException si la respuesta ya existe
+     */
+    public void guardarRespuesta(Respuesta r, int idEncuesta) {
+        int id = r.getId();
+        String rutaCarpeta = "data/encuestas/" + idEncuesta + "/respuestas";
+        File carpeta = new File(rutaCarpeta);
+        
+        if (!carpeta.exists()) carpeta.mkdirs();
+        
+        File archivo = new File(carpeta, id + ".json");
+        if (archivo.exists()) {
+            throw new IllegalArgumentException("La respuesta " + id + " ya existe");
+        }
+
+        try (FileWriter writer = new FileWriter(archivo)) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("idRespuesta", r.getId());
+            obj.addProperty("idPregunta", r.getIdPregunta());
+            obj.addProperty("nomUsuario", r.getNomUsuario());
+            obj.addProperty("tipo", r.getTipo());
+            
+            Object respuesta = r.getRespuesta();
+            if (respuesta instanceof int[]) {
+                JsonArray arr = new JsonArray();
+                for (int i : (int[]) respuesta) {
+                    arr.add(i);
+                }
+                obj.add("respuesta", arr);
+            } else if (respuesta instanceof Double) {
+                obj.addProperty("respuesta", (Double) respuesta);
+            } else if (respuesta instanceof Integer) {
+                obj.addProperty("respuesta", (Integer) respuesta);
+            } else if (respuesta instanceof String) {
+                obj.addProperty("respuesta", (String) respuesta);
+            }
+            
+            gson.toJson(obj, writer);
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Error guardando respuesta " + id, e);
+        }
+    }
+
+    /**
+     * Verifica si existe una respuesta.
+     * 
+     * @param idRespuesta ID de la respuesta
+     * @param idEncuesta ID de la encuesta
+     * @return true si existe
+     */
+    public boolean existeRespuesta(int idRespuesta, int idEncuesta) {
+        File archivo = new File("data/encuestas/" + idEncuesta + "/respuestas", idRespuesta + ".json");
+        return archivo.exists();
+    }
+
+    /**
+     * Actualiza una respuesta existente.
+     * 
+     * @param r Respuesta a actualizar
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si la respuesta no existe
+     */
+    public void actualizarRespuesta(Respuesta r, int idEncuesta) {
+        int id = r.getId();
+        File archivo = new File("data/encuestas/" + idEncuesta + "/respuestas", id + ".json");
+        
+        if (!archivo.exists()) {
+            throw new IllegalArgumentException("La respuesta " + id + " no existe");
+        }
+
+        try (FileWriter writer = new FileWriter(archivo)) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("idRespuesta", r.getId());
+            obj.addProperty("idPregunta", r.getIdPregunta());
+            obj.addProperty("nomUsuario", r.getNomUsuario());
+            obj.addProperty("tipo", r.getTipo());
+            
+            Object respuesta = r.getRespuesta();
+            if (respuesta instanceof int[]) {
+                JsonArray arr = new JsonArray();
+                for (int i : (int[]) respuesta) {
+                    arr.add(i);
+                }
+                obj.add("respuesta", arr);
+            } else if (respuesta instanceof Double) {
+                obj.addProperty("respuesta", (Double) respuesta);
+            } else if (respuesta instanceof Integer) {
+                obj.addProperty("respuesta", (Integer) respuesta);
+            } else if (respuesta instanceof String) {
+                obj.addProperty("respuesta", (String) respuesta);
+            }
+            
+            gson.toJson(obj, writer);
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Error actualizando respuesta " + id, e);
+        }
+    }
+
+    /**
+     * Elimina una respuesta del disco.
+     * 
+     * @param idRespuesta ID de la respuesta
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si la respuesta no existe
+     */
+    public void eliminarRespuesta(int idRespuesta, int idEncuesta) {
+        File archivo = new File("data/encuestas/" + idEncuesta + "/respuestas", idRespuesta + ".json");
+        
+        if (!archivo.delete()) {
+            throw new IllegalArgumentException("No existe la respuesta " + idRespuesta);
         }
     }
 }
