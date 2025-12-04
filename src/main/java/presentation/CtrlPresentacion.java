@@ -186,7 +186,10 @@ public class CtrlPresentacion {
 	 * 
 	 * @param nuevaContrasena Nueva contraseña
 	 */
-	public void cambiarContrasena(String nuevaContrasena) {
+	public void cambiarContrasena(String nuevaContrasena, String confirmacion) {
+		if(nuevaContrasena != confirmacion) {
+			throw new IllegalArgumentException("La confirmación no coincide con la nueva contraseña.");
+		}
 		ctrlDominio.modificarContrasena(nuevaContrasena);
 	}
 

@@ -83,12 +83,24 @@ public class VistaListaEncuestas extends ComponenteBase {
         panel.setLayout(new BorderLayout(0, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // Barra de navegación
-        BarraNavegacion barra = new BarraNavegacion(nombreUsuario);
-        barra.setOnCerrarSesion(e -> cerrarSesion());
-        barra.setOnCambiarContrasena(e -> cambiarContrasena());
-        barra.setOnSalir(e -> confirmarSalida());
-        panel.add(barra.getPanel(), BorderLayout.NORTH);
+      
+        
+        JLabel lblUsuario = createStyledLabel(nombreUsuario + " ", FONT_NORMAL);
+        
+        // Icono de menú (⋮ o ≡) - click abre popup
+        JButton btnMenu = new JButton("⋮");
+        btnMenu.setFont(new Font("Arial", Font.BOLD, 16));
+        btnMenu.setBackground(COLOR_PRIMARY);
+        btnMenu.setForeground(Color.WHITE);
+        btnMenu.setFocusPainted(false);
+        btnMenu.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        btnMenu.setPreferredSize(new Dimension(40, 35));
+        
+        btnMenu.addActionListener(e -> mostrarMenuUsuario(btnMenu));
+        JPanel panelUsuario = new JPanel();
+        panelUsuario.setBackground(COLOR_BG);
+        panelUsuario.add(lblUsuario);
+        panelUsuario.add(btnMenu);
         
         // Panel de controles (buscador, filtros, crear)
         JPanel panelControles = new JPanel();
@@ -118,8 +130,8 @@ public class VistaListaEncuestas extends ComponenteBase {
         panelBuscar.add(txtBuscar);
         panelBuscar.add(btnBuscar);
         panelBuscar.add(btnVerTodas);
-        panelBuscar.add(Box.createHorizontalGlue());
         panelBuscar.add(btnCrear);
+        panelBuscar.add(panelUsuario);
         
         // Segunda fila: Filtros
         JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
@@ -384,9 +396,10 @@ public class VistaListaEncuestas extends ComponenteBase {
     
     private void cambiarContrasena() {
         String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:");
+        String confirmacion = JOptionPane.showInputDialog(frame, "Confirmar contraseña:");
         if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
             try {
-                ctrlPresentacion.cambiarContrasena(nuevaPass);
+                ctrlPresentacion.cambiarContrasena(nuevaPass, confirmacion);
                 JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -415,6 +428,25 @@ public class VistaListaEncuestas extends ComponenteBase {
         if (opcion == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
+    }
+
+    /**
+     * Muestra menú de usuario al hacer clic en el icono.
+     */
+    private void mostrarMenuUsuario(JButton btnMenu) {
+        JPopupMenu menu = new JPopupMenu();
+        
+        JMenuItem itemCambiarPass = new JMenuItem("Cambiar contraseña");
+        itemCambiarPass.addActionListener(e -> cambiarContrasena());
+        
+        JMenuItem itemCerrarSesion = new JMenuItem("Cerrar sesión");
+        itemCerrarSesion.addActionListener(e -> cerrarSesion());
+        
+        menu.add(itemCambiarPass);
+        menu.addSeparator();
+        menu.add(itemCerrarSesion);
+        
+        menu.show(btnMenu, 0, btnMenu.getHeight());
     }
     
     /**
