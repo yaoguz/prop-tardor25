@@ -50,7 +50,7 @@ public class GestorPersistenciaEncuesta {
         };
 
         // Inicializar controladores de disco
-        ctrlFicheroEncuesta = new CtrlPersistenciaEncuesta();
+        ctrlFicheroEncuesta = CtrlPersistenciaEncuesta.getInstance();
 
         nextIdEncuesta = ctrlFicheroEncuesta.getNextId();
     }
@@ -63,7 +63,7 @@ public class GestorPersistenciaEncuesta {
     Encuesta sacarEncuestaFichero(int id) {
 
         Encuesta e = ctrlFicheroEncuesta.getEncuesta(id);
-        encuesta.guardarEncuesta(e);
+        encuestas.put(id, e);
         return e;
     }
 
@@ -89,8 +89,8 @@ public class GestorPersistenciaEncuesta {
     *
     * @return Lista con todas las encuestas existentes
     */
-    public ArrayList<Encuesta> getEncuestas() {
-        return ctrlFicheroEncuesta.getEncuestas();
+    public ArrayList<Encuesta> getAllEncuestas() {
+        return ctrlFicheroEncuesta.getAllEncuestas();
     }
 
     /**
@@ -113,8 +113,14 @@ public class GestorPersistenciaEncuesta {
      */
     public boolean existeEncuesta(int id) {
         if (!encuestas.containsKey(id)) {
-            if (!ctrlFicheroEncuesta.existeEncuesta(id)) return false;
-            encuestas.sacarEncuestaFichero(id);
+            try {
+                 sacarEncuestaFichero(id);
+            }
+            
+            catch (Exception e) {
+                return false,
+            }
+           
         }
         return true;
     }
@@ -138,23 +144,11 @@ public class GestorPersistenciaEncuesta {
      */
     public void actualizarEncuesta(Encuesta e) {
         int id = e.getIdEncuesta();
-        if (!encuestas.containsKey(id)) encuestas.sacarEncuestaFichero(id);
+        if (!encuestas.containsKey(id)) sacarEncuestaFichero(id);
         
         encuestas.put(id, e); //sobre escribe
 
         ctrlFicheroEncuesta.actualizarEncuesta(e);
-    }
-
-    /**
-    * Elimina una encuesta por el objeto Encuesta.
-    *
-    * @param e Encuesta a eliminar
-    * @throws IllegalArgumentException si la encuesta no existe
-    */
-    public void eliminarEncuesta(Encuesta e) {
-        Integer id = e.getIdEncuesta();
-        if(encuestas.containsKey(id)) encuestas.remove(id);
-        ctrlFicheroEncuesta.eliminarEncuesta(e);
     }
 
     /**

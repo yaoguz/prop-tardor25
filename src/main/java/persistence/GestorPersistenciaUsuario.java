@@ -58,7 +58,7 @@ public class GestorPersistenciaUsuario {
     Usuario sacarUsuarioFichero(String nom) {
 
         Usuario u = ctrlFicheroUsuario.getUsuario(nom);
-        usuarios.guardarUsuario(u);
+        usuarios.put(nom, u);
 
         return u;
     }
@@ -76,7 +76,7 @@ public class GestorPersistenciaUsuario {
             throw new IllegalArgumentException("El usuario con nom: " + nom + " ya existe");
         }
 
-        ctrlFicheroUsuario.guardarUsuario(nom);
+        ctrlFicheroUsuario.guardarUsuario(u);
         
         usuarios.put(nom, u);
     
@@ -87,10 +87,10 @@ public class GestorPersistenciaUsuario {
     *
     * @return una lista con todos los usuarios existentes
     */
-    public ArrayList<Usuario> getUsuarios() {
+    public ArrayList<Usuario> getAllUsuarios() {
         
         //Return arraylist
-        return ctrlFicheroUsuario.getUsuarios();
+        return ctrlFicheroUsuario.getAllUsuarios();
 
     }
 
@@ -116,8 +116,14 @@ public class GestorPersistenciaUsuario {
      */
     public boolean existeUsuario(String nom) {
         if (!usuarios.containsKey(nom)) {
-            if (!ctrlFicheroUsuario.existeUsuario(nom)) return false;
-            usuarios.sacarUsuarioFichero(nom);
+            try{
+                sacarUsuarioFichero(nom);
+            }
+
+            catch (Exception e) {
+                return false,
+            }
+            
         }
         return true;
     }
@@ -129,23 +135,11 @@ public class GestorPersistenciaUsuario {
      */
     public void actualizarUsuario(Usuario u) {
         String nom = u.getNomUsuario();
-        if (!usuarios.containsKey(nom)) usuarios.sacarUsuarioFichero(nom);
+        if (!usuarios.containsKey(nom)) sacarUsuarioFichero(nom);
         
         usuarios.put(nom, u); //sobre escribe
 
         ctrlFicheroUsuario.actualizarUsuario(u);
-    }
-
-    /**
-    * Elimina un usuario por el objeto Usuario.
-    *
-    * @param u Usuario a eliminar
-    * @throws IllegalArgumentException si el usuario no existe
-    */
-    public void eliminarUsuario(Usuario u) {
-        String name = u.getNomUsuario();
-        if(usuarios.containsKey(name)) usuarios.remove(name);
-        ctrlFicheroUsuario.eliminarUsuario(u);
     }
 
     /**
