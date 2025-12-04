@@ -166,7 +166,7 @@ public class VistaVerRespuestas extends ComponenteBase {
 				respuestasPorUsuario.putIfAbsent(usuario, new LinkedHashMap<>());
 				respuestasPorUsuario.get(usuario).put(
 					pregunta.getEnunciado(),
-					formatearRespuesta(respuesta)
+					formatearRespuesta(respuesta,pregunta)
 				);
 			}
 		}
@@ -215,38 +215,41 @@ public class VistaVerRespuestas extends ComponenteBase {
 	 * @return Panel configurado
 	 */
 	private JPanel crearPanelUsuario(String usuario, Map<String, String> respuestas) {
-		JPanel panel = new JPanel(new BorderLayout(10, 10));
-		panel.setBackground(Color.WHITE);
-		panel.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
-			BorderFactory.createEmptyBorder(15, 15, 15, 15)
-		));
-		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
-		// Título: nombre de usuario
-		JLabel lblUsuario = createStyledLabel("Usuario: " + usuario, FONT_SUBTITLE);
-		panel.add(lblUsuario, BorderLayout.NORTH);
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setBackground(Color.WHITE);
+    panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+    ));
 
-		// Respuestas
-		JPanel panelRespuestas = new JPanel();
-		panelRespuestas.setLayout(new BoxLayout(panelRespuestas, BoxLayout.Y_AXIS));
-		panelRespuestas.setBackground(Color.WHITE);
-		panelRespuestas.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 0));
+    panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		for (Map.Entry<String, String> entry : respuestas.entrySet()) {
-			JLabel lblPregunta = createStyledLabel("• " + entry.getKey(), FONT_NORMAL);
-			lblPregunta.setForeground(new Color(80, 80, 80));
-			panelRespuestas.add(lblPregunta);
+    // Título
+    JLabel lblUsuario = createStyledLabel("Usuario: " + usuario, FONT_SUBTITLE);
+    lblUsuario.setAlignmentX(Component.LEFT_ALIGNMENT);
+    panel.add(lblUsuario);
+    panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-			JLabel lblRespuesta = createStyledLabel("  → " + entry.getValue(), FONT_NORMAL);
-			lblRespuesta.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-			panelRespuestas.add(lblRespuesta);
-		}
+    // Respuestas
+    for (Map.Entry<String, String> entry : respuestas.entrySet()) {
+        JLabel lblPregunta = createStyledLabel("• " + entry.getKey(), FONT_NORMAL);
+        lblPregunta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(lblPregunta);
 
-		panel.add(panelRespuestas, BorderLayout.CENTER);
+        JLabel lblRespuesta = createStyledLabel("  → " + entry.getValue(), FONT_NORMAL);
+        lblRespuesta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(lblRespuesta);
 
-		return panel;
-	}
+        panel.add(Box.createRigidArea(new Dimension(0, 8)));
+    }
+
+    panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
+
+    return panel;
+}
+
 
 	/**
 	 * Crea panel para mostrar respuestas de una pregunta.
@@ -256,35 +259,49 @@ public class VistaVerRespuestas extends ComponenteBase {
 	 * @return Panel configurado
 	 */
 	private JPanel crearPanelPregunta(Pregunta pregunta, Set<Respuesta> respuestas) {
-		JPanel panel = new JPanel(new BorderLayout(10, 10));
-		panel.setBackground(Color.WHITE);
-		panel.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
-			BorderFactory.createEmptyBorder(15, 15, 15, 15)
-		));
-		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
-		// Enunciado de pregunta
-		JLabel lblPregunta = createStyledLabel("Pregunta: " + pregunta.getEnunciado(), FONT_SUBTITLE);
-		panel.add(lblPregunta, BorderLayout.NORTH);
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setBackground(Color.WHITE);
+    panel.setBorder(BorderFactory.createCompoundBorder(
+        BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
+        BorderFactory.createEmptyBorder(15, 15, 15, 15)
+    ));
 
-		// Respuestas
-		JPanel panelRespuestas = new JPanel();
-		panelRespuestas.setLayout(new BoxLayout(panelRespuestas, BoxLayout.Y_AXIS));
-		panelRespuestas.setBackground(Color.WHITE);
-		panelRespuestas.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 0));
+    
+    panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		for (Respuesta respuesta : respuestas) {
-			String texto = "• " + respuesta.getNomUsuario() + ": " + formatearRespuesta(respuesta);
-			JLabel lblRespuesta = createStyledLabel(texto, FONT_NORMAL);
-			lblRespuesta.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-			panelRespuestas.add(lblRespuesta);
-		}
+    // Enunciado
+    JLabel lblPregunta = createStyledLabel("Pregunta: " + pregunta.getEnunciado(), FONT_SUBTITLE);
+	lblPregunta.setAlignmentX(Component.LEFT_ALIGNMENT);
+    panel.add(lblPregunta);
+	panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		panel.add(panelRespuestas, BorderLayout.CENTER);
+    // Panel de respuestas
+    JPanel panelRespuestas = new JPanel();
+    panelRespuestas.setLayout(new BoxLayout(panelRespuestas, BoxLayout.Y_AXIS));
+    panelRespuestas.setBackground(Color.WHITE);
+    panelRespuestas.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 0));
 
-		return panel;
-	}
+    for (Respuesta respuesta : respuestas) {
+        String texto = "• " + respuesta.getNomUsuario() + ": " + formatearRespuesta(respuesta, pregunta);
+        JLabel lblRespuesta = createStyledLabel(texto, FONT_NORMAL);
+
+        // un poco de espacio
+        lblRespuesta.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+        lblRespuesta.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panelRespuestas.add(lblRespuesta);
+    }
+
+    panel.add(panelRespuestas);
+	panel.add(Box.createRigidArea(new Dimension(0, 8)));
+
+	panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
+
+    return panel;
+}
+
 
 	/**
 	 * Formatea una respuesta para mostrarla.
@@ -292,24 +309,25 @@ public class VistaVerRespuestas extends ComponenteBase {
 	 * @param respuesta Respuesta
 	 * @return Texto formateado
 	 */
-	private String formatearRespuesta(Respuesta respuesta) {
+	private String formatearRespuesta(Respuesta respuesta, Pregunta pregunta) {
 		if (respuesta instanceof RespuestaLibre) {
 			return ((RespuestaLibre) respuesta).getRespuesta();
-		} else if (respuesta instanceof RespuestaNumerica) {
+		} 
+		else if (respuesta instanceof RespuestaNumerica) {
 			return String.valueOf(((RespuestaNumerica) respuesta).getRespuesta());
-		} else if (respuesta instanceof RespuestaOpcionUnica) {
+		} 
+		else if (respuesta instanceof RespuestaOpcionUnica) {
 			int opcionIdx = ((RespuestaOpcionUnica) respuesta).getRespuesta();
-			return "Opción " + (opcionIdx + 1);
-		} else if (respuesta instanceof RespuestaOpcionMultiple) {
+			ArrayList<String> opciones = ((PreguntaOpcionUnica) pregunta).getOpciones();
+			//if (opcionIdx < 0 || opcionIdx >= opciones.size()) return "Opción inválida";
+			String textoOpcion = opciones.get(opcionIdx);
+			return " Opción " + (opcionIdx + 1) + ": " + textoOpcion;
+		} 
+		else if (respuesta instanceof RespuestaOpcionMultiple) {
 			int[] opcionesArray = ((RespuestaOpcionMultiple) respuesta).getRespuesta();
-		List<Integer> opciones = new ArrayList<>();
-		for (int op : opcionesArray) opciones.add(op);
-			StringBuilder sb = new StringBuilder("Opciones: ");
-			for (int i = 0; i < opciones.size(); i++) {
-				sb.append(opciones.get(i) + 1);
-				if (i < opciones.size() - 1) sb.append(", ");
-			}
-			return sb.toString();
+			List<String> enunciado = new ArrayList<>();
+			for (int op : opcionesArray) enunciado.add(pregunta.getOpciones().get(op));
+			return " Opciones: "  + String.join(", ", enunciado);
 		}
 		return "N/A";
 	}
