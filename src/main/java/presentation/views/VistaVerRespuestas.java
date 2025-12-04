@@ -60,33 +60,27 @@ public class VistaVerRespuestas extends ComponenteBase {
 		JPanel panelPrincipal = new JPanel(new BorderLayout(0, 10));
 		panelPrincipal.setBackground(COLOR_BG);
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		// Barra de navegación
-		BarraNavegacion barra = new BarraNavegacion(nombreUsuario);
-        barra.setOnCerrarSesion(e -> {
-            ctrlPresentacion.cerrarSesion();
-            frame.dispose();
-            ctrlPresentacion.mostrarLogin();
-        });
-        barra.setOnCambiarContrasena(e -> {
-            String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:", "Cambiar Contraseña", JOptionPane.PLAIN_MESSAGE);
-            if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
-                try {
-                    ctrlPresentacion.cambiarContrasena(nuevaPass);
-                    JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-        barra.setOnSalir(e -> frame.dispose());
-        panelPrincipal.add(barra.getPanel(), BorderLayout.NORTH);		// Panel superior: título + toggle
-		JPanel panelSuperior = new JPanel(new BorderLayout(10, 10));
-		panelSuperior.setBackground(COLOR_BG);
 		
+		
+		// Header: fila superior con botón "Salir" y debajo el título + toggle
+		JPanel panelTop = new JPanel();
+		panelTop.setLayout(new BoxLayout(panelTop, BoxLayout.Y_AXIS));
+		panelTop.setBackground(COLOR_BG);
+
+		// Fila 1: botón salir a la izquierda
+		JPanel filaSalir = new JPanel(new BorderLayout());
+		filaSalir.setBackground(COLOR_BG);
+		JButton btnSalir = createStyledButton("← Salir", COLOR_SECONDARY);
+		btnSalir.addActionListener(e -> salir());
+		filaSalir.add(btnSalir, BorderLayout.WEST);
+		panelTop.add(filaSalir);
+
+		// Fila 2: título a la izquierda y toggle a la derecha
+		JPanel filaTitulo = new JPanel(new BorderLayout(10, 10));
+		filaTitulo.setBackground(COLOR_BG);
 		String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
 		JLabel lblTitulo = createStyledLabel("Respuestas: " + titulo, FONT_TITLE);
-		panelSuperior.add(lblTitulo, BorderLayout.WEST);
+		filaTitulo.add(lblTitulo, BorderLayout.WEST);
 
 		// Toggle para cambiar vista
 		JToggleButton toggleVista = new JToggleButton("Por Usuario");
@@ -100,9 +94,10 @@ public class VistaVerRespuestas extends ComponenteBase {
 			toggleVista.setText(vistaPorUsuario ? "Por Usuario" : "Por Pregunta");
 			actualizarVista();
 		});
-		panelSuperior.add(toggleVista, BorderLayout.EAST);
-		
-		panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
+		filaTitulo.add(toggleVista, BorderLayout.EAST);
+		panelTop.add(filaTitulo);
+        
+		panelPrincipal.add(panelTop, BorderLayout.NORTH);
 
 		// Panel de contenido (scrollable)
 		panelContenido = new JPanel();
@@ -114,14 +109,15 @@ public class VistaVerRespuestas extends ComponenteBase {
 		scrollContenido.getVerticalScrollBar().setUnitIncrement(16);
 		panelPrincipal.add(scrollContenido, BorderLayout.CENTER);
 
-		// Botón volver
-		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		panelBotones.setBackground(COLOR_BG);
-		JButton btnVolver = createStyledButton("Volver", COLOR_PRIMARY);
-		btnVolver.addActionListener(e -> frame.dispose());
-		panelBotones.add(btnVolver);
-		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
+		// // Botón volver
+		// JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		// panelBotones.setBackground(COLOR_BG);
+		// JButton btnVolver = createStyledButton("Volver", COLOR_PRIMARY);
+		// btnVolver.addActionListener(e -> frame.dispose());
+		// panelBotones.add(btnVolver);
+		// panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
 
+		
 		frame.add(panelPrincipal);
 		
 		// Cargar respuestas inicialmente
@@ -129,6 +125,14 @@ public class VistaVerRespuestas extends ComponenteBase {
 		
 		frame.setVisible(true);
 	}
+
+	/**
+     * Sale de la vista y vuelve a la página principal.
+     */
+    private void salir() {
+        frame.dispose();
+        ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
+    }
 
 	/**
 	 * Actualiza la vista según el modo seleccionado.

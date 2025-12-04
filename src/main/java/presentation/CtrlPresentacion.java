@@ -124,8 +124,8 @@ public class CtrlPresentacion {
 	 * @param idEncuesta ID de encuesta
 	 */
 	public void mostrarVerRespuestas(String nombreUsuario, int idEncuesta) {
-		// Placeholder: Vista no implementada en esta ubicación
-		javax.swing.JOptionPane.showMessageDialog(null, "Vista Ver Respuestas pendiente");
+		VistaVerRespuestas vista = new VistaVerRespuestas(this, nombreUsuario, idEncuesta);
+		vista.mostrar();
 	}
 
 	/**
