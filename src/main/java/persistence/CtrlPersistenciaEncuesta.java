@@ -65,7 +65,7 @@ public class CtrlPersistenciaEncuesta {
             return jsonObject.get("nextIdEncuesta").getAsInt();
         }
 
-        catch (Exception e) {
+        catch (Exception exc) {
             throw new RuntimeException("Error leyendo el archivo JSON", e);
         }
     }
@@ -73,7 +73,7 @@ public class CtrlPersistenciaEncuesta {
     public Encuesta getEncuesta(int id) {
 
         String FILE = "data/encuestas/" + id + ".json";
-        
+
         try (FileReader reader = new FileReader(FILE)) {
 
             JsonObject encuesta = JsonParser.parseReader(reader).getAsJsonObject();
@@ -99,7 +99,7 @@ public class CtrlPersistenciaEncuesta {
 
         }
 
-        catch(Exception e) {
+        catch(Exception exc) {
             throw new RuntimeException("Error leyendo el archivo JSON", e);
         }
     }
@@ -126,7 +126,7 @@ public class CtrlPersistenciaEncuesta {
                     encuestas.add(getEncuesta(id));
                 }
 
-                catch(Exception e) {
+                catch(Exception exc) {
                     throw new RuntimeException("Error el nombre de la carpeta no es un número válido", e);
                 }
             }
@@ -140,6 +140,8 @@ public class CtrlPersistenciaEncuesta {
 
 
     public void guardarEncuesta(Encuesta e) {
+        
+        int newid = e.getIdEncuesta();
 
         File archivoJson = new File("data/encuestas/", newid + ".json");
 
@@ -150,7 +152,7 @@ public class CtrlPersistenciaEncuesta {
             gson.toJson(e, writer);
 
         } 
-        catch (IOException e) {
+        catch (IOException exc) {
             throw new RuntimeException("Error al guardar el archivo JSON", e);
         }
     }
@@ -176,7 +178,7 @@ public class CtrlPersistenciaEncuesta {
             gson.toJson(e, writer);
 
         } 
-        catch (IOException e) {
+        catch (IOException exc) {
             throw new RuntimeException("Error al guardar el archivo JSON", e);
         }
 
