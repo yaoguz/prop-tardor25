@@ -3,7 +3,8 @@ package persistence;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.List;
+
+import domain.Respuesta;
 import domain.Usuario;
 
 /**
@@ -41,7 +42,7 @@ public class GestorPersistenciaUsuario {
     private GestorPersistenciaUsuario() {
         // Inicializar LinkedHashMaps con accessOrder=true para tracking LRU
         usuarios = new LinkedHashMap<>(CACHE_LIMIT, 2.0f, true) {
-            protected boolean removeEldestEntry(Map.Entry eldest){
+            protected boolean removeEldestEntry(Map.Entry<String, Usuario> eldest){
                 return size() > CACHE_LIMIT;
             }
         };
@@ -149,8 +150,8 @@ public class GestorPersistenciaUsuario {
      * @throws IllegalArgumentException si el usuario no existe
      */
     public void eliminarUsuario(String nom) {
-        if(usuarios.containsKey(name)) usuarios.remove(name);
-        ctrlFicheroUsuario.eliminarUsuario(u);
+        if(usuarios.containsKey(nom)) usuarios.remove(nom);
+        ctrlFicheroUsuario.eliminarUsuario(nom);
     }
 
 }

@@ -6,6 +6,8 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
+// pnd de hacer todo
+
 /**
  * Controlador de persistencia de respuestas en disco.
  * 
@@ -28,7 +30,7 @@ import java.util.*;
  * - cargarTodas(): Lee todas las respuestas del disco
  * - guardar(): Escribe mapa completo de respuestas a disco
  * 
- * @author PROP Cluster XX
+ * @author Yaoyao Guo
  */
 public class CtrlPersistenciaRespuesta {
     private static final String FILE = "DATA/respuestas.json";
