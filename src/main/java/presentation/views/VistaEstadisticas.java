@@ -36,6 +36,9 @@ public class VistaEstadisticas extends ComponenteBase {
 	
 	private JSpinner spinK;
 	private JComboBox<String> comboAlgoritmo;
+	private JButton btnEjecutar;
+	private JProgressBar progressBar;
+	private JLabel lblEstado;
 
 	/**
 	 * Constructor.
@@ -65,26 +68,6 @@ public class VistaEstadisticas extends ComponenteBase {
 		panelPrincipal.setBackground(COLOR_BG);
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		// Barra de navegación
-		// BarraNavegacion barra = new BarraNavegacion(nombreUsuario);
-        // barra.setOnCerrarSesion(e -> {
-        //     ctrlPresentacion.cerrarSesion();
-        //     frame.dispose();
-        //     ctrlPresentacion.mostrarLogin();
-        // });
-        // barra.setOnCambiarContrasena(e -> {
-        //     String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:", "Cambiar Contraseña", JOptionPane.PLAIN_MESSAGE);
-        //     if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
-        //         try {
-        //             ctrlPresentacion.cambiarContrasena(nuevaPass);
-        //             JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        //         } catch (Exception ex) {
-        //             JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        //         }
-        //     }
-        // });
-        // barra.setOnSalir(e -> frame.dispose());
-        // panelPrincipal.add(barra.getPanel(), BorderLayout.NORTH);		// Título
 		String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
 		JLabel lblTitulo = createStyledLabel("Estadísticas: " + titulo, FONT_TITLE);
 		panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
@@ -152,8 +135,20 @@ public class VistaEstadisticas extends ComponenteBase {
 		comboAlgoritmo.addActionListener(e -> ejecutarClustering());
 
 		// Botón ejecutar manualmente
-		JButton btnEjecutar = createStyledButton("Ejecutar Clustering", COLOR_SUCCESS);
+		btnEjecutar = createStyledButton("Ejecutar Clustering", COLOR_SUCCESS);
 		btnEjecutar.addActionListener(e -> ejecutarClustering());
+
+		// Estado / indicador
+		progressBar = new JProgressBar();
+		progressBar.setVisible(false);
+		progressBar.setIndeterminate(true);
+		progressBar.setPreferredSize(new Dimension(120, 16));
+		lblEstado = createStyledLabel("", FONT_SMALL);
+
+		JPanel estadoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+		estadoPanel.setBackground(Color.WHITE);
+		estadoPanel.add(progressBar);
+		estadoPanel.add(lblEstado);
 
 		panel.add(lblK);
 		panel.add(spinK);
@@ -162,6 +157,8 @@ public class VistaEstadisticas extends ComponenteBase {
 		panel.add(comboAlgoritmo);
 		panel.add(Box.createRigidArea(new Dimension(20, 0)));
 		panel.add(btnEjecutar);
+		panel.add(Box.createRigidArea(new Dimension(10, 0)));
+		panel.add(estadoPanel);
 
 		return panel;
 	}
@@ -172,29 +169,58 @@ public class VistaEstadisticas extends ComponenteBase {
 	private void ejecutarClustering() {
 		panelPerfiles.removeAll();
 
-		try {
-			int k = (int) spinK.getValue();
-			String algoritmo = convertirAlgoritmo((String) comboAlgoritmo.getSelectedItem());
+		// Deshabilitar controles mientras se ejecuta
+		spinK.setEnabled(false);
+		comboAlgoritmo.setEnabled(false);
+		if (btnEjecutar != null) btnEjecutar.setEnabled(false);
+		progressBar.setVisible(true);
+		lblEstado.setText("Ejecutando clustering...");
 
-			ResultadoClustering resultado = ctrlPresentacion.ejecutarClustering(idEncuesta, k, algoritmo);
-			
-			if (resultado == null || resultado.getPerfiles().isEmpty()) {
-				JLabel lblVacio = createStyledLabel("No se pudieron generar perfiles. Verifica que haya suficientes respuestas.", FONT_NORMAL);
-				lblVacio.setAlignmentX(Component.CENTER_ALIGNMENT);
-				panelPerfiles.add(lblVacio);
-			} else {
-				mostrarPerfiles(resultado.getPerfiles());
+		// Ejecutar en segundo plano para no bloquear la UI
+		SwingWorker<ResultadoClustering, Void> worker = new SwingWorker<ResultadoClustering, Void>() {
+			@Override
+			protected ResultadoClustering doInBackground() throws Exception {
+				int k = (int) spinK.getValue();
+				String algoritmo = convertirAlgoritmo((String) comboAlgoritmo.getSelectedItem());
+				return ctrlPresentacion.ejecutarClustering(idEncuesta, k, algoritmo);
 			}
 
-		} catch (Exception ex) {
-			JLabel lblError = createStyledLabel("Error: " + ex.getMessage(), FONT_NORMAL);
-			lblError.setForeground(COLOR_DANGER);
-			lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
-			panelPerfiles.add(lblError);
-		}
-
-		panelPerfiles.revalidate();
-		panelPerfiles.repaint();
+			@Override
+			protected void done() {
+				try {
+					ResultadoClustering resultado = get();
+					if (resultado == null || resultado.getPerfiles().isEmpty()) {
+						JLabel lblVacio = createStyledLabel("No se pudieron generar perfiles. Verifica que haya suficientes respuestas.", FONT_NORMAL);
+						lblVacio.setAlignmentX(Component.CENTER_ALIGNMENT);
+						panelPerfiles.add(lblVacio);
+					} else {
+						mostrarPerfiles(resultado.getPerfiles());
+					}
+				} catch (InterruptedException ie) {
+					Thread.currentThread().interrupt();
+					JLabel lblError = createStyledLabel("Ejecución interrumpida", FONT_NORMAL);
+					lblError.setForeground(COLOR_DANGER);
+					lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+					panelPerfiles.add(lblError);
+				} catch (java.util.concurrent.ExecutionException ee) {
+					String msg = (ee.getCause() != null) ? ee.getCause().getMessage() : ee.getMessage();
+					JLabel lblError = createStyledLabel("Error: " + msg, FONT_NORMAL);
+					lblError.setForeground(COLOR_DANGER);
+					lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+					panelPerfiles.add(lblError);
+				} finally {
+					// Restaurar estado de controles
+					progressBar.setVisible(false);
+					lblEstado.setText("");
+					spinK.setEnabled(true);
+					comboAlgoritmo.setEnabled(true);
+					if (btnEjecutar != null) btnEjecutar.setEnabled(true);
+					panelPerfiles.revalidate();
+					panelPerfiles.repaint();
+				}
+			}
+		};
+		worker.execute();
 	}
 
 	/**

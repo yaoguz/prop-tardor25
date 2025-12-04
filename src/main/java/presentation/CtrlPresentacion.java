@@ -135,8 +135,8 @@ public class CtrlPresentacion {
 	 * @param idEncuesta ID de encuesta
 	 */
 	public void mostrarEstadisticas(String nombreUsuario, int idEncuesta) {
-		// Placeholder: Vista no implementada en esta ubicación
-		javax.swing.JOptionPane.showMessageDialog(null, "Vista Estadísticas pendiente");
+		VistaEstadisticas vista = new VistaEstadisticas(this, nombreUsuario, idEncuesta);
+		vista.mostrar();
 	}
 
 	// ==================== DELEGACIÓN A CONTROLADOR DE DOMINIO ====================

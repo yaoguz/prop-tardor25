@@ -2,6 +2,7 @@ package presentation.views;
 
 import presentation.CtrlPresentacion;
 import presentation.components.ComponenteBase;
+import domain.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,6 +37,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
     private JTextField txtTitulo;
     private JPanel panelPreguntas;
     private List<PanelPregunta> preguntasEditables;
+    private List<PreguntaExistente> preguntasExistentes; // Preguntas ya guardadas
     private boolean cambiosSinGuardar;
     
     /**
@@ -61,6 +63,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
         this.nombreUsuario = nombreUsuario;
         this.idEncuesta = idEncuesta;
         this.preguntasEditables = new ArrayList<>();
+        this.preguntasExistentes = new ArrayList<>();
         this.cambiosSinGuardar = false;
         inicializar();
     }
@@ -217,11 +220,22 @@ public class VistaModificarEncuesta extends ComponenteBase {
      * Carga datos de encuesta existente.
      */
     private void cargarDatosEncuesta() {
-        // TODO: Cargar título y preguntas desde CtrlDominio
-        // String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
-        // txtTitulo.setText(titulo);
-        // List<Pregunta> preguntas = ctrlPresentacion.obtenerPreguntasEncuesta(idEncuesta);
-        // for (Pregunta p : preguntas) { ... }
+        try {
+            // Cargar título
+            String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
+            txtTitulo.setText(titulo);
+            
+            // Cargar preguntas existentes
+            List<Pregunta> preguntas = ctrlPresentacion.getPreguntasEncuesta(idEncuesta);
+            for (Pregunta p : preguntas) {
+                PreguntaExistente pe = new PreguntaExistente(p);
+                preguntasExistentes.add(pe);
+                panelPreguntas.add(pe.getPanel());
+                panelPreguntas.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "Error al cargar encuesta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**
@@ -242,7 +256,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 ctrlPresentacion.modificarTituloEncuesta(idEncuesta, titulo);
             }
             
-            // Guardar preguntas
+            // Guardar solo las NUEVAS preguntas (no las que ya existen)
             for (PanelPregunta pp : preguntasEditables) {
                 pp.guardar(idEncuesta);
             }
@@ -280,6 +294,109 @@ public class VistaModificarEncuesta extends ComponenteBase {
     }
     
     // ==================== CLASES INTERNAS PARA EDICIÓN DE PREGUNTAS ====================
+    
+    /**
+     * Clase para representar preguntas ya existentes en la BD.
+     */
+    private class PreguntaExistente {
+        private Pregunta pregunta;
+        private JPanel panel;
+        
+        public PreguntaExistente(Pregunta p) {
+            this.pregunta = p;
+            construirPanel();
+        }
+        
+        private void construirPanel() {
+            panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+            panel.setBorder(BorderFactory.createLineBorder(COLOR_PRIMARY, 2));
+            
+            // Panel contenido (enunciado + info específica)
+            JPanel panelContenido = new JPanel();
+            panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+            panelContenido.setBackground(Color.WHITE);
+            panelContenido.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            // Enunciado
+            JLabel lblEnunciado = createStyledLabel(pregunta.getEnunciado(), FONT_SUBTITLE);
+            panelContenido.add(lblEnunciado);
+            
+            // Información específica según tipo
+            if (pregunta instanceof PreguntaLibre) {
+                JLabel lbl = createStyledLabel("Tipo: Pregunta Libre", FONT_SMALL);
+                panelContenido.add(lbl);
+            } 
+            else if (pregunta instanceof PreguntaNumerica) {
+                PreguntaNumerica pn = (PreguntaNumerica) pregunta;
+                JLabel lbl = createStyledLabel(
+                    String.format("Tipo: Pregunta Numérica (Rango: %d a %d)", pn.getRangoInf(), pn.getRangoSup()), 
+                    FONT_SMALL
+                );
+                panelContenido.add(lbl);
+            } 
+            else if (pregunta instanceof PreguntaOpcionUnica) {
+                PreguntaOpcionUnica pou = (PreguntaOpcionUnica) pregunta;
+                String opciones = String.join(", ", pou.getOpciones());
+                JLabel lbl = createStyledLabel(
+                    String.format("Tipo: Opción Única%s - Opciones: %s", 
+                        pou.esOrdenada() ? " (Ordenada)" : "", opciones), 
+                    FONT_SMALL
+                );
+                panelContenido.add(lbl);
+            } 
+            else if (pregunta instanceof PreguntaOpcionMultiple) {
+                PreguntaOpcionMultiple pom = (PreguntaOpcionMultiple) pregunta;
+                String opciones = String.join(", ", pom.getOpciones());
+                JLabel lbl = createStyledLabel(
+                    String.format("Tipo: Opción Múltiple (Máx: %d) - Opciones: %s", 
+                        pom.getNumMaxOpc(), opciones), 
+                    FONT_SMALL
+                );
+                panelContenido.add(lbl);
+            }
+            
+            panel.add(panelContenido, BorderLayout.CENTER);
+            
+            // Botón eliminar
+            JButton btnEliminar = createStyledButton("Eliminar", COLOR_DANGER);
+            btnEliminar.setMaximumSize(new Dimension(100, 30));
+            btnEliminar.addActionListener(e -> eliminarPreguntaExistente());
+            
+            JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            panelBotones.setBackground(Color.WHITE);
+            panelBotones.add(btnEliminar);
+            
+            panel.add(panelBotones, BorderLayout.EAST);
+        }
+        
+        private void eliminarPreguntaExistente() {
+            int confirm = JOptionPane.showConfirmDialog(
+                frame,
+                "¿Eliminar esta pregunta y todas sus respuestas asociadas?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    ctrlPresentacion.eliminarPregunta(pregunta.getIdPregunta());
+                    preguntasExistentes.remove(this);
+                    panelPreguntas.remove(panel);
+                    panelPreguntas.revalidate();
+                    panelPreguntas.repaint();
+                    cambiosSinGuardar = true;
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(frame, "Error al eliminar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+        
+        public JPanel getPanel() {
+            return panel;
+        }
+    }
     
     /**
      * Interfaz común para paneles de pregunta editables.

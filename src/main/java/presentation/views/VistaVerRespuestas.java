@@ -302,7 +302,6 @@ public class VistaVerRespuestas extends ComponenteBase {
     return panel;
 }
 
-
 	/**
 	 * Formatea una respuesta para mostrarla.
 	 * 
