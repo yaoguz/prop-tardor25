@@ -94,7 +94,14 @@ public class VistaVerRespuestas extends ComponenteBase {
 			toggleVista.setText(vistaPorUsuario ? "Por Usuario" : "Por Pregunta");
 			actualizarVista();
 		});
-		filaTitulo.add(toggleVista, BorderLayout.EAST);
+		// Para evitar que el texto se corte, envolver el toggle en un panel a la derecha
+		JPanel panelToggle = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		panelToggle.setBackground(COLOR_BG);
+		// Asegurar tamaño mínimo para que el texto quepa
+		Dimension pref = toggleVista.getPreferredSize();
+		toggleVista.setPreferredSize(new Dimension(Math.max(pref.width + 20, 140), pref.height + 6));
+		panelToggle.add(toggleVista);
+		filaTitulo.add(panelToggle, BorderLayout.EAST);
 		panelTop.add(filaTitulo);
         
 		panelPrincipal.add(panelTop, BorderLayout.NORTH);

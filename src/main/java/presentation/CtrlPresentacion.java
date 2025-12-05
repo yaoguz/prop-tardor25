@@ -7,6 +7,7 @@ import presentation.views.*;
 
 import java.io.File;
 import java.util.*;
+import java.awt.Window;
 
 /**
  * Controlador de Presentación.
@@ -57,6 +58,7 @@ public class CtrlPresentacion {
 	 * Muestra vista de login.
 	 */
 	public void mostrarLogin() {
+		closeAllWindows();
 		VistaLogin vista = new VistaLogin(this);
 		vista.mostrar();
 	}
@@ -65,6 +67,7 @@ public class CtrlPresentacion {
 	 * Muestra vista de registro.
 	 */
 	public void mostrarRegistro() {
+		closeAllWindows();
 		VistaRegistro vista = new VistaRegistro(this);
 		vista.mostrar();
 	}
@@ -76,6 +79,7 @@ public class CtrlPresentacion {
 	 */
 	public void mostrarPaginaPrincipal(String nombreUsuario) {
 		this.usuarioActual = nombreUsuario;
+		closeAllWindows();
 		VistaListaEncuestas vista = new VistaListaEncuestas(this, nombreUsuario);
 		vista.mostrar();
 	}
@@ -86,6 +90,7 @@ public class CtrlPresentacion {
 	 * @param nombreUsuario Usuario creador
 	 */
 	public void mostrarCrearEncuesta(String nombreUsuario) {
+		closeAllWindows();
 		VistaModificarEncuesta vista = new VistaModificarEncuesta(this, nombreUsuario);
 		vista.mostrar();
 	}
@@ -97,6 +102,7 @@ public class CtrlPresentacion {
 	 * @param idEncuesta ID de encuesta a modificar
 	 */
 	public void mostrarModificarEncuesta(String nombreUsuario, int idEncuesta) {
+		closeAllWindows();
 		VistaModificarEncuesta vista = new VistaModificarEncuesta(this, nombreUsuario, idEncuesta);
 		vista.mostrar();
 	}
@@ -108,11 +114,13 @@ public class CtrlPresentacion {
 	 * @param idEncuesta ID de encuesta
 	 */
 	public void mostrarResponderEncuesta(String nombreUsuario, int idEncuesta) {
+		closeAllWindows();
 		VistaResponderEncuesta vista = new VistaResponderEncuesta(this, nombreUsuario, idEncuesta);
 		vista.mostrar();
 	}
 
 	public void mostrarModificarResponderEncuesta(String nombreUsuario, int idEncuesta) {
+		closeAllWindows();
 		VistaModificarRespuestaEncuesta vista = new VistaModificarRespuestaEncuesta(this, nombreUsuario, idEncuesta);
 		vista.mostrar();
 	}
@@ -124,6 +132,7 @@ public class CtrlPresentacion {
 	 * @param idEncuesta ID de encuesta
 	 */
 	public void mostrarVerRespuestas(String nombreUsuario, int idEncuesta) {
+		closeAllWindows();
 		VistaVerRespuestas vista = new VistaVerRespuestas(this, nombreUsuario, idEncuesta);
 		vista.mostrar();
 	}
@@ -135,8 +144,21 @@ public class CtrlPresentacion {
 	 * @param idEncuesta ID de encuesta
 	 */
 	public void mostrarEstadisticas(String nombreUsuario, int idEncuesta) {
+		closeAllWindows();
 		VistaEstadisticas vista = new VistaEstadisticas(this, nombreUsuario, idEncuesta);
 		vista.mostrar();
+	}
+
+	/**
+	 * Cierra todas las ventanas AWT/Swing abiertas. Usado al cambiar de vista para
+	 * evitar dejar múltiples ventanas/pestañas abiertas.
+	 */
+	private void closeAllWindows() {
+		for (Window w : Window.getWindows()) {
+			try {
+				w.dispose();
+			} catch (Exception ignored) {}
+		}
 	}
 
 	// ==================== DELEGACIÓN A CONTROLADOR DE DOMINIO ====================
@@ -187,8 +209,16 @@ public class CtrlPresentacion {
 	 * @param nuevaContrasena Nueva contraseña
 	 */
 	public void cambiarContrasena(String nuevaContrasena, String confirmacion) {
-		if(nuevaContrasena != confirmacion) {
+		// Validar nulos y coincidencia de texto correctamente
+		if (nuevaContrasena == null || confirmacion == null) {
+			throw new IllegalArgumentException("La contraseña y su confirmación no pueden ser nulas.");
+		}
+		if (!nuevaContrasena.equals(confirmacion)) {
 			throw new IllegalArgumentException("La confirmación no coincide con la nueva contraseña.");
+		}
+		// Opcional: validar longitud mínima
+		if (nuevaContrasena.trim().length() < 4) {
+			throw new IllegalArgumentException("La contraseña debe tener al menos 4 caracteres.");
 		}
 		ctrlDominio.modificarContrasena(nuevaContrasena);
 	}
@@ -418,6 +448,26 @@ public class CtrlPresentacion {
 	 * @return Resultado de clustering
 	 */
 	public ResultadoClustering ejecutarClustering(int idEncuesta, int k, String algoritmo) {
+		return ctrlDominio.ejecutarClustering(idEncuesta, k, algoritmo);
+	}
+
+	/**
+	 * Ejecuta clustering recibiendo el nombre del algoritmo tal como aparece en la UI
+	 * (por ejemplo "K-Means++") y convierte internamente al identificador de dominio.
+	 *
+	 * @param idEncuesta ID de la encuesta
+	 * @param k número de clusters
+	 * @param nombreUI nombre del algoritmo en la UI
+	 * @return ResultadoClustering
+	 */
+	public ResultadoClustering ejecutarClusteringDesdeUI(int idEncuesta, int k, String nombreUI) {
+		String algoritmo;
+		switch (nombreUI) {
+			case "K-Means": algoritmo = "kmeans"; break;
+			case "K-Means++": algoritmo = "kmeans++"; break;
+			case "K-Medoids": algoritmo = "kmedoids"; break;
+			default: algoritmo = "kmeans"; break;
+		}
 		return ctrlDominio.ejecutarClustering(idEncuesta, k, algoritmo);
 	}
 

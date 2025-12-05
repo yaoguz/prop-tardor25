@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Vista para ejecutar clustering y ver estadísticas de una encuesta.
@@ -39,6 +40,11 @@ public class VistaEstadisticas extends ComponenteBase {
 	private JButton btnEjecutar;
 	private JProgressBar progressBar;
 	private JLabel lblEstado;
+
+	// Worker y futuro para permitir cancelación y timeout
+	private SwingWorker<ResultadoClustering, Void> clusteringWorker;
+	private Future<ResultadoClustering> clusteringFuture;
+	private static final int CLUSTER_TIMEOUT_SECONDS = 30;
 
 	/**
 	 * Constructor.
@@ -90,7 +96,7 @@ public class VistaEstadisticas extends ComponenteBase {
 		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		panelBotones.setBackground(COLOR_BG);
 		JButton btnVolver = createStyledButton("Volver", COLOR_PRIMARY);
-		btnVolver.addActionListener(e -> frame.dispose());
+		btnVolver.addActionListener(e -> salir());
 		panelBotones.add(btnVolver);
 		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
 
@@ -100,6 +106,14 @@ public class VistaEstadisticas extends ComponenteBase {
 		ejecutarClustering();
 		
 		frame.setVisible(true);
+	}
+
+	/**
+	 * Salir a la página principal.
+	 */
+	private void salir() {
+		frame.dispose();
+		ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
 	}
 
 	/**
@@ -118,9 +132,8 @@ public class VistaEstadisticas extends ComponenteBase {
 		// Selector de k
 		JLabel lblK = createStyledLabel("Número de clusters (k):", FONT_NORMAL);
 		
-		// Valor por defecto: random entre 2 y numRespuestas/2
-		// Para simplificar, usamos 2-10
-		int kInicial = 2 + (int)(Math.random() * 4); // 2-5
+		// Valor por defecto: 2
+		int kInicial = 2;
 		SpinnerNumberModel modelK = new SpinnerNumberModel(kInicial, 2, 20, 1);
 		spinK = new JSpinner(modelK);
 		spinK.setFont(FONT_NORMAL);
@@ -134,9 +147,18 @@ public class VistaEstadisticas extends ComponenteBase {
 		comboAlgoritmo.setFont(FONT_NORMAL);
 		comboAlgoritmo.addActionListener(e -> ejecutarClustering());
 
-		// Botón ejecutar manualmente
+		// Botón ejecutar / cancelar
 		btnEjecutar = createStyledButton("Ejecutar Clustering", COLOR_SUCCESS);
-		btnEjecutar.addActionListener(e -> ejecutarClustering());
+		btnEjecutar.addActionListener(e -> {
+			if (clusteringWorker != null && !clusteringWorker.isDone()) {
+				// cancelar ejecución en curso
+				if (clusteringFuture != null) clusteringFuture.cancel(true);
+				clusteringWorker.cancel(true);
+				lblEstado.setText("Cancelando...");
+			} else {
+				ejecutarClustering();
+			}
+		});
 
 		// Estado / indicador
 		progressBar = new JProgressBar();
@@ -167,76 +189,139 @@ public class VistaEstadisticas extends ComponenteBase {
 	 * Ejecuta el clustering con los parámetros actuales.
 	 */
 	private void ejecutarClustering() {
-		panelPerfiles.removeAll();
+    panelPerfiles.removeAll();
 
-		// Deshabilitar controles mientras se ejecuta
-		spinK.setEnabled(false);
-		comboAlgoritmo.setEnabled(false);
-		if (btnEjecutar != null) btnEjecutar.setEnabled(false);
-		progressBar.setVisible(true);
-		lblEstado.setText("Ejecutando clustering...");
-
-		// Ejecutar en segundo plano para no bloquear la UI
-		SwingWorker<ResultadoClustering, Void> worker = new SwingWorker<ResultadoClustering, Void>() {
-			@Override
-			protected ResultadoClustering doInBackground() throws Exception {
-				int k = (int) spinK.getValue();
-				String algoritmo = convertirAlgoritmo((String) comboAlgoritmo.getSelectedItem());
-				return ctrlPresentacion.ejecutarClustering(idEncuesta, k, algoritmo);
+	// Comprobar que hay al menos 2 usuarios que hayan respondido la encuesta
+	Map<Pregunta, Set<Respuesta>> todasRespuestas = ctrlPresentacion.getRespuestasEncuesta(idEncuesta);
+	Set<String> usuariosRespondieron = new HashSet<>();
+	if (todasRespuestas != null) {
+		for (Set<Respuesta> conjunto : todasRespuestas.values()) {
+			if (conjunto == null) continue;
+			for (Respuesta r : conjunto) {
+				if (r == null) continue;
+				String u = r.getNomUsuario();
+				if (u != null) usuariosRespondieron.add(u);
 			}
-
-			@Override
-			protected void done() {
-				try {
-					ResultadoClustering resultado = get();
-					if (resultado == null || resultado.getPerfiles().isEmpty()) {
-						JLabel lblVacio = createStyledLabel("No se pudieron generar perfiles. Verifica que haya suficientes respuestas.", FONT_NORMAL);
-						lblVacio.setAlignmentX(Component.CENTER_ALIGNMENT);
-						panelPerfiles.add(lblVacio);
-					} else {
-						mostrarPerfiles(resultado.getPerfiles());
-					}
-				} catch (InterruptedException ie) {
-					Thread.currentThread().interrupt();
-					JLabel lblError = createStyledLabel("Ejecución interrumpida", FONT_NORMAL);
-					lblError.setForeground(COLOR_DANGER);
-					lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
-					panelPerfiles.add(lblError);
-				} catch (java.util.concurrent.ExecutionException ee) {
-					String msg = (ee.getCause() != null) ? ee.getCause().getMessage() : ee.getMessage();
-					JLabel lblError = createStyledLabel("Error: " + msg, FONT_NORMAL);
-					lblError.setForeground(COLOR_DANGER);
-					lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
-					panelPerfiles.add(lblError);
-				} finally {
-					// Restaurar estado de controles
-					progressBar.setVisible(false);
-					lblEstado.setText("");
-					spinK.setEnabled(true);
-					comboAlgoritmo.setEnabled(true);
-					if (btnEjecutar != null) btnEjecutar.setEnabled(true);
-					panelPerfiles.revalidate();
-					panelPerfiles.repaint();
-				}
-			}
-		};
-		worker.execute();
-	}
-
-	/**
-	 * Convierte nombre de algoritmo de UI a formato de dominio.
-	 * 
-	 * @param nombreUI Nombre en UI
-	 * @return Nombre para dominio
-	 */
-	private String convertirAlgoritmo(String nombreUI) {
-		switch (nombreUI) {
-			case "K-Means": return "kmeans";
-			case "K-Means++": return "kmeans++";
-			case "K-Medoids": return "kmedoids";
-			default: return "kmeans";
 		}
 	}
+	if (usuariosRespondieron.size() < 2) {
+		JLabel lblError = createStyledLabel("Se necesitan al menos 2 respuestas en la encuesta para ejecutar clustering.", FONT_NORMAL);
+		lblError.setForeground(COLOR_DANGER);
+		lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panelPerfiles.add(Box.createVerticalGlue());
+		panelPerfiles.add(lblError);
+		panelPerfiles.add(Box.createVerticalGlue());
+		panelPerfiles.revalidate();
+		panelPerfiles.repaint();
+		// Asegurar controles disponibles
+		if (spinK != null) spinK.setEnabled(true);
+		if (comboAlgoritmo != null) comboAlgoritmo.setEnabled(true);
+		if (btnEjecutar != null) btnEjecutar.setEnabled(true);
+		return;
+	}
+
+    // Crear panel para los componentes centrados (progressBar + lblEstado)
+    JPanel panelCentro = new JPanel();
+    panelCentro.setLayout(new BoxLayout(panelCentro, BoxLayout.Y_AXIS)); // Asegura alineación vertical
+    panelCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    // Añadir barra de progreso
+    progressBar.setIndeterminate(true);  // Habilitar la animación de la barra de progreso
+    progressBar.setVisible(true);        // Asegura que sea visible
+    panelCentro.add(progressBar);
+
+    // Añadir espacio entre la barra de progreso y el texto
+    panelCentro.add(Box.createRigidArea(new Dimension(0, 10)));
+
+    // Añadir texto "Ejecutando clustering..."
+    lblEstado.setText("Ejecutando clustering...");
+    lblEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
+    panelCentro.add(lblEstado);
+
+    // Añadir el panelCentro al panelPerfiles
+    panelPerfiles.setLayout(new BoxLayout(panelPerfiles, BoxLayout.Y_AXIS));  // Asegura alineación vertical
+    panelPerfiles.add(Box.createVerticalGlue());  // Añadir espacio antes del panelCentro
+    panelPerfiles.add(panelCentro);               // Añadir el panelCentro que contiene la barra de progreso y el texto
+    panelPerfiles.add(Box.createVerticalGlue());  // Añadir espacio después del panelCentro
+
+    // Actualizar el panelPerfiles
+    panelPerfiles.revalidate();
+    panelPerfiles.repaint();
+
+    // Deshabilitar controles mientras se ejecuta
+    spinK.setEnabled(false);
+    comboAlgoritmo.setEnabled(false);
+    if (btnEjecutar != null) btnEjecutar.setEnabled(false);
+
+    // Ejecutar en segundo plano para no bloquear la UI
+    // Cancelar worker/futuro previo si existe
+    if (clusteringWorker != null && !clusteringWorker.isDone()) {
+        if (clusteringFuture != null) clusteringFuture.cancel(true);
+        clusteringWorker.cancel(true);
+    }
+
+    clusteringWorker = new SwingWorker<ResultadoClustering, Void>() {
+        @Override
+        protected ResultadoClustering doInBackground() throws Exception {
+            int k = (int) spinK.getValue();
+            String nombreUI = (String) comboAlgoritmo.getSelectedItem();
+            // Ejecutar el clustering en un Executor con timeout para evitar bloqueos indefinidos
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            try {
+                Callable<ResultadoClustering> task = () -> ctrlPresentacion.ejecutarClusteringDesdeUI(idEncuesta, k, nombreUI);
+                clusteringFuture = executor.submit(task);
+                return clusteringFuture.get(CLUSTER_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            } catch (TimeoutException te) {
+                if (clusteringFuture != null) clusteringFuture.cancel(true);
+                throw new Exception("El clustering ha excedido el tiempo máximo de " + CLUSTER_TIMEOUT_SECONDS + "s y fue cancelado.");
+            } finally {
+                executor.shutdownNow();
+            }
+        }
+
+        @Override
+        protected void done() {
+            try {
+                ResultadoClustering resultado = get();
+                if (resultado == null || resultado.getPerfiles().isEmpty()) {
+                    JLabel lblVacio = createStyledLabel("No se pudieron generar perfiles. Verifica que haya suficientes respuestas.", FONT_NORMAL);
+                    lblVacio.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    panelPerfiles.add(lblVacio);
+                } else {
+                    mostrarPerfiles(resultado.getPerfiles());
+                }
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                JLabel lblError = createStyledLabel("Ejecución interrumpida", FONT_NORMAL);
+                lblError.setForeground(COLOR_DANGER);
+                lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+                panelPerfiles.add(lblError);
+            } catch (java.util.concurrent.CancellationException ce) {
+                JLabel lblError = createStyledLabel("Clustering cancelado por el usuario.", FONT_NORMAL);
+                lblError.setForeground(COLOR_DANGER);
+                lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+                panelPerfiles.add(lblError);
+            } catch (java.util.concurrent.ExecutionException ee) {
+                String msg = (ee.getCause() != null) ? ee.getCause().getMessage() : ee.getMessage();
+                JLabel lblError = createStyledLabel("Error: " + msg, FONT_NORMAL);
+                lblError.setForeground(COLOR_DANGER);
+                lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+                panelPerfiles.add(lblError);
+            } finally {
+                // Restaurar estado de controles
+                progressBar.setVisible(false);
+                lblEstado.setText("");
+                spinK.setEnabled(true);
+                comboAlgoritmo.setEnabled(true);
+                if (btnEjecutar != null) btnEjecutar.setEnabled(true);
+                panelPerfiles.revalidate();
+                panelPerfiles.repaint();
+            }
+        }
+    };
+    clusteringWorker.execute();
+}
+	
 
 	/**
 	 * Muestra los perfiles resultantes.
@@ -244,12 +329,18 @@ public class VistaEstadisticas extends ComponenteBase {
 	 * @param perfiles Lista de perfiles
 	 */
 	private void mostrarPerfiles(List<Perfil> perfiles) {
+		// Asegurar panel limpio y evitar solapamientos
+		panelPerfiles.removeAll();
 		for (int i = 0; i < perfiles.size(); i++) {
 			Perfil perfil = perfiles.get(i);
 			JPanel panelPerfil = crearPanelPerfil(i + 1, perfil);
+			// Alineación para que los paneles se apilen correctamente
+			panelPerfil.setAlignmentX(Component.LEFT_ALIGNMENT);
 			panelPerfiles.add(panelPerfil);
 			panelPerfiles.add(Box.createRigidArea(new Dimension(0, 15)));
 		}
+		panelPerfiles.revalidate();
+		panelPerfiles.repaint();
 	}
 
 	/**
@@ -266,7 +357,7 @@ public class VistaEstadisticas extends ComponenteBase {
 			BorderFactory.createLineBorder(COLOR_PRIMARY, 3),
 			BorderFactory.createEmptyBorder(15, 15, 15, 15)
 		));
-		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
+	// Dejar que el layout calcule el tamaño; evitar forzar maximumSize que puede causar solapamientos
 
 		// Título del perfil
 		JLabel lblTitulo = createStyledLabel("Perfil " + numero, FONT_SUBTITLE);

@@ -41,10 +41,8 @@ public class VistaListaEncuestas extends ComponenteBase {
     private String nombreUsuario;
     private JPanel panelEncuestas;
     private JTextField txtBuscar;
-    private JCheckBox chkMisEncuestas;
-    private JCheckBox chkAjenas;
-    private JCheckBox chkRespondidas;
-    private JCheckBox chkNoRespondidas;
+    private JComboBox<String> cmbAutorFilter; // "Todas", "Mis Encuestas", "Encuestas ajenas"
+    private JComboBox<String> cmbRespuestaFilter; // "Todas", "Respondidas", "No respondidas"
     private JButton btnVerTodas;
     private boolean hayFiltroActivo = false;
     
@@ -138,22 +136,25 @@ public class VistaListaEncuestas extends ComponenteBase {
         panelFiltros.setBackground(COLOR_BG);
         
         JLabel lblFiltros = createStyledLabel("Filtros:", FONT_NORMAL);
-        chkMisEncuestas = new JCheckBox("Mis Encuestas");
-        chkAjenas = new JCheckBox("Encuestas ajenas");
-        chkRespondidas = new JCheckBox("Respondidas");
-        chkNoRespondidas = new JCheckBox("No respondidas");
-        
-        for (JCheckBox chk : new JCheckBox[]{chkMisEncuestas, chkAjenas, chkRespondidas, chkNoRespondidas}) {
-            chk.setBackground(COLOR_BG);
-            chk.setFont(FONT_NORMAL);
-            chk.addItemListener(e -> cargarEncuestas());
-        }
-        
-        panelFiltros.add(lblFiltros);
-        panelFiltros.add(chkMisEncuestas);
-        panelFiltros.add(chkAjenas);
-        panelFiltros.add(chkRespondidas);
-        panelFiltros.add(chkNoRespondidas);
+        // Combo para autor: Todas / Mis Encuestas / Encuestas ajenas
+        String[] opcionesAutor = new String[]{"Todas", "Mis Encuestas", "Encuestas ajenas"};
+        cmbAutorFilter = new JComboBox<>(opcionesAutor);
+        cmbAutorFilter.setSelectedIndex(0);
+        cmbAutorFilter.setBackground(COLOR_BG);
+        cmbAutorFilter.setFont(FONT_NORMAL);
+        cmbAutorFilter.addActionListener(e -> cargarEncuestas());
+
+        // Combo para respuesta: Todas / Respondidas / No respondidas
+        String[] opcionesRespuesta = new String[]{"Todas", "Respondidas", "No respondidas"};
+        cmbRespuestaFilter = new JComboBox<>(opcionesRespuesta);
+        cmbRespuestaFilter.setSelectedIndex(0);
+        cmbRespuestaFilter.setBackground(COLOR_BG);
+        cmbRespuestaFilter.setFont(FONT_NORMAL);
+        cmbRespuestaFilter.addActionListener(e -> cargarEncuestas());
+
+    panelFiltros.add(lblFiltros);
+    panelFiltros.add(cmbAutorFilter);
+    panelFiltros.add(cmbRespuestaFilter);
         
         panelControles.add(panelBuscar);
         panelControles.add(panelFiltros);
@@ -218,38 +219,53 @@ public class VistaListaEncuestas extends ComponenteBase {
      * Restaura todas las encuestas (quita búsqueda).
      */
     private void verTodas() {
+        // Restaurar búsqueda y recargar lista completa aplicando filtros actuales
         txtBuscar.setText("");
         hayFiltroActivo = false;
         btnVerTodas.setVisible(false);
         cargarEncuestas();
     }
-    
+
     /**
-     * Carga encuestas aplicando filtros.
+     * Carga encuestas aplicando los filtros seleccionados.
      */
     private void cargarEncuestas() {
         panelEncuestas.removeAll();
-        
-        boolean misEncuestas = chkMisEncuestas.isSelected();
-        boolean ajenas = chkAjenas.isSelected();
-        boolean respondidas = chkRespondidas.isSelected();
-        boolean noRespondidas = chkNoRespondidas.isSelected();
-        
-        // Obtener encuestas del controlador
+
+        // Leer filtros desde los combo boxes
+        String autorSel = (String) cmbAutorFilter.getSelectedItem();
+        String respSel = (String) cmbRespuestaFilter.getSelectedItem();
+
         List<Integer> idsEncuestas = ctrlPresentacion.obtenerTodasEncuestas();
-        
+
+        int mostradas = 0;
         for (int idEncuesta : idsEncuestas) {
+            String autor = ctrlPresentacion.obtenerAutorEncuesta(idEncuesta);
+            boolean respondida = ctrlPresentacion.haRespondido(nombreUsuario, idEncuesta);
+
+            // Filtro por autor
+            if (!"Todas".equals(autorSel)) {
+                if ("Mis Encuestas".equals(autorSel) && !nombreUsuario.equals(autor)) continue;
+                if ("Encuestas ajenas".equals(autorSel) && nombreUsuario.equals(autor)) continue;
+            }
+
+            // Filtro por respondidas/no respondidas
+            if (!"Todas".equals(respSel)) {
+                if ("Respondidas".equals(respSel) && !respondida) continue;
+                if ("No respondidas".equals(respSel) && respondida) continue;
+            }
+
             JPanel panelEncuesta = crearPanelEncuesta(idEncuesta);
             panelEncuestas.add(panelEncuesta);
             panelEncuestas.add(Box.createRigidArea(new Dimension(0, 10)));
+            mostradas++;
         }
-        
-        if (idsEncuestas.isEmpty()) {
-            JLabel lblVacio = createStyledLabel("No hay encuestas disponibles", FONT_NORMAL);
+        if (mostradas == 0) {
+            JLabel lblVacio = createStyledLabel("No hay encuestas que cumplan los filtros seleccionados", FONT_NORMAL);
             lblVacio.setAlignmentX(Component.CENTER_ALIGNMENT);
             panelEncuestas.add(lblVacio);
         }
-        
+
         panelEncuestas.revalidate();
         panelEncuestas.repaint();
     }
