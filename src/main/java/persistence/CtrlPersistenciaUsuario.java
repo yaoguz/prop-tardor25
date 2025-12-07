@@ -25,101 +25,123 @@ import java.util.*;
  * - cargarTodos(): Lee todos los usuarios del disco
  * - guardar(): Escribe mapa completo de usuarios a disco
  * 
- * @author PROP Cluster XX
+ * @author Alessandro Jin 
  */
 public class CtrlPersistenciaUsuario {
-    private static final String FILE = "DATA/usuarios.json";
+ 
     private final Gson gson;
 
     /**
      * Crea controlador de persistencia de usuarios.
      */
     public CtrlPersistenciaUsuario() {
-        this.gson = new Gson();
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     public Usuario getUsuario (String nom) {
-        File f = new File(FILE);
-        FileReader r = new FileReader(f);
+        String FILE = "data/usuarios/" + nom + ".json"
+    
+        try (FileReader reader = new FileReader(FILE)) {
 
-        //representacion ficherp
-        JsonObject root = JsonParser.parseReader(r).getAsJsonObject(); 
+            JsonObject usuario = JsonParser.parseReader(reader).getAsJsonObject();
+          
+            Usuario u = new Gson().fromJson(usuario, Usuario.class);
 
-        for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
-            JsonObject usuario = entry.getValue().getAsJsonObject();
-            String name = usuario.get("nombre").getAsString();
+            return u;
+        }
 
-            if (name == nom) {
-                String pass = usuario.get("password").getAsString();
-                ArrayList<Integer> idEncuestasCreadas = GestorPersistencia.convertirJsonArray(usuario.get("idEncuestasCreadas").getAsJsonArray());
-   
-                ArrayList<Integer> idRespuestas = GestorPersistencia.convertirJsonArray(usuario.get("idRespuestas").getAsJsonArray());
+        catch(Exception exc) {
+            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+        }
+    }
 
-                Usuario u = new Usuario(name, pass);
+    public ArrayList<Encuesta> getAllUsuarios() {
+
+        File carpetaRaiz = new File("data/usuarios");
+
+        File[] jsonFiles = carpetaRaiz.listFiles(
+            file -> file.isFile() && file.getName().endsWith(".json")
+        );
+
+        if (jsonFiles != null) {
+
+            ArrayList<Usuario> usuarios = new ArrayList<>();
+
+            for (File jsonFile: jsonFiles) {
                 
-                //guardar idEncuestasCreadas, idRespuestas
-                return u;
+                try{
+                    String fileName = jsonFile.getName(); // "ana.json"
+                    String userName = fileName.replace(".json", ""); // "ana"
+
+                    usuarios.add(getUsuario(userName));
+                }
+
+                catch(Exception exc) {
+                    throw new RuntimeException("Error el nombre de la carpeta no es un nombre válido", exc);
+                }
             }
+
+            return usuarios;
         }
 
-        throw new IllegalArgumentException("El usuario con nombre: " + nom + " no existe");
-    }
+        else return null;
 
-    /**
-     * Carga un usuario específico desde disco.
-     * 
-     * @param nom Nombre del usuario
-     * @return Usuario encontrado, o null si no existe
-     */
-    public Usuario cargarUsuario(String nom) {
-        Map<String, Usuario> todos = cargarTodos();
-        return todos.get(nom);
     }
+   
+    
+    public void guardarUsuario (Usuario u) {
+        String newName = u.getNomUsuario();
 
-    /**
-     * Carga todos los usuarios desde disco.
-     * 
-     * @return Mapa de nombre → Usuario (vacío si archivo no existe)
-     */
-    public Map<String, Usuario> cargarTodos() {
-        File f = new File(FILE);
-        if (!f.exists()) return new HashMap<>();
-        
-        try (FileReader r = new FileReader(f)) {
-            JsonObject root = JsonParser.parseReader(r).getAsJsonObject();
-            if (!root.has("usuarios")) return new HashMap<>();
-            
-            JsonObject usuariosObj = root.getAsJsonObject("usuarios");
-            Map<String, Usuario> result = new HashMap<>();
-            
-            for (Map.Entry<String, JsonElement> entry : usuariosObj.entrySet()) {
-                Usuario u = gson.fromJson(entry.getValue(), Usuario.class);
-                result.put(entry.getKey(), u);
-            }
-            return result;
-        } catch (IOException e) {
-            return new HashMap<>();
-        }
-    }
+        File archivoJson = new File("data/usuarios", newName + ".json");
 
-    /**
-     * Guarda el mapa completo de usuarios a disco.
-     * 
-     * @param usuarios Mapa de nombre → Usuario
-     */
-    public void guardar(Map<String, Usuario> usuarios) {
-        JsonObject root = new JsonObject();
-        JsonObject usuariosObj = new JsonObject();
+        if (archivoJson.exists()) throw new IllegalArgumentException("El usuario Ya existe");
+
+        try (FileWriter writer = new FileWriter(archivoJson)) {
         
-        for (Map.Entry<String, Usuario> e : usuarios.entrySet()) {
-            usuariosObj.add(e.getKey(), gson.toJsonTree(e.getValue()));
-        }
-        root.add("usuarios", usuariosObj);
-        
-        try (FileWriter w = new FileWriter(FILE)) {
-            gson.toJson(root, w);
-        } catch (IOException e) {
-            throw new RuntimeException("Error guardando usuarios: " + e.getMessage());
+            gson.toJson(u, writer);
+
+        } 
+        catch (IOException exc) {
+            throw new RuntimeException("Error al guardar el archivo JSON", exc);
         }
     }  
+
+
+    public boolean existeUsuario(String name) {
+
+        File archivo = new File("data/usuarios", name + ".json");
+        return archivo.exists();
+    }
+
+    public void actualizarUsuario (Usuario u) {
+
+        String newName = u.getNomUsuario();
+
+        File archivoJson = new File("data/usuarios", newName + ".json");
+
+        if (!archivoJson.exists()) throw new IllegalArgumentException("El usuario No existe");
+
+        //si existe devuelve la ruta sino la crea
+        try (FileWriter writer = new FileWriter(archivoJson)) {
+            
+            //sobre escribe pq append es 0
+            gson.toJson(u, writer);
+
+        } 
+        catch (IOException exc) {
+            throw new RuntimeException("Error al guardar el archivo JSON", exc);
+        }
+
+    }
+
+     public void eliminarUsuario (String name) {
+
+        File archivo = new File("data/usuarios", name + ".json"); //solo es  una ruta
+
+        boolean eliminado = archivo.delete();
+        
+        if (!eliminado) {
+            throw new IllegalArgumentException("No existe el usuario a eliminar");
+        }
+    }
 }
