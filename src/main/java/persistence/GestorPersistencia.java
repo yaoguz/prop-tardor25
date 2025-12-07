@@ -343,8 +343,7 @@ public class GestorPersistencia {
     * @throws IllegalArgumentException si ya existe una respuesta con el mismo id
     */
     public void guardarRepuesta(Respuesta r) {
-
-        respuestas.guardarRepuesta(r);
+        respuestas.guardarRespuesta(r);
     }
 
     /**
@@ -354,7 +353,6 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si ya existe una respuesta con el mismo ID
      */
     public void guardarRespuesta(Respuesta r) {
-    
         respuestas.guardarRespuesta(r);
     }
 
@@ -375,7 +373,7 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si la respuesta no existe
      */
     public void eliminarRespuesta(int id) {
- 
+        
         respuestas.eliminarRespuesta(id);
     }
 
@@ -403,7 +401,7 @@ public class GestorPersistencia {
      */
     public ArrayList<Respuesta> getRespuestasEncuesta(int idEncuesta) {                 ////////////////// nuevo
 
-        return encuestas.getRespuestasEncuesta();
+        return encuestas.getRespuestasEncuesta(idEncuesta);
     }   
 
     public void cerrarSesion() {

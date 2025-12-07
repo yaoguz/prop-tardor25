@@ -39,7 +39,7 @@ public class CtrlPersistenciaUsuario {
     }
 
     public Usuario getUsuario (String nom) {
-        String FILE = "data/usuarios/" + nom + ".json"
+        String FILE = "data/usuarios/" + nom + ".json";
     
         try (FileReader reader = new FileReader(FILE)) {
 
@@ -55,7 +55,7 @@ public class CtrlPersistenciaUsuario {
         }
     }
 
-    public ArrayList<Encuesta> getAllUsuarios() {
+    public ArrayList<Usuario> getAllUsuarios() {
 
         File carpetaRaiz = new File("data/usuarios");
 

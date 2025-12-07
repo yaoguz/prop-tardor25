@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import domain.Respuesta;
 import domain.Usuario;
 
 /**
@@ -122,7 +121,7 @@ public class GestorPersistenciaUsuario {
             }
 
             catch (Exception e) {
-                return false,
+                return false;
             }
             
         }

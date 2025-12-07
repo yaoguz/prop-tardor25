@@ -255,7 +255,7 @@ public class CtrlPersistenciaEncuesta {
                 gson.toJson(jsonObject, writer);
                 
             } catch (IOException e) {
-                throw new RuntimeException("Error escribiendo el archivo JSON", exc);
+                throw new RuntimeException("Error escribiendo el archivo JSON", e);
             }
 
         }

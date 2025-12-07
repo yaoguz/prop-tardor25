@@ -59,8 +59,8 @@ public class GestorPersistenciaRespuesta {
      * 
      * @throws IllegalArgumentException si la respuesta no existe
      */
-    Respuesta sacarRespuestaFichero(int idR, int idEncuesta) {
-        Respuesta r = ctrlFicheroRespuesta.getRespuesta(idR, idEncuesta); // puede lanzar exc no existe
+    Respuesta sacarRespuestaFichero(int idR) {
+        Respuesta r = ctrlFicheroRespuesta.getRespuesta(idR); // puede lanzar exc no existe
         respuestas.put(idR, r);
         return r;
     }
@@ -69,17 +69,16 @@ public class GestorPersistenciaRespuesta {
     * Guarda una nueva respuesta en el mapa {@code respuestas}.
     *
     * @param r Respuesta a guardar
-    * @param idEncuesta ID de la encuesta
     * @throws IllegalArgumentException si ya existe una respuesta con el mismo ID
     */
-    public void guardarRespuesta(Respuesta r, int idEncuesta) {
+    public void guardarRespuesta(Respuesta r) {
         int idR = r.getId();
 
         if (respuestas.containsKey(idR)) {
             throw new IllegalArgumentException("La respuesta con id "+idR+" ya existe");
         }
 
-        ctrlFicheroRespuesta.guardarRespuesta(r, idEncuesta); // también tendria que lanzar excepcion de que ya existe
+        ctrlFicheroRespuesta.guardarRespuesta(r); // también tendria que lanzar excepcion de que ya existe
         respuestas.put(idR, r);
     }
     
@@ -96,13 +95,12 @@ public class GestorPersistenciaRespuesta {
      * Obtiene una respuesta por su ID.
      * 
      * @param id ID de la respuesta
-     * @param idEncuesta ID de la encuesta
      * @return Respuesta correspondiente, o null si no existe
      * @throws IllegalArgumentException si la respuesta no existe
      */
-    public Respuesta getRespuesta(int id, int idEncuesta) {
+    public Respuesta getRespuesta(int id) {
         Respuesta e = respuestas.get(id);
-        if (e == null) e = sacarRespuestaFichero(id, idEncuesta);
+        if (e == null) e = sacarRespuestaFichero(id);
         return e;
     }
 
@@ -110,13 +108,12 @@ public class GestorPersistenciaRespuesta {
      * Verifica si existe una respuesta con el ID dado.
      * 
      * @param id ID de la respuesta
-     * @param idEncuesta ID de la encuesta
      * @return true si existe, false en caso contrario
      */
-    public boolean existeRespuesta(int id, int idEncuesta) {
+    public boolean existeRespuesta(int id) {
         if (!respuestas.containsKey(id)) {
             try {
-                sacarRespuestaFichero(id, idEncuesta); // guardar en la cache
+                sacarRespuestaFichero(id); // guardar en la cache
             } 
             catch (IllegalArgumentException e) {
                 return false;
@@ -137,25 +134,23 @@ public class GestorPersistenciaRespuesta {
      * Actualiza una respuesta existente.
      * 
      * @param r Respuesta a actualizar
-     * @param idEncuesta ID de la encuesta
      */
-    public void actualizarRespuesta(Respuesta r, int idEncuesta) {
+    public void actualizarRespuesta(Respuesta r) {
         int id = r.getId();
-        if (!respuestas.containsKey(id)) sacarRespuestaFichero(id, idEncuesta);
+        if (!respuestas.containsKey(id)) sacarRespuestaFichero(id);
         respuestas.put(id, r); // sobreescribe
-        ctrlFicheroRespuesta.actualizarRespuesta(r, idEncuesta);
+        ctrlFicheroRespuesta.actualizarRespuesta(r);
     }
 
     /**
      * Elimina una respuesta por su ID.
      * 
      * @param id ID de la respuesta a eliminar
-     * @param idEncuesta ID de la encuesta a eliminar
      * @throws IllegalArgumentException si la respuesta no existe
      */
-    public void eliminarRespuesta(int id, int idEncuesta) {
+    public void eliminarRespuesta(int id) {
         if (respuestas.containsKey(id)) respuestas.remove(id);
-        ctrlFicheroRespuesta.eliminarRespuesta(id, idEncuesta);
+        ctrlFicheroRespuesta.eliminarRespuesta(id);
     }
 
     public void guardarNextId () {
