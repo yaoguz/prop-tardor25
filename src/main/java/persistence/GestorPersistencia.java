@@ -318,6 +318,17 @@ public class GestorPersistencia {
     }
 
     /**
+     * Obtiene una respuesta por su ID.
+     * 
+     * @param id ID de la respuesta
+     * @param idEncuesta ID de la encuesta
+     * @return Respuesta correspondiente, o null si no existe
+     */
+    public Respuesta getRespuesta(int id, int idEncuesta) {
+        return respuestas.getRespuesta(id, idEncuesta);
+    }
+
+    /**
      * Verifica si existe una respuesta con el ID dado.
      * 
      * @param id ID de la respuesta
@@ -325,6 +336,17 @@ public class GestorPersistencia {
      */
     public boolean existeRespuesta(int id) {
         return respuestas.existeRespuesta(id);
+    }
+
+    /**
+     * Verifica si existe una respuesta con el ID dado.
+     * 
+     * @param id ID de la respuesta
+     * @param idEncuesta ID de la encuesta
+     * @return true si existe, false en caso contrario
+     */
+    public boolean existeRespuesta(int id, int idEncuesta) {
+        return respuestas.existeRespuesta(id, idEncuesta);
     }
 
     /**
@@ -343,8 +365,7 @@ public class GestorPersistencia {
     * @throws IllegalArgumentException si ya existe una respuesta con el mismo id
     */
     public void guardarRepuesta(Respuesta r) {
-
-        respuestas.guardarRepuesta(r);
+        respuestas.guardarRespuesta(r);
     }
 
     /**
@@ -354,8 +375,18 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si ya existe una respuesta con el mismo ID
      */
     public void guardarRespuesta(Respuesta r) {
-    
         respuestas.guardarRespuesta(r);
+    }
+
+    /**
+     * Guarda una nueva respuesta en el sistema.
+     * 
+     * @param r Respuesta a guardar
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si ya existe una respuesta con el mismo ID
+     */
+    public void guardarRespuesta(Respuesta r, int idEncuesta) {
+        respuestas.guardarRespuesta(r, idEncuesta);
     }
 
     /**
@@ -367,6 +398,16 @@ public class GestorPersistencia {
         respuestas.actualizarRespuesta(r);
     }
 
+    /**
+     * Actualiza una respuesta existente.
+     * 
+     * @param r Respuesta a actualizar
+     * @param idEncuesta ID de la encuesta
+     */
+    public void actualizarRespuesta(Respuesta r, int idEncuesta) {
+        respuestas.actualizarRespuesta(r, idEncuesta);
+    }
+
 
     /**
      * Elimina una respuesta por su ID.
@@ -375,8 +416,19 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si la respuesta no existe
      */
     public void eliminarRespuesta(int id) {
- 
+        
         respuestas.eliminarRespuesta(id);
+    }
+
+    /**
+     * Elimina una respuesta por su ID.
+     * 
+     * @param id ID de la respuesta a eliminar
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si la respuesta no existe
+     */
+    public void eliminarRespuesta(int id, int idEncuesta) {
+        respuestas.eliminarRespuesta(id, idEncuesta);
     }
 
 
@@ -402,23 +454,16 @@ public class GestorPersistencia {
      * @return Lista con todas las respuestas de la encuesta
      */
     public ArrayList<Respuesta> getRespuestasEncuesta(int idEncuesta) {                 ////////////////// nuevo
-        // TODO: En implementación real con archivos JSON:
-        // Path dirEncuesta = Paths.get("data/encuestas/" + idEncuesta);
-        // List<Path> archivosRespuesta = Files.list(dirEncuesta)
-        //     .filter(p -> p.getFileName().toString().matches("\\d+\\.json"))
-        //     .collect(Collectors.toList());
-        // 
-        // Para cada archivo: leer JSON → deserializar según tipo → añadir a lista
-        
-        ArrayList<Respuesta> resultado = new ArrayList<>();
-        for (Respuesta r : respuestas.values()) {
-            // Obtener la pregunta para saber a qué encuesta pertenece
-            Pregunta p = preguntas.get(r.getIdPregunta());
-            if (p != null && p.getIdEncuesta() == idEncuesta) {
-                resultado.add(r);
-            }
-        }
-        return resultado;
+
+        return encuestas.getRespuestasEncuesta(idEncuesta);
+    }   
+
+    public void cerrarSesion() {
+        encuestas.guardarNextId();
+    
+        preguntas.guardarNextId();
+
+        respuestas.guardarNextId();
     }
 
 }
