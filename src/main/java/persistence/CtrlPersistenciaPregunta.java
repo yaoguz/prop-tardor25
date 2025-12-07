@@ -9,10 +9,8 @@ import java.util.*;
 /**
  * Controlador de persistencia de preguntas en disco.
  * 
- * Gestiona la lectura y escritura de preguntas en formato JSON, incluyendo
- * el manejo de la jerarquía polimórfica de preguntas (Libre, Numerica,
- * OpcionUnica, OpcionMultiple).
- * No mantiene cache interna - la cache es gestionada por GestorPersistencia.
+ * Gestiona la lectura y escritura de respuestas en formato JSON.
+ * Cada pregunta se almacena en data/encuestas/{idEncuesta}/preguntas/{idPregunta}.json
  * 
  * RESPONSABILIDADES:
  * - Cargar preguntas desde archivo JSON con deserialización polimórfica
@@ -20,7 +18,6 @@ import java.util.*;
  * - Gestionar operaciones I/O con disco
  * 
  * ATRIBUTOS PRINCIPALES:
- * - FILE: Ruta del archivo JSON
  * - gson: Serializador/deserializador JSON con custom deserializer
  * 
  * MÉTODOS PRINCIPALES:
@@ -31,9 +28,7 @@ import java.util.*;
  * @author Denis Roca
  */
 public class CtrlPersistenciaPregunta {
-    private static final carpeta = "data/encuestas";
     private final Gson gson;
-    
     private final CtrlPersistenciaPreguta singletonInstance;
 
     /**
@@ -64,7 +59,7 @@ public class CtrlPersistenciaPregunta {
      * @return Pregunta encontrada, o null si no existe
      */
     public Pregunta getPregunta(int id) {
-    	File carpetaRaiz = new File(carpeta);
+    	File carpetaRaiz = new File("data/encuestas");
     	File[] jsonFiles = carpetaRaiz.listFiles(file -> file.isFile() && file.getName()..endsWith(".json"));
     	int idEncuesta = -1;
     	try{
@@ -82,8 +77,12 @@ public class CtrlPersistenciaPregunta {
             throw new RuntimeException("Fichero no válido", e);
         }
     	if(idEncuesta == -1) throw new IllegalArgumentException("No existe la pregunta");
-    	File carpetaPreguntas = new File(carpeta + "/" + idEncuesta + "/preguntas/" + id + ".json");
-		// por acabar <---------------------------------------------------------------------------
+    	File carpetaPreguntas = new File("data/encuestas/" + idEncuesta + "/preguntas/" + id + ".json");
+    	
+    	//-------------------------//
+		// Falta generar el objeto //
+		//-------------------------//
+		//Si se hace indexPreguntas hay que cambiarlo
     }
 
     /**
@@ -91,7 +90,7 @@ public class CtrlPersistenciaPregunta {
      * 
      * @return Mapa de <ID,Pregunta> (vacío si archivo no existe)
      */
-    public Map<Integer, Pregunta> cargarTodas() {
+    public Map<Integer, Pregunta> getAllPreguntas() { 
         File f = new File(FILE);
         if (!f.exists()) return new HashMap<>();
         
@@ -118,53 +117,48 @@ public class CtrlPersistenciaPregunta {
      * @param preguntas Mapa de <ID,Pregunta>
      */
     public void guardar(Map<Integer, Pregunta> preguntas) {
-        JsonObject root = new JsonObject();
-        JsonObject preguntasObj = new JsonObject();
-        
         for (Map.Entry<Integer, Pregunta> e : preguntas.entrySet()) {
             Pregunta p = e.getValue();
             JsonObject pObj = new JsonObject();
             pObj.addProperty("idPregunta", p.getIdPregunta());
-            pObj.addProperty("idEncuesta", p.getIdEncuesta());
+            pObj.addProperty("tipo", p.tipoPregunta());
+//            pObj.addProperty("idEncuesta", p.getIdEncuesta());
             pObj.addProperty("enunciado", p.getEnunciado());
             
             // Serialización polimórfica con tipo
-            if (p instanceof PreguntaLibre) {
-                pObj.addProperty("tipo", "libre");
-            } else if (p instanceof PreguntaNumerica) {
-                PreguntaNumerica pn = (PreguntaNumerica) p;
-                pObj.addProperty("tipo", "numerica");
-                pObj.addProperty("rangoInf", pn.getRangoInf());
-                pObj.addProperty("rangoSup", pn.getRangoSup());
-            } else if (p instanceof PreguntaOpcionUnica) {
-                pObj.addProperty("tipo", "opcionUnica");
-                PreguntaOpcionUnica pu = (PreguntaOpcionUnica) p;
-                pObj.add("opciones", gson.toJsonTree(pu.getOpciones()));
-                pObj.addProperty("ordenada", pu.esOrdenada());
-            } else if (p instanceof PreguntaOpcionMultiple) {
-                pObj.addProperty("tipo", "opcionMultiple");
-                PreguntaOpcionMultiple pm = (PreguntaOpcionMultiple) p;
-                pObj.add("opciones", gson.toJsonTree(pm.getOpciones()));
-                pObj.addProperty("numMaxOpc", pm.getNumMaxOpc());
+            switch(p.tipoPregunta()) {
+            	case "numerica":
+    	            pObj.addProperty("rangoInf", p.getRangoInf());
+    	            pObj.addProperty("rangoSup", p.getRangoSup());
+    	            break;
+    	        case "opcion_unica":
+            		JsonArray arrU = new JsonArray();
+            		for (int iU : p.getOpciones()) {
+            		    arrU.add(iU);
+            		}
+            		pObj.add("opciones", arrU);
+                	pObj.addProperty("ordenada", p.esOrdenada());
+                	break;
+				case "opcion_multiple":
+            		JsonArray arrM = new JsonArray();
+            		for (int iM : p.getOpciones()) {
+            		    arrM.add(iM);
+            		}
+            		pObj.add("opciones", arrM);
+    	            pObj.addProperty("numMaxOpc", p.getNumMaxOpc());
             }
-            
-            preguntasObj.add(String.valueOf(e.getKey()), pObj);
-        }
-        root.add("preguntas", preguntasObj);
-        
-        try (FileWriter w = new FileWriter(FILE)) {
-            gson.toJson(root, w);
-        } catch (IOException e) {
-            throw new RuntimeException("Error guardando preguntas: " + e.getMessage());
+    		JsonArray resps = new JsonArray();
+    		for (int iR : p.getRespuestas()) {
+    		    resps.add(iR);
+    		}
+    		pObj.add("idRespuestas", resps);
+			try (FileWriter w = new FileWriter("data/encuestas/" + p.getIdEncuesta() + "/preguntas/" + p.getIdPregunta() + ".json")) {
+		        gson.toJson(pObj, w);
+		    } catch (IOException e) {
+		        throw new RuntimeException("Error guardando preguntas: " + e.getMessage());
+		    }
         }
     }
-
-    /**
-     * Crea directorio DATA si no existe.
-     */
-    //private void crearDirectorio() {
-    //    new File("DATA").mkdirs();
-    //}
 
     /**
      * Deserializador custom para jerarquía de Pregunta.
