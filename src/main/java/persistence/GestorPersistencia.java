@@ -318,6 +318,17 @@ public class GestorPersistencia {
     }
 
     /**
+     * Obtiene una respuesta por su ID.
+     * 
+     * @param id ID de la respuesta
+     * @param idEncuesta ID de la encuesta
+     * @return Respuesta correspondiente, o null si no existe
+     */
+    public Respuesta getRespuesta(int id, int idEncuesta) {
+        return respuestas.getRespuesta(id, idEncuesta);
+    }
+
+    /**
      * Verifica si existe una respuesta con el ID dado.
      * 
      * @param id ID de la respuesta
@@ -325,6 +336,17 @@ public class GestorPersistencia {
      */
     public boolean existeRespuesta(int id) {
         return respuestas.existeRespuesta(id);
+    }
+
+    /**
+     * Verifica si existe una respuesta con el ID dado.
+     * 
+     * @param id ID de la respuesta
+     * @param idEncuesta ID de la encuesta
+     * @return true si existe, false en caso contrario
+     */
+    public boolean existeRespuesta(int id, int idEncuesta) {
+        return respuestas.existeRespuesta(id, idEncuesta);
     }
 
     /**
@@ -357,12 +379,33 @@ public class GestorPersistencia {
     }
 
     /**
+     * Guarda una nueva respuesta en el sistema.
+     * 
+     * @param r Respuesta a guardar
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si ya existe una respuesta con el mismo ID
+     */
+    public void guardarRespuesta(Respuesta r, int idEncuesta) {
+        respuestas.guardarRespuesta(r, idEncuesta);
+    }
+
+    /**
      * Actualiza una respuesta existente.
      * 
      * @param r Respuesta a actualizar
      */
     public void actualizarRespuesta(Respuesta r) {
         respuestas.actualizarRespuesta(r);
+    }
+
+    /**
+     * Actualiza una respuesta existente.
+     * 
+     * @param r Respuesta a actualizar
+     * @param idEncuesta ID de la encuesta
+     */
+    public void actualizarRespuesta(Respuesta r, int idEncuesta) {
+        respuestas.actualizarRespuesta(r, idEncuesta);
     }
 
 
@@ -375,6 +418,17 @@ public class GestorPersistencia {
     public void eliminarRespuesta(int id) {
         
         respuestas.eliminarRespuesta(id);
+    }
+
+    /**
+     * Elimina una respuesta por su ID.
+     * 
+     * @param id ID de la respuesta a eliminar
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si la respuesta no existe
+     */
+    public void eliminarRespuesta(int id, int idEncuesta) {
+        respuestas.eliminarRespuesta(id, idEncuesta);
     }
 
 
