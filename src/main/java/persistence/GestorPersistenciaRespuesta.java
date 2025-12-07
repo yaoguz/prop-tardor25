@@ -157,4 +157,8 @@ public class GestorPersistenciaRespuesta {
         if (respuestas.containsKey(id)) respuestas.remove(id);
         ctrlFicheroRespuesta.eliminarRespuesta(id, idEncuesta);
     }
+
+    public void guardarNextId () {
+        ctrlFicheroRespuesta.guardarNextId(nextIdRespuesta);
+    }
 }
