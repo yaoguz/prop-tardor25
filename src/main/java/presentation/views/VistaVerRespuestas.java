@@ -236,6 +236,7 @@ public class VistaVerRespuestas extends ComponenteBase {
     // Título
     JLabel lblUsuario = createStyledLabel("Usuario: " + usuario, FONT_SUBTITLE);
     lblUsuario.setAlignmentX(Component.LEFT_ALIGNMENT);
+    lblUsuario.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblUsuario.getPreferredSize().height));
     panel.add(lblUsuario);
     panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
@@ -243,15 +244,18 @@ public class VistaVerRespuestas extends ComponenteBase {
     for (Map.Entry<String, String> entry : respuestas.entrySet()) {
         JLabel lblPregunta = createStyledLabel("• " + entry.getKey(), FONT_NORMAL);
         lblPregunta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblPregunta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblPregunta.getPreferredSize().height));
         panel.add(lblPregunta);
 
         JLabel lblRespuesta = createStyledLabel("  → " + entry.getValue(), FONT_NORMAL);
         lblRespuesta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblRespuesta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblRespuesta.getPreferredSize().height));
         panel.add(lblRespuesta);
 
         panel.add(Box.createRigidArea(new Dimension(0, 8)));
     }
 
+    panel.setAlignmentX(Component.LEFT_ALIGNMENT);
     panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
     return panel;
@@ -281,6 +285,7 @@ public class VistaVerRespuestas extends ComponenteBase {
     // Enunciado
     JLabel lblPregunta = createStyledLabel("Pregunta: " + pregunta.getEnunciado(), FONT_SUBTITLE);
 	lblPregunta.setAlignmentX(Component.LEFT_ALIGNMENT);
+	lblPregunta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblPregunta.getPreferredSize().height));
     panel.add(lblPregunta);
 	panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
@@ -297,13 +302,17 @@ public class VistaVerRespuestas extends ComponenteBase {
         // un poco de espacio
         lblRespuesta.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
         lblRespuesta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblRespuesta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblRespuesta.getPreferredSize().height));
 
         panelRespuestas.add(lblRespuesta);
     }
 
+    panelRespuestas.setAlignmentX(Component.LEFT_ALIGNMENT);
+    panelRespuestas.setMaximumSize(new Dimension(Integer.MAX_VALUE, panelRespuestas.getPreferredSize().height));
     panel.add(panelRespuestas);
 	panel.add(Box.createRigidArea(new Dimension(0, 8)));
 
+	panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 	panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
     return panel;

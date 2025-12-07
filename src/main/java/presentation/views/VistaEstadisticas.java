@@ -371,13 +371,13 @@ public class VistaEstadisticas extends ComponenteBase {
 
 		// Representante
 		String representante = ctrlPresentacion.obtenerRepresentantePerfil(perfil);
-		JLabel lblRepresentante = createStyledLabel("👤 Representante: " + representante, FONT_NORMAL);
+		JLabel lblRepresentante = createStyledLabel("Representante: " + representante, FONT_NORMAL);
 		lblRepresentante.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0));
 		panelInfo.add(lblRepresentante);
 
 		// Miembros
 		List<String> miembros = ctrlPresentacion.obtenerMiembrosPerfil(perfil);
-		JLabel lblMiembros = createStyledLabel("👥 Miembros (" + miembros.size() + "):", FONT_NORMAL);
+		JLabel lblMiembros = createStyledLabel("Miembros (" + miembros.size() + "):", FONT_NORMAL);
 		panelInfo.add(lblMiembros);
 
 		JPanel panelMiembros = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
@@ -406,26 +406,7 @@ public class VistaEstadisticas extends ComponenteBase {
 		
 		JButton btnVerRespuestas = createStyledButton("Ver Respuestas Miembros", COLOR_PRIMARY);
 		btnVerRespuestas.setFont(FONT_SMALL);
-		btnVerRespuestas.addActionListener(e -> {
-			// Mostrar diálogo con lista de miembros
-			String[] opciones = miembros.toArray(new String[0]);
-			String seleccionado = (String) JOptionPane.showInputDialog(
-				frame,
-				"Selecciona un miembro para ver sus respuestas:",
-				"Respuestas de Miembros",
-				JOptionPane.PLAIN_MESSAGE,
-				null,
-				opciones,
-				opciones[0]
-			);
-			
-			if (seleccionado != null) {
-				JOptionPane.showMessageDialog(frame, 
-					"Funcionalidad de ver respuestas individuales pendiente de implementación.\nMiembro seleccionado: " + seleccionado,
-					"Info",
-					JOptionPane.INFORMATION_MESSAGE);
-			}
-		});
+		btnVerRespuestas.addActionListener(e -> ctrlPresentacion.mostrarRespuestasMiembros(nombreUsuario, idEncuesta, perfil, representante));
 		
 		panelBoton.add(btnVerRespuestas);
 		panel.add(panelBoton, BorderLayout.SOUTH);

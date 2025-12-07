@@ -150,6 +150,17 @@ public class CtrlPresentacion {
 	}
 
 	/**
+	 * Muestra vista de las respuestas de cada miembro.
+	 * @param perfil perfiles de usuarios
+	 * @param representante Representante del perfil
+	 */
+	public void mostrarRespuestasMiembros(String nombreUsuario, int idEncuesta, Perfil perfil, String representante) {
+		closeAllWindows();
+		VistaRespuestasMiembros vista = new VistaRespuestasMiembros(this, nombreUsuario, idEncuesta, perfil, representante);
+		vista.mostrar();
+	}
+
+	/**
 	 * Cierra todas las ventanas AWT/Swing abiertas. Usado al cambiar de vista para
 	 * evitar dejar múltiples ventanas/pestañas abiertas.
 	 */

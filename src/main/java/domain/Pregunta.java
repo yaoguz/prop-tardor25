@@ -192,4 +192,13 @@ public abstract class Pregunta {
 	 * @return un String con el tipo de Pregunta.
 	 */
 	public abstract String tipoPregunta();
+
+	/**
+	 * Alias público para obtener el tipo de la pregunta.
+	 * Muchas partes del código esperan llamar a `getTipo()`.
+	 * @return un String con el tipo de Pregunta (delegado a {@link #tipoPregunta()}).
+	 */
+	public String getTipo() {
+		return tipoPregunta();
+	}
 }
