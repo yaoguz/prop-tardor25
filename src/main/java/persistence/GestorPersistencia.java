@@ -402,23 +402,16 @@ public class GestorPersistencia {
      * @return Lista con todas las respuestas de la encuesta
      */
     public ArrayList<Respuesta> getRespuestasEncuesta(int idEncuesta) {                 ////////////////// nuevo
-        // TODO: En implementación real con archivos JSON:
-        // Path dirEncuesta = Paths.get("data/encuestas/" + idEncuesta);
-        // List<Path> archivosRespuesta = Files.list(dirEncuesta)
-        //     .filter(p -> p.getFileName().toString().matches("\\d+\\.json"))
-        //     .collect(Collectors.toList());
-        // 
-        // Para cada archivo: leer JSON → deserializar según tipo → añadir a lista
-        
-        ArrayList<Respuesta> resultado = new ArrayList<>();
-        for (Respuesta r : respuestas.values()) {
-            // Obtener la pregunta para saber a qué encuesta pertenece
-            Pregunta p = preguntas.get(r.getIdPregunta());
-            if (p != null && p.getIdEncuesta() == idEncuesta) {
-                resultado.add(r);
-            }
-        }
-        return resultado;
+
+        return encuestas.getRespuestasEncuesta();
+    }   
+
+    public void cerrarSesion() {
+        encuestas.guardarNextId();
+    
+        preguntas.guardarNextId();
+
+        respuestas.guardarNextId();
     }
 
 }

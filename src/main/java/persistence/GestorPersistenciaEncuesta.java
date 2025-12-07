@@ -160,4 +160,14 @@ public class GestorPersistenciaEncuesta {
         if (encuestas.containsKey(id)) encuestas.remove(id);
         ctrlFicheroEncuesta.eliminarEncuesta(id);
     }
+
+    public ArrayList<Respuesta> getRespuestasEncuesta (int id) {
+
+        return ctrlFicheroEncuesta.getRespuestasEncuesta(id);
+
+    }
+
+    public void guardarNextId () {
+        ctrlFicheroEncuesta.guardarNextId(nextIdEncuesta);
+    }
 }

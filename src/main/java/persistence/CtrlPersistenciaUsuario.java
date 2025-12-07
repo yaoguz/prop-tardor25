@@ -121,7 +121,5 @@ public class CtrlPersistenciaUsuario {
         } catch (IOException e) {
             throw new RuntimeException("Error guardando usuarios: " + e.getMessage());
         }
-    }
-
-   
+    }  
 }
