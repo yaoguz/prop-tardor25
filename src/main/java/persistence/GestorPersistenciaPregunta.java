@@ -32,6 +32,9 @@ public class GestorPersistenciaPregunta {
      */
     private final CtrlPersistenciaPregunta ctrlFicheroPregunta;
 
+    /** ID para la próxima pregunta a crear */
+    private int nextIdPregunta;
+
 
     /** Constructor y metodos de inicializacion **/
 
@@ -105,10 +108,10 @@ public class GestorPersistenciaPregunta {
      * @param idEncuesta identificador de la encuesta cuyas preguntas queremos obtener
      * @return Lista de preguntas que tiene la encuesta
      * @throws IllegalArgumentException si la encuesta especificada no existe
-     */
+     *//*
     public ArrayList<Pregunta> getPreguntasEncuesta(int idEncuesta) throws IllegalArgumentException {
     	return ctrlFicheroPregunta.getPreguntasEncuesta();
-    }
+    }*/
 
     /**
      * Verifica si existe una pregunta con el ID dado.
@@ -161,6 +164,19 @@ public class GestorPersistenciaPregunta {
     public void eliminarPregunta(int id) {
         if (preguntas.containsKey(id)) preguntas.remove(id);
         ctrlFicheroPregunta.eliminarPregunta(id);
+    }
+
+    /**
+     * Obtiene el siguiente ID disponible para una nueva pregunta.
+     * 
+     * @return Siguiente ID disponible
+     */
+    public int getNextIdPregunta() {
+        return nextIdPregunta++;
+    }
+
+    public void guardarNextId () {
+        ctrlFicheroPregunta.guardarNextId(nextIdPregunta);
     }
 }
 

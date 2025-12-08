@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Controlador de persistencia de preguntas en disco.
  * 
- * Gestiona la lectura y escritura de respuestas en formato JSON.
+ * Gestiona la lectura y escritura de preguntas en formato JSON.
  * Cada pregunta se almacena en data/encuestas/{idEncuesta}/preguntas/{idPregunta}.json
  * 
  * RESPONSABILIDADES:
@@ -29,7 +29,7 @@ import java.util.*;
  */
 public class CtrlPersistenciaPregunta {
     private final Gson gson;
-    private final CtrlPersistenciaPreguta singletonInstance;
+    private static CtrlPersistenciaPregunta singletonInstance;
 
     /**
      * Crea controlador de persistencia de preguntas con deserializador custom.
@@ -53,6 +53,50 @@ public class CtrlPersistenciaPregunta {
     }
 
     /**
+     * Obtiene el siguiente ID disponible para una nueva pregunta.
+     * 
+     * @return Siguiente ID de pregunta
+     */
+    public int getNextId () {
+        String FILE = "data/nextId.json";
+
+        try (FileReader reader = new FileReader(FILE)) {
+            JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+            return jsonObject.get("nextIdPregunta").getAsInt();
+        }
+        catch (Exception exc) {
+            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+        }
+    }
+
+    /**
+     * Guarda el siguiente ID disponible en disco.
+     * 
+     * @param newid Nuevo ID de pregunta
+     */
+    public void guardarNextId (int newid) {
+        String FILE = "data/nextId.json";
+
+        try{
+            FileReader reader = new FileReader(FILE);
+            JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+
+            // .addProperty reemplaza el valor si la clave ya existe, o la crea si no
+            jsonObject.addProperty("nextIdPregunta", newid);
+
+            try (FileWriter writer = new FileWriter(FILE)) {
+                gson.toJson(jsonObject, writer); // vuelca el objeto modificado al archivo
+            } 
+            catch (IOException e) {
+                throw new RuntimeException("Error escribiendo el archivo JSON", e);
+            }
+        }
+        catch (Exception exc) {
+            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+        }
+    }
+
+    /**
      * Carga una pregunta específica desde disco.
      * 
      * @param id ID de la pregunta
@@ -60,7 +104,7 @@ public class CtrlPersistenciaPregunta {
      */
     public Pregunta getPregunta(int id) {
     	File carpetaRaiz = new File("data/encuestas");
-    	File[] jsonFiles = carpetaRaiz.listFiles(file -> file.isFile() && file.getName()..endsWith(".json"));
+    	File[] jsonFiles = carpetaRaiz.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
     	int idEncuesta = -1;
     	try{
     		for(File f : jsonFiles){
@@ -82,7 +126,9 @@ public class CtrlPersistenciaPregunta {
     	//-------------------------//
 		// Falta generar el objeto //
 		//-------------------------//
-		//Si se hace indexPreguntas hay que cambiarlo
+
+		//para que devuelva algo de momento
+        return new PreguntaLibre(1, 1, "");
     }
 
     /**
@@ -90,25 +136,61 @@ public class CtrlPersistenciaPregunta {
      * 
      * @return Mapa de <ID,Pregunta> (vacío si archivo no existe)
      */
-    public Map<Integer, Pregunta> getAllPreguntas() { 
-        File f = new File(FILE);
-        if (!f.exists()) return new HashMap<>();
+    public ArrayList<Pregunta> getAllPreguntas() { 
+
+    	//---------------//
+		// Falta revisar //
+		//---------------//
+
+        File f = new File("data/encuestas");
+        File[] encuestas = f.listFiles(File::isDirectory);
+        if (encuestas == null) return new ArrayList<>();
         
         try (FileReader r = new FileReader(f)) {
             JsonObject root = JsonParser.parseReader(r).getAsJsonObject();
-            if (!root.has("preguntas")) return new HashMap<>();
+            if (!root.has("preguntas")) return new ArrayList<>();
             
             JsonObject preguntasObj = root.getAsJsonObject("preguntas");
-            Map<Integer, Pregunta> result = new HashMap<>();
+            ArrayList<Pregunta> result = new ArrayList<>();
             
             for (Map.Entry<String, JsonElement> entry : preguntasObj.entrySet()) {
                 Pregunta p = gson.fromJson(entry.getValue(), Pregunta.class);
-                result.put(Integer.parseInt(entry.getKey()), p);
+                result.add(p);
             }
             return result;
         } catch (IOException e) {
-            return new HashMap<>();
+            return new ArrayList<>();
         }
+    }
+
+    /**
+     * Actualiza una pregunta existente.
+     * 
+     * @param p pregunta a actualizar
+     * @throws IllegalArgumentException si la pregunta no existe
+     */
+    public void sobreescribe(Pregunta p) {
+        int id = p.getIdPregunta();
+        File archivo = new File("data/encuestas/" + p.getIdEncuesta() + "/preguntas", id + ".json");
+        
+        if (!archivo.exists()) {
+            throw new IllegalArgumentException("La pregunta " + id + " no existe");
+        }
+
+    	//-------------------------//
+		// Falta generar el objeto //
+		//-------------------------//
+
+    }
+
+    /**
+     * Elimina una pregunta del disco.
+     * 
+     * @param idPregunta Identificador de la pregunta
+     * @throws IllegalArgumentException si la pregunta no existe
+     */
+    public void eliminarPregunta(int idPregunta) {
+        //extraer parte del código del get que busca la pregunta para hacer un findPregunta(id) y usarlo aquí también
     }
 
     /**
@@ -116,52 +198,49 @@ public class CtrlPersistenciaPregunta {
      * 
      * @param preguntas Mapa de <ID,Pregunta>
      */
-    public void guardar(Map<Integer, Pregunta> preguntas) {
-        for (Map.Entry<Integer, Pregunta> e : preguntas.entrySet()) {
-            Pregunta p = e.getValue();
-            JsonObject pObj = new JsonObject();
-            pObj.addProperty("idPregunta", p.getIdPregunta());
-            pObj.addProperty("tipo", p.tipoPregunta());
+    public void guardar(Pregunta p) {
+        JsonObject pObj = new JsonObject();
+        pObj.addProperty("idPregunta", p.getIdPregunta());
+        pObj.addProperty("tipo", p.tipoPregunta());
 //            pObj.addProperty("idEncuesta", p.getIdEncuesta());
-            pObj.addProperty("enunciado", p.getEnunciado());
-            
-            // Serialización polimórfica con tipo
-            switch(p.tipoPregunta()) {
-            	case "numerica":
-    	            pObj.addProperty("rangoInf", p.getRangoInf());
-    	            pObj.addProperty("rangoSup", p.getRangoSup());
-    	            break;
-    	        case "opcion_unica":
-            		JsonArray arrU = new JsonArray();
-            		for (int iU : p.getOpciones()) {
-            		    arrU.add(iU);
-            		}
-            		pObj.add("opciones", arrU);
-                	pObj.addProperty("ordenada", p.esOrdenada());
-                	break;
-				case "opcion_multiple":
-            		JsonArray arrM = new JsonArray();
-            		for (int iM : p.getOpciones()) {
-            		    arrM.add(iM);
-            		}
-            		pObj.add("opciones", arrM);
-    	            pObj.addProperty("numMaxOpc", p.getNumMaxOpc());
-            }
-    		JsonArray resps = new JsonArray();
-    		for (int iR : p.getRespuestas()) {
-    		    resps.add(iR);
-    		}
-    		pObj.add("idRespuestas", resps);
-			try (FileWriter w = new FileWriter("data/encuestas/" + p.getIdEncuesta() + "/preguntas/" + p.getIdPregunta() + ".json")) {
-		        gson.toJson(pObj, w);
-		    } catch (IOException e) {
-		        throw new RuntimeException("Error guardando preguntas: " + e.getMessage());
-		    }
+        pObj.addProperty("enunciado", p.getEnunciado());
+
+        switch(p.tipoPregunta()) {
+            case "numerica":
+                pObj.addProperty("rangoInf", p.getRangoInf());
+                pObj.addProperty("rangoSup", p.getRangoSup());
+                break;
+            case "opcion_unica":
+                JsonArray arrU = new JsonArray();
+                for (String sU : p.getOpciones()) {
+                    arrU.add(sU);
+                }
+                pObj.add("opciones", arrU);
+                pObj.addProperty("ordenada", p.esOrdenada());
+                break;
+            case "opcion_multiple":
+                JsonArray arrM = new JsonArray();
+                for (String sM : p.getOpciones()) {
+                    arrM.add(sM);
+                }
+                pObj.add("opciones", arrM);
+                pObj.addProperty("numMaxOpc", p.getNumMaxOpc());
+        }
+        JsonArray resps = new JsonArray();
+        for (int iR : p.getIdRespuestas()) {
+            resps.add(iR);
+        }
+        pObj.add("idRespuestas", resps);
+        try (FileWriter w = new FileWriter("data/encuestas/" + p.getIdEncuesta() + "/preguntas/" + p.getIdPregunta() + ".json")) {
+            gson.toJson(pObj, w);
+        } catch (IOException e) {
+            throw new RuntimeException("Error guardando preguntas: " + e.getMessage());
         }
     }
 
     /**
      * Deserializador custom para jerarquía de Pregunta.
+     * Ya estaba, lo quito cuando acabe el get ya que tiene código útil.
      */
     private static class PreguntaDeserializer implements JsonDeserializer<Pregunta> {
         @Override
