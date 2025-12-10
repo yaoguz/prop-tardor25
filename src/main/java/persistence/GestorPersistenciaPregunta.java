@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import domain.Pregunta;
-import domain.Usuario;
 
 /**
  * Gestor de persistencia de las preguntas (cache).
