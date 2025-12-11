@@ -206,19 +206,19 @@ public class VistaModificarRespuestaEncuesta extends ComponenteBase {
                 }
             }
 
-            JOptionPane.showMessageDialog(frame, "Respuestas actualizadas correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(panel, "Respuestas actualizadas correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             cambiosSinGuardar = false;
             frame.dispose();
             ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame, "Error al guardar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(panel, "Error al guardar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void salir() {
         if (cambiosSinGuardar) {
-            int opcion = JOptionPane.showConfirmDialog(frame,
+            int opcion = JOptionPane.showConfirmDialog(panel,
                 "Hay cambios sin guardar. ¿Deseas salir sin guardar?",
                 "Confirmar Salida",
                 JOptionPane.YES_NO_OPTION,

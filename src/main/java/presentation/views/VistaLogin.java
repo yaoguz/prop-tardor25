@@ -130,7 +130,7 @@ public class VistaLogin extends ComponenteBase {
         String password = new String(txtPassword.getPassword());
         
         if (usuario.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, 
+            JOptionPane.showMessageDialog(panel, 
                 "Por favor, introduce usuario y contraseña", 
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -141,7 +141,7 @@ public class VistaLogin extends ComponenteBase {
             frame.dispose();
             ctrlPresentacion.mostrarPaginaPrincipal(usuario);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame, 
+            JOptionPane.showMessageDialog(panel, 
                 "Error: " + ex.getMessage(), 
                 "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
         }

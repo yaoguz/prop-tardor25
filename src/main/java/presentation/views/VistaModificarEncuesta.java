@@ -174,7 +174,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
     private void mostrarMenuTiposPregunta() {
         String[] tipos = {"Libre", "Numérica", "Opción Única", "Opción Múltiple"};
         String seleccion = (String) JOptionPane.showInputDialog(
-            frame,
+            panel,
             "Selecciona el tipo de pregunta:",
             "Añadir Pregunta",
             JOptionPane.QUESTION_MESSAGE,
@@ -237,7 +237,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 panelPreguntas.add(Box.createRigidArea(new Dimension(0, 10)));
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame, "Error al cargar encuesta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(panel, "Error al cargar encuesta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -247,7 +247,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
     private void guardarEncuesta() {
         String titulo = txtTitulo.getText().trim();
         if (titulo.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "El título no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(panel, "El título no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -265,11 +265,11 @@ public class VistaModificarEncuesta extends ComponenteBase {
             }
             
             cambiosSinGuardar = false;
-            JOptionPane.showMessageDialog(frame, "Encuesta guardada correctamente");
+                JOptionPane.showMessageDialog(panel, "Encuesta guardada correctamente");
             frame.dispose();
             ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(panel, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -279,7 +279,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
     private void salir() {
         if (cambiosSinGuardar) {
             int respuesta = JOptionPane.showConfirmDialog(
-                frame,
+                panel,
                 "Hay cambios sin guardar. ¿Deseas salir de todos modos?",
                 "Cambios sin guardar",
                 JOptionPane.YES_NO_OPTION
@@ -380,7 +380,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
         
         private void eliminarPreguntaExistente() {
             int confirm = JOptionPane.showConfirmDialog(
-                frame,
+                panel,
                 "¿Eliminar esta pregunta y todas sus respuestas asociadas?",
                 "Confirmar eliminación",
                 JOptionPane.YES_NO_OPTION,
@@ -396,7 +396,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
                     panelPreguntas.repaint();
                     cambiosSinGuardar = true;
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(frame, "Error al eliminar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(panel, "Error al eliminar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -415,7 +415,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setResizable(false);
         dialog.setSize(600, 400);
-        dialog.setLocationRelativeTo(frame);
+        dialog.setLocationRelativeTo(panel);
 
         JPanel content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));

@@ -138,7 +138,7 @@ public class VistaRegistro extends ComponenteBase {
         String confirm = new String(txtConfirm.getPassword());
         
         if (usuario.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, 
+            JOptionPane.showMessageDialog(panel, 
                 "Por favor, completa todos los campos", 
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -146,12 +146,12 @@ public class VistaRegistro extends ComponenteBase {
         
         try {
             ctrlPresentacion.registrarUsuario(usuario, password, confirm);
-            JOptionPane.showMessageDialog(frame, 
+            JOptionPane.showMessageDialog(panel, 
                 "Usuario registrado correctamente. Ahora puedes iniciar sesión.", 
                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
             volverALogin();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame, 
+            JOptionPane.showMessageDialog(panel, 
                 "Error: " + ex.getMessage(), 
                 "Error de registro", JOptionPane.ERROR_MESSAGE);
         }
