@@ -3,6 +3,7 @@ package persistence;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import domain.Pregunta;
 
 /**
@@ -42,7 +43,7 @@ public class GestorPersistenciaPregunta {
      */
 	private GestorPersistenciaPregunta() {
         preguntas = new LinkedHashMap<Integer, Pregunta>(CACHE_LIMIT, 2.0f, true){
-            protected boolean removeEldestEntry(Map.Entry eldest){
+            protected boolean removeEldestEntry(Map.Entry<Integer, Pregunta> eldest){
                 return size() > CACHE_LIMIT;
             }
         };

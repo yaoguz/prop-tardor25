@@ -385,28 +385,17 @@ public class TestCtrlDominioUsuario {
         Respuesta mockR1 = mock(Respuesta.class);
         Respuesta mockR2 = mock(Respuesta.class);
         Respuesta mockR3 = mock(Respuesta.class);
-        Pregunta mockP1 = mock(Pregunta.class);
-        Pregunta mockP2 = mock(Pregunta.class);
-        Pregunta mockP3 = mock(Pregunta.class);
+        Respuesta mockR4 = mock(Respuesta.class);
 
         when(mockGestor.getUsuario("Alessandro")).thenReturn(mockUser);
-        when(mockUser.getIdRespuestas()).thenReturn(new ArrayList<>(Arrays.asList(1, 2, 3)));
 
-        when(mockCtrlDominioRespuesta.getRespuesta(1)).thenReturn(mockR1);
-        when(mockCtrlDominioRespuesta.getRespuesta(2)).thenReturn(mockR2);
-        when(mockCtrlDominioRespuesta.getRespuesta(3)).thenReturn(mockR3);
+        when(mockR1.getNomUsuario()).thenReturn("Alessandro");
+        when(mockR2.getNomUsuario()).thenReturn("OtroUsuario");
+        when(mockR3.getNomUsuario()).thenReturn("Alessandro");
+        when(mockR4.getNomUsuario()).thenReturn("OtroUsuario");
 
-        when(mockR1.getIdPregunta()).thenReturn(10);
-        when(mockR2.getIdPregunta()).thenReturn(20);
-        when(mockR3.getIdPregunta()).thenReturn(30);
-
-        when(mockCtrlDominioPregunta.getPregunta(10)).thenReturn(mockP1);
-        when(mockCtrlDominioPregunta.getPregunta(20)).thenReturn(mockP2);
-        when(mockCtrlDominioPregunta.getPregunta(30)).thenReturn(mockP3);
-
-        when(mockP1.getIdEncuesta()).thenReturn(100);
-        when(mockP2.getIdEncuesta()).thenReturn(200);
-        when(mockP3.getIdEncuesta()).thenReturn(100);
+        ArrayList<Respuesta> todasRespuestas = new ArrayList<>(Arrays.asList(mockR1, mockR2, mockR3, mockR4));
+        when(mockGestor.getRespuestasEncuesta(100)).thenReturn(todasRespuestas);
 
         List<Respuesta> resultado = ctrlDominioUsuario.getRespuestasEncuesta("Alessandro", 100);
 
@@ -414,9 +403,7 @@ public class TestCtrlDominioUsuario {
         assertEquals("no devuelve en el lugar", mockR1, resultado.get(0));
         assertEquals("no devuelve en el lugar", mockR3, resultado.get(1));
 
-        verify(mockUser).getIdRespuestas();
-        verify(mockCtrlDominioRespuesta, times(3)).getRespuesta(anyInt());
-        verify(mockCtrlDominioPregunta, times(3)).getPregunta(anyInt());
+        verify(mockGestor).getRespuestasEncuesta(100);
     }
 
     @Test
