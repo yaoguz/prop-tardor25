@@ -95,7 +95,7 @@ public class DriverEncuesta {
         ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
         ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
         ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);
-        ctrlEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlRespuesta, ctrlUsuario);
+        ctrlEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlUsuario);
 
         // actualizar referencias circulares
         ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlUsuario, ctrlEncuesta, ctrlPregunta);

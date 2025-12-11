@@ -31,8 +31,6 @@ public class TestCtrlDominioEncuesta {
     private CtrlDominioUsuario mockCtrlDominioUsuario;
     @Mock
     private CtrlDominioPregunta mockCtrlDominioPregunta;
-    @Mock
-    private CtrlDominioRespuesta mockCtrlDominioRespuesta;
 
     private CtrlDominioEncuesta ctrlDominioEncuesta;
     
@@ -46,7 +44,7 @@ public class TestCtrlDominioEncuesta {
         instance.setAccessible(true);
         instance.set(null, null);
         
-        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(mockGestor, mockCtrlDominioPregunta, mockCtrlDominioRespuesta, mockCtrlDominioUsuario);
+        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(mockGestor, mockCtrlDominioPregunta, mockCtrlDominioUsuario);
     }
 
     /**

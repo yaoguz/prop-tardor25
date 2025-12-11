@@ -36,7 +36,7 @@ public class DriverUsuario {
         ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestor, null, null);
         ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlDominioUsuario, null, null);
         ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlDominioRespuesta, null);
-        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
+        ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlDominioPregunta, ctrlDominioUsuario);
 
         ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlDominioRespuesta, ctrlDominioPregunta);
         ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestor, ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);

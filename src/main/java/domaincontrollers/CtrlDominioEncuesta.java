@@ -46,19 +46,14 @@ public class CtrlDominioEncuesta {
 	/** Controlador de preguntas (inyección de dependencia) */
 	private CtrlDominioPregunta ctrlDominioPregunta;
 	
-	/** Controlador de respuestas (inyección de dependencia) */
-	private CtrlDominioRespuesta ctrlDominioRespuesta;                   // pnd de quitar
-	
 	/** Controlador de usuarios (inyección de dependencia) */
 	private CtrlDominioUsuario ctrlDominioUsuario;
 
 	private CtrlDominioEncuesta(GestorPersistencia gestor,
 								CtrlDominioPregunta ctrlDominioPregunta,
-								CtrlDominioRespuesta ctrlDominioRespuesta,
 								CtrlDominioUsuario ctrlDominioUsuario) {
 		this.gestor = gestor;
 		this.ctrlDominioPregunta = ctrlDominioPregunta; 
-		this.ctrlDominioRespuesta = ctrlDominioRespuesta; 
 		this.ctrlDominioUsuario = ctrlDominioUsuario; 
 	}
 
@@ -68,26 +63,20 @@ public class CtrlDominioEncuesta {
 	 * 
 	 * @param gestor Gestor de persistencia
 	 * @param ctrlDominioPregunta Controlador de preguntas
-	 * @param ctrlDominioRespuesta Controlador de respuestas
 	 * @param ctrlDominioUsuario Controlador de usuarios
 	 * @return Instancia única de CtrlDominioEncuesta
 	 */
 	public static CtrlDominioEncuesta getInstance(GestorPersistencia gestor, 
 	                              CtrlDominioPregunta ctrlDominioPregunta,
-	                              CtrlDominioRespuesta ctrlDominioRespuesta,
 	                              CtrlDominioUsuario ctrlDominioUsuario) {
 		if (singletonInstance == null) {
 			singletonInstance = new CtrlDominioEncuesta(gestor, 
 														ctrlDominioPregunta,
-														ctrlDominioRespuesta,
 														ctrlDominioUsuario);
 		} else {
 			// Actualizar referencias circulares si ya existe la instancia
 			if (ctrlDominioPregunta != null) {
 				singletonInstance.ctrlDominioPregunta = ctrlDominioPregunta;
-			}
-			if (ctrlDominioRespuesta != null) {
-				singletonInstance.ctrlDominioRespuesta = ctrlDominioRespuesta;
 			}
 			if (ctrlDominioUsuario != null) {
 				singletonInstance.ctrlDominioUsuario = ctrlDominioUsuario;

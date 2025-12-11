@@ -39,7 +39,7 @@ public class DriverClustering {
         ctrlRespuesta = CtrlDominioRespuesta.getInstance(gestor, null, null, null);
         ctrlPregunta = CtrlDominioPregunta.getInstance(gestor, ctrlRespuesta, null);
         ctrlUsuario = CtrlDominioUsuario.getInstance(gestor, ctrlRespuesta, ctrlPregunta);
-        ctrlEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlRespuesta, ctrlUsuario);
+        ctrlEncuesta = CtrlDominioEncuesta.getInstance(gestor, ctrlPregunta, ctrlUsuario);
         ctrlPerfil = CtrlDominioPerfil.getInstance(ctrlEncuesta);
         
         // Actualizar referencias circulares

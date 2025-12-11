@@ -63,7 +63,7 @@ public class CtrlDominio {
 		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia, null, null, null);
 		ctrlDominioPregunta = CtrlDominioPregunta.getInstance(gestorPersistencia, ctrlDominioRespuesta, null);
 		ctrlDominioUsuario = CtrlDominioUsuario.getInstance(gestorPersistencia, ctrlDominioRespuesta, ctrlDominioPregunta);
-		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia, ctrlDominioPregunta, ctrlDominioRespuesta, ctrlDominioUsuario);
+		ctrlDominioEncuesta = CtrlDominioEncuesta.getInstance(gestorPersistencia, ctrlDominioPregunta, ctrlDominioUsuario);
 		
 		// Actualizar referencias circulares ahora que todos los controladores existen
 		ctrlDominioRespuesta = CtrlDominioRespuesta.getInstance(gestorPersistencia, ctrlDominioUsuario, ctrlDominioEncuesta, ctrlDominioPregunta);
