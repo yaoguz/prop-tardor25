@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Vista para crear o modificar encuesta.
@@ -82,6 +84,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
             }
         });
         frame.setSize(900, 700);
+        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         
         panel.setLayout(new BorderLayout());
@@ -363,8 +366,13 @@ public class VistaModificarEncuesta extends ComponenteBase {
             btnEliminar.setMaximumSize(new Dimension(100, 30));
             btnEliminar.addActionListener(e -> eliminarPreguntaExistente());
             
+            JButton btnEditar = createStyledButton("Editar", COLOR_PRIMARY);
+            btnEditar.setMaximumSize(new Dimension(100, 30));
+            btnEditar.addActionListener(e -> mostrarEditorPreguntaExistente(this));
+
             JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             panelBotones.setBackground(Color.WHITE);
+            panelBotones.add(btnEditar);
             panelBotones.add(btnEliminar);
             
             panel.add(panelBotones, BorderLayout.EAST);
@@ -396,6 +404,191 @@ public class VistaModificarEncuesta extends ComponenteBase {
         public JPanel getPanel() {
             return panel;
         }
+    }
+
+    /**
+     * Muestra un diálogo modal para editar una pregunta existente.
+     */
+    private void mostrarEditorPreguntaExistente(PreguntaExistente pe) {
+        Pregunta p = pe.pregunta;
+        JDialog dialog = new JDialog(frame, "Editar pregunta", true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setResizable(false);
+        dialog.setSize(600, 400);
+        dialog.setLocationRelativeTo(frame);
+
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Enunciado
+        JPanel pEnun = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        pEnun.setBackground(Color.WHITE);
+        pEnun.add(createStyledLabel("Enunciado:", FONT_NORMAL));
+        JTextField txtEnun = createStyledTextField(40);
+        txtEnun.setText(p.getEnunciado());
+        pEnun.add(txtEnun);
+        content.add(pEnun);
+
+        // Panel para atributos específicos
+        JPanel atributosPanel = new JPanel();
+        atributosPanel.setLayout(new BoxLayout(atributosPanel, BoxLayout.Y_AXIS));
+        atributosPanel.setBackground(Color.WHITE);
+
+        // Campos según tipo
+        if (p instanceof PreguntaLibre) {
+            // no hay más campos
+            atributosPanel.add(createStyledLabel("Tipo: Pregunta Libre", FONT_SMALL));
+        } else if (p instanceof PreguntaNumerica) {
+            PreguntaNumerica pn = (PreguntaNumerica) p;
+            JPanel pRange = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pRange.setBackground(Color.WHITE);
+            pRange.add(createStyledLabel("Rango mínimo:", FONT_NORMAL));
+            JSpinner spMin = new JSpinner(new SpinnerNumberModel(pn.getRangoInf(), -100000, 100000, 1));
+            pRange.add(spMin);
+            pRange.add(createStyledLabel("Rango máximo:", FONT_NORMAL));
+            JSpinner spMax = new JSpinner(new SpinnerNumberModel(pn.getRangoSup(), -100000, 100000, 1));
+            pRange.add(spMax);
+            atributosPanel.add(pRange);
+        } else if (p instanceof PreguntaOpcionUnica) {
+            PreguntaOpcionUnica pou = (PreguntaOpcionUnica) p;
+            JCheckBox chkOrden = new JCheckBox("Ordenada");
+            chkOrden.setSelected(pou.esOrdenada());
+            atributosPanel.add(chkOrden);
+
+            JPanel panelOpc = new JPanel();
+            panelOpc.setLayout(new BoxLayout(panelOpc, BoxLayout.Y_AXIS));
+            panelOpc.setBackground(Color.WHITE);
+            java.util.List<JTextField> campos = new ArrayList<>();
+            for (String opt : pou.getOpciones()) {
+                JTextField t = createStyledTextField(30);
+                t.setText(opt);
+                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                row.setBackground(Color.WHITE);
+                row.add(createStyledLabel("Opción:", FONT_NORMAL));
+                row.add(t);
+                panelOpc.add(row);
+                campos.add(t);
+            }
+            JButton btnAddOpt = createStyledButton("+ Opción", COLOR_SUCCESS);
+            btnAddOpt.addActionListener(e -> {
+                JTextField t = createStyledTextField(30);
+                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                row.setBackground(Color.WHITE);
+                row.add(createStyledLabel("Opción:", FONT_NORMAL));
+                row.add(t);
+                panelOpc.add(row);
+                campos.add(t);
+                panelOpc.revalidate();
+                panelOpc.repaint();
+            });
+            atributosPanel.add(panelOpc);
+            atributosPanel.add(btnAddOpt);
+            // store campos in client property for later retrieval
+            atributosPanel.putClientProperty("opcionesFields", campos);
+            atributosPanel.putClientProperty("chkOrden", chkOrden);
+        } else if (p instanceof PreguntaOpcionMultiple) {
+            PreguntaOpcionMultiple pom = (PreguntaOpcionMultiple) p;
+            JPanel pMax = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pMax.setBackground(Color.WHITE);
+            pMax.add(createStyledLabel("Máx opciones seleccionables:", FONT_NORMAL));
+            JSpinner spMaxOpc = new JSpinner(new SpinnerNumberModel(pom.getNumMaxOpc(), 1, 100, 1));
+            pMax.add(spMaxOpc);
+            atributosPanel.add(pMax);
+
+            JPanel panelOpc = new JPanel();
+            panelOpc.setLayout(new BoxLayout(panelOpc, BoxLayout.Y_AXIS));
+            panelOpc.setBackground(Color.WHITE);
+            java.util.List<JTextField> campos = new ArrayList<>();
+            for (String opt : pom.getOpciones()) {
+                JTextField t = createStyledTextField(30);
+                t.setText(opt);
+                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                row.setBackground(Color.WHITE);
+                row.add(createStyledLabel("Opción:", FONT_NORMAL));
+                row.add(t);
+                panelOpc.add(row);
+                campos.add(t);
+            }
+            JButton btnAddOpt = createStyledButton("+ Opción", COLOR_SUCCESS);
+            btnAddOpt.addActionListener(e -> {
+                JTextField t = createStyledTextField(30);
+                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                row.setBackground(Color.WHITE);
+                row.add(createStyledLabel("Opción:", FONT_NORMAL));
+                row.add(t);
+                panelOpc.add(row);
+                campos.add(t);
+                panelOpc.revalidate();
+                panelOpc.repaint();
+            });
+            atributosPanel.add(panelOpc);
+            atributosPanel.add(btnAddOpt);
+            atributosPanel.putClientProperty("opcionesFields", campos);
+            atributosPanel.putClientProperty("spMaxOpc", spMaxOpc);
+        }
+
+        content.add(atributosPanel);
+
+        // Botones
+        JPanel botPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        botPanel.setBackground(Color.WHITE);
+        JButton btnSave = createStyledButton("Guardar", COLOR_PRIMARY);
+        JButton btnCancel = createStyledButton("Cancelar", COLOR_SECONDARY);
+        botPanel.add(btnCancel);
+        botPanel.add(btnSave);
+        content.add(botPanel);
+
+        btnCancel.addActionListener(e -> dialog.dispose());
+
+        btnSave.addActionListener(e -> {
+            String nuevoEnun = txtEnun.getText().trim();
+            if (nuevoEnun.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "El enunciado no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Map<String, Object> atributos = new HashMap<>();
+            if (p instanceof PreguntaNumerica) {
+                JSpinner spMin = (JSpinner) ((JPanel) atributosPanel.getComponent(0)).getComponent(1);
+                JSpinner spMax = (JSpinner) ((JPanel) atributosPanel.getComponent(0)).getComponent(3);
+                atributos.put("min", (Integer) spMin.getValue());
+                atributos.put("max", (Integer) spMax.getValue());
+            } else if (p instanceof PreguntaOpcionUnica) {
+                @SuppressWarnings("unchecked") java.util.List<JTextField> campos = (java.util.List<JTextField>) atributosPanel.getClientProperty("opcionesFields");
+                java.util.List<String> opciones = new ArrayList<>();
+                for (JTextField t : campos) {
+                    String v = t.getText().trim(); if (!v.isEmpty()) opciones.add(v);
+                }
+                JCheckBox chk = (JCheckBox) atributosPanel.getClientProperty("chkOrden");
+                atributos.put("opciones", opciones);
+                atributos.put("ordenada", chk != null && chk.isSelected());
+            } else if (p instanceof PreguntaOpcionMultiple) {
+                @SuppressWarnings("unchecked") java.util.List<JTextField> campos = (java.util.List<JTextField>) atributosPanel.getClientProperty("opcionesFields");
+                java.util.List<String> opciones = new ArrayList<>();
+                for (JTextField t : campos) {
+                    String v = t.getText().trim(); if (!v.isEmpty()) opciones.add(v);
+                }
+                JSpinner spMaxOpc = (JSpinner) atributosPanel.getClientProperty("spMaxOpc");
+                atributos.put("opciones", opciones);
+                atributos.put("numMaxOpc", (Integer) (spMaxOpc != null ? spMaxOpc.getValue() : 2));
+            }
+
+            try {
+                ctrlPresentacion.modificarPregunta(p.getIdPregunta(), nuevoEnun, atributos);
+                dialog.dispose();
+                // recargar preguntas para actualizar UI
+                panelPreguntas.removeAll();
+                preguntasExistentes.clear();
+                preguntasEditables.clear();
+                cargarDatosEncuesta();
+                cambiosSinGuardar = true;
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dialog, "Error al modificar pregunta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        dialog.add(content);
+        dialog.setVisible(true);
     }
     
     /**

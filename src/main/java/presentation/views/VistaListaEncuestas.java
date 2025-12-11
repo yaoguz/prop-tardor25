@@ -462,7 +462,13 @@ public class VistaListaEncuestas extends ComponenteBase {
         menu.addSeparator();
         menu.add(itemCerrarSesion);
         
-        menu.show(btnMenu, 0, btnMenu.getHeight());
+        // Mostrar el popup en el centro de la interfaz (relativo al frame)
+        Dimension menuSize = menu.getPreferredSize();
+        int x = (frame.getWidth() - menuSize.width) / 2;
+        int y = (frame.getHeight() - menuSize.height) / 2;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        menu.show(frame, x, y);
     }
     
     /**

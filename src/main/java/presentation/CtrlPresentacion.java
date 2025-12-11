@@ -391,6 +391,21 @@ public class CtrlPresentacion {
 		ctrlDominio.eliminarPregunta(idPregunta);
 	}
 
+	/**
+	 * Modifica una pregunta existente delegando al dominio.
+	 * @param idPregunta ID de la pregunta a modificar
+	 * @param enunciado Nuevo enunciado
+	 * @param atributosEspecificos Atributos específicos según tipo (opciones, rangos...)
+	 * @return ID de la nueva pregunta creada
+	 */
+	public int modificarPregunta(int idPregunta, String enunciado, java.util.Map<String, Object> atributosEspecificos) {
+		// Construir PreguntaImportData y delegar
+		domaincontrollers.CtrlDominioPregunta.PreguntaImportData info = new domaincontrollers.CtrlDominioPregunta.PreguntaImportData();
+		info.enunciado = enunciado;
+		info.atributosEspecificos = atributosEspecificos;
+		return ctrlDominio.modificarPregunta(idPregunta, info);
+	}
+
 	// ==================== RESPUESTAS ====================
 
 	/**
