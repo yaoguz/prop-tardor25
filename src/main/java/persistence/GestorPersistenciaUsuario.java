@@ -7,13 +7,28 @@ import java.util.Map;
 import domain.Usuario;
 
 /**
- * Cache del Usuario
- */
-
-/**
+ * Gestor de persistencia de usuarios con cache LRU.
+ * 
+ * Mantiene una cache limitada de usuarios más recientemente usados
+ * y delega operaciones de disco a CtrlPersistenciaUsuario.
+ * 
+ * RESPONSABILIDADES:
+ * - Gestionar cache LRU de usuarios (máximo 64 entradas)
+ * - Coordinar con CtrlPersistenciaUsuario para operaciones de disco
+ * - Proporcionar operaciones CRUD con cache transparente
+ * - Implementar patrón Singleton
+ * 
+ * ATRIBUTOS PRINCIPALES:
+ * - usuarios: LinkedHashMap con política LRU (accessOrder=true)
+ * - ctrlFicheroUsuario: Controlador de persistencia en disco
+ * - CACHE_LIMIT: Límite de 64 usuarios en cache
+ * 
+ * ESTRUCTURA:
+ * - Cache: LinkedHashMap con removeEldestEntry para LRU automático
+ * - Disco: Archivos JSON en data/usuarios/{nombreUsuario}.json
+ * 
  * @author Alessandro Jin
  */
-
 public class GestorPersistenciaUsuario {
     private static GestorPersistenciaUsuario singletonInstance;
 
@@ -53,7 +68,10 @@ public class GestorPersistenciaUsuario {
     // ==================== MÉTODOS DE USUARIO ====================
 
     /**
-     * Buscar el Usuario en el fichero
+     * Busca y carga un usuario desde disco a la cache.
+     * 
+     * @param nom Nombre del usuario
+     * @return Usuario cargado desde disco
      */
     Usuario sacarUsuarioFichero(String nom) {
 

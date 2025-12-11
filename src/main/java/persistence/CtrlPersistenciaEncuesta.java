@@ -35,10 +35,11 @@ public class CtrlPersistenciaEncuesta {
     private static CtrlPersistenciaRespuesta ctrlRespuesta;
 
     private final Gson gson;
+
     /**
      * Obtiene instancia única (patrón Singleton).
      * 
-     * @return Instancia única de GestorPersistenciaEncuesta
+     * @return Instancia única de CtrlPersistenciaEncuesta
      */
     public static CtrlPersistenciaEncuesta getInstance() {
         if (singletonInstance == null) {
@@ -59,6 +60,11 @@ public class CtrlPersistenciaEncuesta {
         ctrlRespuesta = CtrlPersistenciaRespuesta.getInstance();
     }
 
+    /**
+     * Obtiene el siguiente ID disponible para una nueva encuesta.
+     * 
+     * @return Siguiente ID de encuesta
+     */
     public int getNextId () {
         
         String FILE = "data/nextId.json";
@@ -75,6 +81,13 @@ public class CtrlPersistenciaEncuesta {
         }
     }
 
+    /**
+     * Obtiene una encuesta desde disco.
+     * 
+     * @param id ID de la encuesta
+     * @return Encuesta encontrada
+     * @throws RuntimeException si hay error leyendo el archivo
+     */
     public Encuesta getEncuesta(int id) {
 
         String FILE = "data/encuestas/" + id + ".json";
@@ -111,6 +124,11 @@ public class CtrlPersistenciaEncuesta {
         }
     }
 
+    /**
+     * Obtiene todas las encuestas del sistema.
+     * 
+     * @return Lista con todas las encuestas, o null si no hay encuestas
+     */
     public ArrayList<Encuesta> getAllEncuestas() {
 
         File carpetaRaiz = new File("data/encuestas");
@@ -145,7 +163,12 @@ public class CtrlPersistenciaEncuesta {
 
     }
 
-
+    /**
+     * Guarda una nueva encuesta en disco.
+     * 
+     * @param e Encuesta a guardar
+     * @throws IllegalArgumentException si la encuesta ya existe
+     */
     public void guardarEncuesta(Encuesta e) {
         
         int newid = e.getIdEncuesta();
@@ -164,12 +187,24 @@ public class CtrlPersistenciaEncuesta {
         }
     }
 
+    /**
+     * Verifica si existe una encuesta.
+     * 
+     * @param id ID de la encuesta
+     * @return true si existe
+     */
     public boolean existeEncuesta(int id) {
 
         File archivo = new File("data/encuestas", id + ".json");
         return archivo.exists();
     }
 
+    /**
+     * Actualiza una encuesta existente.
+     * 
+     * @param e Encuesta a actualizar
+     * @throws IllegalArgumentException si la encuesta no existe
+     */
     public void actualizarEncuesta (Encuesta e) {
 
         int id = e.getIdEncuesta();
@@ -191,6 +226,12 @@ public class CtrlPersistenciaEncuesta {
 
     }
 
+    /**
+     * Elimina una encuesta del disco.
+     * 
+     * @param id ID de la encuesta
+     * @throws IllegalArgumentException si la encuesta no existe
+     */
     public void eliminarEncuesta (int id) {
 
         File archivo = new File("data/encuestas", id + ".json"); //solo es  una ruta
@@ -202,9 +243,15 @@ public class CtrlPersistenciaEncuesta {
         }
     }
 
+    /**
+     * Obtiene todas las respuestas de una encuesta.
+     * 
+     * @param id ID de la encuesta
+     * @return Lista con todas las respuestas, o null si no hay respuestas
+     */
     public ArrayList<Respuesta> getRespuestasEncuesta (int id) {
 
-        File carpetaRaiz = new File("data/encuestas", id + "respuestas");
+        File carpetaRaiz = new File("data/encuestas", id + "/respuestas");
 
         File[] jsonFiles = carpetaRaiz.listFiles(
             file -> file.isFile() && file.getName().endsWith(".json")
@@ -237,6 +284,11 @@ public class CtrlPersistenciaEncuesta {
         else return null;
     }
 
+    /**
+     * Guarda el siguiente ID disponible en disco.
+     * 
+     * @param newid Nuevo ID de encuesta
+     */
     public void guardarNextId (int newid) {
         String FILE = "data/nextId.json";
 

@@ -7,10 +7,30 @@ import domain.Pregunta;
 import domain.Respuesta;
 
 /**
- * Gestor de persistencia del sistema (stub de base de datos).
+ * Gestor de persistencia del sistema.
  * 
- * Almacena todas las entidades del dominio en memoria con HashMaps.
- * Proporciona operaciones CRUD para Usuario, Encuesta, Pregunta y Respuesta.
+ * Coordina los gestores especializados de cada entidad del dominio
+ * y proporciona una interfaz unificada para operaciones de persistencia.
+ * 
+ * RESPONSABILIDADES:
+ * - Coordinar gestores de Usuario, Encuesta, Pregunta y Respuesta
+ * - Proporcionar interfaz unificada para operaciones CRUD
+ * - Gestionar la inicialización del sistema de persistencia
+ * - Implementar patrón Singleton para acceso global
+ * 
+ * ATRIBUTOS PRINCIPALES:
+ * - usuarios: Gestor de persistencia de usuarios con cache LRU
+ * - encuestas: Gestor de persistencia de encuestas con cache LRU
+ * - preguntas: Gestor de persistencia de preguntas con cache LRU
+ * - respuestas: Gestor de persistencia de respuestas con cache LRU
+ * 
+ * ESTRUCTURA DE ARCHIVOS:
+ * - data/usuarios/{nombreUsuario}.json
+ * - data/encuestas/{idEncuesta}.json
+ * - data/encuestas/{idEncuesta}/preguntas/{idPregunta}.json
+ * - data/encuestas/{idEncuesta}/{idRespuesta}.json
+ * - data/nextId.json (IDs para nuevas entidades)
+ * - data/indexRespuestas.json (mapeo respuesta → encuesta)
  * 
  * @author Alessandro Jin
  */
@@ -455,8 +475,11 @@ public class GestorPersistencia {
     public ArrayList<Respuesta> getRespuestasEncuesta(int idEncuesta) {                 ////////////////// nuevo
 
         return encuestas.getRespuestasEncuesta(idEncuesta);
-    }   
+    }
 
+    /**
+     * Guarda en disco los contadores de IDs antes de cerrar la aplicación.
+     */
     public void cerrarSesion() {
         encuestas.guardarNextId();
     

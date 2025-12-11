@@ -100,6 +100,13 @@ public class CtrlPersistenciaPregunta {
         }
     }
 
+    /**
+     * Convierte un JsonObject a Pregunta según su tipo.
+     * 
+     * @param pregunta JsonObject con los datos de la pregunta
+     * @return Pregunta del tipo correspondiente
+     * @throws IllegalArgumentException si el tipo es desconocido
+     */
     private Pregunta jsonToPregunta(JsonObject pregunta){
         try{
             int idEncuesta = pregunta.get("idEncuesta").getAsInt();
@@ -146,6 +153,12 @@ public class CtrlPersistenciaPregunta {
 
     }
 
+    /**
+     * Convierte una Pregunta a JsonObject.
+     * 
+     * @param p Pregunta a convertir
+     * @return JsonObject con la estructura correcta
+     */
     private JsonObject preguntaToJson(Pregunta p){
         JsonObject pObj = new JsonObject();
         pObj.addProperty("idEncuesta", p.getIdEncuesta());
@@ -182,6 +195,12 @@ public class CtrlPersistenciaPregunta {
         return pObj;
     }
 
+    /**
+     * Busca el ID de encuesta que contiene una pregunta.
+     * 
+     * @param idPregunta ID de la pregunta
+     * @return ID de la encuesta, o -1 si no se encuentra
+     */
     private int getEncuestaPregunta(int idPregunta){
     	File carpetaRaiz = new File("data/encuestas");
     	File[] jsonFiles = carpetaRaiz.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
@@ -274,12 +293,11 @@ public class CtrlPersistenciaPregunta {
         if (!archivo.exists()) {
             throw new IllegalArgumentException("La pregunta " + id + " no existe");
         }
-        try {
-            FileWriter writer = new FileWriter(archivo);
+        try (FileWriter writer = new FileWriter(archivo)) {
             gson.toJson(preguntaToJson(p), writer);
         }
         catch (IOException e) {
-            throw new RuntimeException("Error actualizando respuesta " + id, e);
+            throw new RuntimeException("Error actualizando pregunta " + id, e);
         }
     }
 

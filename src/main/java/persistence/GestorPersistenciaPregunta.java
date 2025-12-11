@@ -7,7 +7,28 @@ import java.util.Map;
 import domain.Pregunta;
 
 /**
- * Gestor de persistencia de las preguntas (cache).
+ * Gestor de persistencia de preguntas con cache LRU.
+ * 
+ * Mantiene una cache limitada de preguntas más recientemente usadas
+ * y delega operaciones de disco a CtrlPersistenciaPregunta.
+ * 
+ * RESPONSABILIDADES:
+ * - Gestionar cache LRU de preguntas (máximo 128 entradas)
+ * - Coordinar con CtrlPersistenciaPregunta para operaciones de disco
+ * - Gestionar IDs secuenciales para nuevas preguntas
+ * - Proporcionar operaciones CRUD con cache transparente
+ * - Implementar patrón Singleton
+ * 
+ * ATRIBUTOS PRINCIPALES:
+ * - preguntas: LinkedHashMap con política LRU (accessOrder=true)
+ * - ctrlFicheroPregunta: Controlador de persistencia en disco
+ * - nextIdPregunta: ID para la próxima pregunta a crear
+ * - CACHE_LIMIT: Límite de 128 preguntas en cache
+ * 
+ * ESTRUCTURA:
+ * - Cache: LinkedHashMap con removeEldestEntry para LRU automático
+ * - Disco: Archivos JSON en data/encuestas/{idEncuesta}/preguntas/{idPregunta}.json
+ * - IDs: Gestionados en data/nextId.json
  * 
  * @author Denis Roca
  */
@@ -17,9 +38,9 @@ public class GestorPersistenciaPregunta {
     private static GestorPersistenciaPregunta singletonInstance;
 
     /**
-     * Entero que indica el número máximo de preguntas que se guardarán en la 'cache'.
+     * Límite de preguntas en cache.
      */
-    private static final int CACHE_LIMIT = 64;
+    private static final int CACHE_LIMIT = 128;
 
     /**
      * Mapa ordenado que simula la cache.
@@ -48,6 +69,7 @@ public class GestorPersistenciaPregunta {
             }
         };
         ctrlFicheroPregunta = CtrlPersistenciaPregunta.getInstance();
+        nextIdPregunta = ctrlFicheroPregunta.getNextId();
     }
 
     /**
@@ -175,6 +197,9 @@ public class GestorPersistenciaPregunta {
         return nextIdPregunta++;
     }
 
+    /**
+     * Guarda el siguiente ID disponible en disco.
+     */
     public void guardarNextId () {
         ctrlFicheroPregunta.guardarNextId(nextIdPregunta);
     }

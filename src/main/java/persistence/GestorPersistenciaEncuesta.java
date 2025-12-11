@@ -7,18 +7,36 @@ import domain.Encuesta;
 import domain.Respuesta;
 
 /**
- * Cache del Encuesta
- */
-
-/**
+ * Gestor de persistencia de encuestas con cache LRU.
+ * 
+ * Mantiene una cache limitada de encuestas más recientemente usadas
+ * y delega operaciones de disco a CtrlPersistenciaEncuesta.
+ * 
+ * RESPONSABILIDADES:
+ * - Gestionar cache LRU de encuestas (máximo 16 entradas)
+ * - Coordinar con CtrlPersistenciaEncuesta para operaciones de disco
+ * - Gestionar IDs secuenciales para nuevas encuestas
+ * - Proporcionar operaciones CRUD con cache transparente
+ * - Implementar patrón Singleton
+ * 
+ * ATRIBUTOS PRINCIPALES:
+ * - encuestas: LinkedHashMap con política LRU (accessOrder=true)
+ * - ctrlFicheroEncuesta: Controlador de persistencia en disco
+ * - nextIdEncuesta: ID para la próxima encuesta a crear
+ * - CACHE_LIMIT: Límite de 16 encuestas en cache
+ * 
+ * ESTRUCTURA:
+ * - Cache: LinkedHashMap con removeEldestEntry para LRU automático
+ * - Disco: Archivos JSON en data/encuestas/{idEncuesta}.json
+ * - IDs: Gestionados en data/nextId.json
+ * 
  * @author Alessandro Jin
  */
-
 public class GestorPersistenciaEncuesta {
     private static GestorPersistenciaEncuesta singletonInstance;
 
     // Límites de cache
-    private static final int CACHE_LIMIT = 64;
+    private static final int CACHE_LIMIT = 16;
 
     // Cache con LinkedHashMap (accessOrder=true para LRU tracking)
     private final LinkedHashMap<Integer, Encuesta> encuestas;
@@ -58,7 +76,10 @@ public class GestorPersistenciaEncuesta {
     // ==================== MÉTODOS DE ENCUESTA ====================
 
     /**
-     * Buscar la encuesta en el fichero
+     * Busca y carga una encuesta desde disco a la cache.
+     * 
+     * @param id ID de la encuesta
+     * @return Encuesta cargada desde disco
      */
     Encuesta sacarEncuestaFichero(int id) {
 
@@ -161,12 +182,21 @@ public class GestorPersistenciaEncuesta {
         ctrlFicheroEncuesta.eliminarEncuesta(id);
     }
 
+    /**
+     * Obtiene todas las respuestas de una encuesta.
+     * 
+     * @param id ID de la encuesta
+     * @return Lista con todas las respuestas
+     */
     public ArrayList<Respuesta> getRespuestasEncuesta (int id) {
 
         return ctrlFicheroEncuesta.getRespuestasEncuesta(id);
 
     }
 
+    /**
+     * Guarda el siguiente ID disponible en disco.
+     */
     public void guardarNextId () {
         ctrlFicheroEncuesta.guardarNextId(nextIdEncuesta);
     }

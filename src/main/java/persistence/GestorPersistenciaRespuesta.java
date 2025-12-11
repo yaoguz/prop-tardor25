@@ -7,17 +7,39 @@ import java.util.Map;
 import domain.Respuesta;
 
 /**
- * Cache de Respuesta
+ * Gestor de persistencia de respuestas con cache LRU.
  * 
- * @author Yaoyao
+ * Mantiene una cache limitada de respuestas más recientemente usadas
+ * y delega operaciones de disco a CtrlPersistenciaRespuesta.
+ * 
+ * RESPONSABILIDADES:
+ * - Gestionar cache LRU de respuestas (máximo 256 entradas)
+ * - Coordinar con CtrlPersistenciaRespuesta para operaciones de disco
+ * - Gestionar IDs secuenciales para nuevas respuestas
+ * - Proporcionar operaciones CRUD con cache transparente
+ * - Optimizar carga de respuestas por encuesta
+ * - Implementar patrón Singleton
+ * 
+ * ATRIBUTOS PRINCIPALES:
+ * - respuestas: LinkedHashMap con política LRU (accessOrder=true)
+ * - ctrlFicheroRespuesta: Controlador de persistencia en disco
+ * - nextIdRespuesta: ID para la próxima respuesta a crear
+ * - CACHE_LIMIT: Límite de 256 respuestas en cache
+ * 
+ * ESTRUCTURA:
+ * - Cache: LinkedHashMap con removeEldestEntry para LRU automático
+ * - Disco: Archivos JSON en data/encuestas/{idEncuesta}/{idRespuesta}.json
+ * - IDs: Gestionados en data/nextId.json
+ * - Índice: data/indexRespuestas.json mapea idRespuesta → idEncuesta
+ * 
+ * @author Yaoyao Guo
  */
-
 public class GestorPersistenciaRespuesta {
 
     private static GestorPersistenciaRespuesta singletonInstance;
 
     // Límites de cache
-    private static final int CACHE_LIMIT = 64;
+    private static final int CACHE_LIMIT = 256;
 
     // Cache con LinkedHashMap (accessOrder=true para LRU tracking)
     private final LinkedHashMap<Integer, Respuesta> respuestas;
@@ -50,13 +72,16 @@ public class GestorPersistenciaRespuesta {
 
         // Inicializar controladores de disco
         ctrlFicheroRespuesta = new CtrlPersistenciaRespuesta();
+        nextIdRespuesta = ctrlFicheroRespuesta.getNextId();
     }
 
     // ==================== MÉTODOS DE RESPUESTA ====================
 
     /**
-     * Buscar la Respuesta en el fichero
+     * Busca y carga una respuesta desde disco a la cache.
      * 
+     * @param idR ID de la respuesta
+     * @return Respuesta cargada desde disco
      * @throws IllegalArgumentException si la respuesta no existe
      */
     Respuesta sacarRespuestaFichero(int idR) {
@@ -66,8 +91,11 @@ public class GestorPersistenciaRespuesta {
     }
 
     /**
-     * Buscar la Respuesta en el fichero
+     * Busca y carga una respuesta desde disco a la cache.
      * 
+     * @param idR ID de la respuesta
+     * @param idEncuesta ID de la encuesta
+     * @return Respuesta cargada desde disco
      * @throws IllegalArgumentException si la respuesta no existe
      */
     Respuesta sacarRespuestaFichero(int idR, int idEncuesta) {
@@ -240,6 +268,9 @@ public class GestorPersistenciaRespuesta {
         ctrlFicheroRespuesta.eliminarRespuesta(id, idEncuesta);
     }
 
+    /**
+     * Guarda el siguiente ID disponible en disco.
+     */
     public void guardarNextId () {
         ctrlFicheroRespuesta.guardarNextId(nextIdRespuesta);
     }
