@@ -41,8 +41,9 @@ public abstract class ComponenteBase {
     protected static final Font FONT_SMALL = new Font("Arial", Font.PLAIN, 12);
     
     /** Dimensiones de ventana */
-    protected static final int WINDOW_WIDTH = 1000;
-    protected static final int WINDOW_HEIGHT = 700;
+    // Increase default window size so controls in the header don't overlap when resizing/searching
+    protected static final int WINDOW_WIDTH = 1280;
+    protected static final int WINDOW_HEIGHT = 820;
     
     /**
      * Constructor base que inicializa el panel.

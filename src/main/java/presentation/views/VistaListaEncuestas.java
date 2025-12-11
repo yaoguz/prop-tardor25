@@ -106,28 +106,42 @@ public class VistaListaEncuestas extends ComponenteBase {
         panelControles.setBackground(COLOR_BG);
         
         // Primera fila: Buscador y botón crear
-        JPanel panelBuscar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        JPanel panelBuscar = new JPanel();
         panelBuscar.setBackground(COLOR_BG);
+        panelBuscar.setLayout(new BoxLayout(panelBuscar, BoxLayout.X_AXIS));
+        panelBuscar.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         JLabel lblBuscar = createStyledLabel("Buscar:", FONT_NORMAL);
         txtBuscar = createStyledTextField(30);
-        
+        // limit max width so it doesn't expand and push other controls
+        txtBuscar.setMaximumSize(new Dimension(450, txtBuscar.getPreferredSize().height));
+
         JButton btnBuscar = createStyledButton("Buscar", COLOR_PRIMARY);
+        btnBuscar.setPreferredSize(new Dimension(100, 30));
+        btnBuscar.setMaximumSize(new Dimension(100, 30));
         btnBuscar.addActionListener(e -> buscarEncuestas());
         
         // Botón "Ver todas" (inicialmente oculto)
         btnVerTodas = createStyledButton("Ver todas", COLOR_WARNING);
         btnVerTodas.setVisible(false);
+        btnVerTodas.setPreferredSize(new Dimension(120, 30));
+        btnVerTodas.setMaximumSize(new Dimension(120, 30));
         btnVerTodas.addActionListener(e -> verTodas());
         
         // Botón crear encuesta con menú desplegable
         JButton btnCrear = createStyledButton("+ Crear Encuesta", COLOR_SUCCESS);
+        btnCrear.setPreferredSize(new Dimension(160, 30));
+        btnCrear.setMaximumSize(new Dimension(160, 30));
         btnCrear.addActionListener(e -> mostrarOpcionesCrearEncuesta());
         
         panelBuscar.add(lblBuscar);
+        panelBuscar.add(Box.createRigidArea(new Dimension(8,0)));
         panelBuscar.add(txtBuscar);
+        panelBuscar.add(Box.createRigidArea(new Dimension(8,0)));
         panelBuscar.add(btnBuscar);
+        panelBuscar.add(Box.createRigidArea(new Dimension(8,0)));
         panelBuscar.add(btnVerTodas);
+        panelBuscar.add(Box.createRigidArea(new Dimension(8,0)));
         panelBuscar.add(btnCrear);
         
         // Segunda fila: Filtros
@@ -470,13 +484,8 @@ public class VistaListaEncuestas extends ComponenteBase {
         menu.addSeparator();
         menu.add(itemCerrarSesion);
         
-        // Mostrar el popup en el centro de la interfaz (relativo al frame)
-        Dimension menuSize = menu.getPreferredSize();
-        int x = (frame.getWidth() - menuSize.width) / 2;
-        int y = (frame.getHeight() - menuSize.height) / 2;
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
-        menu.show(panel, x, y);
+        // Mostrar el popup justo debajo del botón de usuario
+        menu.show(btnMenu, 0, btnMenu.getHeight());
     }
     
     /**
