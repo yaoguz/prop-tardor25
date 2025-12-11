@@ -74,7 +74,7 @@ task runDriverClustering(type: JavaExec) {
 }
 
 // Ejecuta la capa de presentación (GUI)
-task runGui(type: JavaExec) {
+task runAll(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'presentation.Main'
     standardInput = System.in
