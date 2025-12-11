@@ -47,7 +47,7 @@ public class CtrlDominioEncuesta {
 	private CtrlDominioPregunta ctrlDominioPregunta;
 	
 	/** Controlador de respuestas (inyección de dependencia) */
-	private CtrlDominioRespuesta ctrlDominioRespuesta;
+	private CtrlDominioRespuesta ctrlDominioRespuesta;                   // pnd de quitar
 	
 	/** Controlador de usuarios (inyección de dependencia) */
 	private CtrlDominioUsuario ctrlDominioUsuario;
@@ -396,28 +396,44 @@ public class CtrlDominioEncuesta {
 	 * 
 	 * NOTA: Solo el autor de la encuesta debería tener acceso (validación en capa de presentación).
 	 * 
+	 * ESTRUCTURA DE PERSISTENCIA:                                            /////////////// cambios
+	 * - Cada respuesta: data/encuestas/[idEncuesta]/[idRespuesta].json
+	 * - Ejemplo: encuesta 1 tiene 40 archivos (1.json, 2.json, ..., 40.json)
+	 * 
+	 * OPTIMIZACIÓN: Con getRespuestasEncuesta(idEncuesta):
+	 * - Lee todos los archivos de respuesta de la carpeta de la encuesta
+	 * - Agrupa en memoria por pregunta (muy rápido)
+	 * - Complejidad: O(M) donde M = número de respuestas
+	 * 
+	 * vs acceso individual por idRespuestas de cada pregunta:
+	 * - Requeriría N loops + M accesos individuales
+	 * 
 	 * @param idEncuesta ID de la encuesta
-	 * @return Mapa de Pregunta -> Set de Respuestas
+	 * @return Mapa de Pregunta → Set de Respuestas
+	 * @throws IllegalArgumentException si la encuesta no existe
 	 */
 	public Map<Pregunta, Set<Respuesta>> getRespuestasEncuesta(int idEncuesta) {
 		Encuesta e = getEncuesta(idEncuesta);
 		List<Integer> idPreguntas = e.getIdPreguntas();
 
+		// optimizacion: leer todas las respuestas de la encuesta de una vez
+		// en persistencia: lee carpeta data/encuestas/{idEncuesta}/*.json
+		ArrayList<Respuesta> todasRespuestas = gestor.getRespuestasEncuesta(idEncuesta);
+
 		Map<Pregunta, Set<Respuesta>> resultado = new HashMap<>();
 		
-		// por cada pregunta, obtener sus respuestas
+		// inicializar mapa con preguntas
 		for (Integer idP : idPreguntas) {
 			Pregunta p = ctrlDominioPregunta.getPregunta(idP);
-			List<Integer> idRespuestas = p.getIdRespuestas();
-			
-			Set<Respuesta> respuestas = new HashSet<>();
-			for (Integer idR : idRespuestas) {
-				Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
-				respuestas.add(r);
-			}
-			
-			resultado.put(p, respuestas);
+			resultado.put(p, new HashSet<>());
 		}
+		
+		// agrupar respuestas por pregunta
+		for (Respuesta r : todasRespuestas) {
+			Pregunta p = ctrlDominioPregunta.getPregunta(r.getIdPregunta());
+			if (resultado.containsKey(p)) resultado.get(p).add(r);
+		}
+		
 		return resultado;
 	}
 
@@ -454,25 +470,39 @@ public class CtrlDominioEncuesta {
 	 * 
 	 * El algoritmo de clustering ignora los valores nulos en los calculos.
 	 * 
+	 * ESTRUCTURA DE PERSISTENCIA:                                               /////////////// cambios
+	 * - Cada respuesta: data/encuestas/[idEncuesta]/[idRespuesta].json
+	 * - Todas las respuestas de la encuesta están en la misma carpeta
+	 * 
+	 * OPTIMIZACIÓN: Con getRespuestasEncuesta(idEncuesta):
+	 * - Lee todos los archivos de la carpeta de la encuesta
+	 * - Reorganiza en memoria en matriz [usuarios × preguntas]
+	 * - Complejidad: O(M) donde M = número de respuestas
+	 * 
+	 * vs estructura anterior con archivos por pregunta:
+	 * - Requeriría leer N archivos diferentes (uno por pregunta)
+	 * 
 	 * @param idEncuesta ID de la encuesta
 	 * @return Lista de listas donde cada sublista es un usuario con sus respuestas ordenadas por pregunta
+	 * @throws IllegalArgumentException si la encuesta no existe
 	 */
 	public List<List<Respuesta>> getRespuestasParaClustering(int idEncuesta) {
 		Encuesta e = getEncuesta(idEncuesta);
 		List<Integer> idPreguntas = e.getIdPreguntas();
+		
+		// optimizacion: leer todas las respuestas de la encuesta de una vez
+		// en persistencia: lee carpeta data/encuestas/{idEncuesta}/*.json
+		ArrayList<Respuesta> todasRespuestas = gestor.getRespuestasEncuesta(idEncuesta);
+		
+		// Organizar respuestas por usuario
 		Map<String, Map<Integer, Respuesta>> respuestasPorUsuario = new HashMap<>();
 		
-		for (Integer idP : idPreguntas) {
-			Pregunta p = ctrlDominioPregunta.getPregunta(idP);
-			List<Integer> idRespuestas = p.getIdRespuestas();
+		for (Respuesta r : todasRespuestas) {
+			String usuario = r.getNomUsuario();
+			int idP = r.getIdPregunta();
 			
-			for (Integer idR : idRespuestas) {
-				Respuesta r = ctrlDominioRespuesta.getRespuesta(idR);
-				String usuario = r.getNomUsuario();
-				
-				respuestasPorUsuario.putIfAbsent(usuario, new HashMap<>());
-				respuestasPorUsuario.get(usuario).put(idP, r);
-			}
+			respuestasPorUsuario.putIfAbsent(usuario, new HashMap<>());
+			respuestasPorUsuario.get(usuario).put(idP, r);
 		}
 		
 		// convertir a matriz List<List<Respuesta>>

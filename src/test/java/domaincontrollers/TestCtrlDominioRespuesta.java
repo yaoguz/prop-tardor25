@@ -98,11 +98,12 @@ public class TestCtrlDominioRespuesta {
         when(mockCtrlDominioUsuario.getUsuario("user1")).thenReturn(mockUsuario);
         when(mockGestor.getNextIdRespuesta()).thenReturn(100);
         when(mockPregunta.crearRespuesta(eq(100), eq("user1"), anyString())).thenReturn(mockRespuesta);
+        when(mockPregunta.getIdEncuesta()).thenReturn(1);
 
         int idR = ctrlDominioRespuesta.darRespuesta("user1", 1, "Respuesta libre");
 
         assertEquals("No ha retornado el id correcto", 100, idR);
-        verify(mockGestor).guardarRespuesta(mockRespuesta);
+        verify(mockGestor).guardarRespuesta(mockRespuesta, 1);
         verify(mockGestor).actualizarUsuario(mockUsuario);
         verify(mockGestor).actualizarPregunta(mockPregunta);
         verify(mockUsuario).guardarIdRespuesta(100);
@@ -142,7 +143,8 @@ public class TestCtrlDominioRespuesta {
 
         verify(mockUsuario).eliminarIdRespuesta(100);
         verify(mockPregunta).eliminarIdRespuesta(100);
-        verify(mockGestor).eliminarRespuesta(100);
+        verify(mockGestor).actualizarUsuario(mockUsuario);
+        verify(mockGestor).actualizarPregunta(mockPregunta);
     }
 
     /**
@@ -170,7 +172,7 @@ public class TestCtrlDominioRespuesta {
         
         ctrlDominioRespuesta.importarRespuestas(file);
 
-        verify(mockGestor).guardarRespuesta(mockRespuesta);
+        verify(mockGestor).guardarRespuesta(mockRespuesta, 1);
         verify(mockGestor).actualizarUsuario(mockUsuario);
         verify(mockGestor).actualizarPregunta(mockPregunta);
         verify(mockUsuario).guardarIdRespuesta(10);

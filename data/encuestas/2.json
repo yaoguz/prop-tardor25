@@ -1,0 +1,10 @@
+{
+  "idEncuesta": 2,
+  "titulo": "Preferencias de Ocio y Entretenimiento",
+  "creador": "juan",
+  "IdPreguntas": [
+    5,
+    6,
+    7
+  ]
+}

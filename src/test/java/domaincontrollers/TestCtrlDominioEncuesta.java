@@ -319,17 +319,15 @@ public class TestCtrlDominioEncuesta {
         when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(p1);
         when(mockCtrlDominioPregunta.getPregunta(2)).thenReturn(p2);
 
-        ArrayList<Integer> respuestasP1 = new ArrayList<>(Arrays.asList(10, 11));
-        ArrayList<Integer> respuestasP2 = new ArrayList<>(Arrays.asList(20));
-        when(p1.getIdRespuestas()).thenReturn(respuestasP1);
-        when(p2.getIdRespuestas()).thenReturn(respuestasP2);
-
         Respuesta r10 = mock(Respuesta.class);
         Respuesta r11 = mock(Respuesta.class);
         Respuesta r20 = mock(Respuesta.class);
-        when(mockCtrlDominioRespuesta.getRespuesta(10)).thenReturn(r10);
-        when(mockCtrlDominioRespuesta.getRespuesta(11)).thenReturn(r11);
-        when(mockCtrlDominioRespuesta.getRespuesta(20)).thenReturn(r20);
+        when(r10.getIdPregunta()).thenReturn(1);
+        when(r11.getIdPregunta()).thenReturn(1);
+        when(r20.getIdPregunta()).thenReturn(2);
+        
+        ArrayList<Respuesta> todasRespuestas = new ArrayList<>(Arrays.asList(r10, r11, r20));
+        when(mockGestor.getRespuestasEncuesta(1)).thenReturn(todasRespuestas);
 
         Map<Pregunta, Set<Respuesta>> resultado = 
             ctrlDominioEncuesta.getRespuestasEncuesta(1);
@@ -340,8 +338,8 @@ public class TestCtrlDominioEncuesta {
         assertTrue("No contiene la pregunta 2", resultado.containsKey(p2));
         
         verify(mockGestor).getEncuesta(1);
-        verify(mockCtrlDominioPregunta, times(2)).getPregunta(anyInt());
-        verify(mockCtrlDominioRespuesta, times(3)).getRespuesta(anyInt());
+        verify(mockGestor).getRespuestasEncuesta(1);
+        verify(mockCtrlDominioPregunta, times(5)).getPregunta(anyInt());
     }
 
 
@@ -371,33 +369,25 @@ public class TestCtrlDominioEncuesta {
         when(mockEncuesta.getIdPreguntas()).thenReturn(idPreguntas);
         when(mockGestor.getEncuesta(1)).thenReturn(mockEncuesta);
 
-        Pregunta p1 = mock(Pregunta.class);
-        Pregunta p2 = mock(Pregunta.class);
-        when(mockCtrlDominioPregunta.getPregunta(1)).thenReturn(p1);
-        when(mockCtrlDominioPregunta.getPregunta(2)).thenReturn(p2);
-
-        ArrayList<Integer> respuestasP1 = new ArrayList<>(Arrays.asList(10, 11));
-        ArrayList<Integer> respuestasP2 = new ArrayList<>(Arrays.asList(20));
-        when(p1.getIdRespuestas()).thenReturn(respuestasP1);
-        when(p2.getIdRespuestas()).thenReturn(respuestasP2);
-
         Respuesta r10 = mock(Respuesta.class);
         Respuesta r11 = mock(Respuesta.class);
         Respuesta r20 = mock(Respuesta.class);
         when(r10.getNomUsuario()).thenReturn("user1");
         when(r11.getNomUsuario()).thenReturn("user2");
         when(r20.getNomUsuario()).thenReturn("user1");
-        when(mockCtrlDominioRespuesta.getRespuesta(10)).thenReturn(r10);
-        when(mockCtrlDominioRespuesta.getRespuesta(11)).thenReturn(r11);
-        when(mockCtrlDominioRespuesta.getRespuesta(20)).thenReturn(r20);
+        when(r10.getIdPregunta()).thenReturn(1);
+        when(r11.getIdPregunta()).thenReturn(1);
+        when(r20.getIdPregunta()).thenReturn(2);
+        
+        ArrayList<Respuesta> todasRespuestas = new ArrayList<>(Arrays.asList(r10, r11, r20));
+        when(mockGestor.getRespuestasEncuesta(1)).thenReturn(todasRespuestas);
 
         List<List<Respuesta>> resultado = ctrlDominioEncuesta.getRespuestasParaClustering(1);
 
         assertNotNull("La matriz es nula", resultado);
         assertEquals("La matriz tiene tamaño incorrecto", 2, resultado.size());
         verify(mockGestor).getEncuesta(1);
-        verify(mockCtrlDominioPregunta, times(2)).getPregunta(anyInt());
-        verify(mockCtrlDominioRespuesta, times(3)).getRespuesta(anyInt());
+        verify(mockGestor).getRespuestasEncuesta(1);
     }
 
     /*

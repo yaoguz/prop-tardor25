@@ -14,8 +14,6 @@ import domain.algorithm.funciones.EvaluarCluster;
 import domaincontrollers.*;
 import persistence.GestorPersistencia;
 
-// pnd de revisar
-
 /**
  * Driver interactivo para probar la funcionalidad de Clustering.
  * 
@@ -251,8 +249,10 @@ public class DriverClustering {
                 break;
             case 2:
                 algoritmo = "kmeans++";
+                break;
             case 3:
                 algoritmo = "kmedoids";
+                break;
             default:
                 System.out.println("Número no válido.");
         }

@@ -1,0 +1,10 @@
+{
+  "idEncuesta": 4,
+  "titulo": "Hábitos Alimenticios Saludables",
+  "creador": "pedro",
+  "IdPreguntas": [
+    12,
+    13,
+    14
+  ]
+}

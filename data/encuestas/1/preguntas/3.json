@@ -1,0 +1,26 @@
+{
+  "idPregunta": 3,
+  "tipo": "opcion_multiple",
+  "enunciado": "¿Qué técnicas de estudio utilizas? (máximo 3)",
+  "opciones": [
+    "Resúmenes",
+    "Esquemas",
+    "Flashcards",
+    "Subrayado",
+    "Mapas mentales",
+    "Repetición en voz alta"
+  ],
+  "numMaxOpc": 3,
+  "idRespuestas": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ]
+}

@@ -154,7 +154,7 @@ public class CtrlDominioRespuesta {
 		
 		int idR = gestor.getNextIdRespuesta();
 		Respuesta nuevaRespuesta = p.crearRespuesta(idR, nomUsuario, respuesta);
-		gestor.guardarRespuesta(nuevaRespuesta);
+		gestor.guardarRespuesta(nuevaRespuesta, p.getIdEncuesta()); //// cambio (eficiencia)
 		
 		u.guardarIdRespuesta(idR);
 		gestor.actualizarUsuario(u);
@@ -200,7 +200,7 @@ public class CtrlDominioRespuesta {
 		gestor.actualizarPregunta(p);
 		
 		// eliminar de persistencia
-		gestor.eliminarRespuesta(idRespuesta); // respuestas.remove(Integer.valueOf(idRespuesta));
+		gestor.eliminarRespuesta(idRespuesta, p.getIdEncuesta()); //// cambio (eficiencia)
 	}
 	
 	/**

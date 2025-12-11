@@ -1,0 +1,23 @@
+{
+  "idPregunta": 13,
+  "tipo": "opcion_unica",
+  "enunciado": "¿Sigues alguna dieta especial?",
+  "opciones": [
+    "No",
+    "Vegetariana",
+    "Vegana",
+    "Sin gluten",
+    "Baja en carbohidratos",
+    "Otra"
+  ],
+  "ordenada": false,
+  "idRespuestas": [
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114
+  ]
+}

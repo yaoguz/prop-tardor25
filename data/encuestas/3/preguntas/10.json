@@ -1,0 +1,16 @@
+{
+  "idPregunta": 10,
+  "tipo": "libre",
+  "enunciado": "¿Qué haces para mantener tu salud mental?",
+  "idRespuestas": [
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91
+  ]
+}

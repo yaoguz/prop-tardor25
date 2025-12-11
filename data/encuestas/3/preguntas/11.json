@@ -1,0 +1,26 @@
+{
+  "idPregunta": 11,
+  "tipo": "opcion_multiple",
+  "enunciado": "¿Qué prácticas de autocuidado realizas? (máximo 3)",
+  "opciones": [
+    "Meditación",
+    "Yoga",
+    "Paseos al aire libre",
+    "Leer",
+    "Desconexión digital",
+    "Tiempo con amigos",
+    "Escribir diario"
+  ],
+  "numMaxOpc": 3,
+  "idRespuestas": [
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100
+  ]
+}

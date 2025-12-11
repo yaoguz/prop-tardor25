@@ -1,6 +1,5 @@
 package persistence;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 import domain.Usuario;
 import domain.Encuesta;
@@ -8,10 +7,30 @@ import domain.Pregunta;
 import domain.Respuesta;
 
 /**
- * Gestor de persistencia del sistema (stub de base de datos).
+ * Gestor de persistencia del sistema.
  * 
- * Almacena todas las entidades del dominio en memoria con HashMaps.
- * Proporciona operaciones CRUD para Usuario, Encuesta, Pregunta y Respuesta.
+ * Coordina los gestores especializados de cada entidad del dominio
+ * y proporciona una interfaz unificada para operaciones de persistencia.
+ * 
+ * RESPONSABILIDADES:
+ * - Coordinar gestores de Usuario, Encuesta, Pregunta y Respuesta
+ * - Proporcionar interfaz unificada para operaciones CRUD
+ * - Gestionar la inicialización del sistema de persistencia
+ * - Implementar patrón Singleton para acceso global
+ * 
+ * ATRIBUTOS PRINCIPALES:
+ * - usuarios: Gestor de persistencia de usuarios con cache LRU
+ * - encuestas: Gestor de persistencia de encuestas con cache LRU
+ * - preguntas: Gestor de persistencia de preguntas con cache LRU
+ * - respuestas: Gestor de persistencia de respuestas con cache LRU
+ * 
+ * ESTRUCTURA DE ARCHIVOS:
+ * - data/usuarios/{nombreUsuario}.json
+ * - data/encuestas/{idEncuesta}.json
+ * - data/encuestas/{idEncuesta}/preguntas/{idPregunta}.json
+ * - data/encuestas/{idEncuesta}/{idRespuesta}.json
+ * - data/nextId.json (IDs para nuevas entidades)
+ * - data/indexRespuestas.json (mapeo respuesta → encuesta)
  * 
  * @author Alessandro Jin
  */
@@ -25,37 +44,29 @@ public class GestorPersistencia {
      * <p>
      * La clave es el nombre de usuario y el valor es el objeto {@link domain.Usuario}.
      */
-    private HashMap<String,Usuario> usuarios; 
+    private GestorPersistenciaUsuario usuarios; 
 
     /**
      * Mapa que almacena las encuestas existentes del sistema.
      * <p>
      * La clave es un Integer id y el valor es el objeto {@link domain.Encuesta}.
      */
-    private HashMap<Integer,Encuesta> encuestas;
+    private GestorPersistenciaEncuesta encuestas;
 
     /**
      * Mapa que almacena las preguntas de todas las encuestas del sistema.
      * <p>
      * La clave es un Integer id y el valor es el objeto {@link domain.Pregunta}.
      */
-    private HashMap<Integer,Pregunta> preguntas;
+    private GestorPersistenciaPregunta preguntas;
 
     /**
      * Mapa que almacena las respuestas de todas las preguntas del sistema.
      * <p>
      * La clave es un Integer id y el valor es el objeto {@link domain.Respuesta}.
      */
-    private HashMap<Integer,Respuesta> respuestas;
+    private GestorPersistenciaRespuesta respuestas;
 
-    /** ID para la próxima encuesta a crear */
-    private int nextIdEncuesta;
-
-    /** ID para la próxima pregunta a crear */
-    private int nextIdPregunta;
-
-    /** ID para la próxima respuesta a crear */
-    private int nextIdRespuesta;
 
 
     /** Constructor y metodos de inicializacion **/
@@ -64,13 +75,10 @@ public class GestorPersistencia {
      * Inicialización de los atributos de la clase.
      */
 	private GestorPersistencia() {
-        usuarios = new HashMap<>();
-        encuestas = new HashMap<>();
-        preguntas = new HashMap<>();
-        respuestas = new HashMap<>();
-        nextIdEncuesta = 1;
-        nextIdPregunta = 1;
-        nextIdRespuesta = 1;
+        usuarios = GestorPersistenciaUsuario.getInstance();
+        encuestas = GestorPersistenciaEncuesta.getInstance();
+        preguntas = GestorPersistenciaPregunta.getInstance();
+        respuestas = GestorPersistenciaRespuesta.getInstance();
     }
 
     /**
@@ -100,7 +108,7 @@ public class GestorPersistencia {
     * @return una lista con todos los usuarios existentes
     */
     public ArrayList<Usuario> getUsuarios() {
-        return new ArrayList<>(usuarios.values());
+        return usuarios.getAllUsuarios();
     }
 
     /**
@@ -110,7 +118,7 @@ public class GestorPersistencia {
      * @return Usuario correspondiente, o null si no existe
      */
     public Usuario getUsuario(String nom) {
-        return usuarios.get(nom);
+        return usuarios.getUsuario(nom);
     }
 
     /**
@@ -120,7 +128,7 @@ public class GestorPersistencia {
      * @return true si existe, false en caso contrario
      */
     public boolean existeUsuario(String nom) {
-        return usuarios.containsKey(nom);
+        return usuarios.existeUsuario(nom);
     }
 
     /**
@@ -130,11 +138,8 @@ public class GestorPersistencia {
     * @throws IllegalArgumentException si ya existe un usuario con el mismo nombre
     */
     public void guardarUsuario(Usuario u) {
-        String nom = u.getNomUsuario();
-        if (usuarios.containsKey(nom)) {
-            throw new IllegalArgumentException("El usuario con nom: " + nom + " ya existe");
-        }
-        usuarios.put(nom, u);
+
+        usuarios.guardarUsuario(u);
     }
 
     /**
@@ -143,22 +148,9 @@ public class GestorPersistencia {
      * @param u Usuario a actualizar
      */
     public void actualizarUsuario(Usuario u) {
-        usuarios.put(u.getNomUsuario(), u); //sobre escribe
+        usuarios.actualizarUsuario(u); 
     }
 
-    /**
-    * Elimina un usuario por el objeto Usuario.
-    *
-    * @param u Usuario a eliminar
-    * @throws IllegalArgumentException si el usuario no existe
-    */
-    public void eliminarUsuario(Usuario u) {
-        String name = u.getNomUsuario();
-        if(!usuarios.containsKey(name)) {
-            throw new IllegalArgumentException("El usuario con name: " + name + " no existe");
-        }
-        usuarios.remove(name);
-    }
 
     /**
      * Elimina un usuario por su nombre.
@@ -167,10 +159,8 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si el usuario no existe
      */
     public void eliminarUsuario(String nom) {
-        if (!usuarios.containsKey(nom)) {
-            throw new IllegalArgumentException("El usuario con nombre: " + nom + " no existe");
-        }
-        usuarios.remove(nom);
+     
+        usuarios.eliminarUsuario(nom);
     }
 
 
@@ -182,7 +172,7 @@ public class GestorPersistencia {
     * @return Lista con todas las encuestas existentes
     */
     public ArrayList<Encuesta> getEncuestas() {
-        return new ArrayList<>(encuestas.values());
+        return encuestas.getAllEncuestas();
     }
 
     /**
@@ -192,7 +182,7 @@ public class GestorPersistencia {
      * @return Encuesta correspondiente, o null si no existe
      */
     public Encuesta getEncuesta(int id) {
-        return encuestas.get(id);
+        return encuestas.getEncuesta(id);
     }
 
     /**
@@ -202,7 +192,7 @@ public class GestorPersistencia {
      * @return true si existe, false en caso contrario
      */
     public boolean existeEncuesta(int id) {
-        return encuestas.containsKey(id);
+        return encuestas.existeEncuesta(id);
     }
 
     /**
@@ -211,7 +201,7 @@ public class GestorPersistencia {
      * @return Siguiente ID disponible
      */
     public int getNextIdEncuesta() {
-        return nextIdEncuesta++;
+        return encuestas.getNextIdEncuesta();
     }
 
     /**
@@ -221,11 +211,8 @@ public class GestorPersistencia {
     * @throws IllegalArgumentException si ya existe una encuesta con el mismo id
     */
     public void guardarEncuesta(Encuesta e) {
-        Integer id = e.getIdEncuesta();
-        if(encuestas.containsKey(id)) {
-            throw new IllegalArgumentException("La encuesta con id: "+ id + " ya existe");
-        }
-        encuestas.put(id, e);
+     
+        encuestas.guardarEncuesta(e);
     }
 
     /**
@@ -234,21 +221,7 @@ public class GestorPersistencia {
      * @param e Encuesta a actualizar
      */
     public void actualizarEncuesta(Encuesta e) {
-        encuestas.put(e.getIdEncuesta(), e);
-    }
-
-    /**
-    * Elimina una encuesta por el objeto Encuesta.
-    *
-    * @param e Encuesta a eliminar
-    * @throws IllegalArgumentException si la encuesta no existe
-    */
-    public void eliminarEncuesta(Encuesta e) {
-        Integer id = e.getIdEncuesta();
-        if(!encuestas.containsKey(id)) {
-            throw new IllegalArgumentException("La encuesta con id: " + id + " no existe");
-        }
-        encuestas.remove(id);
+        encuestas.actualizarEncuesta(e);
     }
 
     /**
@@ -258,10 +231,8 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si la encuesta no existe
      */
     public void eliminarEncuesta(int id) {
-        if (!encuestas.containsKey(id)) {
-            throw new IllegalArgumentException("La encuesta con id: " + id + " no existe");
-        }
-        encuestas.remove(id);
+   
+        encuestas.eliminarEncuesta(id);
     }
 
 
@@ -273,7 +244,7 @@ public class GestorPersistencia {
     * @return Lista con todas las preguntas existentes
     */
     public ArrayList<Pregunta> getPreguntas() {
-        return new ArrayList<>(preguntas.values());
+        return preguntas.getAllPreguntas();
     }
 
     /**
@@ -283,7 +254,7 @@ public class GestorPersistencia {
      * @return Pregunta correspondiente, o null si no existe
      */
     public Pregunta getPregunta(int id) {
-        return preguntas.get(id);
+        return preguntas.getPregunta(id);
     }
 
     /**
@@ -293,7 +264,7 @@ public class GestorPersistencia {
      * @return true si existe, false en caso contrario
      */
     public boolean existePregunta(int id) {
-        return preguntas.containsKey(id);
+        return preguntas.existePregunta(id);
     }
 
     /**
@@ -302,7 +273,7 @@ public class GestorPersistencia {
      * @return Siguiente ID disponible
      */
     public int getNextIdPregunta() {
-        return nextIdPregunta++;
+        return preguntas.getNextIdPregunta();
     }
 
     /**
@@ -312,11 +283,8 @@ public class GestorPersistencia {
     * @throws IllegalArgumentException si ya existe una pregunta con el mismo id
     */
     public void guardarPregunta(Pregunta p) {
-        Integer id = p.getIdPregunta();
-        if (preguntas.containsKey(id)) {
-            throw new IllegalArgumentException("La pregunta con id: " + id + " ya existe");
-        }
-        preguntas.put(id, p);
+    
+        preguntas.guardarPregunta(p);
     }
 
     /**
@@ -325,21 +293,7 @@ public class GestorPersistencia {
      * @param p Pregunta a actualizar
      */
     public void actualizarPregunta(Pregunta p) {
-        preguntas.put(p.getIdPregunta(), p);
-    }
-
-    /**
-    * Elimina una pregunta por el objeto Pregunta.
-    *
-    * @param p Pregunta a eliminar
-    * @throws IllegalArgumentException si la pregunta no existe
-    */
-    public void eliminarPregunta(Pregunta p) {
-        Integer id = p.getIdPregunta();
-        if (!preguntas.containsKey(id)) {
-            throw new IllegalArgumentException("La pregunta con id: " + id + " no existe");
-        }
-        preguntas.remove(id);
+        preguntas.actualizarPregunta(p);
     }
 
     /**
@@ -349,10 +303,8 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si la pregunta no existe
      */
     public void eliminarPregunta(int id) {
-        if (!preguntas.containsKey(id)) {
-            throw new IllegalArgumentException("La pregunta con id: " + id + " no existe");
-        }
-        preguntas.remove(id);
+
+        preguntas.eliminarPregunta(id);
     }
 
 
@@ -364,17 +316,35 @@ public class GestorPersistencia {
     * @return Lista con todas las respuestas existentes
     */
     public ArrayList<Respuesta> getRespuestas() {
-        return new ArrayList<>(respuestas.values());
+        return respuestas.getAllRespuestas();
+    }
+
+    /**
+     * Obtiene una respuesta por su ID.
+     * 
+     * ESTRUCTURA DE PERSISTENCIA:                                 ////////////////// comentario nuevo
+     * - Archivo: data/encuestas/[idEncuesta]/[idRespuesta].json
+     * - Requiere conocer idEncuesta para construir la ruta
+     * 
+     * NOTA: Para obtener respuesta individual sin conocer idEncuesta,
+     * usar getRespuestasEncuesta() y filtrar, o mantener índice en memoria.
+     * 
+     * @param id ID de la respuesta
+     * @return Respuesta correspondiente, o null si no existe
+     */
+    public Respuesta getRespuesta(int id) {
+        return respuestas.getRespuesta(id);
     }
 
     /**
      * Obtiene una respuesta por su ID.
      * 
      * @param id ID de la respuesta
+     * @param idEncuesta ID de la encuesta
      * @return Respuesta correspondiente, o null si no existe
      */
-    public Respuesta getRespuesta(int id) {
-        return respuestas.get(id);
+    public Respuesta getRespuesta(int id, int idEncuesta) {
+        return respuestas.getRespuesta(id, idEncuesta);
     }
 
     /**
@@ -384,7 +354,18 @@ public class GestorPersistencia {
      * @return true si existe, false en caso contrario
      */
     public boolean existeRespuesta(int id) {
-        return respuestas.containsKey(id);
+        return respuestas.existeRespuesta(id);
+    }
+
+    /**
+     * Verifica si existe una respuesta con el ID dado.
+     * 
+     * @param id ID de la respuesta
+     * @param idEncuesta ID de la encuesta
+     * @return true si existe, false en caso contrario
+     */
+    public boolean existeRespuesta(int id, int idEncuesta) {
+        return respuestas.existeRespuesta(id, idEncuesta);
     }
 
     /**
@@ -393,7 +374,7 @@ public class GestorPersistencia {
      * @return Siguiente ID disponible
      */
     public int getNextIdRespuesta() {
-        return nextIdRespuesta++;
+        return respuestas.getNextIdRespuesta();
     }
 
     /**
@@ -403,11 +384,7 @@ public class GestorPersistencia {
     * @throws IllegalArgumentException si ya existe una respuesta con el mismo id
     */
     public void guardarRepuesta(Respuesta r) {
-        Integer id = r.getId();
-        if (respuestas.containsKey(id)) {
-            throw new IllegalArgumentException("La respuesta con id: " + id + " ya existe");
-        }
-        respuestas.put(id, r);
+        respuestas.guardarRespuesta(r);
     }
 
     /**
@@ -417,11 +394,18 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si ya existe una respuesta con el mismo ID
      */
     public void guardarRespuesta(Respuesta r) {
-        Integer id = r.getId();
-        if (respuestas.containsKey(id)) {
-            throw new IllegalArgumentException("La respuesta con id: " + id + " ya existe");
-        }
-        respuestas.put(id, r);
+        respuestas.guardarRespuesta(r);
+    }
+
+    /**
+     * Guarda una nueva respuesta en el sistema.
+     * 
+     * @param r Respuesta a guardar
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si ya existe una respuesta con el mismo ID
+     */
+    public void guardarRespuesta(Respuesta r, int idEncuesta) {
+        respuestas.guardarRespuesta(r, idEncuesta);
     }
 
     /**
@@ -430,22 +414,19 @@ public class GestorPersistencia {
      * @param r Respuesta a actualizar
      */
     public void actualizarRespuesta(Respuesta r) {
-        respuestas.put(r.getId(), r);
+        respuestas.actualizarRespuesta(r);
     }
 
     /**
-    * Elimina una respuesta por el objeto Respuesta.
-    *
-    * @param r Respuesta a eliminar
-    * @throws IllegalArgumentException si la respuesta no existe
-    */
-    public void eliminarRespuesta(Respuesta r) {
-        Integer id = r.getId();
-        if (!respuestas.containsKey(id)) {
-            throw new IllegalArgumentException("La respuesta con id: " + id + " no existe");
-        }
-        respuestas.remove(id);
+     * Actualiza una respuesta existente.
+     * 
+     * @param r Respuesta a actualizar
+     * @param idEncuesta ID de la encuesta
+     */
+    public void actualizarRespuesta(Respuesta r, int idEncuesta) {
+        respuestas.actualizarRespuesta(r, idEncuesta);
     }
+
 
     /**
      * Elimina una respuesta por su ID.
@@ -454,10 +435,58 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si la respuesta no existe
      */
     public void eliminarRespuesta(int id) {
-        if (!respuestas.containsKey(id)) {
-            throw new IllegalArgumentException("La respuesta con id: " + id + " no existe");
-        }
-        respuestas.remove(id);
+        
+        respuestas.eliminarRespuesta(id);
     }
+
+    /**
+     * Elimina una respuesta por su ID.
+     * 
+     * @param id ID de la respuesta a eliminar
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si la respuesta no existe
+     */
+    public void eliminarRespuesta(int id, int idEncuesta) {
+        respuestas.eliminarRespuesta(id, idEncuesta);
+    }
+
+
+    
+    ///indefinida
+    /**
+     * Obtiene todas las respuestas de una encuesta específica.
+     * 
+     * ESTRUCTURA DE PERSISTENCIA:
+     * - Cada respuesta es un archivo JSON individual
+     * - Ubicación: data/encuestas/[idEncuesta]/[idRespuesta].json
+     * - Ejemplo: data/encuestas/1/1.json, data/encuestas/1/2.json, etc.
+     * 
+     * IMPLEMENTACIÓN CON ARCHIVOS JSON:
+     * 1. Listar archivos en data/encuestas/[idEncuesta]/
+     * 2. Filtrar solo archivos numéricos (*.json excepto encuesta.json)
+     * 3. Leer y deserializar cada archivo de respuesta
+     * 4. Retornar lista completa
+     * 
+     * VENTAJA: Cada respuesta es independiente, fácil de añadir/eliminar/modificar
+     * 
+     * @param idEncuesta ID de la encuesta
+     * @return Lista con todas las respuestas de la encuesta
+     */
+    public ArrayList<Respuesta> getRespuestasEncuesta(int idEncuesta) {                 ////////////////// nuevo
+
+        return encuestas.getRespuestasEncuesta(idEncuesta);
+    }
+
+    /**
+     * Guarda en disco los contadores de IDs antes de cerrar la aplicación.
+     */
+    public void cerrarSesion() {
+        encuestas.guardarNextId();
+    
+        preguntas.guardarNextId();
+
+        respuestas.guardarNextId();
+    }
+
 }
 
