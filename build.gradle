@@ -73,6 +73,13 @@ task runDriverClustering(type: JavaExec) {
     standardInput = System.in
 }
 
+// Ejecuta la capa de presentación (GUI)
+task runGui(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'presentation.Main'
+    standardInput = System.in
+}
+
 repositories {
     mavenCentral()
 }
