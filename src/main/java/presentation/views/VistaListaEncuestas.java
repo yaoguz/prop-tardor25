@@ -364,7 +364,7 @@ public class VistaListaEncuestas extends ComponenteBase {
     private void mostrarOpcionesCrearEncuesta() {
         String[] opciones = {"Nueva Encuesta", "Importar desde Fichero"};
         int eleccion = JOptionPane.showOptionDialog(
-            frame,
+            null,
             "¿Cómo deseas crear la encuesta?",
             "Crear Encuesta",
             JOptionPane.DEFAULT_OPTION,
@@ -396,13 +396,13 @@ public class VistaListaEncuestas extends ComponenteBase {
             File fichero = fileChooser.getSelectedFile();
             try {
                 int idEncuesta = ctrlPresentacion.importarEncuesta(fichero);
-                JOptionPane.showMessageDialog(panel, 
+                JOptionPane.showMessageDialog(frame, 
                     "Encuesta importada correctamente (ID: " + idEncuesta + ")", 
                     "Éxito", 
                     JOptionPane.INFORMATION_MESSAGE);
                 cargarEncuestas();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(panel, 
+                JOptionPane.showMessageDialog(frame, 
                     "Error al importar: " + ex.getMessage(), 
                     "Error", 
                     JOptionPane.ERROR_MESSAGE);
@@ -433,14 +433,14 @@ public class VistaListaEncuestas extends ComponenteBase {
     }
     
     private void cambiarContrasena() {
-        String nuevaPass = JOptionPane.showInputDialog(panel, "Nueva contraseña:");
-        String confirmacion = JOptionPane.showInputDialog(panel, "Confirmar contraseña:");
+        String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:");
+        String confirmacion = JOptionPane.showInputDialog(frame, "Confirmar contraseña:");
         if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
             try {
                 ctrlPresentacion.cambiarContrasena(nuevaPass, confirmacion);
-                JOptionPane.showMessageDialog(panel, "Contraseña cambiada correctamente");
+                JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(panel, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -456,7 +456,7 @@ public class VistaListaEncuestas extends ComponenteBase {
      */
     private void confirmarSalida() {
         int opcion = JOptionPane.showConfirmDialog(
-            panel,
+            null,
             "¿Estás seguro de que deseas salir?",
             "Confirmar Salida",
             JOptionPane.YES_NO_OPTION,
@@ -510,14 +510,14 @@ public class VistaListaEncuestas extends ComponenteBase {
             java.io.File fichero = fileChooser.getSelectedFile();
             try {
                 ctrlPresentacion.importarRespuestas(fichero);
-                JOptionPane.showMessageDialog(panel,
+                JOptionPane.showMessageDialog(frame,
                     "Respuestas importadas correctamente.",
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
                 // recargar lista por si la importación cambió el estado
                 cargarEncuestas();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(panel,
+                JOptionPane.showMessageDialog(frame,
                     "Error al importar respuestas: " + ex.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);

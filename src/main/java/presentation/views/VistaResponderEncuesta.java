@@ -210,7 +210,7 @@ public class VistaResponderEncuesta extends ComponenteBase {
 	 */
 	private void salir() {
 		if (cambiosSinGuardar) {
-			int opcion = JOptionPane.showConfirmDialog(panel,
+			int opcion = JOptionPane.showConfirmDialog(null,
 				"Hay cambios sin guardar. ¿Deseas salir sin guardar?",
 				"Confirmar Salida",
 				JOptionPane.YES_NO_OPTION,

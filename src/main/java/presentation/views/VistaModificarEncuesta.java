@@ -83,7 +83,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 salir();
             }
         });
-        frame.setSize(900, 700);
+        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         
@@ -279,7 +279,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
     private void salir() {
         if (cambiosSinGuardar) {
             int respuesta = JOptionPane.showConfirmDialog(
-                panel,
+                null,
                 "Hay cambios sin guardar. ¿Deseas salir de todos modos?",
                 "Cambios sin guardar",
                 JOptionPane.YES_NO_OPTION
@@ -380,7 +380,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
         
         private void eliminarPreguntaExistente() {
             int confirm = JOptionPane.showConfirmDialog(
-                panel,
+                null,
                 "¿Eliminar esta pregunta y todas sus respuestas asociadas?",
                 "Confirmar eliminación",
                 JOptionPane.YES_NO_OPTION,
@@ -415,7 +415,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setResizable(false);
         dialog.setSize(600, 400);
-        dialog.setLocationRelativeTo(panel);
+        dialog.setLocationRelativeTo(null);
 
         JPanel content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
