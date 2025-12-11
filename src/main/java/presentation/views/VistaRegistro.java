@@ -51,7 +51,6 @@ public class VistaRegistro extends ComponenteBase {
     private void inicializar() {
         frame = new JFrame("Registro - Encuestas");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
         
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -120,10 +119,10 @@ public class VistaRegistro extends ComponenteBase {
         btnLogin.addActionListener(e -> volverALogin());
         gbc.gridy = 6;
         panel.add(btnLogin, gbc);
-        
         frame.add(panel);
-        frame.pack();
+        frame.setSize(600, 500);
         frame.setMinimumSize(frame.getSize()); 
+        frame.setLocationRelativeTo(null);
         
         // Enter ejecuta registro
         txtConfirm.addActionListener(e -> registrar());
@@ -146,12 +145,12 @@ public class VistaRegistro extends ComponenteBase {
         
         try {
             ctrlPresentacion.registrarUsuario(usuario, password, confirm);
-            JOptionPane.showMessageDialog(panel, 
+            JOptionPane.showMessageDialog(frame, 
                 "Usuario registrado correctamente. Ahora puedes iniciar sesión.", 
                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
             volverALogin();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panel, 
+            JOptionPane.showMessageDialog(frame, 
                 "Error: " + ex.getMessage(), 
                 "Error de registro", JOptionPane.ERROR_MESSAGE);
         }
