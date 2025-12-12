@@ -104,12 +104,16 @@ public class CtrlPersistenciaPregunta {
      * Convierte un JsonObject a Pregunta según su tipo.
      * 
      * @param pregunta JsonObject con los datos de la pregunta
+     * @param idEncuesta ID de la encuesta a la que pertenece
      * @return Pregunta del tipo correspondiente
      * @throws IllegalArgumentException si el tipo es desconocido
      */
-    private Pregunta jsonToPregunta(JsonObject pregunta){
+    private Pregunta jsonToPregunta(JsonObject pregunta, int idEncuesta){
         try{
-            int idEncuesta = pregunta.get("idEncuesta").getAsInt();
+            // Intentar leer idEncuesta del JSON, si no existe usar el parámetro
+            if (pregunta.has("idEncuesta")) {
+                idEncuesta = pregunta.get("idEncuesta").getAsInt();
+            }
             int idPregunta = pregunta.get("idPregunta").getAsInt();
             String tipo = pregunta.get("tipo").getAsString();
             String enunciado = pregunta.get("enunciado").getAsString();
@@ -123,9 +127,17 @@ public class CtrlPersistenciaPregunta {
                 case "numerica":
                     int rangoInf = pregunta.get("rangoInf").getAsInt();
                     int rangoSup = pregunta.get("rangoSup").getAsInt();
-                    return new PreguntaNumerica(idEncuesta, idPregunta, enunciado, rangoInf, rangoSup);
+                    Pregunta pNum = new PreguntaNumerica(idEncuesta, idPregunta, enunciado, rangoInf, rangoSup);
+                    for (int idR : idRespuestas) {
+                        pNum.guardarIdRespuesta(idR);
+                    }
+                    return pNum;
                 case "libre":
-                    return new PreguntaLibre(idEncuesta, idPregunta, enunciado);
+                    Pregunta pLib = new PreguntaLibre(idEncuesta, idPregunta, enunciado);
+                    for (int idR : idRespuestas) {
+                        pLib.guardarIdRespuesta(idR);
+                    }
+                    return pLib;
                 
                 case "opcion_unica":
                     boolean ordenada = pregunta.get("ordenada").getAsBoolean();
@@ -133,6 +145,9 @@ public class CtrlPersistenciaPregunta {
                     JsonArray opsU = pregunta.get("opciones").getAsJsonArray();
                     for (int i = 0; i < opsU.size(); i++) {
                         pU.addOpcion(opsU.get(i).getAsString());
+                    }
+                    for (int idR : idRespuestas) {
+                        pU.guardarIdRespuesta(idR);
                     }
                     return pU;
                 case "opcion_multiple":
@@ -142,6 +157,9 @@ public class CtrlPersistenciaPregunta {
                         pM.addOpcion(opsM.get(i).getAsString());
                     }
                     pM.setNumMaxOpc(pregunta.get("numMaxOpc").getAsInt());
+                    for (int idR : idRespuestas) {
+                        pM.guardarIdRespuesta(idR);
+                    }
                     return pM;
                 default:
                     throw new IllegalArgumentException("Tipo de pregunta desconocido: " + tipo);
@@ -211,9 +229,12 @@ public class CtrlPersistenciaPregunta {
     			JsonObject encuesta = JsonParser.parseReader(reader).getAsJsonObject();
     			JsonArray listaPreguntas = encuesta.getAsJsonArray("IdPreguntas");
     			for (JsonElement pregunta : listaPreguntas){
-    				if(pregunta.getAsInt() == idPregunta) idEncuesta = encuesta.get("idEncuesta").getAsInt();
-    				break;
+    				if(pregunta.getAsInt() == idPregunta) {
+    					idEncuesta = encuesta.get("idEncuesta").getAsInt();
+    					break;
+    				}
     			}
+    			reader.close();
     			if(idEncuesta != -1) break;
             }
         } catch(Exception e) {
@@ -235,7 +256,7 @@ public class CtrlPersistenciaPregunta {
     	File jsonPregunta = new File("data/encuestas/" + idEncuesta + "/preguntas/" + id + ".json");
         try{
             FileReader r = new FileReader(jsonPregunta);
-            Pregunta p = jsonToPregunta(JsonParser.parseReader(r).getAsJsonObject());
+            Pregunta p = jsonToPregunta(JsonParser.parseReader(r).getAsJsonObject(), idEncuesta);
             return p;
         }
         catch(FileNotFoundException eF){
@@ -302,29 +323,104 @@ public class CtrlPersistenciaPregunta {
     }
 
     /**
-     * Elimina una pregunta del disco.
+     * Elimina una pregunta del disco y la desregistra de la encuesta.
      * 
      * @param idPregunta Identificador de la pregunta
      * @throws IllegalArgumentException si la pregunta no existe
      */
     public void eliminarPregunta(int idPregunta) {
         int idEncuesta = getEncuestaPregunta(idPregunta);
+        if (idEncuesta == -1) {
+            throw new IllegalArgumentException("No existe la pregunta " + idPregunta);
+        }
+        
         File archivo = new File("data/encuestas/" + idEncuesta + "/preguntas", idPregunta + ".json");
         if (!archivo.delete()) {
             throw new IllegalArgumentException("No existe la pregunta " + idPregunta);
         }
+        
+        // Actualizar la lista de preguntas en la encuesta
+        try {
+            File encuestaFile = new File("data/encuestas/" + idEncuesta + ".json");
+            if (encuestaFile.exists()) {
+                FileReader reader = new FileReader(encuestaFile);
+                JsonObject encuesta = JsonParser.parseReader(reader).getAsJsonObject();
+                reader.close();
+                
+                if (encuesta.has("IdPreguntas")) {
+                    JsonArray preguntas = encuesta.getAsJsonArray("IdPreguntas");
+                    JsonArray nuevasPreguntas = new JsonArray();
+                    for (JsonElement elem : preguntas) {
+                        if (elem.getAsInt() != idPregunta) {
+                            nuevasPreguntas.add(elem);
+                        }
+                    }
+                    encuesta.add("IdPreguntas", nuevasPreguntas);
+                    
+                    FileWriter writer = new FileWriter(encuestaFile);
+                    gson.toJson(encuesta, writer);
+                    writer.close();
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error actualizando encuesta: " + e.getMessage());
+        }
     }
 
     /**
-     * Guarda el mapa completo de preguntas a disco.
+     * Guarda una pregunta a disco y la registra en la encuesta.
      * 
-     * @param preguntas Mapa de <ID,Pregunta>
+     * @param p Pregunta a guardar
      */
     public void guardar(Pregunta p) {
-        try (FileWriter w = new FileWriter("data/encuestas/" + p.getIdEncuesta() + "/preguntas/" + p.getIdPregunta() + ".json")) {
+        int idEncuesta = p.getIdEncuesta();
+        int idPregunta = p.getIdPregunta();
+        
+        // Guardar archivo de pregunta
+        try (FileWriter w = new FileWriter("data/encuestas/" + idEncuesta + "/preguntas/" + idPregunta + ".json")) {
             gson.toJson(preguntaToJson(p), w);
         } catch (IOException e) {
-            throw new RuntimeException("Error guardando preguntas: " + e.getMessage());
+            throw new RuntimeException("Error guardando pregunta: " + e.getMessage());
+        }
+        
+        // Actualizar la lista de preguntas en la encuesta
+        try {
+            File encuestaFile = new File("data/encuestas/" + idEncuesta + ".json");
+            JsonObject encuesta;
+            
+            if (encuestaFile.exists()) {
+                FileReader reader = new FileReader(encuestaFile);
+                encuesta = JsonParser.parseReader(reader).getAsJsonObject();
+                reader.close();
+                
+                // Obtener o crear el array de preguntas
+                JsonArray preguntas;
+                if (encuesta.has("IdPreguntas")) {
+                    preguntas = encuesta.getAsJsonArray("IdPreguntas");
+                    // Verificar si ya está registrada
+                    boolean yaExiste = false;
+                    for (JsonElement elem : preguntas) {
+                        if (elem.getAsInt() == idPregunta) {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    if (!yaExiste) {
+                        preguntas.add(idPregunta);
+                    }
+                } else {
+                    preguntas = new JsonArray();
+                    preguntas.add(idPregunta);
+                    encuesta.add("IdPreguntas", preguntas);
+                }
+                
+                // Guardar encuesta actualizada
+                FileWriter writer = new FileWriter(encuestaFile);
+                gson.toJson(encuesta, writer);
+                writer.close();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error actualizando encuesta: " + e.getMessage());
         }
     }
 }
