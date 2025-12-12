@@ -1,0 +1,14 @@
+/src/main/java/presentation/components
+
+Este directorio contiene componentes reutilizables de la interfaz grafica.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- ComponenteBase.java:
+    Clase base abstracta para todos los componentes de la interfaz grafica. Define constantes de estilo (colores, fuentes, dimensiones) y metodos auxiliares para crear componentes con estilo consistente.
+
+- BarraNavegacion.java:
+    Componente de barra de navegacion superior. Muestra el titulo de la vista actual y un menu desplegable con opciones de usuario (cambiar contrasena, cerrar sesion).

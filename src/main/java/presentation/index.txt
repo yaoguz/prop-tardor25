@@ -1,14 +1,25 @@
 /src/main/java/presentation
 
-Este directorio contiene las clases de la capa de presetnacion (pendiente de implementar).
+Este directorio contiene las clases de la capa de presentacion.
+
+Descripcion de los directorios:
+
+- /components:
+    Contiene componentes reutilizables de la interfaz grafica.
+
+- /views:
+    Contiene las vistas (ventanas) de la aplicacion.
 
 Descripcion de los ficheros:
 
 - index.txt:
     Este archivo. Contiene la informacion del directorio y su contenido.
 
-- CtrlPresentacion.java
-    El controlador de la capa de presentacion.
+- CtrlPresentacion.java:
+    El controlador de la capa de presentacion. Coordina todas las vistas y actua como intermediario entre la capa de presentacion y el controlador de dominio.
 
-- VistaPrincipal.java
-    Vista principal del sistema.
+- Main.java:
+    Clase principal de la aplicacion. Punto de entrada que inicia el controlador de presentacion.
+
+- VistaPrincipal.java:
+    Vista principal del sistema (implementacion base).

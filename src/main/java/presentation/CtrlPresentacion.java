@@ -459,8 +459,13 @@ public class CtrlPresentacion {
 	 * @return true si ha respondido
 	 */
 	public boolean haRespondido(String nombreUsuario, int idEncuesta) {
-		List<Integer> respondidas = ctrlDominio.getEncuestasRespondidas();
-		return respondidas.contains(idEncuesta);
+		try {
+			List<Integer> respondidas = ctrlDominio.getEncuestasRespondidas();
+			return respondidas.contains(idEncuesta);
+		} catch (IllegalStateException e) {
+			// Si no hay usuario activo aún, asumir que no ha respondido
+			return false;
+		}
 	}
 
 	// ==================== CLUSTERING ====================

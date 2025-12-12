@@ -14,7 +14,7 @@ Descripcion de los directorios:
     Contiene los ficheros de codigo java de los drivers.
 
 - /persistence:
-    Contiene el fichero de codigo java de la capa de persistencia.
+    Contiene los ficheros de codigo java de la capa de persistencia.
 
 - /presentation:
     Contiene los ficheros de codigo de la capa de presentacion.
@@ -23,6 +23,3 @@ Descripcion de los ficheros:
 
 - index.txt:
     Este archivo. Contiene la informacion del directorio y su contenido.
-
-- main.java:
-    El codigo java del programa principal. Actualmente no hace nada, se modificará para las siguientes entregas.

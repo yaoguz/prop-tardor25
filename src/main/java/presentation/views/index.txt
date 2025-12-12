@@ -1,0 +1,35 @@
+/src/main/java/presentation/views
+
+Este directorio contiene las vistas (ventanas) de la aplicacion.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- VistaLogin.java:
+    Vista de inicio de sesion. Permite al usuario introducir sus credenciales para acceder al sistema.
+
+- VistaRegistro.java:
+    Vista de registro de nuevos usuarios. Permite crear una cuenta nueva en el sistema.
+
+- VistaListaEncuestas.java:
+    Vista principal de la aplicacion. Muestra la lista de todas las encuestas con opciones de filtrado y busqueda. Permite crear, responder, modificar y ver estadisticas de encuestas segun los permisos del usuario.
+
+- VistaModificarEncuesta.java:
+    Vista para crear o modificar encuestas. Permite añadir, editar y eliminar preguntas de diferentes tipos (numerica, opcion unica, opcion multiple, libre).
+
+- VistaResponderEncuesta.java:
+    Vista para responder una encuesta. Muestra todas las preguntas y permite al usuario introducir sus respuestas.
+
+- VistaVerRespuestas.java:
+    Vista para ver las respuestas de una encuesta. Permite al autor de la encuesta ver todas las respuestas recibidas organizadas por pregunta.
+
+- VistaRespuestasMiembros.java:
+    Vista para ver las respuestas de usuarios especificos de un cluster. Muestra las respuestas de los miembros de un grupo identificado por el algoritmo de clustering.
+
+- VistaModificarRespuestaEncuesta.java:
+    Vista para modificar respuestas previamente enviadas a una encuesta.
+
+- VistaEstadisticas.java:
+    Vista para visualizar estadisticas y resultados de clustering. Muestra los clusters generados por el algoritmo y estadisticas sobre las respuestas de la encuesta.
