@@ -2,7 +2,6 @@ package presentation.views;
 
 import presentation.CtrlPresentacion;
 import presentation.components.ComponenteBase;
-import presentation.components.BarraNavegacion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,15 +35,32 @@ import java.io.File;
  */
 public class VistaListaEncuestas extends ComponenteBase {
     
+    /** Controlador de presentación */
     private CtrlPresentacion ctrlPresentacion;
+    
+    /** Ventana principal */
     private JFrame frame;
+    
+    /** Nombre del usuario en sesión */
     private String nombreUsuario;
+    
+    /** Panel scrollable con encuestas */
     private JPanel panelEncuestas;
+    
+    /** Campo de texto para búsqueda */
     private JTextField txtBuscar;
+    
+    /** ComboBox filtro de autor */
     private JComboBox<String> cmbAutorFilter; // "Todas", "Mis Encuestas", "Encuestas ajenas"
+    
+    /** ComboBox filtro de respuestas */
     private JComboBox<String> cmbRespuestaFilter; // "Todas", "Respondidas", "No respondidas"
+    
+    /** Botón para ver todas las encuestas */
     private JButton btnVerTodas;
-    private boolean hayFiltroActivo = false;
+    
+    ///** Indica si hay filtro de búsqueda activo */
+    //private boolean hayFiltroActivo = false;
     
     /**
      * Crea vista principal.
@@ -207,7 +223,7 @@ public class VistaListaEncuestas extends ComponenteBase {
         }
         
         panelEncuestas.removeAll();
-        hayFiltroActivo = true;
+        //hayFiltroActivo = true;
         btnVerTodas.setVisible(true);
         
         // Obtener todas las encuestas y filtrar por título
@@ -240,7 +256,7 @@ public class VistaListaEncuestas extends ComponenteBase {
     private void verTodas() {
         // Restaurar búsqueda y recargar lista completa aplicando filtros actuales
         txtBuscar.setText("");
-        hayFiltroActivo = false;
+        //hayFiltroActivo = false;
         btnVerTodas.setVisible(false);
         cargarEncuestas();
     }
@@ -410,28 +426,57 @@ public class VistaListaEncuestas extends ComponenteBase {
         }
     }
     
+    /**
+     * Navega a la vista de modificar encuesta.
+     * 
+     * @param id ID de encuesta a modificar
+     */
     private void modificarEncuesta(int id) {
         frame.dispose();
         ctrlPresentacion.mostrarModificarEncuesta(nombreUsuario, id);
     }
     
+    /**
+     * Navega a la vista de responder encuesta.
+     * 
+     * @param id ID de encuesta a responder
+     */
     private void responderEncuesta(int id) {
         frame.dispose();
         ctrlPresentacion.mostrarResponderEncuesta(nombreUsuario, id);
     }
+    
+    /**
+     * Navega a la vista de modificar respuesta de encuesta.
+     * 
+     * @param id ID de encuesta con respuesta a modificar
+     */
     private void modificarResponderEncuesta(int id) {
         frame.dispose();
         ctrlPresentacion.mostrarModificarResponderEncuesta(nombreUsuario, id);
     }
     
+    /**
+     * Muestra vista de respuestas de la encuesta.
+     * 
+     * @param id ID de encuesta
+     */
     private void verRespuestas(int id) {
         ctrlPresentacion.mostrarVerRespuestas(nombreUsuario, id);
     }
     
+    /**
+     * Muestra vista de estadísticas y clustering.
+     * 
+     * @param id ID de encuesta
+     */
     private void verEstadisticas(int id) {
         ctrlPresentacion.mostrarEstadisticas(nombreUsuario, id);
     }
     
+    /**
+     * Solicita nueva contraseña y la cambia.
+     */
     private void cambiarContrasena() {
         String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:");
         String confirmacion = JOptionPane.showInputDialog(frame, "Confirmar contraseña:");
@@ -445,6 +490,9 @@ public class VistaListaEncuestas extends ComponenteBase {
         }
     }
     
+    /**
+     * Cierra sesión y vuelve al login.
+     */
     private void cerrarSesion() {
         ctrlPresentacion.cerrarSesion();
         frame.dispose();
@@ -496,8 +544,10 @@ public class VistaListaEncuestas extends ComponenteBase {
     }
 
     /**
-     * Importa respuestas desde fichero para una encuesta específica.
+     * Importa respuestas desde fichero CSV para una encuesta específica.
      * Abre un JFileChooser y delega en CtrlPresentacion.importarRespuestas.
+     * 
+     * @param idEncuesta ID de encuesta para la que se importan respuestas
      */
     private void importarRespuestasEncuesta(int idEncuesta) {
         JFileChooser fileChooser = new JFileChooser();

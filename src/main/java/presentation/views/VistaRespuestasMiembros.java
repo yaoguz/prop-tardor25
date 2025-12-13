@@ -21,12 +21,25 @@ import java.util.List;
  */
 public class VistaRespuestasMiembros extends ComponenteBase {
 
+    /** Controlador de presentación */
     private CtrlPresentacion ctrlPresentacion;
+    
+    /** Nombre del usuario en sesión */
     private String nombreUsuario;
+    
+    /** ID de encuesta */
     private int idEncuesta;
+    
+    /** Perfil cuyos miembros se muestran */
     private Perfil perfil;
+    
+    /** Nombre del representante del perfil */
     private String representante;
+    
+    /** Ventana principal */
     private JFrame frame;
+    
+    /** Panel con respuestas de miembros */
     private JPanel panelRespuestas;
 
     /**
@@ -70,7 +83,7 @@ public class VistaRespuestasMiembros extends ComponenteBase {
         btnVolver.addActionListener(e -> volver());
         panelTop.add(btnVolver, BorderLayout.WEST);
         
-        String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
+        //String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
         JLabel lblTitulo = createStyledLabel("Respuestas - Perfil (" + representante + ")", FONT_TITLE);
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         panelTop.add(lblTitulo, BorderLayout.CENTER);
@@ -208,33 +221,33 @@ public class VistaRespuestasMiembros extends ComponenteBase {
         return panel;
     }
 
-    /**
-     * Formatea una respuesta para mostrarla.
-     * 
-     * @param respuesta Respuesta
-     * @return Texto formateado
-     */
-    private String formatearRespuesta(Respuesta respuesta) {
-        if (respuesta instanceof RespuestaLibre) {
-            return ((RespuestaLibre) respuesta).getRespuesta();
-        } else if (respuesta instanceof RespuestaNumerica) {
-            return String.valueOf(((RespuestaNumerica) respuesta).getRespuesta());
-        } else if (respuesta instanceof RespuestaOpcionUnica) {
-            int opcionIdx = ((RespuestaOpcionUnica) respuesta).getRespuesta();
-            return "Opción " + (opcionIdx + 1);
-        } else if (respuesta instanceof RespuestaOpcionMultiple) {
-            int[] opcionesArray = ((RespuestaOpcionMultiple) respuesta).getRespuesta();
-            List<Integer> opciones = new ArrayList<>();
-            for (int op : opcionesArray) opciones.add(op);
-            StringBuilder sb = new StringBuilder("Opciones: ");
-            for (int i = 0; i < opciones.size(); i++) {
-                sb.append(opciones.get(i) + 1);
-                if (i < opciones.size() - 1) sb.append(", ");
-            }
-            return sb.toString();
-        }
-        return "N/A";
-    }
+    // /**
+    //  * Formatea una respuesta para mostrarla.
+    //  * 
+    //  * @param respuesta Respuesta
+    //  * @return Texto formateado
+    //  */
+    // private String formatearRespuesta(Respuesta respuesta) {
+    //     if (respuesta instanceof RespuestaLibre) {
+    //         return ((RespuestaLibre) respuesta).getRespuesta();
+    //     } else if (respuesta instanceof RespuestaNumerica) {
+    //         return String.valueOf(((RespuestaNumerica) respuesta).getRespuesta());
+    //     } else if (respuesta instanceof RespuestaOpcionUnica) {
+    //         int opcionIdx = ((RespuestaOpcionUnica) respuesta).getRespuesta();
+    //         return "Opción " + (opcionIdx + 1);
+    //     } else if (respuesta instanceof RespuestaOpcionMultiple) {
+    //         int[] opcionesArray = ((RespuestaOpcionMultiple) respuesta).getRespuesta();
+    //         List<Integer> opciones = new ArrayList<>();
+    //         for (int op : opcionesArray) opciones.add(op);
+    //         StringBuilder sb = new StringBuilder("Opciones: ");
+    //         for (int i = 0; i < opciones.size(); i++) {
+    //             sb.append(opciones.get(i) + 1);
+    //             if (i < opciones.size() - 1) sb.append(", ");
+    //         }
+    //         return sb.toString();
+    //     }
+    //     return "N/A";
+    // }
 
     /**
      * Formatea una respuesta usando la información de la pregunta para mostrar

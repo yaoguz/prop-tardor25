@@ -12,8 +12,7 @@ package presentation;
  */
 public class VistaPrincipal {
 
-    /** Controlador de presentacion **/
-	
+    /** Controlador de presentación asociado a esta vista **/
 	private CtrlPresentacion controladorPresentacion;
     
 }

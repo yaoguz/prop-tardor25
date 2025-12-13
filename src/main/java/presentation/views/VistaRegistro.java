@@ -28,10 +28,19 @@ import java.awt.*;
  */
 public class VistaRegistro extends ComponenteBase {
     
+    /** Controlador de presentación */
     private CtrlPresentacion ctrlPresentacion;
+    
+    /** Ventana principal */
     private JFrame frame;
+    
+    /** Campo de texto para nombre de usuario */
     private JTextField txtUsuario;
+    
+    /** Campo de contraseña */
     private JPasswordField txtPassword;
+    
+    /** Campo de confirmación de contraseña */
     private JPasswordField txtConfirm;
     
     /**

@@ -2,7 +2,6 @@ package presentation.views;
 
 import presentation.CtrlPresentacion;
 import presentation.components.ComponenteBase;
-import presentation.components.BarraNavegacion;
 import domain.*;
 
 import javax.swing.*;
@@ -21,22 +20,40 @@ import java.util.List;
  */
 public class VistaModificarRespuestaEncuesta extends ComponenteBase {
 
+    /** Controlador de presentación */
     private CtrlPresentacion ctrlPresentacion;
+    
+    /** Nombre del usuario en sesión */
     private String nombreUsuario;
+    
+    /** ID de encuesta a modificar respuestas */
     private int idEncuesta;
+    
+    /** Ventana principal */
     private JFrame frame;
+    
+    /** Indica si hay cambios sin guardar */
     private boolean cambiosSinGuardar = false;
 
-    // Almacena los paneles de respuesta para cada pregunta
+    /** Mapa de paneles de respuesta por ID de pregunta */
     private Map<Integer, PanelRespuesta> paneles = new LinkedHashMap<>();
 
+    /**
+     * Constructor.
+     * 
+     * @param ctrlPresentacion Controlador de presentación
+     * @param nombreUsuario Usuario en sesión
+     * @param idEncuesta ID de encuesta a modificar
+     */
     public VistaModificarRespuestaEncuesta(CtrlPresentacion ctrlPresentacion, String nombreUsuario, int idEncuesta) {
         this.ctrlPresentacion = ctrlPresentacion;
         this.nombreUsuario = nombreUsuario;
         this.idEncuesta = idEncuesta;
     }
 
-    /** Muestra la vista. */
+    /**
+     * Muestra la vista.
+     */
     public void mostrar() {
         frame = new JFrame("Modificar Respuestas");
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -216,6 +233,9 @@ public class VistaModificarRespuestaEncuesta extends ComponenteBase {
         }
     }
 
+    /**
+     * Sale de la vista con confirmación si hay cambios sin guardar.
+     */
     private void salir() {
         if (cambiosSinGuardar) {
             int opcion = JOptionPane.showConfirmDialog(null,

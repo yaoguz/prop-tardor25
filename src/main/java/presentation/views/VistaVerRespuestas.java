@@ -2,7 +2,6 @@ package presentation.views;
 
 import presentation.CtrlPresentacion;
 import presentation.components.ComponenteBase;
-import presentation.components.BarraNavegacion;
 import domain.*;
 
 import javax.swing.*;
@@ -124,7 +123,6 @@ public class VistaVerRespuestas extends ComponenteBase {
 		// panelBotones.add(btnVolver);
 		// panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
 
-		
 		frame.add(panelPrincipal);
 		
 		// Cargar respuestas inicialmente

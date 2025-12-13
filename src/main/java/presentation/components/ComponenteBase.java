@@ -6,8 +6,7 @@ import java.awt.*;
 /**
  * Clase base abstracta para componentes reutilizables de la UI.
  * 
- * Proporciona estructura común y métodos de utilidad para todos los
- * componentes visuales del sistema.
+ * Proporciona estructura común y métodos de utilidad para todos los componentes visuales del sistema.
  * 
  * RESPONSABILIDADES:
  * - Definir interfaz común para componentes UI

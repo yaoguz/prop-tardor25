@@ -2,7 +2,6 @@ package presentation.views;
 
 import presentation.CtrlPresentacion;
 import presentation.components.ComponenteBase;
-import presentation.components.BarraNavegacion;
 import domain.*;
 import domain.algorithm.estructuras.*;
 
@@ -29,21 +28,43 @@ import java.util.concurrent.*;
  */
 public class VistaEstadisticas extends ComponenteBase {
 
+	/** Controlador de presentación */
 	private CtrlPresentacion ctrlPresentacion;
+	
+	/** Nombre del usuario en sesión */
 	private String nombreUsuario;
+	
+	/** ID de encuesta */
 	private int idEncuesta;
+	
+	/** Ventana principal */
 	private JFrame frame;
+	
+	/** Panel con perfiles resultantes de clustering */
 	private JPanel panelPerfiles;
 	
+	/** Spinner para número de clusters */
 	private JSpinner spinK;
+	
+	/** ComboBox para selección de algoritmo */
 	private JComboBox<String> comboAlgoritmo;
+	
+	/** Botón de ejecución de clustering */
 	private JButton btnEjecutar;
+	
+	/** Barra de progreso para ejecución */
 	private JProgressBar progressBar;
+	
+	/** Label de estado de ejecución */
 	private JLabel lblEstado;
 
-	// Worker y futuro para permitir cancelación y timeout
+	/** Worker para ejecución asíncrona de clustering */
 	private SwingWorker<ResultadoClustering, Void> clusteringWorker;
+	
+	/** Futuro para permitir cancelación y timeout */
 	private Future<ResultadoClustering> clusteringFuture;
+	
+	/** Timeout de ejecución de clustering en segundos */
 	private static final int CLUSTER_TIMEOUT_SECONDS = 30;
 
 	/**
@@ -109,7 +130,7 @@ public class VistaEstadisticas extends ComponenteBase {
 	}
 
 	/**
-	 * Salir a la página principal.
+	 * Cierra la vista y vuelve a la lista de encuestas.
 	 */
 	private void salir() {
 		frame.dispose();
@@ -117,9 +138,9 @@ public class VistaEstadisticas extends ComponenteBase {
 	}
 
 	/**
-	 * Crea panel de configuración de clustering.
+	 * Crea panel de configuración con controles de clustering.
 	 * 
-	 * @return Panel configurado
+	 * @return Panel de configuración
 	 */
 	private JPanel crearPanelConfiguracion() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
@@ -322,9 +343,8 @@ public class VistaEstadisticas extends ComponenteBase {
     clusteringWorker.execute();
 }
 	
-
 	/**
-	 * Muestra los perfiles resultantes.
+	 * Muestra perfiles resultantes de clustering.
 	 * 
 	 * @param perfiles Lista de perfiles
 	 */
@@ -344,11 +364,11 @@ public class VistaEstadisticas extends ComponenteBase {
 	}
 
 	/**
-	 * Crea panel para un perfil.
+	 * Crea panel individual para un perfil.
 	 * 
 	 * @param numero Número de perfil
-	 * @param perfil Perfil
-	 * @return Panel configurado
+	 * @param perfil Perfil a mostrar
+	 * @return Panel del perfil
 	 */
 	private JPanel crearPanelPerfil(int numero, Perfil perfil) {
 		JPanel panel = new JPanel(new BorderLayout(10, 10));

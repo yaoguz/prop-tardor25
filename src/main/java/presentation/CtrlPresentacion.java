@@ -35,7 +35,10 @@ public class CtrlPresentacion {
 
 	/** Atributos **/
 
+	/** Instancia del controlador de dominio */
 	private CtrlDominio ctrlDominio;
+	
+	/** Nombre del usuario actualmente en sesión */
 	private String usuarioActual;
 
 	/**
@@ -119,6 +122,12 @@ public class CtrlPresentacion {
 		vista.mostrar();
 	}
 
+	/**
+	 * Muestra vista para modificar respuestas de encuesta ya respondida.
+	 * 
+	 * @param nombreUsuario Usuario
+	 * @param idEncuesta ID de encuesta
+	 */
 	public void mostrarModificarResponderEncuesta(String nombreUsuario, int idEncuesta) {
 		closeAllWindows();
 		VistaModificarRespuestaEncuesta vista = new VistaModificarRespuestaEncuesta(this, nombreUsuario, idEncuesta);
@@ -150,8 +159,11 @@ public class CtrlPresentacion {
 	}
 
 	/**
-	 * Muestra vista de las respuestas de cada miembro.
-	 * @param perfil perfiles de usuarios
+	 * Muestra vista de las respuestas de cada miembro de un perfil.
+	 * 
+	 * @param nombreUsuario Usuario en sesión
+	 * @param idEncuesta ID de encuesta
+	 * @param perfil Perfil con miembros a mostrar
 	 * @param representante Representante del perfil
 	 */
 	public void mostrarRespuestasMiembros(String nombreUsuario, int idEncuesta, Perfil perfil, String representante) {
@@ -177,7 +189,7 @@ public class CtrlPresentacion {
 	/**
 	 * Obtiene usuario actual en sesión.
 	 * 
-	 * @return Nombre de usuario
+	 * @return Nombre de usuario, o null si no hay sesión activa
 	 */
 	public String getUsuarioActual() {
 		return usuarioActual;
@@ -277,9 +289,9 @@ public class CtrlPresentacion {
 	}
 
 	/**
-	 * Obtiene lista de IDs de todas las encuestas.
+	 * Obtiene lista de IDs de todas las encuestas del sistema.
 	 * 
-	 * @return Lista de IDs
+	 * @return Lista de IDs de encuestas
 	 */
 	public List<Integer> obtenerTodasEncuestas() {
 		// Implementación placeholder - en real se obtendría del dominio
@@ -292,17 +304,17 @@ public class CtrlPresentacion {
 	 * Obtiene preguntas de una encuesta.
 	 * 
 	 * @param idEncuesta ID de encuesta
-	 * @return Lista de preguntas
+	 * @return Lista de preguntas de la encuesta
 	 */
 	public List<Pregunta> getPreguntasEncuesta(int idEncuesta) {
 		return ctrlDominio.getPreguntasEncuesta(idEncuesta);
 	}
 
 	/**
-	 * Obtiene IDs de preguntas de encuesta.
+	 * Obtiene IDs de preguntas de una encuesta.
 	 * 
 	 * @param idEncuesta ID de encuesta
-	 * @return Lista de IDs
+	 * @return Lista de IDs de preguntas
 	 */
 	public List<Integer> getIdPreguntasEncuesta(int idEncuesta) {
 		return ctrlDominio.getIdPreguntasEncuesta(idEncuesta);
@@ -312,7 +324,7 @@ public class CtrlPresentacion {
 	 * Obtiene título de una encuesta.
 	 * 
 	 * @param idEncuesta ID de encuesta
-	 * @return Título
+	 * @return Título de la encuesta
 	 */
 	public String obtenerTituloEncuesta(int idEncuesta) {
 		// Placeholder
@@ -392,10 +404,11 @@ public class CtrlPresentacion {
 	}
 
 	/**
-	 * Modifica una pregunta existente delegando al dominio.
-	 * @param idPregunta ID de la pregunta a modificar
+	 * Modifica una pregunta existente.
+	 * 
+	 * @param idPregunta ID de pregunta a modificar
 	 * @param enunciado Nuevo enunciado
-	 * @param atributosEspecificos Atributos específicos según tipo (opciones, rangos...)
+	 * @param atributosEspecificos Atributos específicos según tipo (opciones, rangos, etc.)
 	 * @return ID de la nueva pregunta creada
 	 */
 	public int modificarPregunta(int idPregunta, String enunciado, java.util.Map<String, Object> atributosEspecificos) {
@@ -482,13 +495,12 @@ public class CtrlPresentacion {
 		return ctrlDominio.ejecutarClustering(idEncuesta, k, algoritmo);
 	}
 
-	/**
-	 * Ejecuta clustering recibiendo el nombre del algoritmo tal como aparece en la UI
-	 * (por ejemplo "K-Means++") y convierte internamente al identificador de dominio.
+	/**con parámetros de UI convertidos a identificadores de dominio.
 	 *
-	 * @param idEncuesta ID de la encuesta
-	 * @param k número de clusters
-	 * @param nombreUI nombre del algoritmo en la UI
+	 * @param idEncuesta ID de encuesta
+	 * @param k Número de clusters
+	 * @param nombreUI Nombre del algoritmo en UI (ej: "K-Means++")
+	 * @return Resultado de cmbre del algoritmo en la UI
 	 * @return ResultadoClustering
 	 */
 	public ResultadoClustering ejecutarClusteringDesdeUI(int idEncuesta, int k, String nombreUI) {

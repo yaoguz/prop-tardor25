@@ -31,9 +31,16 @@ import java.awt.*;
  */
 public class VistaLogin extends ComponenteBase {
     
+    /** Controlador de presentación */
     private CtrlPresentacion ctrlPresentacion;
+    
+    /** Ventana principal */
     private JFrame frame;
+    
+    /** Campo de texto para nombre de usuario */
     private JTextField txtUsuario;
+    
+    /** Campo de contraseña */
     private JPasswordField txtPassword;
     
     /**

@@ -2,7 +2,6 @@ package presentation.views;
 
 import presentation.CtrlPresentacion;
 import presentation.components.ComponenteBase;
-import presentation.components.BarraNavegacion;
 import domain.*;
 
 import javax.swing.*;
@@ -27,13 +26,22 @@ import java.util.List;
  */
 public class VistaResponderEncuesta extends ComponenteBase {
 
+	/** Controlador de presentación */
 	private CtrlPresentacion ctrlPresentacion;
+	
+	/** Nombre del usuario en sesión */
 	private String nombreUsuario;
+	
+	/** ID de encuesta a responder */
 	private int idEncuesta;
+	
+	/** Ventana principal */
 	private JFrame frame;
+	
+	/** Indica si hay cambios sin guardar */
 	private boolean cambiosSinGuardar = false;
 	
-	// Almacena los paneles de respuesta para cada pregunta
+	/** Mapa de paneles de respuesta por ID de pregunta */
 	private Map<Integer, PanelRespuesta> paneles = new LinkedHashMap<>();
 
 	/**
@@ -129,9 +137,9 @@ public class VistaResponderEncuesta extends ComponenteBase {
 	}
 
 	/**
-	 * Carga las preguntas de la encuesta.
+	 * Carga preguntas de encuesta y crea paneles de respuesta.
 	 * 
-	 * @param panelPreguntas Panel contenedor
+	 * @param panelPreguntas Panel donde añadir preguntas
 	 */
 	private void cargarPreguntas(JPanel panelPreguntas) {
 		List<Pregunta> preguntas = ctrlPresentacion.getPreguntasEncuesta(idEncuesta);
@@ -148,10 +156,10 @@ public class VistaResponderEncuesta extends ComponenteBase {
 	}
 
 	/**
-	 * Crea el panel de respuesta apropiado según el tipo de pregunta.
+	 * Crea panel de respuesta según tipo de pregunta.
 	 * 
-	 * @param pregunta Pregunta
-	 * @return Panel de respuesta
+	 * @param pregunta Pregunta para la cual crear panel
+	 * @return Panel de respuesta apropiado
 	 */
 	private PanelRespuesta crearPanelRespuesta(Pregunta pregunta) {
 		if (pregunta instanceof PreguntaLibre) {
@@ -167,7 +175,7 @@ public class VistaResponderEncuesta extends ComponenteBase {
 	}
 
 	/**
-	 * Guarda las respuestas.
+	 * Guarda todas las respuestas validando completitud.
 	 */
 	private void guardarRespuestas() {
 		try {
@@ -224,21 +232,38 @@ public class VistaResponderEncuesta extends ComponenteBase {
 	// ==================== INTERFACES Y CLASES INTERNAS ====================
 
 	/**
-	 * Interfaz para paneles de respuesta.
+	 * Interfaz común para paneles de respuesta.
+	 * 
+	 * Define métodos para obtener panel visual, capturar respuesta y validar.
 	 */
 	private interface PanelRespuesta {
+		/** Obtiene panel visual del componente */
 		JPanel getPanel();
+		
+		/** Obtiene respuesta capturada */
 		Object getRespuesta();
+		
+		/** Verifica si se ha dado una respuesta válida */
 		boolean tieneRespuesta();
 	}
 
 	/**
-	 * Panel para pregunta libre.
+	 * Panel de respuesta para pregunta libre.
+	 * 
+	 * Muestra campo de texto para respuesta de texto libre.
 	 */
 	private class PanelRespuestaLibre implements PanelRespuesta {
+		/** Pregunta asociada */
 		private PreguntaLibre pregunta;
+		
+		/** Campo de texto para respuesta */
 		private JTextField txtRespuesta;
 
+		/**
+		 * Constructor.
+		 * 
+		 * @param pregunta Pregunta libre
+		 */
 		public PanelRespuestaLibre(PreguntaLibre pregunta) {
 			this.pregunta = pregunta;
 		}
@@ -278,12 +303,22 @@ public class VistaResponderEncuesta extends ComponenteBase {
 	}
 
 	/**
-	 * Panel para pregunta numérica.
+	 * Panel de respuesta para pregunta numérica.
+	 * 
+	 * Muestra spinner con rango válido definido en pregunta.
 	 */
 	private class PanelRespuestaNumerica implements PanelRespuesta {
+		/** Pregunta asociada */
 		private PreguntaNumerica pregunta;
+		
+		/** Spinner para valor numérico */
 		private JSpinner spinRespuesta;
 
+		/**
+		 * Constructor.
+		 * 
+		 * @param pregunta Pregunta numérica
+		 */
 		public PanelRespuestaNumerica(PreguntaNumerica pregunta) {
 			this.pregunta = pregunta;
 		}
@@ -331,13 +366,25 @@ public class VistaResponderEncuesta extends ComponenteBase {
 	}
 
 	/**
-	 * Panel para pregunta de opción única.
+	 * Panel de respuesta para pregunta de opción única.
+	 * 
+	 * Muestra radio buttons para selección exclusiva.
 	 */
 	private class PanelRespuestaOpcionUnica implements PanelRespuesta {
+		/** Pregunta asociada */
 		private PreguntaOpcionUnica pregunta;
+		
+		/** Grupo de radio buttons */
 		private ButtonGroup grupo;
+		
+		/** Mapa de radio button a índice de opción */
 		private Map<JRadioButton, Integer> opcionesMap = new HashMap<>();
 
+		/**
+		 * Constructor.
+		 * 
+		 * @param pregunta Pregunta de opción única
+		 */
 		public PanelRespuestaOpcionUnica(PreguntaOpcionUnica pregunta) {
 			this.pregunta = pregunta;
 		}
@@ -393,12 +440,22 @@ public class VistaResponderEncuesta extends ComponenteBase {
 	}
 
 	/**
-	 * Panel para pregunta de opción múltiple.
+	 * Panel de respuesta para pregunta de opción múltiple.
+	 * 
+	 * Muestra checkboxes con límite de selecciones configurado.
 	 */
 	private class PanelRespuestaOpcionMultiple implements PanelRespuesta {
+		/** Pregunta asociada */
 		private PreguntaOpcionMultiple pregunta;
+		
+		/** Lista de checkboxes de opciones */
 		private List<JCheckBox> checkboxes = new ArrayList<>();
 
+		/**
+		 * Constructor.
+		 * 
+		 * @param pregunta Pregunta de opción múltiple
+		 */
 		public PanelRespuestaOpcionMultiple(PreguntaOpcionMultiple pregunta) {
 			this.pregunta = pregunta;
 		}
