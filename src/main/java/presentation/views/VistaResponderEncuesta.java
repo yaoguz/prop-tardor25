@@ -14,7 +14,7 @@ import java.util.List;
  * Permite al usuario proporcionar respuestas nuevas a una encuesta.
  * Cada tipo de pregunta tiene un panel específico para capturar la respuesta.
  * 
- * @author PROP Cluster XX
+ * @author Xiangjun Yepan
  */
 public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 

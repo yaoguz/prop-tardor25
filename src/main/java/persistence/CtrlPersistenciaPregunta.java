@@ -3,7 +3,6 @@ package persistence;
 import com.google.gson.*;
 import domain.*;
 import java.io.*;
-import java.util.*;
 
 /**
  * Controlador de persistencia de preguntas en disco.

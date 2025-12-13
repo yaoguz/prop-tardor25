@@ -21,7 +21,7 @@ import java.util.List;
  * - Visualización organizada de respuestas
  * - Solo accesible por el autor de la encuesta
  * 
- * @author PROP Cluster XX
+ * @author Alessandro Jin
  */
 public class VistaVerRespuestas extends ComponenteBase {
 

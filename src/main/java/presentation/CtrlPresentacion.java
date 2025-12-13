@@ -29,7 +29,7 @@ import java.awt.Window;
  * - mostrarXXX(): Navegación entre vistas
  * - Métodos delegados a CtrlDominio
  * 
- * @author PROP Cluster XX
+ * @author Xiangjun Yepan, Peiyu Wang, Yaoyao Guo
  */
 public class CtrlPresentacion {
 
@@ -163,7 +163,7 @@ public class CtrlPresentacion {
 	 * 
 	 * @param nombreUsuario Usuario en sesión
 	 * @param idEncuesta ID de encuesta
-	 * @param perfil Perfil con miembros a mostrar
+	 * @param perfil Perfil con miembros a mostrar 
 	 * @param representante Representante del perfil
 	 */
 	public void mostrarRespuestasMiembros(String nombreUsuario, int idEncuesta, Perfil perfil, String representante) {

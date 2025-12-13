@@ -27,7 +27,7 @@ import java.util.HashMap;
  * - Template Method: Hereda de ComponenteBase
  * - Strategy: Diferentes editores según tipo de pregunta
  * 
- * @author PROP Cluster XX
+ * @author Xiangjun Yepan, Peiyu Wang
  */
 public class VistaModificarEncuesta extends ComponenteBase {
     

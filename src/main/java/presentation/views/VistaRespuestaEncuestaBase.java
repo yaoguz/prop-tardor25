@@ -23,7 +23,7 @@ import java.util.List;
  * PATRONES:
  * - Template Method: define esqueleto de operaciones, subclases implementan hooks
  * 
- * @author PROP Cluster XX
+ * @author Yaoyao Guo
  */
 public abstract class VistaRespuestaEncuestaBase extends ComponenteBase {
 
@@ -191,7 +191,7 @@ public abstract class VistaRespuestaEncuestaBase extends ComponenteBase {
 		ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
 	}
 
-	// ==================== MÉTODOS HOOK (Abstract) ====================
+	// ==================== MÉTODOS a implementar los hijos ====================
 
 	/**
 	 * Obtiene título de ventana.

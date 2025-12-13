@@ -23,7 +23,7 @@ import java.awt.event.ActionListener;
  * - setOnCambiarContrasena(): Configura acción al cambiar contraseña
  * - setOnSalir(): Configura acción al salir
  * 
- * @author PROP Cluster XX
+ * @author Denis Roca
  */
 public class BarraNavegacion extends ComponenteBase {
     

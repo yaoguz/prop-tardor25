@@ -27,7 +27,7 @@ import java.awt.*;
  * - mostrar(): Muestra la vista
  * - ocultar(): Oculta la vista
  * 
- * @author PROP Cluster XX
+ * @author Xiangjun Yepan
  */
 public class VistaLogin extends ComponenteBase {
     

@@ -24,7 +24,7 @@ import java.awt.*;
  * MÉTODOS PRINCIPALES:
  * - mostrar(): Muestra la vista
  * 
- * @author PROP Cluster XX
+ * @author Peiyu Wang
  */
 public class VistaRegistro extends ComponenteBase {
     

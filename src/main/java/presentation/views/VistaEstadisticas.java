@@ -24,7 +24,7 @@ import java.util.concurrent.*;
  * - Visualización de perfiles con representantes y miembros
  * - Botón para ver respuestas de miembros
  * 
- * @author PROP Cluster XX
+ * @author Peiyu Wang
  */
 public class VistaEstadisticas extends ComponenteBase {
 

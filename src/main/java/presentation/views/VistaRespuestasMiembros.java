@@ -17,7 +17,7 @@ import java.util.List;
  * Las respuestas del representante aparecen en negrita para destacarlas.
  * Permite volver a la vista de estadísticas.
  * 
- * @author PROP Cluster XX
+ * @author Xiangjun Yepan
  */
 public class VistaRespuestasMiembros extends ComponenteBase {
 

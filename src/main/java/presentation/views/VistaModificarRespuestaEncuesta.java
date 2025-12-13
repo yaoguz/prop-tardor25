@@ -14,7 +14,7 @@ import java.util.List;
  * Funciona igual que VistaResponderEncuesta pero carga las respuestas
  * existentes del usuario para permitir modificarlas.
  *
- * @author PROP Cluster XX
+ * @author Peiyu Wang
  */
 public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase {
 

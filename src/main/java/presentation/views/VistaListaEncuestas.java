@@ -30,7 +30,7 @@ import java.io.File;
  * - cargarEncuestas(): Carga y muestra encuestas
  * - aplicarFiltros(): Aplica filtros seleccionados
  * 
- * @author PROP Cluster XX
+ * @author Xiangjun Yepan, Peiyu Wang
  */
 public class VistaListaEncuestas extends ComponenteBase {
     
