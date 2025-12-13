@@ -49,11 +49,8 @@ public class VistaVerRespuestas extends ComponenteBase {
 	 * Muestra la vista.
 	 */
 	public void mostrar() {
-		frame = new JFrame("Ver Respuestas");
-		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		frame = crearFrameEstandar("Ver Respuestas");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setResizable(false);
 
 		// Panel principal
 		JPanel panelPrincipal = new JPanel(new BorderLayout(0, 10));

@@ -75,17 +75,8 @@ public class VistaModificarEncuesta extends ComponenteBase {
      */
     private void inicializar() {
         String titulo = idEncuesta == -1 ? "Crear Encuesta" : "Modificar Encuesta";
-        frame = new JFrame(titulo);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                salir();
-            }
-        });
-        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
+        frame = crearFrameEstandar(titulo);
+        configurarCierreVentana(frame, this::salir);
         
         panel.setLayout(new BorderLayout());
         

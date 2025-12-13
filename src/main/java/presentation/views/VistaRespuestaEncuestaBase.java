@@ -6,7 +6,6 @@ import domain.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
@@ -64,18 +63,8 @@ public abstract class VistaRespuestaEncuestaBase extends ComponenteBase {
 	 * Define el esqueleto del algoritmo, delegando pasos específicos a subclases.
 	 */
 	public final void mostrar() {
-		frame = new JFrame(getTituloVentana());
-		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setResizable(false);
-
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				salir();
-			}
-		});
+		frame = crearFrameEstandar(getTituloVentana());
+		configurarCierreVentana(frame, this::salir);
 
 		JPanel panelPrincipal = new JPanel(new BorderLayout(0, 10));
 		panelPrincipal.setBackground(COLOR_BG);

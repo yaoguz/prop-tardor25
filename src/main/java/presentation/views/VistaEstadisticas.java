@@ -84,11 +84,8 @@ public class VistaEstadisticas extends ComponenteBase {
 	 * Muestra la vista.
 	 */
 	public void mostrar() {
-		frame = new JFrame("Estadísticas y Clustering");
-		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		frame = crearFrameEstandar("Estadísticas y Clustering");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setResizable(false);
 
 		// Panel principal
 		JPanel panelPrincipal = new JPanel(new BorderLayout(0, 10));

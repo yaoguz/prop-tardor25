@@ -5,7 +5,6 @@ import presentation.components.ComponenteBase;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.List;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
@@ -79,19 +78,8 @@ public class VistaListaEncuestas extends ComponenteBase {
      * Inicializa componentes de la vista.
      */
     private void inicializar() {
-        frame = new JFrame("Encuestas - Principal");
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
-        
-        // Confirmación de salida
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                confirmarSalida();
-            }
-        });
+        frame = crearFrameEstandar("Encuestas - Principal");
+        configurarCierreVentana(frame, this::confirmarSalida);
         
         // Layout principal
         panel.setLayout(new BorderLayout(0, 10));

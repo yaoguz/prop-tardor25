@@ -58,7 +58,7 @@ public class VistaLogin extends ComponenteBase {
      * Inicializa componentes de la vista.
      */
     private void inicializar() {
-        frame = new JFrame("Login - Encuestas");
+        frame = crearFrameEstandar("Login - Encuestas");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //frame.setLocationRelativeTo(null);
         

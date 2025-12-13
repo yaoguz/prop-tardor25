@@ -58,7 +58,7 @@ public class VistaRegistro extends ComponenteBase {
      * Inicializa componentes de la vista.
      */
     private void inicializar() {
-        frame = new JFrame("Registro - Encuestas");
+        frame = crearFrameEstandar("Registro - Encuestas");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         panel.setLayout(new GridBagLayout());

@@ -2,6 +2,8 @@ package presentation.components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Clase base abstracta para componentes reutilizables de la UI.
@@ -17,8 +19,9 @@ import java.awt.*;
  * - getPanel(): Obtiene el panel principal del componente
  * - createStyledButton(): Crea botón con estilo consistente
  * - createStyledLabel(): Crea label con estilo consistente
+ * - crearFrameEstandar(): Configura JFrame con valores estándar
  * 
- * @author PROP Cluster XX
+ * @author Yaoyao Guo
  */
 public abstract class ComponenteBase {
     
@@ -115,5 +118,35 @@ public abstract class ComponenteBase {
         JPasswordField field = new JPasswordField(columns);
         field.setFont(FONT_NORMAL);
         return field;
+    }
+    
+    /**
+     * Crea y configura JFrame con valores estándar.
+     * 
+     * @param titulo Título de la ventana
+     * @return JFrame configurado
+     */
+    protected JFrame crearFrameEstandar(String titulo) {
+        JFrame frame = new JFrame(titulo);
+        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        return frame;
+    }
+    
+    /**
+     * Agrega listener para confirmar cierre de ventana.
+     * 
+     * @param frame Frame al cual agregar listener
+     * @param onClose Acción a ejecutar al cerrar
+     */
+    protected void configurarCierreVentana(JFrame frame, Runnable onClose) {
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                onClose.run();
+            }
+        });
     }
 }

@@ -64,11 +64,8 @@ public class VistaRespuestasMiembros extends ComponenteBase {
      * Muestra la vista.
      */
     public void mostrar() {
-        frame = new JFrame("Respuestas de Miembros del Perfil");
-        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        frame = crearFrameEstandar("Respuestas de Miembros del Perfil");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
 
         // Panel principal
         JPanel panelPrincipal = new JPanel(new BorderLayout(0, 10));
