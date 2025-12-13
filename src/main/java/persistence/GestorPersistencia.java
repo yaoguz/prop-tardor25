@@ -239,15 +239,6 @@ public class GestorPersistencia {
     // ==================== MÉTODOS DE PREGUNTA ====================
 
     /**
-    * Devuelve una lista con todas las preguntas almacenadas.
-    *
-    * @return Lista con todas las preguntas existentes
-    */
-    public ArrayList<Pregunta> getPreguntas() {
-        return preguntas.getAllPreguntas();
-    }
-
-    /**
      * Obtiene una pregunta por su ID.
      * 
      * @param id ID de la pregunta

@@ -263,24 +263,6 @@ public class TestCtrlDominioPregunta {
     }
 
     /**
-     * Verifica obtención de todas las preguntas.
-     */
-    @Test
-    public void testGetAllPreguntas() {
-        ArrayList<Pregunta> lista = new ArrayList<>();
-        Pregunta p = mock(PreguntaLibre.class);
-        when(p.getIdPregunta()).thenReturn(1);
-        lista.add(p);
-        when(mockGestor.getPreguntas()).thenReturn(lista);
-
-        HashMap<Integer, Pregunta> resultado = new HashMap<>(ctrlDominioPregunta.getAllPreguntas());
-
-        assertEquals("No ha sacado todas las preguntas", 1, resultado.size());
-        assertTrue(resultado.containsKey(1));
-        verify(mockGestor).getPreguntas();
-    }
-
-    /**
      * Verifica obtención de respuestas de una pregunta.
      */
     @Test

@@ -150,12 +150,9 @@ public class DriverPregunta {
                     testGetPregunta();
                     break;
                 case 6:
-                    testGetAllPreguntas();
-                    break;
-                case 7:
                     testExistePregunta();
                     break;
-                case 8:
+                case 7:
                     testAnadirRespuesta();
                     break;
                 case 0:
@@ -185,9 +182,8 @@ public class DriverPregunta {
         System.out.println("3. Modificar pregunta");
         System.out.println("4. Eliminar pregunta");
         System.out.println("5. Obtener pregunta");
-        System.out.println("6. Obtener todas las preguntas");
-        System.out.println("7. Comprobar existencia de una pregunta");
-        System.out.println("8. Añadir respuesta a una pregunta");
+        System.out.println("6. Comprobar existencia de una pregunta");
+        System.out.println("7. Añadir respuesta a una pregunta");
         System.out.println("0. Salir");
         System.out.println("\nIntroduzca el número correspondiente a la acción a ejecutar: ");
         
@@ -486,34 +482,6 @@ public class DriverPregunta {
             System.out.println("Número de respuestas: " +p.getIdRespuestas().size());
         } catch (IllegalArgumentException e) {
             System.out.println("\nError: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("\nError inesperado: " + e.getMessage());
-        }
-    }
-
-
-	/**
-	 * Prueba la funcionalidad de obtener todas las preguntas.
-	 * 
-     * Muestra el número de preguntas seguido de los identificadores de
-     * todas las preguntas (en caso de haberlos).
-     * 
-     * En caso de error se indicará con "Error inesperado:" seguido del
-     * error, ya que esta función no debería dar error.
-	 * 
-	 */
-    private static void testGetAllPreguntas() {
-        System.out.println("\n--{ OBTENER TODAS LAS PREGUNTAS }--");
-
-        try {
-            HashMap<Integer, Pregunta> preguntas = new HashMap<>(ctrlPregunta.getAllPreguntas());
-            System.out.println("Total de preguntas: " + preguntas.size());
-            if(preguntas.size() > 0){
-                System.out.println("Preguntas:");
-                for(Pregunta p : preguntas.values()){
-                    System.out.println("Id: " +p.getIdPregunta());
-                }
-            }
         } catch (Exception e) {
             System.out.println("\nError inesperado: " + e.getMessage());
         }

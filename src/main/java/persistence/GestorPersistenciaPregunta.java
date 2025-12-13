@@ -1,6 +1,5 @@
 package persistence;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -82,17 +81,6 @@ public class GestorPersistenciaPregunta {
             singletonInstance = new GestorPersistenciaPregunta();
         }
         return singletonInstance;
-    }
-
-    /**
-    * Devuelve una lista con todas las preguntas almacenadas.
-    * 
-    * @param idE es el identificador de la encuesta cuyas preguntas queremos obtener.
-    *
-    * @return Lista con todas las preguntas existentes
-    */
-    public ArrayList<Pregunta> getAllPreguntas() {
-        return ctrlFicheroPregunta.getAllPreguntas();
     }
 
     /**

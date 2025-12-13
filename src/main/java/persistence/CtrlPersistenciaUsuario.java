@@ -32,8 +32,22 @@ import java.util.*;
  * @author Alessandro Jin 
  */
 public class CtrlPersistenciaUsuario {
+
+    private static CtrlPersistenciaUsuario singletonInstance;
  
     private final Gson gson;
+
+    /**
+     * Obtiene instancia única (patrón Singleton).
+     * 
+     * @return Instancia única de CtrlPersistenciaUsuario
+     */
+    public static CtrlPersistenciaUsuario getInstance() {
+        if (singletonInstance == null) {
+            singletonInstance = new CtrlPersistenciaUsuario();
+        }
+        return singletonInstance;
+    }
 
     /**
      * Crea controlador de persistencia de usuarios.

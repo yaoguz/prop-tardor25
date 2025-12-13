@@ -268,40 +268,6 @@ public class CtrlPersistenciaPregunta {
     }
 
     /**
-     * Carga todas las preguntas desde disco.
-     * 
-     * @return Mapa de <ID,Pregunta> (vacío si archivo no existe)
-     */
-    public ArrayList<Pregunta> getAllPreguntas() { 
-
-    	//--------------------------//
-		// Falta revisar (está mal) //
-		//---------------------//---//
-        //Parece que no se usa //
-        //---------------------//
-
-        File f = new File("data/encuestas");
-        File[] encuestas = f.listFiles(File::isDirectory);
-        if (encuestas == null) return new ArrayList<>();
-        
-        try (FileReader r = new FileReader(f)) {
-            JsonObject root = JsonParser.parseReader(r).getAsJsonObject();
-            if (!root.has("preguntas")) return new ArrayList<>();
-            
-            JsonObject preguntasObj = root.getAsJsonObject("preguntas");
-            ArrayList<Pregunta> result = new ArrayList<>();
-            
-            for (Map.Entry<String, JsonElement> entry : preguntasObj.entrySet()) {
-                Pregunta p = gson.fromJson(entry.getValue(), Pregunta.class);
-                result.add(p);
-            }
-            return result;
-        } catch (IOException e) {
-            return new ArrayList<>();
-        }
-    }
-
-    /**
      * Actualiza una pregunta existente.
      * 
      * @param p pregunta a actualizar

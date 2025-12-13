@@ -57,7 +57,7 @@ public class GestorPersistenciaRespuesta {
      */
     public static GestorPersistenciaRespuesta getInstance() {
         if (singletonInstance == null) {
-            singletonInstance = new GestorPersistenciaRespuesta();
+            singletonInstance = GestorPersistenciaRespuesta.getInstance();
         }
         return singletonInstance;
     }

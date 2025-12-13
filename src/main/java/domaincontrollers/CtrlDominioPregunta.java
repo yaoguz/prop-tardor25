@@ -381,20 +381,6 @@ public class CtrlDominioPregunta {
 		
 		gestor.eliminarPregunta(idPregunta);
 	}
-	
-	/**
-	 * Obtiene todas las preguntas del sistema.
-	 * 
-	 * @return HashMap con todas las preguntas (clave: id pregunta)
-	 */
-	public Map<Integer, Pregunta> getAllPreguntas() {
-		HashMap<Integer, Pregunta> map = new HashMap<>();
-		ArrayList<Pregunta> lista = gestor.getPreguntas();
-		for (Pregunta p : lista) {
-			map.put(p.getIdPregunta(), p);
-		}
-		return map;
-	}
 
 	/**
 	 * Obtiene todas las respuestas de una pregunta específica.
