@@ -102,7 +102,7 @@ public class GestorPersistenciaPregunta {
      * 
      * @param id ID de la pregunta
      * @return Pregunta correspondiente, o null si no existe
-     * @throws IlleaglArgumentException si la pregunta especificada no existe
+     * @throws IllegalArgumentException si la pregunta especificada no existe
      */
     public Pregunta getPregunta(int id) throws IllegalArgumentException {
         Pregunta p = preguntas.get(id);

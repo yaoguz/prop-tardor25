@@ -10,7 +10,7 @@ package presentation;
  * - Configurar look and feel
  * - Lanzar vista inicial
  * 
- * @author PROP Cluster XX
+ * @author Yaoyao Guo
  */
 public class Main {
     
@@ -20,7 +20,7 @@ public class Main {
      * @param args Argumentos de línea de comandos (no utilizados)
      */
     public static void main(String[] args) {
-        // Configurar look and feel del sistema
+        // Configurar look and feel del sistema para que se vea como las aplicaciones nativas del SO
         try {
             javax.swing.UIManager.setLookAndFeel(
                 javax.swing.UIManager.getSystemLookAndFeelClassName());
@@ -28,7 +28,7 @@ public class Main {
             System.err.println("Error configurando look and feel: " + e.getMessage());
         }
         
-        // Ejecutar en el Event Dispatch Thread
+        // Inicializar el thread de swing
         javax.swing.SwingUtilities.invokeLater(() -> {
             CtrlPresentacion ctrlPresentacion = new CtrlPresentacion();
             ctrlPresentacion.inicializarPresentacion();
