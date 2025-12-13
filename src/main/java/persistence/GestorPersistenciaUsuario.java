@@ -48,7 +48,7 @@ public class GestorPersistenciaUsuario {
      */
     public static GestorPersistenciaUsuario getInstance() {
         if (singletonInstance == null) {
-            singletonInstance = GestorPersistenciaUsuario.getInstance();
+            singletonInstance = new GestorPersistenciaUsuario();
         }
         return singletonInstance;
     }

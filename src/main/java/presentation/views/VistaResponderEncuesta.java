@@ -1,167 +1,56 @@
 package presentation.views;
 
 import presentation.CtrlPresentacion;
-import presentation.components.ComponenteBase;
 import domain.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
 /**
  * Vista para responder una encuesta.
  * 
- * Muestra las preguntas de la encuesta y permite al usuario proporcionar respuestas.
+ * Permite al usuario proporcionar respuestas nuevas a una encuesta.
  * Cada tipo de pregunta tiene un panel específico para capturar la respuesta.
- * 
- * CARACTERÍSTICAS:
- * - Muestra todas las preguntas de forma secuencial
- * - Inputs específicos según tipo de pregunta
- * - Validación de respuestas antes de guardar
- * - Confirmación de salida si hay cambios sin guardar
  * 
  * @author PROP Cluster XX
  */
-public class VistaResponderEncuesta extends ComponenteBase {
-
-	/** Controlador de presentación */
-	private CtrlPresentacion ctrlPresentacion;
-	
-	/** Nombre del usuario en sesión */
-	private String nombreUsuario;
-	
-	/** ID de encuesta a responder */
-	private int idEncuesta;
-	
-	/** Ventana principal */
-	private JFrame frame;
-	
-	/** Indica si hay cambios sin guardar */
-	private boolean cambiosSinGuardar = false;
-	
-	/** Mapa de paneles de respuesta por ID de pregunta */
-	private Map<Integer, PanelRespuesta> paneles = new LinkedHashMap<>();
+public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param ctrlPresentacion Controlador de presentación
+	 * @param ctrlPresentacion Controlador
 	 * @param nombreUsuario Usuario
 	 * @param idEncuesta ID de encuesta a responder
 	 */
 	public VistaResponderEncuesta(CtrlPresentacion ctrlPresentacion, String nombreUsuario, int idEncuesta) {
-		this.ctrlPresentacion = ctrlPresentacion;
-		this.nombreUsuario = nombreUsuario;
-		this.idEncuesta = idEncuesta;
+		super(ctrlPresentacion, nombreUsuario, idEncuesta);
 	}
 
-	/**
-	 * Muestra la vista.
-	 */
-	public void mostrar() {
-		frame = new JFrame("Responder Encuesta");
-		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setResizable(false);
-
-		// Listener para confirmar salida
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				salir();
-			}
-		});
-
-		// Panel principal
-		JPanel panelPrincipal = new JPanel(new BorderLayout(0, 10));
-		panelPrincipal.setBackground(COLOR_BG);
-		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		// // Barra de navegación
-		// BarraNavegacion barra = new BarraNavegacion(nombreUsuario);
-        // barra.setOnCerrarSesion(e -> {
-        //     ctrlPresentacion.cerrarSesion();
-        //     frame.dispose();
-        //     ctrlPresentacion.mostrarLogin();
-        // });
-        // barra.setOnCambiarContrasena(e -> {
-        //     String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:", "Cambiar Contraseña", JOptionPane.PLAIN_MESSAGE);
-        //     if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
-        //         try {
-        //             ctrlPresentacion.cambiarContrasena(nuevaPass);
-        //             JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        //         } catch (Exception ex) {
-        //             JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        //         }
-        //     }
-        // });
-        // barra.setOnSalir(e -> salir());
-        // panelPrincipal.add(barra.getPanel(), BorderLayout.NORTH);		// Título
-		String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
-		JLabel lblTitulo = createStyledLabel(titulo, FONT_TITLE);
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-		panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
-
-		// Panel de preguntas (scrollable)
-		JPanel panelPreguntas = new JPanel();
-		panelPreguntas.setLayout(new BoxLayout(panelPreguntas, BoxLayout.Y_AXIS));
-		panelPreguntas.setBackground(COLOR_BG);
-
-		cargarPreguntas(panelPreguntas);
-
-		JScrollPane scrollPreguntas = new JScrollPane(panelPreguntas);
-		scrollPreguntas.setBorder(BorderFactory.createEmptyBorder());
-		scrollPreguntas.getVerticalScrollBar().setUnitIncrement(16);
-		panelPrincipal.add(scrollPreguntas, BorderLayout.CENTER);
-
-		// Botones
-		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-		panelBotones.setBackground(COLOR_BG);
-
-		JButton btnCancelar = createStyledButton("Cancelar", COLOR_DANGER);
-		btnCancelar.addActionListener(e -> salir());
-
-		JButton btnGuardar = createStyledButton("Guardar Respuestas", COLOR_SUCCESS);
-		btnGuardar.addActionListener(e -> guardarRespuestas());
-
-		panelBotones.add(btnCancelar);
-		panelBotones.add(btnGuardar);
-		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
-
-		frame.add(panelPrincipal);
-		frame.setVisible(true);
+	@Override
+	protected String getTituloVentana() {
+		return "Responder Encuesta";
 	}
 
-	/**
-	 * Carga preguntas de encuesta y crea paneles de respuesta.
-	 * 
-	 * @param panelPreguntas Panel donde añadir preguntas
-	 */
-	private void cargarPreguntas(JPanel panelPreguntas) {
-		List<Pregunta> preguntas = ctrlPresentacion.getPreguntasEncuesta(idEncuesta);
-		
-		for (Pregunta pregunta : preguntas) {
-			PanelRespuesta panel = crearPanelRespuesta(pregunta);
-			paneles.put(pregunta.getIdPregunta(), panel);
-			
-			JPanel container = panel.getPanel();
-			container.setMaximumSize(new Dimension(Integer.MAX_VALUE, container.getPreferredSize().height));
-			panelPreguntas.add(container);
-			panelPreguntas.add(Box.createRigidArea(new Dimension(0, 10)));
-		}
+	@Override
+	protected String getTextoBotonGuardar() {
+		return "Guardar Respuestas";
 	}
 
-	/**
-	 * Crea panel de respuesta según tipo de pregunta.
-	 * 
-	 * @param pregunta Pregunta para la cual crear panel
-	 * @return Panel de respuesta apropiado
-	 */
-	private PanelRespuesta crearPanelRespuesta(Pregunta pregunta) {
+	@Override
+	protected String getMensajeExito() {
+		return "Respuestas guardadas correctamente";
+	}
+
+	@Override
+	protected Respuesta obtenerRespuestaExistente(Pregunta pregunta) {
+		return null; // No hay respuestas previas al responder por primera vez
+	}
+
+	@Override
+	protected PanelRespuesta crearPanelRespuesta(Pregunta pregunta, Respuesta existente) {
 		if (pregunta instanceof PreguntaLibre) {
 			return new PanelRespuestaLibre((PreguntaLibre) pregunta);
 		} else if (pregunta instanceof PreguntaNumerica) {
@@ -174,78 +63,12 @@ public class VistaResponderEncuesta extends ComponenteBase {
 		return null;
 	}
 
-	/**
-	 * Guarda todas las respuestas validando completitud.
-	 */
-	private void guardarRespuestas() {
-		try {
-			// Validar que todas las preguntas tienen respuesta
-			// for (Map.Entry<Integer, PanelRespuesta> entry : paneles.entrySet()) {
-			// 	if (!entry.getValue().tieneRespuesta()) {
-			// 		JOptionPane.showMessageDialog(frame, "Por favor, responde todas las preguntas", "Validación", JOptionPane.WARNING_MESSAGE);
-			// 		return;
-			// 	}
-			// }
-
-			// Guardar respuestas
-			for (Map.Entry<Integer, PanelRespuesta> entry : paneles.entrySet()) {
-				int idPregunta = entry.getKey();
-				Object respuesta = entry.getValue().getRespuesta();
-				//ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, respuesta);
-				if (respuesta instanceof List) {
-					@SuppressWarnings("unchecked")
-					List<Integer> list = (List<Integer>) respuesta;
-					int[] arr = new int[list.size()];
-					for (int i = 0; i < list.size(); i++) arr[i] = list.get(i);
-					ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, arr);
-				} else {
-					ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, respuesta);
-				}
-			}
-
-			JOptionPane.showMessageDialog(panel, "Respuestas guardadas correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-			cambiosSinGuardar = false;
-			frame.dispose();
-			ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
-
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(panel, "Error al guardar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		}
+	@Override
+	protected void procesarRespuesta(int idPregunta, Object respuesta, int idRespExistente) {
+		ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, respuesta);
 	}
 
-	/**
-	 * Sale de la vista con confirmación.
-	 */
-	private void salir() {
-		if (cambiosSinGuardar) {
-			int opcion = JOptionPane.showConfirmDialog(null,
-				"Hay cambios sin guardar. ¿Deseas salir sin guardar?",
-				"Confirmar Salida",
-				JOptionPane.YES_NO_OPTION,
-				JOptionPane.WARNING_MESSAGE);
-			if (opcion != JOptionPane.YES_OPTION) return;
-		}
-		frame.dispose();
-		ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
-	}
-
-	// ==================== INTERFACES Y CLASES INTERNAS ====================
-
-	/**
-	 * Interfaz común para paneles de respuesta.
-	 * 
-	 * Define métodos para obtener panel visual, capturar respuesta y validar.
-	 */
-	private interface PanelRespuesta {
-		/** Obtiene panel visual del componente */
-		JPanel getPanel();
-		
-		/** Obtiene respuesta capturada */
-		Object getRespuesta();
-		
-		/** Verifica si se ha dado una respuesta válida */
-		boolean tieneRespuesta();
-	}
+	// ==================== CLASES INTERNAS ====================
 
 	/**
 	 * Panel de respuesta para pregunta libre.
@@ -299,6 +122,11 @@ public class VistaResponderEncuesta extends ComponenteBase {
 		@Override
 		public boolean tieneRespuesta() {
 			return !txtRespuesta.getText().trim().isEmpty();
+		}
+
+		@Override
+		public int getIdRespuesta() {
+			return -1; // No hay respuesta previa
 		}
 	}
 
@@ -362,6 +190,11 @@ public class VistaResponderEncuesta extends ComponenteBase {
 		@Override
 		public boolean tieneRespuesta() {
 			return true; // Siempre tiene valor
+		}
+
+		@Override
+		public int getIdRespuesta() {
+			return -1;
 		}
 	}
 
@@ -436,6 +269,11 @@ public class VistaResponderEncuesta extends ComponenteBase {
 		@Override
 		public boolean tieneRespuesta() {
 			return getRespuesta() != null;
+		}
+
+		@Override
+		public int getIdRespuesta() {
+			return -1;
 		}
 	}
 
@@ -516,6 +354,11 @@ public class VistaResponderEncuesta extends ComponenteBase {
 		@Override
 		public boolean tieneRespuesta() {
 			return checkboxes.stream().anyMatch(JCheckBox::isSelected);
+		}
+
+		@Override
+		public int getIdRespuesta() {
+			return -1;
 		}
 	}
 }
