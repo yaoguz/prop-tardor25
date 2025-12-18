@@ -218,43 +218,43 @@ public class VistaVerRespuestas extends ComponenteBase {
 	 */
 	private JPanel crearPanelUsuario(String usuario, Map<String, String> respuestas) {
 
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    panel.setBackground(Color.WHITE);
-    panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
-            BorderFactory.createEmptyBorder(15, 15, 15, 15)
-    ));
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(Color.WHITE);
+		panel.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
+				BorderFactory.createEmptyBorder(15, 15, 15, 15)
+		));
 
-    panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    // Título
-    JLabel lblUsuario = createStyledLabel("Usuario: " + usuario, FONT_SUBTITLE);
-    lblUsuario.setAlignmentX(Component.LEFT_ALIGNMENT);
-    lblUsuario.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblUsuario.getPreferredSize().height));
-    panel.add(lblUsuario);
-    panel.add(Box.createRigidArea(new Dimension(0, 10)));
+		// Título
+		JLabel lblUsuario = createStyledLabel("Usuario: " + usuario, FONT_SUBTITLE);
+		lblUsuario.setAlignmentX(Component.LEFT_ALIGNMENT);
+		lblUsuario.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblUsuario.getPreferredSize().height));
+		panel.add(lblUsuario);
+		panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Respuestas
-    for (Map.Entry<String, String> entry : respuestas.entrySet()) {
-        JLabel lblPregunta = createStyledLabel("• " + entry.getKey(), FONT_NORMAL);
-        lblPregunta.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblPregunta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblPregunta.getPreferredSize().height));
-        panel.add(lblPregunta);
+		// Respuestas
+		for (Map.Entry<String, String> entry : respuestas.entrySet()) {
+			JLabel lblPregunta = createStyledLabel("• " + entry.getKey(), FONT_NORMAL);
+			lblPregunta.setAlignmentX(Component.LEFT_ALIGNMENT);
+			lblPregunta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblPregunta.getPreferredSize().height));
+			panel.add(lblPregunta);
 
-        JLabel lblRespuesta = createStyledLabel("  → " + entry.getValue(), FONT_NORMAL);
-        lblRespuesta.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblRespuesta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblRespuesta.getPreferredSize().height));
-        panel.add(lblRespuesta);
+			JLabel lblRespuesta = createStyledLabel("  → " + entry.getValue(), FONT_NORMAL);
+			lblRespuesta.setAlignmentX(Component.LEFT_ALIGNMENT);
+			lblRespuesta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblRespuesta.getPreferredSize().height));
+			panel.add(lblRespuesta);
 
-        panel.add(Box.createRigidArea(new Dimension(0, 8)));
-    }
+			panel.add(Box.createRigidArea(new Dimension(0, 8)));
+		}
 
-    panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
-    return panel;
-}
+		return panel;
+	}
 
 
 	/**
@@ -266,52 +266,52 @@ public class VistaVerRespuestas extends ComponenteBase {
 	 */
 	private JPanel crearPanelPregunta(Pregunta pregunta, Set<Respuesta> respuestas) {
 
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    panel.setBackground(Color.WHITE);
-    panel.setBorder(BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
-        BorderFactory.createEmptyBorder(15, 15, 15, 15)
-    ));
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(Color.WHITE);
+		panel.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
+			BorderFactory.createEmptyBorder(15, 15, 15, 15)
+		));
 
-    
-    panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    // Enunciado
-    JLabel lblPregunta = createStyledLabel("Pregunta: " + pregunta.getEnunciado(), FONT_SUBTITLE);
-	lblPregunta.setAlignmentX(Component.LEFT_ALIGNMENT);
-	lblPregunta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblPregunta.getPreferredSize().height));
-    panel.add(lblPregunta);
-	panel.add(Box.createRigidArea(new Dimension(0, 10)));
+		// Enunciado
+		JLabel lblPregunta = createStyledLabel("Pregunta: " + pregunta.getEnunciado(), FONT_SUBTITLE);
+		lblPregunta.setAlignmentX(Component.LEFT_ALIGNMENT);
+		lblPregunta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblPregunta.getPreferredSize().height));
+		panel.add(lblPregunta);
+		panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Panel de respuestas
-    JPanel panelRespuestas = new JPanel();
-    panelRespuestas.setLayout(new BoxLayout(panelRespuestas, BoxLayout.Y_AXIS));
-    panelRespuestas.setBackground(Color.WHITE);
-    panelRespuestas.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 0));
+		// Panel de respuestas
+		JPanel panelRespuestas = new JPanel();
+		panelRespuestas.setLayout(new BoxLayout(panelRespuestas, BoxLayout.Y_AXIS));
+		panelRespuestas.setBackground(Color.WHITE);
+		panelRespuestas.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 0));
 
-    for (Respuesta respuesta : respuestas) {
-        String texto = "• " + respuesta.getNomUsuario() + ": " + formatearRespuesta(respuesta, pregunta);
-        JLabel lblRespuesta = createStyledLabel(texto, FONT_NORMAL);
+		for (Respuesta respuesta : respuestas) {
+			String texto = "• " + respuesta.getNomUsuario() + ": " + formatearRespuesta(respuesta, pregunta);
+			JLabel lblRespuesta = createStyledLabel(texto, FONT_NORMAL);
 
-        // un poco de espacio
-        lblRespuesta.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-        lblRespuesta.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblRespuesta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblRespuesta.getPreferredSize().height));
+			// un poco de espacio
+			lblRespuesta.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+			lblRespuesta.setAlignmentX(Component.LEFT_ALIGNMENT);
+			lblRespuesta.setMaximumSize(new Dimension(Integer.MAX_VALUE, lblRespuesta.getPreferredSize().height));
 
-        panelRespuestas.add(lblRespuesta);
-    }
+			panelRespuestas.add(lblRespuesta);
+		}
 
-    panelRespuestas.setAlignmentX(Component.LEFT_ALIGNMENT);
-    panelRespuestas.setMaximumSize(new Dimension(Integer.MAX_VALUE, panelRespuestas.getPreferredSize().height));
-    panel.add(panelRespuestas);
-	panel.add(Box.createRigidArea(new Dimension(0, 8)));
+		panelRespuestas.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panelRespuestas.setMaximumSize(new Dimension(Integer.MAX_VALUE, panelRespuestas.getPreferredSize().height));
+		panel.add(panelRespuestas);
+		panel.add(Box.createRigidArea(new Dimension(0, 8)));
 
-	panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-	panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
-    return panel;
-}
+		return panel;
+	}
 
 	/**
 	 * Formatea una respuesta para mostrarla.
