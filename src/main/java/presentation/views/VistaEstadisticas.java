@@ -400,6 +400,10 @@ public class VistaEstadisticas extends ComponenteBase {
 		JPanel panelMiembros = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		panelMiembros.setBackground(Color.WHITE);
 		panelMiembros.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+		// Limitar el ancho máximo del panel de miembros para que los labels
+		// se envuelvan a la siguiente línea cuando no quepan en una fila.
+		panelMiembros.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panelMiembros.setMaximumSize(new Dimension(600, Integer.MAX_VALUE));
 
 		for (String miembro : miembros) {
 			JLabel lblMiembro = new JLabel(miembro);
