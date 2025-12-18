@@ -340,6 +340,12 @@ public class CtrlPersistenciaPregunta {
         int idEncuesta = p.getIdEncuesta();
         int idPregunta = p.getIdPregunta();
         
+        // Crear directorios si no existen
+        File directorioPreguntas = new File("data/encuestas/" + idEncuesta + "/preguntas");
+        if (!directorioPreguntas.exists()) {
+            directorioPreguntas.mkdirs();
+        }
+        
         // Guardar archivo de pregunta
         try (FileWriter w = new FileWriter("data/encuestas/" + idEncuesta + "/preguntas/" + idPregunta + ".json")) {
             gson.toJson(preguntaToJson(p), w);
