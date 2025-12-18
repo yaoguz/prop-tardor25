@@ -190,6 +190,7 @@ public class CtrlDominioUsuario {
 	 */
 	public void cerrarSesionActual() {
 		usuarioActivo = null;
+		gestor.cerrarSesion();
 	}
 	
 	/**
