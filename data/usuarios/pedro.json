@@ -1,5 +1,5 @@
 {
-  "nombreUsuario": "pedro",
+  "nomUsuario": "pedro",
   "contrasena": "password789",
   "idEncuestasCreadas": [4],
   "idRespuestas": [2, 12, 22, 32, 41, 49, 57, 122, 130, 138]

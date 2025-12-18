@@ -77,7 +77,7 @@ public class CtrlPersistenciaEncuesta {
         }
 
         catch (Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+            throw new RuntimeException("Error leyendo el archivo JSON 1", exc);
         }
     }
 
@@ -120,7 +120,7 @@ public class CtrlPersistenciaEncuesta {
         }
 
         catch(Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+            throw new RuntimeException("Error leyendo el archivo JSON 2", exc);
         }
     }
 
@@ -313,7 +313,7 @@ public class CtrlPersistenciaEncuesta {
         }
 
         catch (Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+            throw new RuntimeException("Error leyendo el archivo JSON 3", exc);
         }
     }
 

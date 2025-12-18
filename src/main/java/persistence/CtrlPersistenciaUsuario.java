@@ -76,7 +76,7 @@ public class CtrlPersistenciaUsuario {
         }
 
         catch(Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+            throw new RuntimeException("Error leyendo el archivo JSON 8", exc);
         }
     }
 

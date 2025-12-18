@@ -69,7 +69,7 @@ public class CtrlPersistenciaPregunta {
             return jsonObject.get("nextIdPregunta").getAsInt();
         }
         catch (Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+            throw new RuntimeException("Error leyendo el archivo JSON 4", exc);
         }
     }
 
@@ -81,8 +81,7 @@ public class CtrlPersistenciaPregunta {
     public void guardarNextId (int newid) {
         String FILE = "data/nextId.json";
 
-        try{
-            FileReader reader = new FileReader(FILE);
+        try (FileReader reader = new FileReader(FILE)) {
             JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
 
             jsonObject.addProperty("nextIdPregunta", newid);
@@ -95,7 +94,7 @@ public class CtrlPersistenciaPregunta {
             }
         }
         catch (Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+            throw new RuntimeException("Error leyendo el archivo JSON 5", exc);
         }
     }
 

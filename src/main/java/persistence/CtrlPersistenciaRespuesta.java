@@ -68,7 +68,7 @@ public class CtrlPersistenciaRespuesta {
             return jsonObject.get("nextIdRespuesta").getAsInt();
         }
         catch (Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+            throw new RuntimeException("Error leyendo el archivo JSON 6", exc);
         }
     }
 
@@ -401,7 +401,7 @@ public class CtrlPersistenciaRespuesta {
             }
         }
         catch (Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON", exc);
+            throw new RuntimeException("Error leyendo el archivo JSON 7", exc);
         }
     }
 }

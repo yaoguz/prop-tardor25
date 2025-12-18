@@ -135,6 +135,15 @@ public class CtrlDominio {
 	}
 
 	/**
+	 * Obtiene el nombre del usuario actualmente en sesión.
+	 * 
+	 * @return Nombre del usuario activo, o null si no hay sesión
+	 */
+	public String getUsuarioActivo() {
+		return ctrlDominioUsuario.getUsuarioActivo();
+	}
+
+	/**
 	 * Cierra la sesión del usuario actual (todos los datos ya estarán en persistencia.
 	 */
 	public void cerrarSesion() {
