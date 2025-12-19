@@ -500,6 +500,7 @@ public class VistaListaEncuestas extends ComponenteBase {
         );
         
         if (opcion == JOptionPane.YES_OPTION) {
+            ctrlPresentacion.cerrarSesion();
             System.exit(0);
         }
     }
