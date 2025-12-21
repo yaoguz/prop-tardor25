@@ -229,6 +229,7 @@ public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase 
 		private PreguntaOpcionUnica pregunta;
 		private ButtonGroup grupo;
 		private Map<JRadioButton, Integer> opcionesMap = new HashMap<>();
+		private JCheckBox chkSinResponder;
 		private int idRespuesta = -1;
 
 		public PanelRespuestaOpcionUnica(PreguntaOpcionUnica pregunta, RespuestaOpcionUnica existente) {
@@ -274,6 +275,22 @@ public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase 
 
 				if (seleccionInicial != null && seleccionInicial == i) radio.setSelected(true);
 			}
+			
+			// Checkbox para no responder
+			chkSinResponder = new JCheckBox("No responder");
+			chkSinResponder.setBackground(Color.WHITE);
+			chkSinResponder.addActionListener(e -> {
+				boolean noResponder = chkSinResponder.isSelected();
+				for (JRadioButton radio : opcionesMap.keySet()) {
+					radio.setEnabled(!noResponder);
+					if (noResponder) {
+						radio.setSelected(false);
+					}
+				}
+				cambiosSinGuardar = true;
+			});
+			panelOpciones.add(Box.createRigidArea(new Dimension(0, 10)));
+			panelOpciones.add(chkSinResponder);
 
 			panel.add(panelOpciones, BorderLayout.CENTER);
 			return panel;
@@ -281,6 +298,9 @@ public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase 
 
 		@Override
 		public Object getRespuesta() {
+			if (chkSinResponder.isSelected()) {
+				return null; // No respondida
+			}
 			for (Map.Entry<JRadioButton, Integer> entry : opcionesMap.entrySet()) {
 				if (entry.getKey().isSelected()) {
 					return entry.getValue();
@@ -291,7 +311,7 @@ public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase 
 
 		@Override
 		public boolean tieneRespuesta() {
-			return getRespuesta() != null;
+			return !chkSinResponder.isSelected() && getRespuesta() != null;
 		}
 
 		@Override

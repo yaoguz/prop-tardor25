@@ -227,6 +227,9 @@ public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 		
 		/** Mapa de radio button a índice de opción */
 		private Map<JRadioButton, Integer> opcionesMap = new HashMap<>();
+		
+		/** Checkbox para indicar que no se responde */
+		private JCheckBox chkSinResponder;
 
 		/**
 		 * Constructor.
@@ -265,6 +268,22 @@ public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 				opcionesMap.put(radio, i);
 				panelOpciones.add(radio);
 			}
+			
+			// Checkbox para no responder
+			chkSinResponder = new JCheckBox("No responder");
+			chkSinResponder.setBackground(Color.WHITE);
+			chkSinResponder.addActionListener(e -> {
+				boolean noResponder = chkSinResponder.isSelected();
+				for (JRadioButton radio : opcionesMap.keySet()) {
+					radio.setEnabled(!noResponder);
+					if (noResponder) {
+						radio.setSelected(false);
+					}
+				}
+				cambiosSinGuardar = true;
+			});
+			panelOpciones.add(Box.createRigidArea(new Dimension(0, 10)));
+			panelOpciones.add(chkSinResponder);
 
 			panel.add(panelOpciones, BorderLayout.CENTER);
 
@@ -273,6 +292,9 @@ public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 
 		@Override
 		public Object getRespuesta() {
+			if (chkSinResponder.isSelected()) {
+				return null; // No respondida
+			}
 			for (Map.Entry<JRadioButton, Integer> entry : opcionesMap.entrySet()) {
 				if (entry.getKey().isSelected()) {
 					return entry.getValue();
@@ -283,7 +305,7 @@ public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 
 		@Override
 		public boolean tieneRespuesta() {
-			return getRespuesta() != null;
+			return !chkSinResponder.isSelected() && getRespuesta() != null;
 		}
 
 		@Override
