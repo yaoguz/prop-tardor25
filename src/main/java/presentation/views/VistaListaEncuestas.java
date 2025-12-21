@@ -6,6 +6,9 @@ import presentation.components.ComponenteBase;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import domain.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
@@ -458,7 +461,13 @@ public class VistaListaEncuestas extends ComponenteBase {
      * 
      * @param id ID de encuesta
      */
-    private void verEstadisticas(int id) {
+    private void verEstadisticas(int id) { 
+        try {
+            Map<Pregunta, Set<Respuesta>> respuestas = ctrlPresentacion.getRespuestasEncuesta(id);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "No hay respuestas en esta encuesta.");
+            return;
+        }
         ctrlPresentacion.mostrarEstadisticas(nombreUsuario, id);
     }
     
