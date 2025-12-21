@@ -1,7 +1,7 @@
 {
   "idPregunta": 16,
   "tipo": "opcion_multiple",
-  "enunciado": "¿Qué redes sociales utilizas? (máximo 5)",
+  "enunciado": "¿Qué redes sociales utilizas?",
   "opciones": [
     "Instagram",
     "Twitter",

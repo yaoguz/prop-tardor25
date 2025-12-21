@@ -1,7 +1,7 @@
 {
   "idPregunta": 14,
   "tipo": "opcion_multiple",
-  "enunciado": "¿Qué alimentos consumes diariamente? (máximo 5)",
+  "enunciado": "¿Qué alimentos consumes diariamente?",
   "opciones": [
     "Frutas",
     "Verduras",

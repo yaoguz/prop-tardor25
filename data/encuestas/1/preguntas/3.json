@@ -1,7 +1,7 @@
 {
   "idPregunta": 3,
   "tipo": "opcion_multiple",
-  "enunciado": "¿Qué técnicas de estudio utilizas? (máximo 3)",
+  "enunciado": "¿Qué técnicas de estudio utilizas?",
   "opciones": [
     "Resúmenes",
     "Esquemas",

@@ -1,7 +1,7 @@
 {
   "idPregunta": 11,
   "tipo": "opcion_multiple",
-  "enunciado": "¿Qué prácticas de autocuidado realizas? (máximo 3)",
+  "enunciado": "¿Qué prácticas de autocuidado realizas?",
   "opciones": [
     "Meditación",
     "Yoga",

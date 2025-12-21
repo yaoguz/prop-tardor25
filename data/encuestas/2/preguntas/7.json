@@ -1,7 +1,7 @@
 {
   "idPregunta": 7,
   "tipo": "opcion_multiple",
-  "enunciado": "¿Qué actividades de ocio realizas regularmente? (máximo 4)",
+  "enunciado": "¿Qué actividades de ocio realizas regularmente?",
   "opciones": [
     "Leer",
     "Videojuegos",
