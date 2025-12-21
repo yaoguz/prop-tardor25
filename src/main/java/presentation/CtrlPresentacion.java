@@ -446,6 +446,15 @@ public class CtrlPresentacion {
 	}
 
 	/**
+	 * Elimina una respuesta del sistema.
+	 * 
+	 * @param idRespuesta ID de la respuesta a eliminar
+	 */
+	public void eliminarRespuesta(int idRespuesta) {
+		ctrlDominio.eliminarRespuesta(idRespuesta);
+	}
+
+	/**
 	 * Importa respuestas desde fichero.
 	 * 
 	 * @param fichero Fichero con respuestas

@@ -134,15 +134,26 @@ public abstract class VistaRespuestaEncuestaBase extends ComponenteBase {
 				Object respuesta = entry.getValue().getRespuesta();
 				int idRespExistente = entry.getValue().getIdRespuesta();
 
-				// Error: Solo procesar si la respuesta no está vacía
+				// Procesar respuesta (incluso si es null, para poder eliminar respuestas existentes)
 				if (respuesta == null || (respuesta instanceof String && ((String)respuesta).trim().isEmpty())) {
-					continue; // Permitir no responder preguntas
+					// Si hay una respuesta existente y ahora está vacía, procesarla (para eliminarla)
+					if (idRespExistente >= 0) {
+						procesarRespuesta(idPregunta, null, idRespExistente);
+					}
+					// Si no hay respuesta existente, simplemente permitir no responder
+					continue;
 				}
 
 				if (respuesta instanceof List) {
 					@SuppressWarnings("unchecked")
 					List<Integer> list = (List<Integer>) respuesta;
-					if (list.isEmpty()) continue; // No crear respuestas vacías
+					if (list.isEmpty()) {
+						// Si hay una respuesta existente y ahora está vacía, procesarla (para eliminarla)
+						if (idRespExistente >= 0) {
+							procesarRespuesta(idPregunta, null, idRespExistente);
+						}
+						continue;
+					}
 					int[] arr = new int[list.size()];
 					for (int i = 0; i < list.size(); i++) arr[i] = list.get(i);
 					procesarRespuesta(idPregunta, arr, idRespExistente);

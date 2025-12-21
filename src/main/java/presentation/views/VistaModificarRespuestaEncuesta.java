@@ -75,9 +75,18 @@ public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase 
 	@Override
 	protected void procesarRespuesta(int idPregunta, Object respuesta, int idRespExistente) {
 		if (idRespExistente >= 0) {
-			ctrlPresentacion.modificarRespuesta(idRespExistente, respuesta);
+			if (respuesta == null) {
+				// Si antes tenía respuesta y ahora se marca "No responder", eliminar
+				ctrlPresentacion.eliminarRespuesta(idRespExistente);
+			} else {
+				// Modificar respuesta existente
+				ctrlPresentacion.modificarRespuesta(idRespExistente, respuesta);
+			}
 		} else {
-			ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, respuesta);
+			// Crear nueva respuesta solo si no es null
+			if (respuesta != null) {
+				ctrlPresentacion.darRespuesta(nombreUsuario, idPregunta, respuesta);
+			}
 		}
 	}
 
