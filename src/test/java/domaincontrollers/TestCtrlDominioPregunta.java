@@ -252,6 +252,7 @@ public class TestCtrlDominioPregunta {
         when(mockPregunta.getIdEncuesta()).thenReturn(1);
 
         Encuesta mockEncuesta = mock(Encuesta.class);
+        when(mockCtrlDominioEncuesta.existeEncuesta(1)).thenReturn(true);
         when(mockCtrlDominioEncuesta.getEncuesta(1)).thenReturn(mockEncuesta);
 
         ctrlDominioPregunta.eliminarPregunta(10);

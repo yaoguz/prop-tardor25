@@ -361,14 +361,9 @@ public class CtrlDominioEncuesta {
 	 */
 	public void eliminarEncuesta(int idEncuesta) {
 		Encuesta e = getEncuesta(idEncuesta);
-		List<Integer> idPreguntas = e.getIdPreguntas();
+		List<Integer> idPreguntas = new ArrayList<>(e.getIdPreguntas()); // Copia para evitar modificación concurrente
 		
-		// eliminar cada pregunta (esto eliminará tambien sus respuestas)
-		for (Integer idP : idPreguntas) {
-			ctrlDominioPregunta.eliminarPregunta(idP);
-		}
-		
-		// eliminar de usuario creador
+		// eliminar de usuario creador PRIMERO
 		String nomCreador = e.getIdCreador();
 		try {
 			Usuario u = null;
@@ -388,8 +383,14 @@ public class CtrlDominioEncuesta {
 			System.err.println("Error actualizando usuario creador al eliminar encuesta " + idEncuesta + ": " + ex.getMessage());
 		}
 		
-		// eliminar de persistencia
+		// eliminar de persistencia ANTES de eliminar preguntas (para que getEncuesta no falle)
 		gestor.eliminarEncuesta(idEncuesta); //persistencia: encuestas.remove(idEncuesta);
+		
+		// eliminar cada pregunta (esto eliminará tambien sus respuestas)
+		// NOTA: ya no se puede llamar a e.eliminarPregunta() porque la encuesta fue eliminada de persistencia
+		for (Integer idP : idPreguntas) {
+			ctrlDominioPregunta.eliminarPregunta(idP);
+		}
 	}
 	
 	/**
@@ -523,16 +524,4 @@ public class CtrlDominioEncuesta {
 		
 		return matriz;
 	}
-	
-	// /**
-	//  * Importa encuestas desde persistencia al iniciar aplicación.
-	//  * @param encuestasImportadas TreeMap con las encuestas a cargar
-	//  */
-	// public void cargarEncuestas(TreeMap<Integer, Encuesta> encuestasImportadas) {
-	// 	this.encuestas = encuestasImportadas;
-	// 	// Actualizar nextId para que sea mayor que el ID más alto
-	// 	if (!encuestas.isEmpty()) {
-	// 		this.nextId = encuestas.lastKey() + 1;
-	// 	}
-	// }
 }

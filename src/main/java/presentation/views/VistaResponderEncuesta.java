@@ -141,6 +141,9 @@ public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 		
 		/** Spinner para valor numérico */
 		private JSpinner spinRespuesta;
+		
+		/** Checkbox para indicar que no se responde */
+		private JCheckBox chkSinResponder;
 
 		/**
 		 * Constructor.
@@ -172,10 +175,19 @@ public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 			
 			JLabel lblRango = createStyledLabel("Rango: [" + min + ", " + max + "]", FONT_SMALL);
 			
+			// Checkbox para no responder
+			chkSinResponder = new JCheckBox("No responder");
+			chkSinResponder.setBackground(Color.WHITE);
+			chkSinResponder.addActionListener(e -> {
+				spinRespuesta.setEnabled(!chkSinResponder.isSelected());
+				cambiosSinGuardar = true;
+			});
+			
 			JPanel panelInput = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			panelInput.setBackground(Color.WHITE);
 			panelInput.add(spinRespuesta);
 			panelInput.add(lblRango);
+			panelInput.add(chkSinResponder);
 			
 			panel.add(panelInput, BorderLayout.CENTER);
 
@@ -184,12 +196,15 @@ public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 
 		@Override
 		public Object getRespuesta() {
+			if (chkSinResponder.isSelected()) {
+				return null; // No respondida
+			}
 			return spinRespuesta.getValue();
 		}
 
 		@Override
 		public boolean tieneRespuesta() {
-			return true; // Siempre tiene valor
+			return !chkSinResponder.isSelected();
 		}
 
 		@Override

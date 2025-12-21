@@ -149,6 +149,7 @@ public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase 
 	private class PanelRespuestaNumerica implements PanelRespuesta {
 		private PreguntaNumerica pregunta;
 		private JSpinner spinRespuesta;
+		private JCheckBox chkSinResponder;
 		private int idRespuesta = -1;
 
 		public PanelRespuestaNumerica(PreguntaNumerica pregunta, RespuestaNumerica existente) {
@@ -184,10 +185,19 @@ public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase 
 
 			JLabel lblRango = createStyledLabel("Rango: [" + min + ", " + max + "]", FONT_SMALL);
 			
+			// Checkbox para no responder
+			chkSinResponder = new JCheckBox("No responder");
+			chkSinResponder.setBackground(Color.WHITE);
+			chkSinResponder.addActionListener(e -> {
+				spinRespuesta.setEnabled(!chkSinResponder.isSelected());
+				cambiosSinGuardar = true;
+			});
+			
 			JPanel panelInput = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			panelInput.setBackground(Color.WHITE);
 			panelInput.add(spinRespuesta);
 			panelInput.add(lblRango);
+			panelInput.add(chkSinResponder);
 			
 			panel.add(panelInput, BorderLayout.CENTER);
 			return panel;
@@ -195,12 +205,15 @@ public class VistaModificarRespuestaEncuesta extends VistaRespuestaEncuestaBase 
 
 		@Override
 		public Object getRespuesta() {
+			if (chkSinResponder.isSelected()) {
+				return null; // No respondida
+			}
 			return spinRespuesta.getValue();
 		}
 
 		@Override
 		public boolean tieneRespuesta() {
-			return true;
+			return !chkSinResponder.isSelected();
 		}
 
 		@Override

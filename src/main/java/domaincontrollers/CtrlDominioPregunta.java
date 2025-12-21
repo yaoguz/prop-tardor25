@@ -373,10 +373,13 @@ public class CtrlDominioPregunta {
 			ctrlDominioRespuesta.eliminarRespuesta(idR);
 		}
 		
-		// eliminar la pregunta de la encuesta
+		// eliminar la pregunta de la encuesta (solo si la encuesta aún existe)
 		int idEncuesta = p.getIdEncuesta();
-		Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
-		e.eliminarPregunta(idPregunta);
+		if (ctrlDominioEncuesta.existeEncuesta(idEncuesta)) {
+			Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
+			e.eliminarPregunta(idPregunta);
+			gestor.actualizarEncuesta(e);
+		}
 		
 		gestor.eliminarPregunta(idPregunta);
 	}

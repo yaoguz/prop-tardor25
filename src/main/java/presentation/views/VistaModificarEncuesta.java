@@ -689,9 +689,10 @@ public class VistaModificarEncuesta extends ComponenteBase {
         @Override
         public void guardar(int idEncuesta) {
             String enunciado = txtEnunciado.getText().trim();
-            if (!enunciado.isEmpty()) {
-                ctrlPresentacion.anadirPreguntaLibre(idEncuesta, enunciado);
+            if (enunciado.isEmpty()) {
+                throw new IllegalArgumentException("El enunciado no puede estar vacío");
             }
+            ctrlPresentacion.anadirPreguntaLibre(idEncuesta, enunciado);
         }
     }
     
@@ -734,11 +735,12 @@ public class VistaModificarEncuesta extends ComponenteBase {
         @Override
         public void guardar(int idEncuesta) {
             String enunciado = txtEnunciado.getText().trim();
-            if (!enunciado.isEmpty()) {
-                double min = (Integer) spinMin.getValue();
-                double max = (Integer) spinMax.getValue();
-                ctrlPresentacion.anadirPreguntaNumerica(idEncuesta, enunciado, min, max);
+            if (enunciado.isEmpty()) {
+                throw new IllegalArgumentException("El enunciado no puede estar vacío");
             }
+            double min = (Integer) spinMin.getValue();
+            double max = (Integer) spinMax.getValue();
+            ctrlPresentacion.anadirPreguntaNumerica(idEncuesta, enunciado, min, max);
         }
     }
     
@@ -802,17 +804,19 @@ public class VistaModificarEncuesta extends ComponenteBase {
         @Override
         public void guardar(int idEncuesta) {
             String enunciado = txtEnunciado.getText().trim();
-            if (!enunciado.isEmpty()) {
-                List<String> opciones = new ArrayList<>();
-                for (JTextField txt : txtOpciones) {
-                    String opt = txt.getText().trim();
-                    if (!opt.isEmpty()) opciones.add(opt);
-                }
-                if (!opciones.isEmpty()) {
-                    boolean ordenada = chkOrdenada.isSelected();
-                    ctrlPresentacion.anadirPreguntaOpcionUnica(idEncuesta, enunciado, opciones, ordenada);
-                }
+            if (enunciado.isEmpty()) {
+                throw new IllegalArgumentException("El enunciado no puede estar vacío");
             }
+            List<String> opciones = new ArrayList<>();
+            for (JTextField txt : txtOpciones) {
+                String opt = txt.getText().trim();
+                if (!opt.isEmpty()) opciones.add(opt);
+            }
+            if (opciones.isEmpty()) {
+                throw new IllegalArgumentException("Debe haber al menos una opción válida");
+            }
+            boolean ordenada = chkOrdenada.isSelected();
+            ctrlPresentacion.anadirPreguntaOpcionUnica(idEncuesta, enunciado, opciones, ordenada);
         }
     }
     
@@ -877,17 +881,19 @@ public class VistaModificarEncuesta extends ComponenteBase {
         @Override
         public void guardar(int idEncuesta) {
             String enunciado = txtEnunciado.getText().trim();
-            if (!enunciado.isEmpty()) {
-                List<String> opciones = new ArrayList<>();
-                for (JTextField txt : txtOpciones) {
-                    String opt = txt.getText().trim();
-                    if (!opt.isEmpty()) opciones.add(opt);
-                }
-                if (!opciones.isEmpty()) {
-                    int numMax = (Integer) spinNumMax.getValue();
-                    ctrlPresentacion.anadirPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMax);
-                }
+            if (enunciado.isEmpty()) {
+                throw new IllegalArgumentException("El enunciado no puede estar vacío");
             }
+            List<String> opciones = new ArrayList<>();
+            for (JTextField txt : txtOpciones) {
+                String opt = txt.getText().trim();
+                if (!opt.isEmpty()) opciones.add(opt);
+            }
+            if (opciones.isEmpty()) {
+                throw new IllegalArgumentException("Debe haber al menos una opción válida");
+            }
+            int numMax = (Integer) spinNumMax.getValue();
+            ctrlPresentacion.anadirPreguntaOpcionMultiple(idEncuesta, enunciado, opciones, numMax);
         }
     }
 }
