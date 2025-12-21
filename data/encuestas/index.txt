@@ -1,0 +1,23 @@
+/data/encuestas
+
+Este directorio contiene todos los ficheros de las encuestas del proyecto, incluyendo las preguntas y respuestas.
+
+Descripcion de los directorios:
+
+Los directorios contenidos en este mismo no tienen index.txt ya que se generan y eliminan de forma dinamica, pero tienen la siguiente estructura:
+
+/data/encuestas/{idEncuesta}/
+    -preguntas/
+        -{idPregunta}.json
+        - (las preguntas de la encuesta)
+    -respuestas/
+        -{idRespuesta}.json
+        - (las respuestas de la encuesta)
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+Los otros ficheros contenidos en este directorio se generan y eliminan de forma dinamica. Tienen el formato {idEncuesta}.json y contienen la
+informacion de una encuesta (excluyendo las preguntas y respuestas, esa informacion esta en el directorio de encuesta correspondiente).

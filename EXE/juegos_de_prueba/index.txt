@@ -1,0 +1,13 @@
+/EXE/juegos_de_prueba
+
+Este directorio contiene todos los ficheros de los juegos de prueba
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- 1_RegistrarUsuarioCorrectamente.pdf:
+    Contiene la información para probar que un usuario se registra correctamente.
+
+- ...

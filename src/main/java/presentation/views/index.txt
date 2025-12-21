@@ -22,6 +22,9 @@ Descripcion de los ficheros:
 - VistaResponderEncuesta.java:
     Vista para responder una encuesta. Muestra todas las preguntas y permite al usuario introducir sus respuestas.
 
+- VistaResponderEncuestaBase.java:
+    Implementacion abstracta de la vista para responder una encuesta. Muestra todas las preguntas y permite al usuario introducir sus respuestas.
+
 - VistaVerRespuestas.java:
     Vista para ver las respuestas de una encuesta. Permite al autor de la encuesta ver todas las respuestas recibidas organizadas por pregunta.
 

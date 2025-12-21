@@ -1,25 +1,16 @@
 /EXE
 
-Este directorio contiene todos los ficheros relativos a la ejecución
+Este directorio contiene todos los ficheros relativos a la ejecucion
 
 Descripcion de los directorios:
 
-- /DriverClustering:
-    Contiene los juegos de prueba para el driver de clustering.
-
-- /DriverEncuesta:
-    Contiene los juegos de prueba para el driver de encuesta.
-
-- /DriverPregunta:
-    Contiene los juegos de prueba para el driver de pregunta.
-
-- /DriverRespuesta:
-    Contiene los juegos de prueba para el driver de respuesta.
-
-- /DriverUsuario:
-    Contiene los juegos de prueba para el driver de usuario.
+- /juegos_de_prueba:
+    Contiene todos los documentos de los juegos de prueba.
 
 Descripcion de los ficheros:
 
 - index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- subgrup-prop11.5-3.0-SNAPSHOT.jar:
     Este archivo. Contiene la informacion del directorio y su contenido.

@@ -11,16 +11,16 @@ Descripcion de los ficheros:
     Fachada principal del sistema de persistencia. Coordina todos los gestores especializados.
 
 - GestorPersistenciaUsuario.java:
-    Gestor de persistencia para usuarios. Mantiene cache en memoria y gestiona operaciones CRUD.
+    Gestor de persistencia para usuarios. Mantiene cache en memoria y gestiona operaciones lectura/escritura.
 
 - GestorPersistenciaEncuesta.java:
-    Gestor de persistencia para encuestas. Mantiene cache en memoria y gestiona operaciones CRUD.
+    Gestor de persistencia para encuestas. Mantiene cache en memoria y gestiona operaciones lectura/escritura.
 
 - GestorPersistenciaPregunta.java:
-    Gestor de persistencia para preguntas. Mantiene cache en memoria y gestiona operaciones CRUD.
+    Gestor de persistencia para preguntas. Mantiene cache en memoria y gestiona operaciones lectura/escritura.
 
 - GestorPersistenciaRespuesta.java:
-    Gestor de persistencia para respuestas. Mantiene cache en memoria y gestiona operaciones CRUD.
+    Gestor de persistencia para respuestas. Mantiene cache en memoria y gestiona operaciones lectura/escritura.
 
 - CtrlPersistenciaUsuario.java:
     Controlador de persistencia en disco para usuarios. Lee y escribe archivos JSON.

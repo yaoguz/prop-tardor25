@@ -1,0 +1,10 @@
+/data/usuarios
+
+Este directorio contiene todos los ficheros de los usuarios del proyecto.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+Los otros ficheros contenidos en este directorio se generan y eliminan de forma dinamica. Tienen el formato {nombreUsuario}.json y contienen la informacion de un usuario.

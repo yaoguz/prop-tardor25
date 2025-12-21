@@ -20,6 +20,3 @@ Descripcion de los ficheros:
 
 - Main.java:
     Clase principal de la aplicacion. Punto de entrada que inicia el controlador de presentacion.
-
-- VistaPrincipal.java:
-    Vista principal del sistema (implementacion base).

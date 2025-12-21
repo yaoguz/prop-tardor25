@@ -7,14 +7,20 @@ Descripcion de los directorios:
 - /bin:
     Contiene los ficheros binarios de las clases.
 
+- /build:
+    Contiene los ficheros relativos a la compilacion de la aplicacion.
+
+- /data:
+    Contiene los ficheros de permanencia de la aplicacion.
+
 - /DOCS:
     Contiene los documentos sobre la documentacion del proyecto.
 
 - /EXE:
-    Contiene los drivers con su descripciones y los juegos de pruebas si lo necesitan.
+    Contiene el ejecutable y los juegos de pruebas.
 
 - /gradle:
-    Contiene información del gradle.
+    Contiene informacion del gradle.
 
 - /src:
     Contiene los ficheros con el codigo de las calses java y los test unitarios.
@@ -37,27 +43,20 @@ Descripcion de los ficheros:
     Fichero de inicializacion de gradle para Windows.
 
 - miembros.txt:
-    Fichero con la información de los miembros del equipo.
+    Fichero con la informacion de los miembros del equipo.
 
 - README.md:
-    Contiene información sobre comandos utiles para el proyecto.
+    Contiene informacion sobre comandos utiles para el proyecto.
 
 - settings.gradle:
     Configuraciones del gradle (nombre del proyecto).
 
 Informacon adicional:
 
-- Para compilar el proyecto usar:
-    ./compilar.sh
+Para compilar el proyecto usar:
+    ./gradlew jar
 
-Luego, para ejecutar los drivers usar:
-    ./gradlew runDriverUsuario
-    ./gradlew runDriverEncuesta
-    ./gradlew runDriverPregunta
-    ./gradlew runDriverRespuesta
-    ./gradlew runDriverClustering
+Luego, para ejecutar la aplicacion usar:
+    java -jar EXE/subgrup-prop11.5-3.0-SNAPSHOT.jar
 
-Para ejecutar los tests:
-    ./gradlew test
-
-Los juegos de prueba están en la carpeta correspondiente de su driver en EXE/
+Los juegos de prueba estan en la carpeta EXE/juegos_de_prueba

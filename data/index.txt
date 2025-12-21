@@ -1,0 +1,22 @@
+/data
+
+Este directorio contiene todos los ficheros de permanencia del proyecto.
+
+Descripcion de los directorios:
+
+- /encuestas:
+    Contiene los ficheros de las encuestas y su informacion (incluyendo sus preguntas y respuestas).
+
+- /usuarios:
+    Contiene los ficheros de los usuarios y su informacion.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- indexRespuestas.json
+    Contiene la correspondencia de las preguntas con sus encuestas. 
+
+- nextId.json
+    Contiene el identificador que se asignara al siguiente objeto creado de encuesta, pregunta y respuesta.

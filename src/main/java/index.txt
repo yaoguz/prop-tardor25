@@ -10,9 +10,6 @@ Descripcion de los directorios:
 - /domaincontrollers:
     Contiene los ficheros de codigo java de los controladores del dominio.
 
-- /drivers:
-    Contiene los ficheros de codigo java de los drivers.
-
 - /persistence:
     Contiene los ficheros de codigo java de la capa de persistencia.
 
