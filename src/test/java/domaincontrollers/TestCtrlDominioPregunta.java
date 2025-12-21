@@ -258,7 +258,7 @@ public class TestCtrlDominioPregunta {
         ctrlDominioPregunta.eliminarPregunta(10);
 
         verify(mockCtrlDominioRespuesta, times(2)).eliminarRespuesta(anyInt());
-        verify(mockGestor).eliminarPregunta(10);
+        verify(mockGestor).eliminarPregunta(10, 1);
         verify(mockPregunta).getIdEncuesta();
         verify(mockEncuesta).eliminarPregunta(10);
     }
