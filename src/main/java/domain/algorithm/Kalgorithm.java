@@ -46,6 +46,11 @@ public abstract class Kalgorithm implements ClusteringAlgorithm  {
     
     @Override
     public ResultadoClustering ejecutarClustering(List<Pregunta> variables, List<List<Respuesta>> respuestas, int k) {
+        if (respuestas.size() < k)
+            throw new IllegalArgumentException(
+            "respuestas.size() must be >= k"
+        );
+
         List<Cluster> clusters = getEstrategiaInicializacion().inicializarClusters(k, respuestas, variables);
         
         // Iteración hasta convergencia

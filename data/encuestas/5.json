@@ -1,10 +1,1 @@
-{
-  "idEncuesta": 5,
-  "titulo": "Uso de Tecnología y Redes Sociales",
-  "creador": "ana",
-  "IdPreguntas": [
-    15,
-    16,
-    17
-  ]
-}
+{"idEncuesta":5,"titulo":"Uso de Tecnología y Redes Sociales","IdPreguntas":[15,16,17,19],"creador":"ana"}
