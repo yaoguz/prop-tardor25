@@ -57,6 +57,9 @@ public class VistaEstadisticas extends ComponenteBase {
 	
 	/** Label de estado de ejecución */
 	private JLabel lblEstado;
+	
+	/** Label para mostrar coeficiente de silhouette */
+	private JLabel lblSilhouette;
 
 	/** Worker para ejecución asíncrona de clustering */
 	private SwingWorker<ResultadoClustering, Void> clusteringWorker;
@@ -189,6 +192,10 @@ public class VistaEstadisticas extends ComponenteBase {
 		estadoPanel.setBackground(Color.WHITE);
 		estadoPanel.add(progressBar);
 		estadoPanel.add(lblEstado);
+		
+		// Label de coeficiente de silhouette
+		lblSilhouette = createStyledLabel("", FONT_NORMAL);
+		lblSilhouette.setForeground(COLOR_PRIMARY);
 
 		panel.add(lblK);
 		panel.add(spinK);
@@ -199,6 +206,8 @@ public class VistaEstadisticas extends ComponenteBase {
 		panel.add(btnEjecutar);
 		panel.add(Box.createRigidArea(new Dimension(10, 0)));
 		panel.add(estadoPanel);
+		panel.add(Box.createRigidArea(new Dimension(20, 0)));
+		panel.add(lblSilhouette);
 
 		return panel;
 	}
@@ -305,8 +314,12 @@ public class VistaEstadisticas extends ComponenteBase {
                     JLabel lblVacio = createStyledLabel("No se pudieron generar perfiles. Verifica que haya suficientes respuestas.", FONT_NORMAL);
                     lblVacio.setAlignmentX(Component.CENTER_ALIGNMENT);
                     panelPerfiles.add(lblVacio);
+                    lblSilhouette.setText("");
                 } else {
                     mostrarPerfiles(resultado.getPerfiles());
+                    // Mostrar coeficiente de silhouette
+                    double calidad = resultado.getCalidad();
+                    lblSilhouette.setText(String.format("Coeficiente de Silhouette: %.3f", calidad));
                 }
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
@@ -314,17 +327,20 @@ public class VistaEstadisticas extends ComponenteBase {
                 lblError.setForeground(COLOR_DANGER);
                 lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
                 panelPerfiles.add(lblError);
+                lblSilhouette.setText("");
             } catch (java.util.concurrent.CancellationException ce) {
                 JLabel lblError = createStyledLabel("Clustering cancelado por el usuario.", FONT_NORMAL);
                 lblError.setForeground(COLOR_DANGER);
                 lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
                 panelPerfiles.add(lblError);
+                lblSilhouette.setText("");
             } catch (java.util.concurrent.ExecutionException ee) {
                 String msg = (ee.getCause() != null) ? ee.getCause().getMessage() : ee.getMessage();
                 JLabel lblError = createStyledLabel("Error: " + msg, FONT_NORMAL);
                 lblError.setForeground(COLOR_DANGER);
                 lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
                 panelPerfiles.add(lblError);
+                lblSilhouette.setText("");
             } finally {
                 // Restaurar estado de controles
                 progressBar.setVisible(false);
