@@ -273,7 +273,7 @@ public class CtrlPersistenciaPregunta {
      */
     public void sobreescribe(Pregunta p) {
         int id = p.getIdPregunta();
-        File archivo = new File("data/encuestas/" + p.getIdEncuesta() + "/preguntas", id + ".json");
+        File archivo = new File("data/encuestas/" + p.getIdEncuesta() + "/preguntas/", id + ".json");
         
         if (!archivo.exists()) {
             throw new IllegalArgumentException("La pregunta " + id + " no existe");
@@ -298,7 +298,7 @@ public class CtrlPersistenciaPregunta {
             throw new IllegalArgumentException("No existe la pregunta " + idPregunta);
         }
         
-        File archivo = new File("data/encuestas/" + idEncuesta + "/preguntas", idPregunta + ".json");
+        File archivo = new File("data/encuestas/" + idEncuesta + "/preguntas/", idPregunta + ".json");
         if (!archivo.delete()) {
             throw new IllegalArgumentException("No existe la pregunta " + idPregunta);
         }
@@ -328,6 +328,24 @@ public class CtrlPersistenciaPregunta {
             }
         } catch (IOException e) {
             throw new RuntimeException("Error actualizando encuesta: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Elimina una pregunta del disco cuando se conoce el ID de la encuesta.
+     * Útil cuando la encuesta ya fue eliminada y no se puede buscar.
+     * 
+     * @param idPregunta Identificador de la pregunta
+     * @param idEncuesta Identificador de la encuesta
+     */
+    public void eliminarPregunta(int idPregunta, int idEncuesta) {
+        File archivo = new File("data/encuestas/" + idEncuesta + "/preguntas/", idPregunta + ".json");
+        if (!archivo.exists()) {
+            System.err.println("Advertencia: no existe el archivo de pregunta " + idPregunta + " en encuesta " + idEncuesta);
+            return;
+        }
+        if (!archivo.delete()) {
+            System.err.println("Error: no se pudo eliminar el archivo de pregunta " + idPregunta);
         }
     }
 

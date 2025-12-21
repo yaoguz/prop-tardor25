@@ -295,6 +295,7 @@ public class TestCtrlDominioEncuesta {
         when(mockEncuesta.getIdPreguntas()).thenReturn(idPreguntas);
         when(mockEncuesta.getIdCreador()).thenReturn("user1");
         when(mockCtrlDominioUsuario.getUsuario("user1")).thenReturn(mockUsuario);
+        when(mockCtrlDominioPregunta.existePregunta(anyInt())).thenReturn(true);
 
         ctrlDominioEncuesta.eliminarEncuesta(1);
 

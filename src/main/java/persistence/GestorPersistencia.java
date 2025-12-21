@@ -294,8 +294,17 @@ public class GestorPersistencia {
      * @throws IllegalArgumentException si la pregunta no existe
      */
     public void eliminarPregunta(int id) {
-
         preguntas.eliminarPregunta(id);
+    }
+
+    /**
+     * Elimina una pregunta por su ID cuando se conoce el ID de la encuesta.
+     * 
+     * @param id ID de la pregunta a eliminar
+     * @param idEncuesta ID de la encuesta
+     */
+    public void eliminarPregunta(int id, int idEncuesta) {
+        preguntas.eliminarPregunta(id, idEncuesta);
     }
 
 

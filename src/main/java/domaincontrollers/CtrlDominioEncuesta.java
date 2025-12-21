@@ -363,7 +363,7 @@ public class CtrlDominioEncuesta {
 		Encuesta e = getEncuesta(idEncuesta);
 		List<Integer> idPreguntas = new ArrayList<>(e.getIdPreguntas()); // Copia para evitar modificación concurrente
 		
-		// eliminar de usuario creador PRIMERO
+		// eliminar del usuario creador PRIMERO
 		String nomCreador = e.getIdCreador();
 		try {
 			Usuario u = null;
@@ -373,7 +373,8 @@ public class CtrlDominioEncuesta {
 			if (u != null) {
 				u.eliminarIdEncuestaCreada(idEncuesta);
 				gestor.actualizarUsuario(u);
-			} else {
+			} 
+			else {
 				// si no existe el usuario creador en persistencia, no fallar la operacion
 				// se asume que la encuesta sera igualmente eliminada de persistencia
 				System.err.println("Warning: usuario creador '" + nomCreador + "' no encontrado al eliminar encuesta " + idEncuesta);
@@ -383,14 +384,25 @@ public class CtrlDominioEncuesta {
 			System.err.println("Error actualizando usuario creador al eliminar encuesta " + idEncuesta + ": " + ex.getMessage());
 		}
 		
-		// eliminar de persistencia ANTES de eliminar preguntas (para que getEncuesta no falle)
-		gestor.eliminarEncuesta(idEncuesta); //persistencia: encuestas.remove(idEncuesta);
-		
 		// eliminar cada pregunta (esto eliminará tambien sus respuestas)
 		// NOTA: ya no se puede llamar a e.eliminarPregunta() porque la encuesta fue eliminada de persistencia
 		for (Integer idP : idPreguntas) {
-			ctrlDominioPregunta.eliminarPregunta(idP);
+			try {
+				// intentar eliminar (esto elimina respuestas y archivos)
+				ctrlDominioPregunta.eliminarPregunta(idP);
+			} catch (Exception ex) {
+				// Si falla (ej: pregunta no existe en dominio), eliminar de persistencia usando idEncuesta conocido
+				System.err.println("Warning: error al eliminar pregunta " + idP + " de encuesta " + idEncuesta + ": " + ex.getMessage());
+				try {
+					gestor.eliminarPregunta(idP, idEncuesta);
+				} catch (Exception ex2) {
+					System.err.println("Error eliminando pregunta " + idP + " de persistencia: " + ex2.getMessage());
+				}
+			}
 		}
+
+		// finalmente eliminar la encuesta
+		gestor.eliminarEncuesta(idEncuesta);
 	}
 	
 	/**

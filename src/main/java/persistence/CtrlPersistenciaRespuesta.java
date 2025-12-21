@@ -296,7 +296,7 @@ public class CtrlPersistenciaRespuesta {
      */
     public void actualizarRespuesta(Respuesta r, int idEncuesta) {
         int id = r.getId();
-        File archivo = new File("data/encuestas/" + idEncuesta + "/respuestas", id + ".json");
+        File archivo = new File("data/encuestas/" + idEncuesta + "/respuestas/", id + ".json");
         
         if (!archivo.exists()) {
             throw new IllegalArgumentException("La respuesta " + id + " no existe");
@@ -329,7 +329,7 @@ public class CtrlPersistenciaRespuesta {
      * @throws IllegalArgumentException si la respuesta no existe
      */
     public void eliminarRespuesta(int idRespuesta, int idEncuesta) {
-        File archivo = new File("data/encuestas/" + idEncuesta + "/respuestas", idRespuesta + ".json");
+        File archivo = new File("data/encuestas/" + idEncuesta + "/respuestas/", idRespuesta + ".json");
         
         if (!archivo.delete()) {
             throw new IllegalArgumentException("No existe la respuesta " + idRespuesta);

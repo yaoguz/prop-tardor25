@@ -177,6 +177,18 @@ public class GestorPersistenciaPregunta {
     }
 
     /**
+     * Elimina una pregunta por su ID cuando se conoce el ID de la encuesta.
+     * 
+     * @param id ID de la pregunta a eliminar
+     * @param idEncuesta ID de la encuesta
+     * @throws IllegalArgumentException si la pregunta no existe
+     */
+    public void eliminarPregunta(int id, int idEncuesta) {
+        if (preguntas.containsKey(id)) preguntas.remove(id);
+        ctrlFicheroPregunta.eliminarPregunta(id, idEncuesta);
+    }
+
+    /**
      * Obtiene el siguiente ID disponible para una nueva pregunta.
      * 
      * @return Siguiente ID disponible
