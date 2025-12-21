@@ -68,10 +68,20 @@ public class CtrlDominioPerfil {
      * @param k Número de clusters (perfiles) deseados
      * @param algoritmo "kmeans" o "kmeans++"
      * @return ResultadoClustering con perfiles y calidad
+     * @throws IllegalArgumentException si k está fuera de rango válido
      */
     public ResultadoClustering ejecutarClustering(int idEncuesta, int k, String algoritmo) {
         // 1. Obtener todas las respuestas de la encuesta agrupadas por usuario
         List<List<Respuesta>> respuestasPorUsuario = ctrlDominioEncuesta.getRespuestasParaClustering(idEncuesta);
+
+		// Error 4: Validar k antes de ejecutar clustering
+		int numRespuestas = respuestasPorUsuario.size();
+		if (k < 2) {
+			throw new IllegalArgumentException("El número de clusters (k) debe ser al menos 2. Valor recibido: " + k);
+		}
+		if (k >= numRespuestas) {
+			throw new IllegalArgumentException("El número de clusters (k=" + k + ") debe ser menor que el número de respuestas (" + numRespuestas + ")");
+		}
 
 		List<Pregunta> variables = ctrlDominioEncuesta.getPreguntasEncuesta(idEncuesta);
         

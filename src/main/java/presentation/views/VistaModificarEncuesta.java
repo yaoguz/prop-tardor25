@@ -313,13 +313,26 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 }
             }
 
-            // Guardar solo las NUEVAS preguntas (no las que ya existen)
+            // Guardar solo las NUEVAS preguntas validando campos (no las que ya existen)
+            int preguntasGuardadas = 0;
             for (PanelPregunta pp : preguntasEditables) {
-                pp.guardar(idEncuesta);
+                try {
+                    pp.guardar(idEncuesta);
+                    preguntasGuardadas++;
+                } catch (Exception e) {
+                    // Pregunta con campos vacíos o inválidos - no se guarda
+                    JOptionPane.showMessageDialog(panel, 
+                        "Error en pregunta: " + e.getMessage() + "\nEsta pregunta no se ha guardado, hay campos inválidos.",
+                        "Advertencia", JOptionPane.WARNING_MESSAGE);
+                }
             }
             
             cambiosSinGuardar = false;
-            JOptionPane.showMessageDialog(panel, "Encuesta guardada correctamente");
+            String mensaje = "Encuesta guardada correctamente";
+            if (preguntasGuardadas < preguntasEditables.size()) {
+                mensaje += "\n(" + preguntasGuardadas + " de " + preguntasEditables.size() + " preguntas guardadas)";
+            }
+            JOptionPane.showMessageDialog(panel, mensaje);
             frame.dispose();
             ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
         } catch (Exception ex) {

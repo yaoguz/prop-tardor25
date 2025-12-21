@@ -156,7 +156,15 @@ public class VistaVerRespuestas extends ComponenteBase {
 	 * Muestra respuestas agrupadas por usuario.
 	 */
 	private void mostrarPorUsuario() {
-		Map<Pregunta, Set<Respuesta>> respuestas = ctrlPresentacion.getRespuestasEncuesta(idEncuesta);
+		Map<Pregunta, Set<Respuesta>> respuestas;
+		try {
+			respuestas = ctrlPresentacion.getRespuestasEncuesta(idEncuesta);
+		} catch (Exception e) {
+			JLabel lblError = createStyledLabel("Error al obtener respuestas: " + e.getMessage(), FONT_NORMAL);
+			lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+			panelContenido.add(lblError);
+			return;
+		}
 		
 		// Agrupar por usuario
 		Map<String, Map<String, String>> respuestasPorUsuario = new TreeMap<>();
@@ -192,7 +200,15 @@ public class VistaVerRespuestas extends ComponenteBase {
 	 * Muestra respuestas agrupadas por pregunta.
 	 */
 	private void mostrarPorPregunta() {
-		Map<Pregunta, Set<Respuesta>> respuestas = ctrlPresentacion.getRespuestasEncuesta(idEncuesta);
+		Map<Pregunta, Set<Respuesta>> respuestas;
+		try {
+			respuestas = ctrlPresentacion.getRespuestasEncuesta(idEncuesta);
+		} catch (Exception e) {
+			JLabel lblError = createStyledLabel("Error al obtener respuestas: " + e.getMessage(), FONT_NORMAL);
+			lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+			panelContenido.add(lblError);
+			return;
+		}
 
 		if (respuestas.isEmpty()) {
 			JLabel lblVacio = createStyledLabel("No hay respuestas todavía", FONT_NORMAL);

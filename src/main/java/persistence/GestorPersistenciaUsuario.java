@@ -71,14 +71,17 @@ public class GestorPersistenciaUsuario {
      * Busca y carga un usuario desde disco a la cache.
      * 
      * @param nom Nombre del usuario
-     * @return Usuario cargado desde disco
+     * @return Usuario cargado desde disco, o null si no existe
      */
     Usuario sacarUsuarioFichero(String nom) {
-
-        Usuario u = ctrlFicheroUsuario.getUsuario(nom);
-        usuarios.put(nom, u);
-
-        return u;
+        try {
+            Usuario u = ctrlFicheroUsuario.getUsuario(nom);
+            usuarios.put(nom, u);
+            return u;
+        } catch (RuntimeException e) {
+            // Usuario no existe en disco
+            return null;
+        }
     }
 
     /**
@@ -133,17 +136,13 @@ public class GestorPersistenciaUsuario {
      * @return true si existe, false en caso contrario
      */
     public boolean existeUsuario(String nom) {
-        if (!usuarios.containsKey(nom)) {
-            try{
-                sacarUsuarioFichero(nom);
-            }
-
-            catch (Exception e) {
-                return false;
-            }
-            
+        if (usuarios.containsKey(nom)) {
+            return true;
         }
-        return true;
+        
+        // Intentar cargar desde disco
+        Usuario u = sacarUsuarioFichero(nom);
+        return u != null;
     }
 
     /**

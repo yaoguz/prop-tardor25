@@ -74,10 +74,13 @@ public class CtrlPersistenciaUsuario {
 
             return u;
         }
-
-        catch(Exception exc) {
-            throw new RuntimeException("Error leyendo el archivo JSON 8", exc);
-        }
+		catch(java.io.FileNotFoundException fnf) {
+			// Error: el usuario no existe
+			throw new RuntimeException("El usuario '" + nom + "' no existe", fnf);
+		}
+		catch(Exception exc) {
+			throw new RuntimeException("Error leyendo el archivo JSON del usuario '" + nom + "'", exc);
+		}
     }
 
     /**
@@ -112,10 +115,10 @@ public class CtrlPersistenciaUsuario {
             }
 
             return usuarios;
-        }
+        } 
 
         else return null;
-
+        
     }
 
     /**

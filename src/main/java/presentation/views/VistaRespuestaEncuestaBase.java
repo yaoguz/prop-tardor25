@@ -70,26 +70,6 @@ public abstract class VistaRespuestaEncuestaBase extends ComponenteBase {
 		panelPrincipal.setBackground(COLOR_BG);
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // BarraNavegacion barra = new BarraNavegacion(nombreUsuario);
-        // barra.setOnCerrarSesion(e -> {
-        //     ctrlPresentacion.cerrarSesion();
-        //     frame.dispose();
-        //     ctrlPresentacion.mostrarLogin();
-        // });
-        // barra.setOnCambiarContrasena(e -> {
-        //     String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:", "Cambiar Contraseña", JOptionPane.PLAIN_MESSAGE);
-        //     if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
-        //         try {
-        //             ctrlPresentacion.cambiarContrasena(nuevaPass);
-        //             JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        //         } catch (Exception ex) {
-        //             JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        //         }
-        //     }
-        // });
-        // barra.setOnSalir(e -> salir());
-        // panelPrincipal.add(barra.getPanel(), BorderLayout.NORTH);
-
 		String titulo = ctrlPresentacion.obtenerTituloEncuesta(idEncuesta);
 		JLabel lblTitulo = createStyledLabel(titulo, FONT_TITLE);
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
@@ -154,9 +134,15 @@ public abstract class VistaRespuestaEncuestaBase extends ComponenteBase {
 				Object respuesta = entry.getValue().getRespuesta();
 				int idRespExistente = entry.getValue().getIdRespuesta();
 
+				// Error: Solo procesar si la respuesta no está vacía
+				if (respuesta == null || (respuesta instanceof String && ((String)respuesta).trim().isEmpty())) {
+					continue; // Permitir no responder preguntas
+				}
+
 				if (respuesta instanceof List) {
 					@SuppressWarnings("unchecked")
 					List<Integer> list = (List<Integer>) respuesta;
+					if (list.isEmpty()) continue; // No crear respuestas vacías
 					int[] arr = new int[list.size()];
 					for (int i = 0; i < list.size(); i++) arr[i] = list.get(i);
 					procesarRespuesta(idPregunta, arr, idRespExistente);

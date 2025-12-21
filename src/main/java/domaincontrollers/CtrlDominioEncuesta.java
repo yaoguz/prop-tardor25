@@ -379,12 +379,12 @@ public class CtrlDominioEncuesta {
 				u.eliminarIdEncuestaCreada(idEncuesta);
 				gestor.actualizarUsuario(u);
 			} else {
-				// Si no existe el usuario creador en persistencia, no fallar la operación
-				// Se asume que la encuesta será igualmente eliminada de persistencia.
+				// si no existe el usuario creador en persistencia, no fallar la operacion
+				// se asume que la encuesta sera igualmente eliminada de persistencia
 				System.err.println("Warning: usuario creador '" + nomCreador + "' no encontrado al eliminar encuesta " + idEncuesta);
 			}
 		} catch (Exception ex) {
-			// No propagar NullPointerException u otros problemas al eliminar encuesta; loguear y continuar
+			// no propagar problemas al eliminar encuesta, simplemente loguear y continuar
 			System.err.println("Error actualizando usuario creador al eliminar encuesta " + idEncuesta + ": " + ex.getMessage());
 		}
 		

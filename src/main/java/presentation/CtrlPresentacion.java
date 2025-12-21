@@ -240,8 +240,8 @@ public class CtrlPresentacion {
 			throw new IllegalArgumentException("La confirmación no coincide con la nueva contraseña.");
 		}
 		// Opcional: validar longitud mínima
-		if (nuevaContrasena.trim().length() < 4) {
-			throw new IllegalArgumentException("La contraseña debe tener al menos 4 caracteres.");
+		if (nuevaContrasena.trim().length() < 6) {
+			throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres.");
 		}
 		ctrlDominio.modificarContrasena(nuevaContrasena);
 	}
