@@ -475,14 +475,29 @@ public class VistaListaEncuestas extends ComponenteBase {
      * Solicita nueva contraseña y la cambia.
      */
     private void cambiarContrasena() {
-        String nuevaPass = JOptionPane.showInputDialog(frame, "Nueva contraseña:");
-        String confirmacion = JOptionPane.showInputDialog(frame, "Confirmar contraseña:");
-        if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
-            try {
-                ctrlPresentacion.cambiarContrasena(nuevaPass, confirmacion);
-                JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        JPasswordField nuevaPassField = new JPasswordField(20);
+        JPasswordField confirmacionField = new JPasswordField(20);
+        
+        JPanel panel = new JPanel(new GridLayout(2, 2, 5, 5));
+        panel.add(new JLabel("Nueva contraseña:"));
+        panel.add(nuevaPassField);
+        panel.add(new JLabel("Confirmar contraseña:"));
+        panel.add(confirmacionField);
+        
+        int result = JOptionPane.showConfirmDialog(frame, panel, "Cambiar contraseña", 
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        
+        if (result == JOptionPane.OK_OPTION) {
+            String nuevaPass = new String(nuevaPassField.getPassword());
+            String confirmacion = new String(confirmacionField.getPassword());
+            
+            if (nuevaPass != null && !nuevaPass.trim().isEmpty()) {
+                try {
+                    ctrlPresentacion.cambiarContrasena(nuevaPass, confirmacion);
+                    JOptionPane.showMessageDialog(frame, "Contraseña cambiada correctamente");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
