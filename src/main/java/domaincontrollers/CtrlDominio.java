@@ -241,6 +241,16 @@ public class CtrlDominio {
 	}
 	
 	/**
+	 * Obtiene una pregunta por su ID.
+	 * 
+	 * @param idPregunta ID de la pregunta
+	 * @return La pregunta
+	 */
+	public Pregunta getPregunta(int idPregunta) {
+		return ctrlDominioPregunta.getPregunta(idPregunta);
+	}
+	
+	/**
 	 * Crea una nueva encuesta.
 	 * 
 	 * @param nomUsuario Nombre del usuario creador

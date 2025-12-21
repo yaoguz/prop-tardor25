@@ -27,7 +27,7 @@ import java.util.HashMap;
  * - Template Method: Hereda de ComponenteBase
  * - Strategy: Diferentes editores según tipo de pregunta
  * 
- * @author Xiangjun Yepan, Peiyu Wang
+ * @author Xiangjun Yepan, Peiyu Wang, Yaoyao Guo
  */
 public class VistaModificarEncuesta extends ComponenteBase {
     
@@ -297,18 +297,15 @@ public class VistaModificarEncuesta extends ComponenteBase {
             for (PreguntaExistente pe : new ArrayList<>(preguntasExistentes)) {
                 try {
                     if (pe.marcadoParaEliminar) {
-                        // eliminar en dominio
                         ctrlPresentacion.eliminarPregunta(pe.pregunta.getIdPregunta());
-                        // eliminar de la lista local
                         preguntasExistentes.remove(pe);
-                    } else if (pe.nuevoEnunciado != null || pe.atributosModificados != null) {
-                        // aplicar modificación en dominio
+                    } 
+                    else if (pe.nuevoEnunciado != null || pe.atributosModificados != null) {
                         String enun = (pe.nuevoEnunciado != null) ? pe.nuevoEnunciado : pe.pregunta.getEnunciado();
                         java.util.Map<String,Object> attrs = (pe.atributosModificados != null) ? pe.atributosModificados : new java.util.HashMap<>();
                         ctrlPresentacion.modificarPregunta(pe.pregunta.getIdPregunta(), enun, attrs);
                     }
                 } catch (Exception ex) {
-                    // mostrar error pero continuar con el resto
                     JOptionPane.showMessageDialog(panel, "Error aplicando cambios a pregunta " + pe.pregunta.getIdPregunta() + ": " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -482,7 +479,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
         JDialog dialog = new JDialog(frame, "Editar pregunta", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setResizable(false);
-        dialog.setSize(600, 400);
+        dialog.setSize(700, 700);
         dialog.setLocationRelativeTo(null);
 
         JPanel content = new JPanel();

@@ -309,6 +309,16 @@ public class CtrlPresentacion {
 	public List<Pregunta> getPreguntasEncuesta(int idEncuesta) {
 		return ctrlDominio.getPreguntasEncuesta(idEncuesta);
 	}
+	
+	/**
+	 * Obtiene una pregunta por su ID.
+	 * 
+	 * @param idPregunta ID de la pregunta
+	 * @return La pregunta
+	 */
+	public Pregunta getPregunta(int idPregunta) {
+		return ctrlDominio.getPregunta(idPregunta);
+	}
 
 	/**
 	 * Obtiene IDs de preguntas de una encuesta.

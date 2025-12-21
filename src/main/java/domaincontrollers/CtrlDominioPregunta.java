@@ -367,6 +367,7 @@ public class CtrlDominioPregunta {
 		// obtener pregunta y sus respuestas
 		Pregunta p = getPregunta(idPregunta);
 		List<Integer> idRespuestas = new ArrayList<>(p.getIdRespuestas()); // copia para evitar ConcurrentModificationException
+		int idEncuesta = p.getIdEncuesta();
 		
 		// eliminar cada respuesta (las respuestas se encargarán de actualizar Usuario y Pregunta)
 		for (Integer idR : idRespuestas) {
@@ -374,14 +375,14 @@ public class CtrlDominioPregunta {
 		}
 		
 		// eliminar la pregunta de la encuesta (solo si la encuesta aún existe)
-		int idEncuesta = p.getIdEncuesta();
 		if (ctrlDominioEncuesta.existeEncuesta(idEncuesta)) {
 			Encuesta e = ctrlDominioEncuesta.getEncuesta(idEncuesta);
 			e.eliminarPregunta(idPregunta);
 			gestor.actualizarEncuesta(e);
 		}
 		
-		gestor.eliminarPregunta(idPregunta);
+		// Usar la versión con idEncuesta para evitar búsqueda innecesaria
+		gestor.eliminarPregunta(idPregunta, idEncuesta);
 	}
 
 	/**
