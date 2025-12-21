@@ -114,11 +114,54 @@ public class VistaModificarEncuesta extends ComponenteBase {
         panelPreguntas.setBackground(COLOR_BG);
         panelCentral.add(panelPreguntas);
         
-        // Botón guardar
+        // Botón guardar + eliminar
         JPanel panelGuardar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelGuardar.setBackground(COLOR_BG);
+
+        // Botón eliminar (a la izquierda de Guardar)
+        JButton btnEliminarEncuesta = createStyledButton("Eliminar Encuesta", COLOR_DANGER);
+        btnEliminarEncuesta.addActionListener(e -> {
+            // Si la encuesta es nueva (no guardada aún), simplemente confirmar salida
+            if (idEncuesta == -1) {
+                int resp = JOptionPane.showConfirmDialog(
+                    panel,
+                    "La encuesta no ha sido guardada. ¿Deseas cancelar la creación y volver?",
+                    "Cancelar creación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+                );
+                if (resp == JOptionPane.YES_OPTION) {
+                    frame.dispose();
+                    ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
+                }
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(
+                panel,
+                "¿Eliminar esta encuesta y todas sus preguntas y respuestas asociadas?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    ctrlPresentacion.eliminarEncuesta(idEncuesta);
+                    JOptionPane.showMessageDialog(panel, "Encuesta eliminada correctamente");
+                    frame.dispose();
+                    ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel, "Error al eliminar encuesta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
         JButton btnGuardar = createStyledButton("Guardar Cambios", COLOR_PRIMARY);
         btnGuardar.addActionListener(e -> guardarEncuesta());
+
+        // Añadir botones: primero Eliminar, luego Guardar
+        panelGuardar.add(btnEliminarEncuesta);
         panelGuardar.add(btnGuardar);
         panelCentral.add(panelGuardar);
         
