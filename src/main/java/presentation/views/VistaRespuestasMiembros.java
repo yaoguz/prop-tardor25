@@ -127,10 +127,9 @@ public class VistaRespuestasMiembros extends ComponenteBase {
             miembros.add(0, representante);
         }
         
-        // Obtener todas las respuestas de la encuesta
+
         Map<Pregunta, Set<Respuesta>> todasRespuestas = ctrlPresentacion.getRespuestasEncuesta(idEncuesta);
         
-        // Obtener preguntas en orden
         List<Pregunta> preguntas = ctrlPresentacion.getPreguntasEncuesta(idEncuesta);
 
         if (miembros.isEmpty()) {
@@ -142,7 +141,6 @@ public class VistaRespuestasMiembros extends ComponenteBase {
             return;
         }
 
-        // Para cada miembro, mostrar sus respuestas
         for (String miembro : miembros) {
             JPanel panelMiembro = crearPanelMiembro(miembro, preguntas, todasRespuestas);
             panelRespuestas.add(panelMiembro);
@@ -170,7 +168,6 @@ public class VistaRespuestasMiembros extends ComponenteBase {
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
 
-        // Título: nombre del miembro (negrita si es representante)
         boolean esRepresentante = miembro.equals(representante);
         String textoMiembro = miembro + (esRepresentante ? " (Representante)" : "");
         JLabel lblMiembro = createStyledLabel(textoMiembro, esRepresentante ? FONT_SUBTITLE : FONT_NORMAL);
@@ -187,7 +184,6 @@ public class VistaRespuestasMiembros extends ComponenteBase {
         panelRespuestas.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 0));
 
         for (Pregunta pregunta : preguntas) {
-            // Encontrar respuesta de este miembro a esta pregunta
             String respuestaTexto = "No respondida";
             Set<Respuesta> respuestasSet = todasRespuestas.get(pregunta);
             if (respuestasSet != null) {
@@ -217,34 +213,6 @@ public class VistaRespuestasMiembros extends ComponenteBase {
 
         return panel;
     }
-
-    // /**
-    //  * Formatea una respuesta para mostrarla.
-    //  * 
-    //  * @param respuesta Respuesta
-    //  * @return Texto formateado
-    //  */
-    // private String formatearRespuesta(Respuesta respuesta) {
-    //     if (respuesta instanceof RespuestaLibre) {
-    //         return ((RespuestaLibre) respuesta).getRespuesta();
-    //     } else if (respuesta instanceof RespuestaNumerica) {
-    //         return String.valueOf(((RespuestaNumerica) respuesta).getRespuesta());
-    //     } else if (respuesta instanceof RespuestaOpcionUnica) {
-    //         int opcionIdx = ((RespuestaOpcionUnica) respuesta).getRespuesta();
-    //         return "Opción " + (opcionIdx + 1);
-    //     } else if (respuesta instanceof RespuestaOpcionMultiple) {
-    //         int[] opcionesArray = ((RespuestaOpcionMultiple) respuesta).getRespuesta();
-    //         List<Integer> opciones = new ArrayList<>();
-    //         for (int op : opcionesArray) opciones.add(op);
-    //         StringBuilder sb = new StringBuilder("Opciones: ");
-    //         for (int i = 0; i < opciones.size(); i++) {
-    //             sb.append(opciones.get(i) + 1);
-    //             if (i < opciones.size() - 1) sb.append(", ");
-    //         }
-    //         return sb.toString();
-    //     }
-    //     return "N/A";
-    // }
 
     /**
      * Formatea una respuesta usando la información de la pregunta para mostrar

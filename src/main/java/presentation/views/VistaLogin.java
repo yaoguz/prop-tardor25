@@ -60,7 +60,6 @@ public class VistaLogin extends ComponenteBase {
     private void inicializar() {
         frame = crearFrameEstandar("Login - Encuestas");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.setLocationRelativeTo(null);
         
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -121,7 +120,6 @@ public class VistaLogin extends ComponenteBase {
         panel.add(btnRegistro, gbc);
         frame.add(panel);
         
-        //frame.pack();
         frame.setSize(600, 500);
         frame.setMinimumSize(frame.getSize()); 
         frame.setLocationRelativeTo(null);

@@ -214,7 +214,6 @@ public class VistaListaEncuestas extends ComponenteBase {
         }
         
         panelEncuestas.removeAll();
-        //hayFiltroActivo = true;
         btnVerTodas.setVisible(true);
         
         // Obtener todas las encuestas y filtrar por título
@@ -247,7 +246,6 @@ public class VistaListaEncuestas extends ComponenteBase {
     private void verTodas() {
         // Restaurar búsqueda y recargar lista completa aplicando filtros actuales
         txtBuscar.setText("");
-        //hayFiltroActivo = false;
         btnVerTodas.setVisible(false);
         cargarEncuestas();
     }
@@ -325,7 +323,6 @@ public class VistaListaEncuestas extends ComponenteBase {
         panelInfo.add(lblAutor);
         p.add(panelInfo, BorderLayout.WEST);
         
-        // Botones (derecha)
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBotones.setBackground(Color.WHITE);
         
@@ -357,7 +354,6 @@ public class VistaListaEncuestas extends ComponenteBase {
         } else {
             btnResponder.addActionListener(e -> responderEncuesta(idEncuesta));
         }
-        //btnResponder.addActionListener(e -> responderEncuesta(idEncuesta));
         panelBotones.add(btnResponder);
         
         p.add(panelBotones, BorderLayout.EAST);
@@ -577,7 +573,6 @@ public class VistaListaEncuestas extends ComponenteBase {
                     "Respuestas importadas correctamente.",
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
-                // recargar lista por si la importación cambió el estado
                 cargarEncuestas();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame,

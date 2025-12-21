@@ -361,7 +361,6 @@ public class VistaResponderEncuesta extends VistaRespuestaEncuestaBase {
 				check.setBackground(Color.WHITE);
 				check.addActionListener(e -> {
 					cambiosSinGuardar = true;
-					// Limitar selecciones
 					long seleccionadas = checkboxes.stream().filter(JCheckBox::isSelected).count();
 					if (seleccionadas > numMax) {
 						check.setSelected(false);

@@ -112,14 +112,6 @@ public class VistaVerRespuestas extends ComponenteBase {
 		scrollContenido.getVerticalScrollBar().setUnitIncrement(16);
 		panelPrincipal.add(scrollContenido, BorderLayout.CENTER);
 
-		// // Botón volver
-		// JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		// panelBotones.setBackground(COLOR_BG);
-		// JButton btnVolver = createStyledButton("Volver", COLOR_PRIMARY);
-		// btnVolver.addActionListener(e -> frame.dispose());
-		// panelBotones.add(btnVolver);
-		// panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
-
 		frame.add(panelPrincipal);
 		
 		// Cargar respuestas inicialmente
@@ -221,7 +213,6 @@ public class VistaVerRespuestas extends ComponenteBase {
 		for (Map.Entry<Pregunta, Set<Respuesta>> entry : respuestas.entrySet()) {
 			JPanel panelPregunta = crearPanelPregunta(entry.getKey(), entry.getValue());
 			panelContenido.add(panelPregunta);
-			//panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
 		}
 	}
 

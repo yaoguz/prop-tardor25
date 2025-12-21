@@ -160,7 +160,6 @@ public class VistaModificarEncuesta extends ComponenteBase {
         JButton btnGuardar = createStyledButton("Guardar Cambios", COLOR_PRIMARY);
         btnGuardar.addActionListener(e -> guardarEncuesta());
 
-        // Añadir botones: primero Eliminar, luego Guardar
         panelGuardar.add(btnEliminarEncuesta);
         panelGuardar.add(btnGuardar);
         panelCentral.add(panelGuardar);
@@ -293,7 +292,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 ctrlPresentacion.modificarTituloEncuesta(idEncuesta, titulo);
             }
             
-            // Aplicar cambios pendientes en preguntas existentes (eliminaciones/modificaciones)
+          
             for (PreguntaExistente pe : new ArrayList<>(preguntasExistentes)) {
                 try {
                     if (pe.marcadoParaEliminar) {
@@ -310,7 +309,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 }
             }
 
-            // Guardar solo las NUEVAS preguntas validando campos (no las que ya existen)
+           
             int preguntasGuardadas = 0;
             for (PanelPregunta pp : preguntasEditables) {
                 try {
@@ -457,7 +456,6 @@ public class VistaModificarEncuesta extends ComponenteBase {
             );
 
             if (confirm == JOptionPane.YES_OPTION) {
-                // No eliminar en dominio aún; marcar y ocultar de la UI
                 marcadoParaEliminar = true;
                 panel.setVisible(false);
                 cambiosSinGuardar = true;
@@ -502,7 +500,6 @@ public class VistaModificarEncuesta extends ComponenteBase {
 
         // Campos según tipo
         if (p instanceof PreguntaLibre) {
-            // no hay más campos
             atributosPanel.add(createStyledLabel("Tipo: Pregunta Libre", FONT_SMALL));
         } else if (p instanceof PreguntaNumerica) {
             PreguntaNumerica pn = (PreguntaNumerica) p;
@@ -549,7 +546,6 @@ public class VistaModificarEncuesta extends ComponenteBase {
             });
             atributosPanel.add(panelOpc);
             atributosPanel.add(btnAddOpt);
-            // store campos in client property for later retrieval
             atributosPanel.putClientProperty("opcionesFields", campos);
             atributosPanel.putClientProperty("chkOrden", chkOrden);
         } else if (p instanceof PreguntaOpcionMultiple) {

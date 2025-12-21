@@ -280,8 +280,6 @@ public class VistaEstadisticas extends ComponenteBase {
     comboAlgoritmo.setEnabled(false);
     if (btnEjecutar != null) btnEjecutar.setEnabled(false);
 
-    // Ejecutar en segundo plano para no bloquear la UI
-    // Cancelar worker/futuro previo si existe
     if (clusteringWorker != null && !clusteringWorker.isDone()) {
         if (clusteringFuture != null) clusteringFuture.cancel(true);
         clusteringWorker.cancel(true);
@@ -292,7 +290,6 @@ public class VistaEstadisticas extends ComponenteBase {
         protected ResultadoClustering doInBackground() throws Exception {
             int k = (int) spinK.getValue();
             String nombreUI = (String) comboAlgoritmo.getSelectedItem();
-            // Ejecutar el clustering en un Executor con timeout para evitar bloqueos indefinidos
             ExecutorService executor = Executors.newSingleThreadExecutor();
             try {
                 Callable<ResultadoClustering> task = () -> ctrlPresentacion.ejecutarClusteringDesdeUI(idEncuesta, k, nombreUI);
@@ -390,7 +387,6 @@ public class VistaEstadisticas extends ComponenteBase {
 			BorderFactory.createLineBorder(COLOR_PRIMARY, 3),
 			BorderFactory.createEmptyBorder(15, 15, 15, 15)
 		));
-	// Dejar que el layout calcule el tamaño; evitar forzar maximumSize que puede causar solapamientos
 
 		// Título del perfil
 		JLabel lblTitulo = createStyledLabel("Perfil " + numero, FONT_SUBTITLE);
@@ -416,8 +412,6 @@ public class VistaEstadisticas extends ComponenteBase {
 		JPanel panelMiembros = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		panelMiembros.setBackground(Color.WHITE);
 		panelMiembros.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-		// Limitar el ancho máximo del panel de miembros para que los labels
-		// se envuelvan a la siguiente línea cuando no quepan en una fila.
 		panelMiembros.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panelMiembros.setMaximumSize(new Dimension(600, Integer.MAX_VALUE));
 
