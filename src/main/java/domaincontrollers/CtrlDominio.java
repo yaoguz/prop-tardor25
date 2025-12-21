@@ -194,11 +194,12 @@ public class CtrlDominio {
 	 * DECISIÓN: Cada fichero contiene el idEncuesta para validación.
 	 * 
 	 * @param fichero Archivo con formato: idEncuesta, idPregunta, nomUsuario, respuesta
+	 * @param idEncuesta ID de la encuesta a la que se importan las respuestas
 	 * @throws IllegalArgumentException si el formato es incorrecto
 	 * @throws IllegalStateException si los IDs no existen en el sistema
 	 */
-	public void importarRespuestas(File fichero) {
-		ctrlDominioRespuesta.importarRespuestas(fichero);
+	public void importarRespuestas(File fichero, int idEncuesta) {
+		ctrlDominioRespuesta.importarRespuestas(fichero, idEncuesta);
 	}
 
 	// ==================== GESTIÓN DE ENCUESTAS ====================

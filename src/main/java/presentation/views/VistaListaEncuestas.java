@@ -548,7 +548,7 @@ public class VistaListaEncuestas extends ComponenteBase {
         if (resultado == JFileChooser.APPROVE_OPTION) {
             java.io.File fichero = fileChooser.getSelectedFile();
             try {
-                ctrlPresentacion.importarRespuestas(fichero);
+                ctrlPresentacion.importarRespuestas(fichero, idEncuesta);
                 JOptionPane.showMessageDialog(frame,
                     "Respuestas importadas correctamente.",
                     "Éxito",

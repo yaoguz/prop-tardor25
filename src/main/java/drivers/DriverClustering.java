@@ -181,6 +181,9 @@ public class DriverClustering {
     private static void importarRespuestas() {
         System.out.println("\n--{ IMPORTAR RESPUESTAS DE UN FICHERO }--");
         
+        System.out.print("Introduzca el ID de la encuesta: ");
+        int idEncuesta = Integer.parseInt(scanner.nextLine().trim());
+        
         System.out.print("Introduzca la ruta del archivo CSV de respuestas: ");
         String ruta = scanner.nextLine().trim();
         File fichero = new File(ruta);
@@ -191,7 +194,7 @@ public class DriverClustering {
         }
 
         try {
-            ctrlRespuesta.importarRespuestas(fichero);
+            ctrlRespuesta.importarRespuestas(fichero, idEncuesta);
             System.out.println("Se han importado las respuestas exitosamente.");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());

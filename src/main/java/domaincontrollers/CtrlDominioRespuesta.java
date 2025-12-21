@@ -204,17 +204,18 @@ public class CtrlDominioRespuesta {
 	}
 	
 	/**
-	 * Importa respuestas desde un fichero externo.
+	 * Importa respuestas desde un fichero CSV.
+	 * Utiliza parsearFicheroRespuestas para obtener los datos de respuesta,
+	 * y luego las crea mediante darRespuesta.
 	 * 
-	 * DECISIÓN: Cada fichero contiene el idEncuesta para validación.
-	 * 
-	 * @param fichero Archivo con formato: idEncuesta, idPregunta, nomUsuario, respuesta
-	 * @throws IllegalArgumentException si el formato es incorrecto
-	 * @throws IllegalStateException si los IDs no existen en el sistema
+	 * @param fichero Fichero CSV con las respuestas
+	 * @param idEncuesta ID de la encuesta a la que se importan las respuestas
+	 * @throws IllegalArgumentException si el fichero tiene formato incorrecto o no coincide con la encuesta
+	 * @throws IllegalStateException si alguna encuesta o pregunta no existe
 	 */
-	public void importarRespuestas(File fichero) {
+	public void importarRespuestas(File fichero, int idEncuesta) {
 		// parser del fichero (implementacion especifica segun formato)
-		List<RespuestaImportData> datosImportados = parsearFicheroRespuestas(fichero);
+		List<RespuestaImportData> datosImportados = parsearFicheroRespuestas(fichero, idEncuesta);
 		
 		for (RespuestaImportData dato : datosImportados) {
 			// validar que existen los IDs usando los otros controladores de dominio
@@ -265,10 +266,11 @@ public class CtrlDominioRespuesta {
 	 * Valores vacíos se ignoran (pregunta no respondida).
 	 * 
 	 * @param fichero Archivo CSV a parsear
+	 * @param idEncuestaEsperado ID de la encuesta a la que deben pertenecer las respuestas
 	 * @return Lista de datos de respuestas
-	 * @throws IllegalArgumentException si el formato es incorrecto
+	 * @throws IllegalArgumentException si el formato es incorrecto o no coincide con la encuesta
 	 */
-	private List<RespuestaImportData> parsearFicheroRespuestas(File fichero) {
+	private List<RespuestaImportData> parsearFicheroRespuestas(File fichero, int idEncuestaEsperado) {
 		List<RespuestaImportData> resultado = new ArrayList<>();
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(fichero))) {
@@ -286,8 +288,20 @@ public class CtrlDominioRespuesta {
 			String tituloEncuesta = metadatos[1];
 			String autorEncuesta = metadatos[3];
 			
-			// Obtener encuesta por título y autor
-			Encuesta e = ctrlDominioEncuesta.getEncuesta(tituloEncuesta, autorEncuesta);
+			// Validar que el título/autor coincidan con la encuesta del ID especificado
+			if (!ctrlDominioEncuesta.existeEncuesta(idEncuestaEsperado)) {
+				throw new IllegalArgumentException("No existe la encuesta con ID " + idEncuestaEsperado);
+			}
+			
+			Encuesta encuestaEsperada = ctrlDominioEncuesta.getEncuesta(idEncuestaEsperado);
+			if (!encuestaEsperada.getTitulo().equals(tituloEncuesta) || 
+			    !encuestaEsperada.getIdCreador().equals(autorEncuesta)) {
+				throw new IllegalArgumentException(
+					"Error: El título/autor de la encuesta en el CSV no coincide con la encuesta ID " + idEncuestaEsperado);
+			}
+			
+			// Obtener encuesta por título y autor (ahora ya sabemos que coincide)
+			Encuesta e = encuestaEsperada;
 			int idEncuesta = e.getIdEncuesta();
 			List<Integer> idPreguntas = ctrlDominioEncuesta.getIdPreguntasEncuesta(idEncuesta);
 			

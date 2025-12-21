@@ -458,9 +458,10 @@ public class CtrlPresentacion {
 	 * Importa respuestas desde fichero.
 	 * 
 	 * @param fichero Fichero con respuestas
+	 * @param idEncuesta ID de la encuesta a la que se importan las respuestas
 	 */
-	public void importarRespuestas(File fichero) {
-		ctrlDominio.importarRespuestas(fichero);
+	public void importarRespuestas(File fichero, int idEncuesta) {
+		ctrlDominio.importarRespuestas(fichero, idEncuesta);
 	}
 
 	/**
