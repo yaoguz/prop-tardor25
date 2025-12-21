@@ -293,13 +293,33 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 ctrlPresentacion.modificarTituloEncuesta(idEncuesta, titulo);
             }
             
+            // Aplicar cambios pendientes en preguntas existentes (eliminaciones/modificaciones)
+            for (PreguntaExistente pe : new ArrayList<>(preguntasExistentes)) {
+                try {
+                    if (pe.marcadoParaEliminar) {
+                        // eliminar en dominio
+                        ctrlPresentacion.eliminarPregunta(pe.pregunta.getIdPregunta());
+                        // eliminar de la lista local
+                        preguntasExistentes.remove(pe);
+                    } else if (pe.nuevoEnunciado != null || pe.atributosModificados != null) {
+                        // aplicar modificación en dominio
+                        String enun = (pe.nuevoEnunciado != null) ? pe.nuevoEnunciado : pe.pregunta.getEnunciado();
+                        java.util.Map<String,Object> attrs = (pe.atributosModificados != null) ? pe.atributosModificados : new java.util.HashMap<>();
+                        ctrlPresentacion.modificarPregunta(pe.pregunta.getIdPregunta(), enun, attrs);
+                    }
+                } catch (Exception ex) {
+                    // mostrar error pero continuar con el resto
+                    JOptionPane.showMessageDialog(panel, "Error aplicando cambios a pregunta " + pe.pregunta.getIdPregunta() + ": " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
             // Guardar solo las NUEVAS preguntas (no las que ya existen)
             for (PanelPregunta pp : preguntasEditables) {
                 pp.guardar(idEncuesta);
             }
             
             cambiosSinGuardar = false;
-                JOptionPane.showMessageDialog(panel, "Encuesta guardada correctamente");
+            JOptionPane.showMessageDialog(panel, "Encuesta guardada correctamente");
             frame.dispose();
             ctrlPresentacion.mostrarPaginaPrincipal(nombreUsuario);
         } catch (Exception ex) {
@@ -338,6 +358,11 @@ public class VistaModificarEncuesta extends ComponenteBase {
     private class PreguntaExistente {
         private Pregunta pregunta;
         private JPanel panel;
+        private JLabel lblEnunciado;
+        // flags/pendings: no aplicar cambios a dominio hasta guardarEncuesta()
+        private boolean marcadoParaEliminar = false;
+        private String nuevoEnunciado = null;
+        private java.util.Map<String, Object> atributosModificados = null;
         
         public PreguntaExistente(Pregunta p) {
             this.pregunta = p;
@@ -356,7 +381,7 @@ public class VistaModificarEncuesta extends ComponenteBase {
             panelContenido.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             
             // Enunciado
-            JLabel lblEnunciado = createStyledLabel(pregunta.getEnunciado(), FONT_SUBTITLE);
+            lblEnunciado = createStyledLabel(pregunta.getEnunciado(), FONT_SUBTITLE);
             panelContenido.add(lblEnunciado);
             
             // Información específica según tipo
@@ -394,12 +419,12 @@ public class VistaModificarEncuesta extends ComponenteBase {
             }
             
             panel.add(panelContenido, BorderLayout.CENTER);
-            
-            // Botón eliminar
+
+            // Botones editar / eliminar (acciones locales hasta guardar)
             JButton btnEliminar = createStyledButton("Eliminar", COLOR_DANGER);
             btnEliminar.setMaximumSize(new Dimension(100, 30));
-            btnEliminar.addActionListener(e -> eliminarPreguntaExistente());
-            
+            btnEliminar.addActionListener(e -> marcarEliminarPreguntaExistente());
+
             JButton btnEditar = createStyledButton("Editar", COLOR_PRIMARY);
             btnEditar.setMaximumSize(new Dimension(100, 30));
             btnEditar.addActionListener(e -> mostrarEditorPreguntaExistente(this));
@@ -408,30 +433,26 @@ public class VistaModificarEncuesta extends ComponenteBase {
             panelBotones.setBackground(Color.WHITE);
             panelBotones.add(btnEditar);
             panelBotones.add(btnEliminar);
-            
+
             panel.add(panelBotones, BorderLayout.EAST);
         }
         
-        private void eliminarPreguntaExistente() {
+        private void marcarEliminarPreguntaExistente() {
             int confirm = JOptionPane.showConfirmDialog(
                 null,
-                "¿Eliminar esta pregunta y todas sus respuestas asociadas?",
-                "Confirmar eliminación",
+                "Marcar esta pregunta para eliminarla al guardar. ¿Continuar?",
+                "Marcar eliminación",
                 JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE
+                JOptionPane.QUESTION_MESSAGE
             );
-            
+
             if (confirm == JOptionPane.YES_OPTION) {
-                try {
-                    ctrlPresentacion.eliminarPregunta(pregunta.getIdPregunta());
-                    preguntasExistentes.remove(this);
-                    panelPreguntas.remove(panel);
-                    panelPreguntas.revalidate();
-                    panelPreguntas.repaint();
-                    cambiosSinGuardar = true;
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel, "Error al eliminar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                // No eliminar en dominio aún; marcar y ocultar de la UI
+                marcadoParaEliminar = true;
+                panel.setVisible(false);
+                cambiosSinGuardar = true;
+                panelPreguntas.revalidate();
+                panelPreguntas.repaint();
             }
         }
         
@@ -607,18 +628,13 @@ public class VistaModificarEncuesta extends ComponenteBase {
                 atributos.put("numMaxOpc", (Integer) (spMaxOpc != null ? spMaxOpc.getValue() : 2));
             }
 
-            try {
-                ctrlPresentacion.modificarPregunta(p.getIdPregunta(), nuevoEnun, atributos);
-                dialog.dispose();
-                // recargar preguntas para actualizar UI
-                panelPreguntas.removeAll();
-                preguntasExistentes.clear();
-                preguntasEditables.clear();
-                cargarDatosEncuesta();
-                cambiosSinGuardar = true;
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dialog, "Error al modificar pregunta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            // Guardar cambios localmente en el objeto PreguntaExistente; no tocar dominio hasta Guardar
+            pe.nuevoEnunciado = nuevoEnun;
+            pe.atributosModificados = atributos;
+            // actualizar vista local para reflejar cambio pendiente
+            pe.lblEnunciado.setText(nuevoEnun + " (pendiente)");
+            cambiosSinGuardar = true;
+            dialog.dispose();
         });
 
         dialog.add(content);
