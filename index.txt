@@ -33,9 +33,6 @@ Descripcion de los ficheros:
 - build.gradle:
     Fichero del gradle para ejecutar los drivers.
 
-- compilar.sh:
-    Ejecutable que compila el proyecto.
-
 - gradlew:
     Fichero de gradle.
 

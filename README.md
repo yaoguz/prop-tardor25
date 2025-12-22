@@ -17,11 +17,6 @@ java -jar EXE/subgrup-prop11.5-3.0-SNAPSHOT.jar
 ## Compilar manualmente
 
 ```bash
-./compilar.sh
-```
-
-O manualmente:
-```bash
 ./gradlew build
 ```
 
@@ -49,6 +44,6 @@ O manualmente:
 DOCS/       - Documentación
 EXE/        - Ejecutable y datos de prueba
 src/        - Código fuente
+data/       - Datos de prueba (simula el disco)
 build.gradle - Configuración Gradle
-compilar.sh - Script de compilación
 ```
