@@ -8,6 +8,175 @@ Descripcion de los ficheros:
     Este archivo. Contiene la informacion del directorio y su contenido.
 
 - 1_RegistrarUsuarioCorrectamente.pdf:
-    Contiene la información para probar que un usuario se registra correctamente.
+    Contiene la informacion para probar que un usuario se registra correctamente.
 
-- ...
+- 2_RegistrarUsuarioMismoNombre.pdf:
+    Contiene la informacion para probar que no se pueden registrar dos usuarios con mismo nombre.
+
+- 3_RegistrarUsuarioNombreMenosDe3Caracteres.pdf:
+    Contiene la informacion para probar que un usuario no puede tener un nombre de menos de 3 caracteres.
+
+- 4_RegistrarUsuarioContrasenaMenosDe6Caracteres.pdf:
+    Contiene la informacion para probar que un usuario no puede tener una conotrasena de menos de 6 caracteres.
+
+- 5_RegistrarUsuarioContrasenasDiferentes.pdf:
+    Contiene la informacion para probar que si el usuario no introduce bien la confirmacion de contrasena no se crea el usuario.
+
+- 6_LoginUsuarioContrasenaCorrecta.pdf:
+    Contiene la informacion para probar que un usuario inicia sesión correctamente.
+
+- 7_LoginUsuarioContrasenaIncorrecta.pdf:
+    Contiene la informacion para probar que un usuario no puede iniciar sesion con una contrasena incorrecta.
+
+- 8_LoginNoExisteUsuarioConEseNombre.pdf:
+    Contiene la informacion para probar que un usuario no puede iniciar sesion si no se ha registrado anteriormente un usuario con ese nombre.
+
+- 9_CambiarContrasenaCorrectamente.pdf:
+    Contiene la informacion para probar que la contrasena de un usuario se cambia correctamente.
+
+- 10_CambiarContrasenaMenosDe6Caracteres.pdf:
+    Contiene la informacion para probar que al cambiar la contrasena no se puede introducir una nueva contrasena con menos de 6 caracteres.
+
+- 11_CambiarContrasenaComprobacionDiferente.pdf:
+    Contiene la informacion para probar que no se cambia la contrasena si la confirmacion no coincide con la nueva.
+
+- 12_CerrarSesion.pdf:
+    Contiene la informacion para probar que se cierra sesion correctamente.
+
+- 13_ImportarEncuestaBien.pdf:
+    Contiene la informacion para probar que se importa una encuesta correctamente.
+
+- 13b_ImportarEncuestaFormatoIncorrecto.pdf:
+    Contiene la informacion para probar que no se importa una encuesta si el archivo tiene un formato incorrecto.
+
+- 14_ImportarRespuestasDeUnaEncuesta.pdf:
+    Contiene la informacion para probar que se importan correctamente las respuestas de una encuesta.
+
+- 15_ImportarRespuestasDeOtraEncuesta.pdf:
+    Contiene la informacion para probar que no se importan las respuestas si no son de la encuesta correspondiente.
+
+- 15b_ImportarRespuestasFormatoIncorrecto.pdf:
+    Contiene la informacion para probar que no se importan las respuestas si el archivo tiene un formato incorrecto.
+
+- 16_CrearEncuestaCorrectamente.pdf:
+    Contiene la informacion para probar que una encuesta se crea correctamente.
+
+- 17_CrearEncuestaSinTituloNiPreguntas.pdf:
+    Contiene la informacion para probar que no se crea una encuesta cuando su titulo es vacio y no tiene preguntas.
+
+- 18_CrearPreguntaNumericaBuena.pdf:
+    Contiene la informacion para probar que una pregunta numerica se crea correctamente.
+
+- 19_CrearPreguntaNumericaMala.pdf:
+    Contiene la informacion para probar que una pregunta numerica no se crea cuando su rango numerico no es valido.
+
+- 20_CrearPreguntaOpcionUnicaNoOrdenadaBuena.pdf:
+    Contiene la informacion para probar que una pregunta de opcion unica no ordenada se crea correctamente.
+
+- 21_CrearPreguntaOpcionUnicaOrdenadaBuena.pdf:
+    Contiene la informacion para probar que una pregunta de opcion unica ordenada se crea correctamente.
+
+- 21b_CrearPreguntaOpcionUnicaOpcionVacia.pdf:
+    Contiene la informacion para probar que no se crea una pregunta de opcion unica cuando tiene alguna opcion vacia.
+
+- 22_CrearPreguntaOpcionMultipleBuena.pdf:
+    Contiene la informacion para probar que una pregunta de opcion multiple se crea correctamente.
+
+- 23_CrearPreguntaOpcionMultipleMaximoMasDeNOpciones.pdf:
+    Contiene la informacion para probar que no se crea una pregunta de opcion multiple cuando el maximo de opciones a escoger es mayor al numero de opciones.
+
+- 23b_CrearPreguntaOpcionMultipleOpcionVacia.pdf:
+    Contiene la informacion para probar que no se crea una pregunta de opcion multiple cuando alguna de sus opcionwes es vacia.
+
+- 24_CrearPreguntaLibre.pdf:
+    Contiene la informacion para probar que una pregunta libre se crea correctamente.
+
+- 25_CrearPreguntaSinEnunciado.pdf:
+    Contiene la informacion para probar que no se crea una pregunta si su enunciado es vacio.
+
+- 26_CrearRespuestaNumericaBien.pdf:
+    Contiene la informacion para probar que una respuesta numerica se crea correctamente.
+
+- 27_CrearRespuestaOpcionUnicaBien.pdf:
+    Contiene la informacion para probar que una respuesta de opcion unica se crea correctamente.
+
+- 28_CrearRespuestaOpcionMultipleBien.pdf:
+    Contiene la informacion para probar que una respuesta de opcion multiple se crea correctamente.
+
+- 29_CrearRespuestaOpcionMultipleMayorEleccionQueMaximo.pdf:
+    Contiene la informacion para probar que no se puede crear una respuesta de opcion multiple con mas opciones escogidas que el maximo de opciones.
+
+- 30_CrearRespuestaLibreBien.pdf:
+    Contiene la informacion para probar que una respuesta libre se crea correctamente.
+
+- 31_ListarEncuestasPorFiltros (propias/ajenas, respondidas o no) <---------------------------------------------------------
+    Contiene la informacion para probar que los filtros de la lista de encuestas funcionan correctamente.
+
+- 32_BuscarEncuestaBuscador.pdf:
+    Contiene la informacion para probar que el buscador de encuestas funciona correctamente.
+
+- 33_EliminarPregunta (comprobar eliminación en cascada)(ahora no va) <--------------------------------------------------
+    Contiene la informacion para probar que se eliminan las preguntas correctamente.
+
+- 34_EliminarRespuesta.pdf:
+    Contiene la informacion para probar que se eliminan las respuestas correctamente.
+
+- 35_EliminarEncuesta.pdf:
+    Contiene la informacion para probar que se eliminan las encuestas correctamente.
+
+- 36_ResponderEncuestaSinGuardar.pdf:
+    Contiene la informacion para probar que no se guardan las respuestas de una encuesta si sales sin guardar.
+
+- 37_ModificarTituloEncuesta.pdf:
+    Contiene la informacion para probar que se puede modificar el titulo de una encuesta correctamente.
+
+- 38_ModificarPreguntaNumerica.pdf:
+    Contiene la informacion para probar que se puede modificar una pregunta numerica correctamente.
+
+- 39_ModificarPreguntaOpcionMultiple.pdf:
+    Contiene la informacion para probar que se puede modificar una pregunta de opcion multiple correctamente.
+
+- 40_ModificarPreguntaOpcionUnica.pdf:
+    Contiene la informacion para probar que se puede modificar una pregunta de opcion unica correctamente.
+
+- 41_ModificarPreguntaLibre.pdf:
+    Contiene la informacion para probar que se puede modificar una pregunta libre correctamenteº.
+
+- 42_VerRespuestasEncuesta.pdf:
+    Contiene la informacion para probar que se pueden visualizar las respuestas de una encuesta.
+
+- 42b_VerRespuestasEncuestaSinRespuestas.pdf:
+    Contiene la informacion para probar que sale un mensaje cuando se quieren visualizar las respuestas de una encuesta y no tiene respuestas.
+
+- 43_VerResultadosClusteringKFueraDeRango.pdf:
+    Contiene la informacion para probar que no se ejecuta el clustering cuando la k es menor a 2 o igual o mayor al numero de respuestas.
+
+- 44_VerResultadosClusteringMenosDe2Respuestas.pdf:
+    Contiene la informacion para probar que no se ejecuta el clustering cuando hay menos de 2 respuestas.
+
+- 45_VerResultadosClusteringCorrectoKMeans.pdf:
+    Contiene la informacion para probar que se ejecuta el clustering con K-Means correctamente.
+
+- 46_VerResultadosClusteringCorrectoKMeans++.pdf:
+    Contiene la informacion para probar que se ejecuta el clustering con K-Means++ correctamente.
+
+- 47_VerResultadosClusteringCorrectoKMmedoids.pdf:
+    Contiene la informacion para probar que sed ejecuta el clustering con K-Medoids correctamente.
+
+- 48_VerRespuestasMiembrosClusteringCorrecto.pdf:
+    Contiene la informacion para probar que se visualizan correctamente las respuestas de una encuesta separadas por perfiles.
+
+- 49_ModificarRespuestaNumerica.pdf:
+    Contiene la informacion para probar que se puede modificar una respuesta numerica correctamente.
+
+- 50_ModificarRespuestaOpcionMultiple.pdf:
+    Contiene la informacion para probar que se puede modificar una respuesta de opcion multiple correctamente.
+
+- 51_ModificarRespuestaOpcionUnica.pdf:
+    Contiene la informacion para probar que se puede modificar una respuesta de opcion unica correctamente.
+
+- 52_ModificarRespuestaLibre.pdf:
+    Contiene la informacion para probar que se puede modificar una respuesta libre correctamente.
+
+- 53_SalirDeLaAplicacion.pdf:
+    Contiene la informacion para probar que puede salir de la aplicacion exitosamente.
