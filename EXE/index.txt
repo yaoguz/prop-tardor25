@@ -14,3 +14,18 @@ Descripcion de los ficheros:
 
 - subgrup-prop11.5-3.0-SNAPSHOT.jar:
     Este archivo. Contiene la informacion del directorio y su contenido.
+
+- datos-encuestas.json:
+    Juego de prueba que contiene los datos importables de una encuesta (informacion de la encuesta y sus preguntas).
+
+- loan-test.csv:
+    Juego de prueba que contiene los datos importables de las respuestas para la encuesta de datos-encuestas.json.
+
+- encuesta-deportes.json:
+    Juego de prueba que contiene los datos importables de otra encuesta (informacion de la encuesta y sus preguntas).
+
+- respuestas-deportes.csv:
+    Juego de prueba que contiene los datos importables de las respuestas para la encuesta de encuesta-deportes.json.
+
+- fichero_prueba.csv:
+    Juego de prueba que contiene datos con formato incorrecto en csv para probar la funcionalidad de importar respuestas.

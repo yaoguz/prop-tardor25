@@ -134,13 +134,13 @@ public abstract class VistaRespuestaEncuestaBase extends ComponenteBase {
 				Object respuesta = entry.getValue().getRespuesta();
 				int idRespExistente = entry.getValue().getIdRespuesta();
 
-			
+				// procesar respuesta (incluso si es nolo, para poder eliminar respuestas existentes)
 				if (respuesta == null || (respuesta instanceof String && ((String)respuesta).trim().isEmpty())) {
-					
+					// si hay una respuesta existente y ahora esta vacia, procesarla (para eliminarla)
 					if (idRespExistente >= 0) {
 						procesarRespuesta(idPregunta, null, idRespExistente);
 					}
-				
+					// si no hay respuesta existente, simplemente permitir no responder
 					continue;
 				}
 
@@ -148,6 +148,7 @@ public abstract class VistaRespuestaEncuestaBase extends ComponenteBase {
 					@SuppressWarnings("unchecked")
 					List<Integer> list = (List<Integer>) respuesta;
 					if (list.isEmpty()) {
+						// si hay una respuesta existente y ahora esta vacía, procesarla (para eliminarla)
 						if (idRespExistente >= 0) {
 							procesarRespuesta(idPregunta, null, idRespExistente);
 						}
