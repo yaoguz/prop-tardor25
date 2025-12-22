@@ -109,13 +109,13 @@ Descripcion de los ficheros:
 - 30_CrearRespuestaLibreBien.pdf:
     Contiene la informacion para probar que una respuesta libre se crea correctamente.
 
-- 31_ListarEncuestasPorFiltros (propias/ajenas, respondidas o no) <---------------------------------------------------------
+- 31_ListarEncuestasPorFiltros
     Contiene la informacion para probar que los filtros de la lista de encuestas funcionan correctamente.
 
 - 32_BuscarEncuestaBuscador.pdf:
     Contiene la informacion para probar que el buscador de encuestas funciona correctamente.
 
-- 33_EliminarPregunta (comprobar eliminación en cascada)(ahora no va) <--------------------------------------------------
+- 33_EliminarPregunta
     Contiene la informacion para probar que se eliminan las preguntas correctamente.
 
 - 34_EliminarRespuesta.pdf:
