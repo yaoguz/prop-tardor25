@@ -1,0 +1,10 @@
+domain
+domain.algorithm
+domain.algorithm.estrategias
+domain.algorithm.estructuras
+domain.algorithm.funciones
+domaincontrollers
+persistence
+presentation
+presentation.components
+presentation.views
