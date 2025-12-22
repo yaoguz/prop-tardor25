@@ -1,0 +1,19 @@
+/DOCS
+
+Este directorio contiene toda la documentacion relativa al proyecto.
+
+Descripcion de los directorios:
+
+- /javadoc:
+    Este directorio contiene el javadoc (en index.html) con la descripcion de todas las clases y metodos.
+
+Descripcion de los ficheros:
+
+- index.txt:
+    Este archivo. Contiene la informacion del directorio y su contenido.
+
+- manual_usuario.pdf
+    El manual de usuario de la aplicacion. Contiene como compilar y ejecutarla ademas de las distintas funciones que tiene y como usarlas.
+
+- clases_miembros.pdf
+    La relacion entre las clases implementadas y los creadores de dichas clases.
